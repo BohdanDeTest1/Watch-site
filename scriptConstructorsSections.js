@@ -65,3 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+//test  from js//
+//test  from js2//
+
