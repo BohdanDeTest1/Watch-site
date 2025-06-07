@@ -1,0 +1,39 @@
+.privacy-content {
+    max-width: 900px;
+    margin: 100px auto 60px auto;
+    padding: 0 20px;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    line-height: 1.7;
+    font-size: 12px;
+}
+
+body {
+    background: #F5F1EB;
+    color: black;
+}
+
+.privacy-content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.privacy-content h2 {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.privacy-content p {
+    margin-bottom: 16px;
+    font-size: 12px;
+}
+
+.privacy-content ul {
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+.privacy-content li {
+    margin-bottom: 10px;
+}

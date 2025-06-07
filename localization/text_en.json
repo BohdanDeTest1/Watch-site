@@ -1,0 +1,25 @@
+{
+    "header": {
+        "header_constructor": "CONSTRUCTOR",
+        "header_catalog": "CATALOG",
+        "header_about": "ABOUT ME",
+        "header_review": "REVIEW",
+        "header_buy_button": "BUY WATCH"
+    },
+    "main_page": {
+        "first_gallery_watch_name": {
+            "slide_1": "Часы №1",
+            "slide_2": "Часы №3",
+            "slide_3": "Часы №3",
+            "first_gallery_watch_button": "посмотреть"
+        }
+    },
+    "footer": {
+        "footer_terms": "КОНСТРУКТОР",
+        "footer_privacy": "КАТАЛОГ",
+        "footer_cookie": "ОБО МНЕ",
+        "footer_cookie_settings": "ОТЗЫВЫ",
+        "footer_copyright": "SURF WATCH",
+        "footer_button": "НАПИСАТЬ"
+    }
+}

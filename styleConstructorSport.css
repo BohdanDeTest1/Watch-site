@@ -1,0 +1,128 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #ffffff;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 100%;
+}
+
+/* Хедер и футер подключаются с внешним CSS */
+
+main.sport-constructor {
+    padding: 170px 20px 60px;
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.back-button {
+    position: absolute;
+    top: 100px;
+    left: 30px;
+    font-size: 14px;
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 24px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 0 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.sport-btn {
+    padding: 14px 24px;
+    border: 1px solid #000;
+    border-radius: 40px;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sport-btn:hover:not(.disabled) {
+    color: #FF5722;
+    border-color: #FF5722;
+}
+
+.sport-btn.disabled {
+    color: #aaa;
+    border-color: #ddd;
+    cursor: default;
+    pointer-events: auto;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF5722;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 9999;
+}
+
+@media (max-width: 768px) {
+    .buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .back-button {
+        top: 80px;
+        left: 20px;
+    }
+
+    main.sport-constructor {
+        padding-top: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sport-constructor {
+        margin-top: 10px;
+        /* регулируй это значение по вкусу */
+    }
+}
+
+/* Убираем синий блик при тапе на iOS */
+button,
+.sport-btn {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+button:focus,
+.sport-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}

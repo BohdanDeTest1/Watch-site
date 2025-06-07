@@ -1,0 +1,46 @@
+<!-- Файл: pageConfigurator.html -->
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Конфигуратор</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Конфигуратор часов</h1>
+  <div class="constructor">
+    <div class="watch-preview">
+      <img id="layer-case" src="img/case1.png" />
+      <img id="layer-dial" src="img/dial1.png" />
+      <img id="layer-hands" src="img/hands1.png" />
+      <img id="layer-strap" src="img/strap1.png" />
+    </div>
+
+    <div class="controls">
+      <h2>Корпус</h2>
+      <button onclick="changePart('case', 1)">Корпус 1</button>
+      <button onclick="changePart('case', 2)">Корпус 2</button>
+
+      <h2>Циферблат</h2>
+      <button onclick="changePart('dial', 1)">Циферблат 1</button>
+      <button onclick="changePart('dial', 2)">Циферблат 2</button>
+
+      <h2>Стрелки</h2>
+      <button onclick="changePart('hands', 1)">Стрелки 1</button>
+      <button onclick="changePart('hands', 2)">Стрелки 2</button>
+
+      <h2>Ремешок</h2>
+      <button onclick="changePart('strap', 1)">Ремешок 1</button>
+      <button onclick="changePart('strap', 2)">Ремешок 2</button>
+    </div>
+  </div>
+  <script src="watch-configurator.js"></script>
+  <script src="header-footer-loader.js"></script>
+  <script src="localization.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

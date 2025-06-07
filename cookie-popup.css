@@ -1,0 +1,58 @@
+/* Полупрозрачный фон */
+.cookie-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    /* Затемнение 30% */
+    z-index: 9998;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Окно попапа */
+.cookie-popup {
+    background: white;
+    color: #333;
+    padding: 24px;
+    max-width: 700px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    font-family: sans-serif;
+}
+
+.cookie-popup p {
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.cookie-popup a {
+    color: #0000EE;
+    text-decoration: underline;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.cookie-buttons button {
+    background: #0000EE;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.cookie-buttons button:hover {
+    background: #0000cc;
+}

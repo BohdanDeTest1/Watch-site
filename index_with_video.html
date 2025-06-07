@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Главная</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styleHeaderFooter.css" />
+    <link rel="stylesheet" href="cookie-popup.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero-video {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            display: block;
+            background: black;
+        }
+
+        .video-overlay {
+            position: absolute;
+            z-index: 1;
+            bottom: 40px;
+            left: 20px;
+            color: white;
+            padding: 20px;
+            max-width: 90%;
+            font-family: sans-serif;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-overlay h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .video-overlay p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .video-overlay a {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 1px solid white;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <section class="hero-video">
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="first_page_img/video/video_01.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-overlay">
+            <h1 class="hero-title" data-i18n="home.hero_title">DIVE INTO SUMMER</h1>
+            <p class="hero-subtitle" data-i18n="home.hero_subtitle">
+                Beach towels, pareos, cushions and tote bags... bringing you all the essentials for a day by the sea.
+            </p>
+            <a href="#pageConstructorsSections.html" class="hero-button" data-i18n="home.hero_cta">DISCOVER</a>
+        </div>
+    </section>
+
+    <section class="top-image">
+        <img src="first_page_img/img_1.png" alt="Top banner">
+    </section>
+
+    <section class="nav-buttons">
+        <a href="pageConstructorsSections.html">configurator text</a>
+        <a href="pageModels.html">models text</a>
+        <a href="pageAbout.html">about my text</a>
+    </section>
+
+    <section class="social-buttons">
+        <a href="https://www.youtube.com/@watch_time121" target="_blank">B1</a>
+        <a href="https://www.instagram.com/tvoi_chasi_zdes/?igsh=aGxjNDBlOXRweHky&utm_source=qr#" target="_blank">B2</a>
+        <a href="https://t.me/watch_craft" target="_blank">B3</a>
+    </section>
+
+    <section class="bottom-image">
+        <img src="first_page_img/img_2.png" alt="Bottom banner">
+    </section>
+
+    <section class="carousel-section">
+        <h2>МОДЕЛИ</h2>
+        <div class="carousel-container">
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow" id="prev">&#8249;</button>
+                <div class="carousel" id="carousel"></div>
+                <button class="carousel-arrow" id="next">&#8250;</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="delivery">
+        <p>Сроки изготовления - 2-3 недели</p>
+        <p>Доставка по вашему городу</p>
+        <p>Сроки обговариваются во время формирования заказа*</p>
+    </section>
+
+    <section class="reviews">
+        <img src="first_page_review/review-1.png" alt="review1">
+        <img src="first_page_review/review-2.png" alt="review2">
+        <img src="first_page_review/review-1.png" alt="review3">
+    </section>
+
+    <section class="faq">
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">Стекла сапфировые?<span class="icon">+</span></button>
+            <div class="faq-answer">
+                <p>Да, используются сапфировые стекла высокой прозрачности и прочности.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">В часах можно купаться?<span
+                    class="icon">+</span></button>
+            <div class="faq-answer">
+                <p>Можно, если указана водонепроницаемость 100 м и выше.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">А ты используешь оригинальные механизмы?<span
+                    class="icon">+</span></button>
+            <div class="faq-answer">
+                <p>Да, я использую Японские калибры серии Seiko NH35, NH36, NH34, NH38, NH70</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer"></div>
+    <script src="cookie-popup.js" defer></script>
+    <script src="header-footer-loader.js"></script>
+    <script src="localization.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

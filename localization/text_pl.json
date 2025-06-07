@@ -1,0 +1,27 @@
+{
+    "header": {
+        "header_constructor": "КОНСТРУКТОР PL",
+        "header_catalog": "КАТАЛОГ PL",
+        "header_about": "ОБО МНЕ PL",
+        "header_review": "ОТЗЫВЫ PL",
+        "header_buy_button": "КУПИТЬ ЧАСЫ PL"
+    },
+    "main_page": {
+        "first_gallery_watch_name": {
+            "slide_1": "Часы №1",
+            "slide_2": "Часы №3",
+            "slide_3": "Часы №3",
+            "first_gallery_watch_button": "посмотреть"
+        }
+    },
+    "footer": {
+        "footer_question_1": "PL остались вопросы?",
+        "footer_question_2": "PL буду рад ответить",
+        "footer_terms": "...",
+        "footer_privacy": "PL Политика конфиденциальности",
+        "footer_cookie": "PL Политика использования файлов cookie",
+        "footer_cookie_settings": "...",
+        "footer_copyright": "PL Copyright © SURF WATCH. Все права защищены.",
+        "footer_FeedbackButton": "PL НАПИСАТЬ"
+    }
+}

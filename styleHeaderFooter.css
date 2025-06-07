@@ -1,0 +1,904 @@
+.footer-right {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.footer-center p {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    font-weight: 300;
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Inter', sans-serif !important;
+    color: rgb(85, 85, 85)
+}
+
+.lang-dropdown {
+    display: flex;
+}
+
+.lang-btn {
+    background-color: transparent;
+    border: 1px solid #333;
+    color: #333;
+    border-radius: 2px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 300;
+    cursor: pointer;
+    min-width: 60px;
+    width: 100%;
+}
+
+.language-selector {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+}
+
+/* styleHeaderFooter.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html,
+body,
+footer,
+.footer-left,
+.footer-center,
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #000000;
+}
+
+/* Хедер */
+.header-desk {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(250, 245, 239, 0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(2px);
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: max-height 0.3s ease, background-color 0.3s ease;
+    font-family: 'Inter', sans-serif;
+
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    width: 100%;
+    font-size: 9px;
+}
+
+.fheader-content a:hover {
+    text-decoration: underline;
+}
+
+.logo {
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.btn-buy-desk,
+.btn-buy-mobile {
+    background-color: #333;
+    /* тёмно-серый фон по умолчанию */
+    margin: 10px 0;
+    color: #fff;
+    border: 1px solid #333;
+    font-weight: 300;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    padding: 10px 26px;
+    /* ← внутренние отступы: высота и ширина кнопки */
+    font-size: 9px;
+    /* ← размер текста внутри кнопки */
+    border-radius: 40px;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-buy-desk {
+    padding: 10px 40px;
+    /* ← Размер кнопки */
+    border-radius: 3px;
+    margin-right: 20px;
+    font-size: 9px;
+    /* ← Размер текста */
+}
+
+.btn-buy-mobile {
+    padding: 10px 26px;
+    font-size: 15px;
+    border-radius: 3px;
+}
+
+.btn-buy-desk:hover,
+.btn-buy-mobile:hover {
+    background-color: transparent;
+    color: #333;
+}
+
+/* Мобильное меню */
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: rgba(250, 245, 239, 0.8);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: blur(6px);
+    padding: 24px 20px;
+    position: relative;
+    font-size: 9px;
+    font-family: 'Inter', sans-serif;
+}
+
+.mobile-nav-links a {
+    display: block;
+    font-size: 18px;
+    margin: 24px 0;
+    text-decoration: none;
+    color: #000;
+    font-weight: 300;
+    transition: color 0.3s;
+    text-align: left;
+    width: 100%;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+}
+
+.mobile-nav-links a:hover {
+    color: #a40a02;
+}
+
+.mobile-nav .social-links {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    align-self: flex-start;
+}
+
+.mobile-nav .social-links a {
+    font-size: 18px;
+    text-decoration: none;
+    color: #FF5722;
+}
+
+.mobile-nav .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Футер */
+footer {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    background-color: #fff;
+    justify-content: center;
+    border-top: 1px solid #ddd;
+    flex-wrap: wrap;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+
+}
+
+.footer-left {
+    background-color: rgba(250, 245, 239, 0.8);
+}
+
+.footer-top {
+    background-color: rgba(250, 245, 239, 0.8);
+    width: 100%;
+    align-self: stretch;
+    /* на случай, если в flex-контейнере */
+    box-sizing: border-box;
+    padding-top: 30px;
+    color: rgb(85, 85, 85)
+}
+
+
+.footer-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0 30px 0;
+    background-color: rgba(250, 245, 239, 0.8)
+}
+
+.footer-left .icons,
+.footer-right .icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+
+    /* ;*/
+}
+
+.footer-left .iconsa a img {
+    opacity: 0.6;
+
+}
+
+/*.footer-left .icons:hover a img {
+    background-color: rgb(200, 0, 0);
+}*/
+
+
+.footer-left .icons a,
+.footer-right .icons a {
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.footer-left .icons a img,
+.footer-right .icons a img {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+    opacity: 0.6;
+}
+
+.footer-left .icons a:hover img,
+.footer-right .icons a:hover img {
+    opacity: 1;
+    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-10deg) contrast(120%) brightness(110%);
+    color: rgb(90, 23, 177);
+}
+
+.btn-write {
+    background-color: transparent;
+    border: 1px solid rgb(85, 85, 85);
+    color: rgb(85, 85, 85);
+    padding: 10px 50px;
+    /* ← Размер кнопки */
+    font-size: 11px;
+    /* ← Размер текста */
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.btn-write:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.footer-right .contact {
+    font-size: 14px;
+    font-weight: 300;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .footer-left .icons,
+    .footer-right .icons {
+        justify-content: center;
+    }
+
+    .footer-left,
+    .footer-center,
+    .footer-right {
+        flex: 1 1 100%;
+        margin-bottom: 20px;
+    }
+
+    .footer-center p {
+
+        font-weight: 300;
+        font-size: 14px;
+        text-align: center;
+
+    }
+
+
+}
+
+/* Остальное без изменений */
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: none;
+        padding: 32px 20px;
+    }
+
+    .header-desk.collapsed .mobile-nav {
+        display: none;
+    }
+
+    .header-desk:not(.collapsed) .mobile-nav {
+        display: flex;
+    }
+
+    .header-content {
+        display: flex;
+    }
+
+    .header-desk:not(.collapsed) .header-content {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .header-desk {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        max-height: none;
+
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .mobile-nav {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .language-selector.mobile-lang {
+        display: none !important;
+    }
+
+    .header-desk:not(.collapsed) .mobile-nav .language-selector.mobile-lang {
+        display: block !important;
+        margin-top: 20px;
+        width: 100%;
+    }
+}
+
+.desktop-only {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .desktop-only {
+        display: flex !important;
+        gap: 24px;
+        margin: 0 40px;
+        padding: 25px 0 25px 0;
+        /* ← создаёт место для полоски */
+        margin: -25px 0 -25px 0;
+        position: relative;
+        overflow: visible;
+    }
+
+    .desktop-only a {
+        text-decoration: none;
+        padding: 12px 12px;
+        color: #000;
+        font-weight: 300;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+        display: inline-block;
+        margin: 10px 0;
+        --origin: left;
+    }
+
+    .desktop-only a::after {
+        content: "";
+        position: absolute;
+        bottom: -10.5px;
+        left: 0;
+        width: 100%;
+        height: 1.3px;
+        background-color: #9a1e15;
+        transform: scaleX(0);
+        transform-origin: var(--origin);
+        transition: transform 0.2s ease;
+        pointer-events: none;
+    }
+
+
+
+    .desktop-only a.hovered::after {
+        transform: scaleX(1);
+    }
+
+    .desktop-only a:hover {
+        color: #701616;
+        font-weight: 300;
+        text-shadow: 0 0 0.3px #ea1313;
+        /* цвет при наведении */
+    }
+
+}
+
+@media (max-width: 768px) {
+    .header-content .btn-buy-desk {
+        margin-left: auto;
+        margin-right: 0px;
+        border-radius: 3px;
+        padding: 10px 40px;
+        /* ← Размер кнопки */
+        font-size: 10px;
+        /* ← Размер текста */
+    }
+
+    .header-content .logo {
+        margin-left: 10px;
+    }
+}
+
+.mobile-nav .mobile-social {
+    display: flex;
+    gap: 25px;
+    margin-top: 25px;
+    align-self: flex-start;
+    justify-content: center;
+    align-self: center;
+}
+
+.mobile-nav .mobile-social a img {
+    height: 24px;
+    width: 24px;
+    gap: 24px;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav .mobile-social a:hover img {
+    opacity: 0.6;
+}
+
+.lang-dropdown.open .lang-menu {
+    display: block;
+}
+
+/* Language button*/
+
+.lang-dropdown.lang-menu {
+    position: absolute;
+    bottom: 100%;
+    /* 👈 Открывать ВВЕРХ */
+    left: 0;
+    display: none;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+.language-selector.open .lang-dropdown li {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: center;
+}
+
+.lang-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Mobile center fix */
+.mobile-lang {
+    margin: 20px auto 0;
+}
+
+@media (max-width: 768px) {
+    .language-selector.mobile-lang {
+        display: none !important;
+    }
+
+    .header-desk:not(.collapsed) .mobile-nav .language-selector.mobile-lang {
+        display: flex !important;
+        margin-top: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.language-selector.open .lang-dropdown li {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.lang-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+
+html,
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-bottom {
+    width: 100%;
+    border-top: 1px solid #eee;
+    padding: 20px 40px;
+    background-color: rgba(250, 245, 239, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+    font-family: 'Inter', sans-serif;
+    flex-wrap: wrap;
+    gap: 12px;
+
+}
+
+.footer-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-weight: 300;
+    font-size: 9px;
+    color: rgb(85, 85, 85);
+    order: 1;
+    /* переносим в начало */
+    align-items: flex-start;
+    text-align: left;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.footer-links a {
+    color: rgb(85, 85, 85);
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 9px;
+}
+
+.footer-links a:hover {
+    color: #9a1212;
+    text-shadow: 0 0 0.2px #5e0703
+}
+
+.footer-links .divider {
+    display: inline-block;
+    width: 1px;
+    height: 9px;
+    background-color: #ccc;
+    margin: 0 -9px;
+    vertical-align: middle;
+    transform: translateY(3px);
+}
+
+@media (max-width: 768px) {
+    .footer-bottom {
+        flex-direction: row;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-copy {
+        text-align: left;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        flex-direction: column;
+        /* или другой нужный отступ */
+    }
+
+
+    .footer-bottom>.language-selector {
+        text-align: right;
+        order: 1;
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+
+    .footer-bottom>.footer-copy {
+        text-align: left;
+        order: 0;
+    }
+
+}
+
+.footer-center p,
+.footer-center a,
+.footer-left,
+
+footer,
+footer * {
+    font-family: 'Inter', sans-serif !important;
+
+}
+
+main {
+    flex: 1;
+}
+
+/* === Language Selector === */
+.language-selector {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
+.lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    /* Расстояние между иконкой и текстом */
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: transparent;
+    color: #333;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    outline: none;
+}
+
+.lang-btn:hover {
+    color: #701616;
+    /* Цвет текста при наведении */
+    border-color: #701616;
+}
+
+.lang-btn .lang-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+    filter: grayscale(100%) brightness(0%) contrast(100%);
+}
+
+.lang-btn:hover .lang-icon {
+    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-10deg) contrast(120%) brightness(110%);
+}
+
+.lang-btn img {
+    width: 18px;
+    height: 18px;
+    filter: grayscale(0%) brightness(0%) contrast(100%);
+    transition: filter 0.3s ease;
+}
+
+.lang-btn:hover img {
+    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-10deg) contrast(120%) brightness(110%);
+}
+
+/* experements starts*/
+/* experements 1*/
+.lang-icon-only {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lang-icon-only img {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(0%) brightness(0%) contrast(100%);
+    transition: filter 0.3s ease;
+}
+
+.lang-icon-only:hover img {
+    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(-10deg) contrast(120%) brightness(110%);
+}
+
+.question_1 {
+    margin-bottom: 1px !important;
+    margin-top: 40px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}
+
+.question_2 {
+    margin-top: -2px !important;
+    margin-bottom: 15px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}
+
+@media (max-width: 768px) {
+    .question_1 {
+        margin-bottom: 1px !important;
+        margin-top: 40px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 400 !important;
+    }
+
+    .question_2 {
+        margin-top: -2px !important;
+        margin-bottom: 15px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 400 !important;
+    }
+}
+
+/* experements 2*/
+
+.language-selector-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.language-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    background: transparent;
+    font-weight: 300;
+    border: none;
+    border-radius: 6px;
+    color: rgb(85, 85, 85);
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.language-toggle:hover {
+    color: #9a1212;
+    border-color: #701616;
+}
+
+
+.language-toggle .lang-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+    color: rgb(85, 85, 85);
+}
+
+.language-toggle:hover .lang-icon {
+    color: #9a1212;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(75%) saturate(452%) hue-rotate(337deg) brightness(91%) contrast(86%);
+}
+
+.language-menu {
+    display: none;
+    position: absolute;
+    bottom: 80%;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    font-weight: 300;
+    font-size: 12px;
+    padding: 0 0;
+    z-index: 1000;
+    width: max-content;
+    min-width: 120px;
+    text-align: center;
+    overflow: hidden;
+
+}
+
+.language-menu li {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.language-menu li:hover {
+    background: #f0f0f0;
+    color: #9a1212;
+    font-weight: 400;
+}
+
+.language-selector-wrapper.open .language-menu {
+    display: block;
+}
+
+/* experements ends*/
+
+.lang-dropdown {
+    display: none;
+    position: absolute;
+    bottom: 100% + 6px;
+    left: 0;
+    transform: translateX(0%);
+    background: white;
+    width: 100px;
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    z-index: 999;
+    margin: 0;
+    /* ← убедись, что нет внешних отступов */
+    padding: 0;
+    width: 100px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.lang-dropdown li {
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 200;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    list-style: none;
+}
+
+.lang-dropdown li:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.language-selector.open .lang-dropdown {
+    display: block;
+}
+
+.language-selector.desktop-lang {
+    order: 2;
+    /* переносим в конец */
+    align-items: flex-end;
+}

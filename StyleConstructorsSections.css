@@ -1,0 +1,112 @@
+/* Сброс стилей */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Базовые */
+body {
+    background: #fff;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 100%;
+    margin: 0;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Main */
+main.constructor-sections {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.constructor-sections h1 {
+    font-size: 28px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.sections-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.section-box {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.section-box:hover {
+    transform: translateY(-4px);
+}
+
+.section-box img {
+    width: 100%;
+    height: auto;
+}
+
+.section-title {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    background: white;
+    padding: 6px 0;
+    color: black;
+}
+
+/* New badge */
+.section-box.new::after {
+    content: "New";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #FF5722;
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .sections-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    main.constructor-sections {
+        padding: 20px;
+    }
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}

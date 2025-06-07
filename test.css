@@ -1,0 +1,40 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f1eb;
+    margin: 0;
+}
+
+.desktop-only {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.desktop-only a {
+    font-size: 14px;
+    font-weight: 300;
+    color: #000;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 16px;
+    display: inline-block;
+}
+
+.desktop-only a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #393a3b;
+    transform: scaleX(0);
+    transform-origin: var(--origin, left);
+    transition: transform 0.3s ease;
+}
+
+.desktop-only a.hovered::after {
+    transform: scaleX(1);
+}
