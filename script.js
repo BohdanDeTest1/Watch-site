@@ -1,3 +1,4 @@
+import 'animate.css';
 // Карусель
 const carousel = document.getElementById("carousel");
 const prevBtn = document.getElementById("prev");
