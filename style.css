@@ -442,6 +442,7 @@ img {
     min-height: 100%;
     object-fit: cover;
     z-index: 0;
+    pointer-events: none;
 }
 
 .video-hero-section .hero-content {
@@ -469,6 +470,7 @@ img {
 }
 
 
+
 @media (max-width: 768px) {
 
     .video-hero-section .hero-content {
@@ -486,7 +488,8 @@ img {
         min-height: 600px;
         height: auto;
         overflow: hidden;
-        background: #F5F1EB;
+        background: black;
+
     }
 
 
