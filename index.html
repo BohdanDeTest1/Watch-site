@@ -70,40 +70,54 @@
         </a>
     </section>
     <!-- How it work баннер -->
-    <section class="how-it-works">
-        <h2>КАК ЭТО РАБОТАЕТ?</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="circle">1</div>
-                <p>Выбираем дизайн</p>
+    <section class="how-it-works-wrapper">
+        <section class="how-it-works">
+            <h2>КАК ЭТО РАБОТАЕТ?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">1</div>
+                        <div class="line"></div>
+                    </div>
+                    <p>Выбираем дизайн</p>
+                </div>
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">2</div>
+                        <div class="line"></div>
+                    </div>
+                    <p>Согласуем заказ</p>
+                </div>
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">3</div>
+                        <div class="line"></div>
+                    </div>
+                    <p>Вы вносите предоплату</p>
+                </div>
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">4</div>
+                        <div class="line"></div>
+                    </div>
+                    <p>Изготовление часов (2–3 недели)</p>
+                </div>
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">5</div>
+                        <div class="line"></div>
+                    </div>
+                    <p>Согласовываем готовый результат и Вы вносите остаток</p>
+                </div>
+                <div class="step">
+                    <div class="circle-line">
+                        <div class="circle">6</div>
+                    </div>
+                    <p>Отправка часов Вам</p>
+                </div>
             </div>
-            <div class="step">
-                <div class="circle">2</div>
-                <p>Согласуем заказ</p>
-            </div>
-            <div class="step">
-                <div class="circle">3</div>
-                <p>Вы вносите предоплату</p>
-            </div>
-            <div class="step">
-                <div class="circle">4</div>
-                <p>Изготовление часов (2–3 недели)</p>
-            </div>
-            <div class="step">
-                <div class="circle">5</div>
-                <p>Согласовываем готовый результат и Вы вносите остаток</p>
-            </div>
-            <div class="step">
-                <div class="circle">6</div>
-                <p>Отправка часов Вам</p>
-            </div>
-        </div>
+        </section>
     </section>
-    <!-- Третийй баннер -->
-    <section class="bottom-image">
-        <img src="first_page_img/img_2.png" alt="Bottom banner">
-    </section>
-
 
     <!-- Карусель моделей -->
     <section class="carousel-section">
@@ -116,6 +130,11 @@
             </div>
         </div>
     </section>
+
+    <div class="hero-buttons-new2">
+        <a href="pageConstructorsSections.html" class="hero-btn">Create your concept</a>
+        <a href="pageModels.html" class="hero-btn">Check finished MODELS</a>
+    </div>
 
     <!-- Сроки -->
     <section class="delivery">
@@ -171,6 +190,44 @@
             </div>
         </div>
     </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const steps = document.querySelectorAll(".step");
+
+            function createObserver() {
+                const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+                const observerOptions = {
+                    rootMargin: isMobile ? "0px 0px 10% 0px" : "0px 0px 30% 0px",
+                    threshold: 0
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+
+                steps.forEach((step) => observer.observe(step));
+            }
+
+            // 1. Создаём изначально
+            createObserver();
+
+            // 2. Обновляем при изменении размера экрана (например, при повороте)
+            window.addEventListener("resize", () => {
+                // очищаем все классы, чтобы переинициализировать
+                steps.forEach(s => s.classList.remove("visible"));
+                createObserver();
+            });
+        });
+
+
+    </script>
+
 
     <div id="footer"></div>
     <script src="cookie-popup.js" defer></script>
