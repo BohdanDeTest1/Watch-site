@@ -653,21 +653,21 @@ img {
             font-weight: bold;
             margin-bottom: 20px;
             color: #111;
+            margin: 5px 14px 0 0px;
         }
 
         .concept-text p {
             font-size: 1rem;
             line-height: 1.6;
             color: #555;
-            margin-bottom: 12px;
+            margin: 5px 14px 0 0px;
         }
 
         .social-icons-home {
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
-            gap: 25px;
-            padding-left: 40px;
+            gap: 55px;
             padding-top: 45px;
             background: #F5F1EB;
         }
@@ -716,10 +716,17 @@ img {
 
         .concept-text h2 {
             font-size: 1.8rem;
+            margin: 6px 12px;
         }
 
         .concept-text p {
             font-size: 3rem;
+            font-size: 3rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 2px;
+            margin: 6px 12px;
+
         }
     }
 
@@ -925,4 +932,51 @@ img {
         transition: all 0.3s ease;
         width: 80%;
     }
+}
+
+@media screen and (max-height: 480px) {
+    .video-hero-section {
+        position: relative;
+        min-height: 480px;
+        height: 100dvh;
+    }
+
+    .hero-content {
+        position: static;
+        transform: none;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .hero-video {
+        position: absolute;
+        top: 50%;
+        /*left: 50%;*/
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        height: 100%;
+
+        object-fit: cover;
+        z-index: 0;
+        /*pointer-events: none; */
+    }
+
+    .video-hero-section video {
+        height: 172vh;
+    }
+
+    .video-hero-section .hero-content {
+        position: absolute;
+        bottom: 2px;
+        left: 44px;
+        top: 210px;
+        transform: none;
+        text-align: left;
+        align-items: flex-start;
+        background: none;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+    }
+
 }
