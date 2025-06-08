@@ -668,7 +668,7 @@ img {
             justify-content: center;
             align-items: center;
             gap: 55px;
-            padding-top: 45px;
+            padding: 15px 0 35px 0;
             background: #F5F1EB;
         }
 
@@ -751,24 +751,23 @@ img {
         flex-wrap: wrap;
         justify-content: center;
         gap: 16px;
-        padding: 20px 0 20px 0;
+        padding: 0 0 20px 0;
         background: #F5F1EB;
     }
 
     .hero-buttons-new .hero-btn {
-        background-color: rgba(250, 245, 239, 0.3);
-        backdrop-filter: blur(4px);
-        border: 1px solid #333;
-        color: #333;
-        padding: 12px 24px;
-        text-transform: uppercase;
-        border-radius: 4px;
-        font-weight: 300;
-        font-size: 12px;
         text-align: center;
         transition: all 0.3s ease;
         background-color: transparent;
         letter-spacing: 1px;
+        border: 1px solid rgb(85, 85, 85);
+        color: rgb(85, 85, 85);
+        padding: 10px 50px;
+        font-size: 11px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 300;
     }
 
     .hero-buttons-new .hero-btn:hover {
@@ -885,17 +884,18 @@ img {
         }
 
         .hero-buttons-new .hero-btn {
-            background-color: rgba(250, 245, 239, 0.3);
-            backdrop-filter: blur(4px);
-            border: 1px solid #333;
-            color: #333;
-            padding: 12px 24px;
-            text-transform: uppercase;
-            border-radius: 4px;
-            font-weight: 300;
-            font-size: 14px;
             text-align: center;
             transition: all 0.3s ease;
+            background-color: transparent;
+            letter-spacing: 1px;
+            border: 1px solid rgb(85, 85, 85);
+            color: rgb(85, 85, 85);
+            padding: 10px 50px;
+            font-size: 11px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 300;
             width: 80%;
         }
     }
@@ -914,22 +914,23 @@ img {
         flex-wrap: wrap;
         justify-content: center;
         gap: 16px;
-        padding: 20px 0 20px 0;
+        padding: 40px 0 20px 0;
         background: #F5F1EB;
     }
 
     .hero-buttons-new .hero-btn {
-        background-color: rgba(250, 245, 239, 0.3);
-        backdrop-filter: blur(4px);
-        border: 1px solid #333;
-        color: #333;
-        padding: 12px 24px;
-        text-transform: uppercase;
-        border-radius: 4px;
-        font-weight: 300;
-        font-size: 12px;
         text-align: center;
         transition: all 0.3s ease;
+        background-color: transparent;
+        letter-spacing: 1px;
+        border: 1px solid rgb(85, 85, 85);
+        color: rgb(85, 85, 85);
+        padding: 10px 50px;
+        font-size: 11px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 300;
         width: 80%;
     }
 }
