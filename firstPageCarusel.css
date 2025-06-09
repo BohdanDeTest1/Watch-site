@@ -1,0 +1,134 @@
+.carousel-tabs {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 20px 0;
+    background: #F5F1EB;
+}
+
+.tab-button {
+    font-weight: 300;
+    color: rgb(85, 85, 85);
+    background: transparent;
+    border: none;
+    margin: 0 10px;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.tab-button.active {
+    border-color: rgb(85, 85, 85);
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 10px 10px 10px 10px;
+    /* Было 20px со всех сторон */
+}
+
+.carousel {
+    display: flex;
+    gap: 0;
+    /* было 20px */
+    overflow: hidden;
+    scroll-behavior: smooth;
+    justify-content: center;
+    margin: -66px 10px -74px 10px;
+    padding: 0 10px 0 10px;
+}
+
+/*.carousel-card {
+    min-width: 220px;
+    max-width: 250px;
+    background: #e8ded0b8;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 300;
+    color: rgb(85, 85, 85);
+} */
+.carousel-card {
+    flex: 0 0 100%;
+    min-width: 220px;
+    max-width: 100%;
+    background: #e8ded0b8;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 300;
+    color: rgb(85, 85, 85);
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+}
+
+@media (min-width: 768px) {
+    .carousel-card {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+
+.carousel-card img {
+    display: block;
+    margin: 0 auto;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+#prev {
+    left: 10px;
+}
+
+#next {
+    right: 10px;
+}
+
+.btn-to-watch {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 50px;
+    font-size: 11px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+    border: 1px solid transparent;
+}
+
+
+.btn-to-watch:hover {
+    background-color: transparent;
+    border: 1px solid rgb(85, 85, 85);
+    color: rgb(85, 85, 85);
+}
+
+@media (max-width: 768px) {
+    .btn-to-watch {
+        background-color: #333 !important;
+        color: #fff !important;
+        padding: 18px 61px !important;
+        font-size: 15px !important;
+        border-radius: 4px !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 400 !important;
+    }
+}

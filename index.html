@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="cookie-popup.css" />
+    <link rel="stylesheet" href="firstPageCarusel.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
@@ -119,15 +120,18 @@
         </section>
     </section>
 
-    <!-- Карусель моделей -->
-    <section class="carousel-section">
-        <h2>МОДЕЛИ</h2>
-        <div class="carousel-container">
-            <div class="carousel-wrapper">
-                <button class="carousel-arrow" id="prev">&#8249;</button>
-                <div class="carousel" id="carousel"></div>
-                <button class="carousel-arrow" id="next">&#8250;</button>
-            </div>
+
+    <!-- Карусель моделей с вкладками -->
+    <section class="carousel-tabs-section">
+        <div class="carousel-tabs">
+            <button class="tab-button active" data-tab="design">доступные для дизайна</button>
+            <button class="tab-button" data-tab="ready">готовые модели</button>
+        </div>
+
+        <div class="carousel-wrapper" style="background: #F5F1EB;">
+            <button class="carousel-arrow" id="prev">&#8249;</button>
+            <div class="carousel" id="carousel"></div>
+            <button class="carousel-arrow" id="next">&#8250;</button>
         </div>
     </section>
 
@@ -233,6 +237,7 @@
     <script src="cookie-popup.js" defer></script>
     <script src="header-footer-loader.js"></script>
     <script src="localization.js"></script>
+    <script src="firstPageCarusel.js"></script>
     <script src="script.js"></script>
 </body>
 

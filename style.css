@@ -320,7 +320,6 @@ img {
     text-align: center;
     background: #e8ded0b8;
     padding: 30px;
-    font-size: 16px;
     line-height: 1.8;
     font-size: 16px;
     letter-spacing: 1px;
@@ -334,7 +333,7 @@ img {
     justify-content: center;
     gap: 20px;
     padding: 30px;
-    background: #F5F1EB;
+
 }
 
 .reviews img {
