@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const carousel = document.getElementById("carousel");
+    const carouselInner = document.querySelector(".carousel-inner");
     const tabs = document.querySelectorAll(".tab-button");
     const prev = document.getElementById("prev");
     const next = document.getElementById("next");
+    const animationSpeed = 500;
 
     const data = {
         design: [
@@ -31,24 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
-
-    // function renderCarousel(type) {
-    //     carousel.innerHTML = "";
-    //     data[type].forEach(item => {
-    //         const card = document.createElement("div");
-    //         card.className = "carousel-card";
-    //         const buttonText = type === "design" ? "go to constructor" : "check the model";
-    //         const buttonLink = type === "design" ? "/pageConstructorsSections.html" : "/pageModels.html";
-
-    //         card.innerHTML = `
-    //         <img src="${item.image}" alt="${item.name}">
-    //         <h3>${item.name}</h3>
-    //         <p>${item.price}</p>
-    //         <a href="${buttonLink}" class="btn-to-watch">${buttonText}</a>
-    //     `;
-    //         carousel.appendChild(card);
-    //     });
-    // }
     let currentTab = 'design';
     let currentIndex = 0;
 
@@ -59,86 +42,86 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderCarousel(tab = currentTab) {
         const visibleCount = getVisibleCount();
         const items = data[tab];
-        const slice = items.slice(currentIndex, currentIndex + visibleCount);
-        carousel.innerHTML = "";
 
-        slice.forEach(item => {
+        carouselInner.innerHTML = "";
+
+        // Создаём клоны
+        const cloneStart = items.slice(-visibleCount);
+        const cloneEnd = items.slice(0, visibleCount);
+        const fullList = [...cloneStart, ...items, ...cloneEnd];
+
+        fullList.forEach(item => {
             const card = document.createElement("div");
             card.className = "carousel-card";
-            const buttonText = tab === "design" ? "go to constructor" : "check the model";
-            const buttonLink = tab === "design" ? "/pageConstructorsSections.html" : "/pageModels.html";
+            const btnText = tab === "design" ? "GO TO CONSTRUCTOR" : "CHECK THE MODEL";
+            const btnLink = tab === "design" ? "/pageConstructorsSections.html" : "/pageModels.html";
 
             card.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <h3>${item.name}</h3>
-            <p>${item.price}</p>
-            <a href="${buttonLink}" class="btn-to-watch">${buttonText}</a>
-        `;
-            carousel.appendChild(card);
+                <img src="${item.image}" alt="${item.name}">
+                <h3>${item.name}</h3>
+                <p>${item.price}</p>
+                <a href="${btnLink}" class="btn-to-watch">${btnText}</a>
+            `;
+            carouselInner.appendChild(card);
         });
+
+        currentIndex = visibleCount;
+        updateTransform(false);
     }
 
-    // 
+    function updateTransform(animate = true) {
+        const visibleCount = getVisibleCount();
+        const card = carouselInner.querySelector(".carousel-card");
+        if (!card) return;
+
+        const cardWidth = card.offsetWidth;
+        const gap = 20;
+        const offset = (cardWidth + gap) * currentIndex;
+
+        carouselInner.style.transition = animate ? `transform ${animationSpeed}ms ease` : "none";
+        carouselInner.style.transform = `translateX(-${offset}px)`;
+    }
+
+    function shift(direction) {
+        const visibleCount = getVisibleCount();
+        const itemsLength = data[currentTab].length;
+
+        if (direction === "next") {
+            currentIndex++;
+            updateTransform(true);
+            if (currentIndex === itemsLength + visibleCount) {
+                setTimeout(() => {
+                    carouselInner.style.transition = "none";
+                    currentIndex = visibleCount;
+                    updateTransform(false);
+                }, animationSpeed);
+            }
+        } else {
+            currentIndex--;
+            updateTransform(true);
+            if (currentIndex === 0) {
+                setTimeout(() => {
+                    carouselInner.style.transition = "none";
+                    currentIndex = itemsLength;
+                    updateTransform(false);
+                }, animationSpeed);
+            }
+        }
+    }
+
+    next.addEventListener("click", () => shift("next"));
+    prev.addEventListener("click", () => shift("prev"));
+
+    window.addEventListener("resize", () => renderCarousel());
 
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
-            document.querySelector(".tab-button.active").classList.remove("active");
+            document.querySelector(".tab-button.active")?.classList.remove("active");
             tab.classList.add("active");
             currentTab = tab.dataset.tab;
-            currentIndex = 0;
             renderCarousel();
         });
     });
 
-    prev.addEventListener("click", () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            renderCarousel();
-        }
-    });
-
-    next.addEventListener("click", () => {
-        const maxIndex = data[currentTab].length - getVisibleCount();
-        if (currentIndex < maxIndex) {
-            currentIndex++;
-            renderCarousel();
-        }
-    });
-
-    window.addEventListener("resize", () => {
-        currentIndex = 0;
-        renderCarousel();
-    });
-
-    // Start with 'design' tab
-    renderCarousel("design");
-
-
-    let startX = 0;
-    let isDragging = false;
-
-    carousel.addEventListener("touchstart", e => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-    }, { passive: true });
-
-    carousel.addEventListener("touchmove", e => {
-        if (!isDragging) return;
-        const deltaX = e.touches[0].clientX - startX;
-
-        if (deltaX > 50 && currentIndex > 0) {
-            currentIndex--;
-            renderCarousel();
-            isDragging = false;
-        } else if (deltaX < -50 && currentIndex < data[currentTab].length - 1) {
-            currentIndex++;
-            renderCarousel();
-            isDragging = false;
-        }
-    }, { passive: true });
-
-    carousel.addEventListener("touchend", () => {
-        isDragging = false;
-    });
-
+    renderCarousel();
 });

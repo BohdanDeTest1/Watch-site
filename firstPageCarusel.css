@@ -31,13 +31,14 @@
 
 .carousel {
     display: flex;
-    gap: 0;
+    gap: 20px;
     /* было 20px */
-    overflow: hidden;
     scroll-behavior: smooth;
     justify-content: center;
-    margin: -66px 10px -74px 10px;
     padding: 0 10px 0 10px;
+    overflow: hidden;
+    position: relative;
+    padding: 0 10px;
 }
 
 /*.carousel-card {
@@ -52,7 +53,6 @@
 } */
 .carousel-card {
     flex: 0 0 100%;
-    min-width: 220px;
     max-width: 100%;
     background: #e8ded0b8;
     padding: 12px;
@@ -60,17 +60,19 @@
     text-align: center;
     font-weight: 300;
     color: rgb(85, 85, 85);
-    transform: scale(0.7);
-    transition: transform 0.3s ease;
-    transform-origin: center center;
+    transition: opacity 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
+/* 💻 ДЛЯ ДЕСКТОПА */
 @media (min-width: 768px) {
     .carousel-card {
-        flex: 0 0 25%;
-        max-width: 25%;
+        flex: 0 0 240px;
+        max-width: 240px;
     }
 }
+
 
 
 .carousel-card img {
@@ -124,11 +126,36 @@
     .btn-to-watch {
         background-color: #333 !important;
         color: #fff !important;
-        padding: 18px 61px !important;
-        font-size: 15px !important;
         border-radius: 4px !important;
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: 400 !important;
     }
+}
+
+
+.carousel-slide-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+        transform var(--animation-speed, 500ms) cubic-bezier(0.25, 1, 0.5, 1),
+        opacity var(--animation-speed, 500ms) ease-in-out;
+}
+
+.carousel-slide-exit {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.carousel-slide-exit-active {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all var(--animation-speed, 500ms) cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform var(--animation-speed, 500ms) cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+    gap: 20px;
 }
