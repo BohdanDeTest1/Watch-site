@@ -24,7 +24,7 @@
 
 .carousel-wrapper {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     padding: 10px 10px 10px 10px;
     /* Было 20px со всех сторон */
 }
@@ -63,6 +63,14 @@
     transition: opacity 0.3s ease;
     box-sizing: border-box;
     overflow: hidden;
+}
+
+.carousel-card h3 {
+    margin: 6px 0;
+}
+
+.carousel-card p {
+    margin: 6px 0;
 }
 
 /* 💻 ДЛЯ ДЕСКТОПА */
@@ -158,4 +166,132 @@
     transition: transform var(--animation-speed, 500ms) cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
     gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .carousel-wrapper {
+        background: none;
+        max-width: calc((253px + 19px) * 4 - 20px);
+        /* 4 карточки по 240px + 3 gap по 20px */
+        margin: 0 auto;
+    }
+
+    .carousel {
+        justify-content: flex-start;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-arrow {
+        font-size: 0;
+        /* скрываем текст */
+        width: 30px;
+        height: 50px;
+        border: 1px solid #333;
+        background: transparent;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        padding: 0;
+    }
+
+    .carousel-arrow svg path {
+        stroke: #333;
+        transition: stroke 0.3s ease;
+    }
+
+    .carousel-arrow:hover {
+        background-color: #333;
+    }
+
+    .carousel-arrow:hover svg path {
+        stroke: #fff;
+    }
+
+    #prev {
+        left: -30px;
+    }
+
+    #next {
+        right: -30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .carousel-arrow {
+        font-size: 0;
+        width: 35px;
+        height: 60px;
+        border: 1px solid #333;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        position: absolute;
+        top: 40%;
+        transform: translate(0%, -50%);
+        ;
+    }
+
+    .carousel-arrow svg path {
+        stroke: #333;
+        transition: stroke 0.3s ease;
+    }
+
+    .carousel-arrow:hover {
+        background-color: transparent;
+    }
+
+    .carousel-arrow:hover svg path {
+        stroke: #333;
+    }
+
+    #prev {
+        left: 20px;
+    }
+
+    #next {
+        right: 20px;
+    }
+
+    .carousel-card {
+        font-size: 20px;
+    }
+
+    .carousel-card p {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+    .carousel-card {
+        flex: 0 0 180px;
+        max-width: 180px;
+    }
+
+    .carousel-wrapper {
+        max-width: calc((191px + 19px) * 4 - 17px);
+        /* 4 карточки с gap */
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+    .btn-to-watch {
+        padding: 8px 39px;
+        font-size: 8px;
+    }
+
+    .carousel-card {
+        font-size: 13px;
+    }
+
+    .carousel-card p {
+        font-size: 16px;
+    }
 }

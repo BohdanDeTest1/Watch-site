@@ -7,18 +7,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const data = {
         design: [
-            { image: "first_page_switcher/model-0-aquanaut.png", name: "Model Aquanaut", price: "$99" },
-            { image: "first_page_switcher/model-1-classic.png", name: "Model Classic", price: "$100" },
-            { image: "first_page_switcher/model-2-Datejust.png", name: "Model Datejust", price: "$110" },
-            { image: "first_page_switcher/model-3-daytona.png", name: "Model Daytona", price: "$120" },
-            { image: "first_page_switcher/model-4-Nautilus.png", name: "Model Nautilus", price: "$130" },
-            { image: "first_page_switcher/model-14-nautilus-sport.png", name: "Model Nautilus Sport", price: "$135" },
-            { image: "first_page_switcher/model-5-royal.png", name: "Model Royal Oak", price: "$140" },
-            { image: "first_page_switcher/model-6.png", name: "Model PRX", price: "$150" },
-            { image: "first_page_switcher/model-9-skx007.png", name: "Model SKX007", price: "$160" },
-            { image: "first_page_switcher/model-12.png", name: "Model Speedmaster", price: "$180" },
-            { image: "first_page_switcher/model-11.png", name: "Model Seamaster", price: "$190" },
-            { image: "first_page_switcher/model-7-santos.png", name: "Model Santos", price: "$200" }
+            { image: "first_page_switcher/model-0-aquanaut.png", name: "Seiko Aquanaut", price: "$99" },
+            { image: "first_page_switcher/model-1-classic.png", name: "Seiko Classic", price: "$100" },
+            { image: "first_page_switcher/model-1-2-GrandSeikoGMT.png", name: "Grand Seiko GMT", price: "$190" },
+            { image: "first_page_switcher/model-2-Datejust.png", name: "Seiko Datejust", price: "$110" },
+            { image: "first_page_switcher/model-5-royal.png", name: "Seiko Royal Oak", price: "$140" },
+            { image: "first_page_switcher/model-3-daytona.png", name: "Seiko Daytona", price: "$120" },
+            { image: "first_page_switcher/model-4-Nautilus.png", name: "Seiko Nautilus", price: "$130" },
+            { image: "first_page_switcher/model-11.png", name: "Seiko Seamaster", price: "$190" },
+            { image: "first_page_switcher/model-14-nautilus-sport.png", name: "Seiko Nautilus Sport", price: "$135" },
+            { image: "first_page_switcher/model-1-1-GrandSeiko.png", name: "Seiko Grand Seiko", price: "$190" },
+            { image: "first_page_switcher/model-6.png", name: "Seiko PRX", price: "$150" },
+            { image: "first_page_switcher/model-9-skx007.png", name: "Seiko SKX007", price: "$160" },
+            { image: "first_page_switcher/model-12.png", name: "Seiko Speedmaster", price: "$180" },
+            { image: "first_page_switcher/model-7-santos.png", name: "Seiko Santos", price: "$200" }
         ],
         ready: [
             { image: "first_page_switcher/model-4-Nautilus.png", name: "Model Nautilus", price: "$130" },
@@ -124,4 +126,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     renderCarousel();
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carouselInner.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    carouselInner.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        const threshold = 50; // Минимальное расстояние для свайпа
+        const swipeDistance = touchStartX - touchEndX;
+
+        if (Math.abs(swipeDistance) > threshold) {
+            if (swipeDistance > 0) {
+                shift("next");
+            } else {
+                shift("prev");
+            }
+        }
+    }
+
 });
