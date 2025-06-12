@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let currentTab = 'design';
     let currentIndex = 0;
+    let lastOffset = null; // глобально, рядом с currentIndex
 
     function getVisibleCount() {
         return window.innerWidth < 768 ? 1 : 4;
@@ -71,6 +72,19 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTransform(false);
     }
 
+    // function updateTransform(animate = true) {
+    //     const visibleCount = getVisibleCount();
+    //     const card = carouselInner.querySelector(".carousel-card");
+    //     if (!card) return;
+
+    //     const cardWidth = card.offsetWidth;
+    //     const gap = 20;
+    //     const offset = (cardWidth + gap) * currentIndex;
+
+    //     carouselInner.style.transition = animate ? `transform ${animationSpeed}ms ease` : "none";
+    //     carouselInner.style.transform = `translateX(-${offset}px)`;
+    // }
+
     function updateTransform(animate = true) {
         const visibleCount = getVisibleCount();
         const card = carouselInner.querySelector(".carousel-card");
@@ -80,8 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const gap = 20;
         const offset = (cardWidth + gap) * currentIndex;
 
+        // 💡 Добавляем проверку: не обновлять transform, если он не меняется
+        if (lastOffset === offset) return;
+
         carouselInner.style.transition = animate ? `transform ${animationSpeed}ms ease` : "none";
         carouselInner.style.transform = `translateX(-${offset}px)`;
+
+        lastOffset = offset;
     }
 
     function shift(direction) {
