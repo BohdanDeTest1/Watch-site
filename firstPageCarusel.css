@@ -298,13 +298,15 @@
 
 @media (max-width: 767px) {
     .carousel {
-        gap: 12px;
         padding: 0;
+        /* убираем padding */
+        gap: 0;
+        /* убираем gap */
+        justify-content: flex-start;
     }
 
     .carousel-card {
-        flex: 0 0 calc(100vw - 24px);
-        /* минус gap с двух сторон */
-        max-width: calc(100vw - 24px);
+        flex: 0 0 100vw;
+        max-width: 100vw;
     }
 }
