@@ -176,28 +176,31 @@ document.addEventListener("DOMContentLoaded", function () {
     renderCarousel();
 
     let touchStartX = 0;
-    let touchEndX = 0;
+    let touchStartY = 0;
 
-    carouselInner.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, false);
+    carouselInner.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
 
-    carouselInner.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, false);
+    carouselInner.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
 
-    function handleSwipe() {
-        const threshold = 50; // Минимальное расстояние для свайпа
-        const swipeDistance = touchStartX - touchEndX;
+        const deltaX = touchStartX - touchEndX;
+        const deltaY = Math.abs(touchStartY - touchEndY);
 
-        if (Math.abs(swipeDistance) > threshold) {
-            if (swipeDistance > 0) {
+        const threshold = 60; // минимум 60px по горизонтали
+        const maxY = 40;      // и максимум 40px по вертикали, чтобы не путать со скроллом
+
+        if (Math.abs(deltaX) > threshold && deltaY < maxY) {
+            if (deltaX > 0) {
                 shift("next");
             } else {
                 shift("prev");
             }
         }
-    }
+    }, { passive: true });
+
 
 });
