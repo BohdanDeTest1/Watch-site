@@ -42,13 +42,42 @@ document.addEventListener("DOMContentLoaded", function () {
         return window.innerWidth < 768 ? 1 : 4;
     }
 
+    // function renderCarousel(tab = currentTab) {
+    //     const visibleCount = getVisibleCount();
+    //     const items = data[tab];
+
+    //     carouselInner.innerHTML = "";
+
+    //     // Создаём клоны
+    //     const cloneStart = items.slice(-visibleCount);
+    //     const cloneEnd = items.slice(0, visibleCount);
+    //     const fullList = [...cloneStart, ...items, ...cloneEnd];
+
+    //     fullList.forEach(item => {
+    //         const card = document.createElement("div");
+    //         card.className = "carousel-card";
+    //         const btnText = tab === "design" ? "GO TO CONSTRUCTOR" : "CHECK THE MODEL";
+    //         const btnLink = tab === "design" ? "/pageConstructorsSections.html" : "/pageModels.html";
+
+    //         card.innerHTML = `
+    //             <img src="${item.image}" alt="${item.name}">
+    //             <h3>${item.name}</h3>
+    //             <p>${item.price}</p>
+    //             <a href="${btnLink}" class="btn-to-watch">${btnText}</a>
+    //         `;
+    //         carouselInner.appendChild(card);
+    //     });
+
+    //     currentIndex = visibleCount;
+    //     updateTransform(false);
+    // }
+
     function renderCarousel(tab = currentTab) {
         const visibleCount = getVisibleCount();
         const items = data[tab];
 
         carouselInner.innerHTML = "";
 
-        // Создаём клоны
         const cloneStart = items.slice(-visibleCount);
         const cloneEnd = items.slice(0, visibleCount);
         const fullList = [...cloneStart, ...items, ...cloneEnd];
@@ -60,16 +89,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const btnLink = tab === "design" ? "/pageConstructorsSections.html" : "/pageModels.html";
 
             card.innerHTML = `
-                <img src="${item.image}" alt="${item.name}">
-                <h3>${item.name}</h3>
-                <p>${item.price}</p>
-                <a href="${btnLink}" class="btn-to-watch">${btnText}</a>
-            `;
+            <img src="${item.image}" alt="${item.name}">
+            <h3>${item.name}</h3>
+            <p>${item.price}</p>
+            <a href="${btnLink}" class="btn-to-watch">${btnText}</a>
+        `;
             carouselInner.appendChild(card);
         });
 
         currentIndex = visibleCount;
-        updateTransform(false);
+        requestAnimationFrame(() => updateTransform(false));
     }
 
     // function updateTransform(animate = true) {
@@ -77,24 +106,27 @@ document.addEventListener("DOMContentLoaded", function () {
     //     const card = carouselInner.querySelector(".carousel-card");
     //     if (!card) return;
 
-    //     const cardWidth = card.offsetWidth;
-    //     const gap = 20;
-    //     const offset = (cardWidth + gap) * currentIndex;
+    //     const cardStyle = window.getComputedStyle(carouselInner);
+    //     const gap = parseInt(cardStyle.gap || 20); // получаем gap от .carousel-inner
+
+    //     const cardWidth = card.getBoundingClientRect().width;
+    //     const offset = currentIndex * (cardWidth + gap);
+
+    //     if (lastOffset === offset) return;
 
     //     carouselInner.style.transition = animate ? `transform ${animationSpeed}ms ease` : "none";
     //     carouselInner.style.transform = `translateX(-${offset}px)`;
+
+    //     lastOffset = offset;
     // }
 
     function updateTransform(animate = true) {
-        const visibleCount = getVisibleCount();
-        const card = carouselInner.querySelector(".carousel-card");
-        if (!card) return;
+        const cards = carouselInner.querySelectorAll(".carousel-card");
+        if (!cards[currentIndex]) return;
 
-        const cardWidth = card.offsetWidth;
-        const gap = 20;
-        const offset = (cardWidth + gap) * currentIndex;
+        const card = cards[currentIndex];
+        const offset = card.offsetLeft;
 
-        // 💡 Добавляем проверку: не обновлять transform, если он не меняется
         if (lastOffset === offset) return;
 
         carouselInner.style.transition = animate ? `transform ${animationSpeed}ms ease` : "none";
@@ -103,32 +135,91 @@ document.addEventListener("DOMContentLoaded", function () {
         lastOffset = offset;
     }
 
+
+    let isAnimating = false;
+
+    // function shift(direction) {
+    //     if (isAnimating) return;
+    //     isAnimating = true;
+
+    //     const visibleCount = getVisibleCount();
+    //     const itemsLength = data[currentTab].length;
+
+    //     if (direction === "next") {
+    //         currentIndex++;
+    //         updateTransform(true);
+    //         if (currentIndex === itemsLength + visibleCount) {
+    //             setTimeout(() => {
+    //                 carouselInner.style.transition = "none";
+    //                 currentIndex = visibleCount;
+    //                 updateTransform(false);
+    //                 isAnimating = false;
+    //             }, animationSpeed);
+    //         } else {
+    //             setTimeout(() => isAnimating = false, animationSpeed);
+    //         }
+    //     } else {
+    //         currentIndex--;
+    //         updateTransform(true);
+    //         if (currentIndex === 0) {
+    //             setTimeout(() => {
+    //                 carouselInner.style.transition = "none";
+    //                 currentIndex = itemsLength;
+    //                 updateTransform(false);
+    //                 isAnimating = false;
+    //             }, animationSpeed);
+    //         } else {
+    //             setTimeout(() => isAnimating = false, animationSpeed);
+    //         }
+    //     }
+    // }
+
     function shift(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
         const visibleCount = getVisibleCount();
         const itemsLength = data[currentTab].length;
 
         if (direction === "next") {
             currentIndex++;
             updateTransform(true);
+
             if (currentIndex === itemsLength + visibleCount) {
+                // Перешли на клон — ждём окончания анимации
                 setTimeout(() => {
                     carouselInner.style.transition = "none";
                     currentIndex = visibleCount;
                     updateTransform(false);
+                    requestAnimationFrame(() => {
+                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
+                    });
                 }, animationSpeed);
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
+
         } else {
             currentIndex--;
             updateTransform(true);
+
             if (currentIndex === 0) {
                 setTimeout(() => {
                     carouselInner.style.transition = "none";
                     currentIndex = itemsLength;
                     updateTransform(false);
+                    requestAnimationFrame(() => {
+                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
+                    });
                 }, animationSpeed);
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
         }
     }
+
 
     next.addEventListener("click", () => shift("next"));
     prev.addEventListener("click", () => shift("prev"));

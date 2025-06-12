@@ -295,3 +295,16 @@
         font-size: 16px;
     }
 }
+
+@media (max-width: 767px) {
+    .carousel {
+        gap: 12px;
+        padding: 0;
+    }
+
+    .carousel-card {
+        flex: 0 0 calc(100vw - 24px);
+        /* минус gap с двух сторон */
+        max-width: calc(100vw - 24px);
+    }
+}
