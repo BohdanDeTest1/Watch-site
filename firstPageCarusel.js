@@ -121,19 +121,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let isAnimating = false;
 
+
     function shift(direction) {
         if (isAnimating) return;
+        isAnimating = true;
 
         const itemsLength = data[currentTab].length;
-        isAnimating = true;
 
         if (direction === "next") {
             currentIndex++;
             updateTransform(true);
 
             if (currentIndex === itemsLength + 1) {
-                // мгновенный сброс в начало
-                carouselInner.addEventListener("transitionend", handleLoopNext, { once: true });
+                // сброс в начало
+                carouselInner.addEventListener("transitionend", () => {
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            carouselInner.style.transition = "none";
+                            currentIndex = 1;
+                            updateTransform(false);
+                            // включаем transition назад
+                            requestAnimationFrame(() => {
+                                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                                isAnimating = false;
+                            });
+                        }, 0);
+                    });
+                }, { once: true });
             } else {
                 setTimeout(() => isAnimating = false, animationSpeed);
             }
@@ -143,33 +157,26 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform(true);
 
             if (currentIndex === 0) {
-                // мгновенный сброс в конец
-                carouselInner.addEventListener("transitionend", handleLoopPrev, { once: true });
+                // сброс в конец
+                carouselInner.addEventListener("transitionend", () => {
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            carouselInner.style.transition = "none";
+                            currentIndex = itemsLength;
+                            updateTransform(false);
+                            requestAnimationFrame(() => {
+                                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                                isAnimating = false;
+                            });
+                        }, 0);
+                    });
+                }, { once: true });
             } else {
                 setTimeout(() => isAnimating = false, animationSpeed);
             }
         }
-
-        function handleLoopNext() {
-            carouselInner.style.transition = "none";
-            currentIndex = 1;
-            updateTransform(false);
-            requestAnimationFrame(() => {
-                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                isAnimating = false;
-            });
-        }
-
-        function handleLoopPrev() {
-            carouselInner.style.transition = "none";
-            currentIndex = itemsLength;
-            updateTransform(false);
-            requestAnimationFrame(() => {
-                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                isAnimating = false;
-            });
-        }
     }
+
 
 
     next.addEventListener("click", () => shift("next"));
@@ -215,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const touchEndX = e.changedTouches[0].clientX;
         const deltaX = touchStartX - touchEndX;
 
-        const threshold = 50;
+        const threshold = 10;
         if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0) {
                 shift("next");
