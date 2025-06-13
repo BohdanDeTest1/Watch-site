@@ -122,31 +122,52 @@ document.addEventListener("DOMContentLoaded", function () {
     let isAnimating = false;
 
 
-
     function shift(direction) {
         if (isAnimating) return;
         isAnimating = true;
 
+        const visibleCount = getVisibleCount();
+        const items = data[currentTab];
         const cards = carouselInner.querySelectorAll(".carousel-card");
-        const itemsLength = cards.length;
 
         if (direction === "next") {
             currentIndex++;
-            if (currentIndex >= itemsLength) {
-                currentIndex = 0;
+            updateTransform(true);
+
+            if (currentIndex === items.length + 1) {
+                carouselInner.addEventListener("transitionend", () => {
+                    carouselInner.style.transition = "none";
+                    currentIndex = 1;
+                    updateTransform(false);
+                    requestAnimationFrame(() => {
+                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
+                    });
+                }, { once: true });
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
+
         } else {
             currentIndex--;
-            if (currentIndex < 0) {
-                currentIndex = itemsLength - 1;
+            updateTransform(true);
+
+            if (currentIndex === 0) {
+                carouselInner.addEventListener("transitionend", () => {
+                    carouselInner.style.transition = "none";
+                    currentIndex = items.length;
+                    updateTransform(false);
+                    requestAnimationFrame(() => {
+                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
+                    });
+                }, { once: true });
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
         }
-
-        updateTransform(true);
-        setTimeout(() => {
-            isAnimating = false;
-        }, animationSpeed);
     }
+
 
 
 
