@@ -145,15 +145,15 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform(true);
 
             if (currentIndex === 0) {
-                // перешли на клон последнего
-                setTimeout(() => {
-                    carouselInner.style.transition = "none";
-                    currentIndex = itemsLength;
-                    updateTransform(false);
-                    requestAnimationFrame(() => {
-                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                    });
-                }, animationSpeed);
+                // мгновенно переключаем на реальный последний слайд
+                carouselInner.style.transition = "none";
+                currentIndex = itemsLength;
+                updateTransform(false);
+
+                // включаем transition обратно (в следующем кадре)
+                requestAnimationFrame(() => {
+                    carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                });
             }
         }
     }
