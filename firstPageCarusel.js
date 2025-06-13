@@ -119,10 +119,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
     let isAnimating = false;
 
     function shift(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
         const itemsLength = data[currentTab].length;
 
         if (direction === "next") {
@@ -130,35 +132,38 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform(true);
 
             if (currentIndex === itemsLength + 1) {
-                // перешли на клон первого
                 setTimeout(() => {
                     carouselInner.style.transition = "none";
                     currentIndex = 1;
                     updateTransform(false);
                     requestAnimationFrame(() => {
                         carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
                     });
                 }, animationSpeed);
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
+
         } else {
             currentIndex--;
             updateTransform(true);
 
             if (currentIndex === 0) {
-                // мгновенно переключаем на реальный последний слайд
-                carouselInner.style.transition = "none";
-                currentIndex = itemsLength;
-                updateTransform(false);
-
-                // включаем transition обратно (в следующем кадре)
-                requestAnimationFrame(() => {
-                    carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                });
+                setTimeout(() => {
+                    carouselInner.style.transition = "none";
+                    currentIndex = itemsLength;
+                    updateTransform(false);
+                    requestAnimationFrame(() => {
+                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                        isAnimating = false;
+                    });
+                }, animationSpeed);
+            } else {
+                setTimeout(() => isAnimating = false, animationSpeed);
             }
         }
     }
-
-
 
     next.addEventListener("click", () => shift("next"));
     prev.addEventListener("click", () => shift("prev"));
@@ -225,13 +230,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }, { passive: false }); // ⚠️ очень важно: passive: false — иначе preventDefault не сработает!
 
     carouselInner.addEventListener("touchend", (e) => {
-        if (!touchMoved) return;
+        if (isAnimating) return;
 
         const touchEndX = e.changedTouches[0].clientX;
         const deltaX = touchStartX - touchEndX;
 
         const threshold = 50;
-
         if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0) {
                 shift("next");
@@ -240,6 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
+
 
 
 });
