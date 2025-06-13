@@ -122,60 +122,32 @@ document.addEventListener("DOMContentLoaded", function () {
     let isAnimating = false;
 
 
+
     function shift(direction) {
         if (isAnimating) return;
         isAnimating = true;
 
-        const itemsLength = data[currentTab].length;
+        const cards = carouselInner.querySelectorAll(".carousel-card");
+        const itemsLength = cards.length;
 
         if (direction === "next") {
             currentIndex++;
-            updateTransform(true);
-
-            if (currentIndex === itemsLength + 1) {
-                // сброс в начало
-                carouselInner.addEventListener("transitionend", () => {
-                    requestAnimationFrame(() => {
-                        setTimeout(() => {
-                            carouselInner.style.transition = "none";
-                            currentIndex = 1;
-                            updateTransform(false);
-                            // включаем transition назад
-                            requestAnimationFrame(() => {
-                                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                                isAnimating = false;
-                            });
-                        }, 0);
-                    });
-                }, { once: true });
-            } else {
-                setTimeout(() => isAnimating = false, animationSpeed);
+            if (currentIndex >= itemsLength) {
+                currentIndex = 0;
             }
-
         } else {
             currentIndex--;
-            updateTransform(true);
-
-            if (currentIndex === 0) {
-                // сброс в конец
-                carouselInner.addEventListener("transitionend", () => {
-                    requestAnimationFrame(() => {
-                        setTimeout(() => {
-                            carouselInner.style.transition = "none";
-                            currentIndex = itemsLength;
-                            updateTransform(false);
-                            requestAnimationFrame(() => {
-                                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                                isAnimating = false;
-                            });
-                        }, 0);
-                    });
-                }, { once: true });
-            } else {
-                setTimeout(() => isAnimating = false, animationSpeed);
+            if (currentIndex < 0) {
+                currentIndex = itemsLength - 1;
             }
         }
+
+        updateTransform(true);
+        setTimeout(() => {
+            isAnimating = false;
+        }, animationSpeed);
     }
+
 
 
 
