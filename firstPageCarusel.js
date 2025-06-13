@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentTab = 'design';
     let currentIndex = 0;
     let lastOffset = null; // глобально, рядом с currentIndex
+    let lastWidth = window.innerWidth;
 
     function getVisibleCount() {
         return window.innerWidth < 768 ? 1 : 4;
@@ -162,7 +163,13 @@ document.addEventListener("DOMContentLoaded", function () {
     next.addEventListener("click", () => shift("next"));
     prev.addEventListener("click", () => shift("prev"));
 
-    window.addEventListener("resize", () => renderCarousel());
+    /*  window.addEventListener("resize", () => {
+     const currentWidth = window.innerWidth;
+     if (Math.abs(currentWidth - lastWidth) > 10) {
+       lastWidth = currentWidth;
+       renderCarousel();
+     }
+   });*/
 
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
