@@ -163,13 +163,6 @@ document.addEventListener("DOMContentLoaded", function () {
     next.addEventListener("click", () => shift("next"));
     prev.addEventListener("click", () => shift("prev"));
 
-    /*  window.addEventListener("resize", () => {
-     const currentWidth = window.innerWidth;
-     if (Math.abs(currentWidth - lastWidth) > 10) {
-       lastWidth = currentWidth;
-       renderCarousel();
-     }
-   });*/
 
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
@@ -182,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     renderCarousel();
 
+    /*
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -208,6 +202,44 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }, { passive: true });
+*/
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchMoved = false;
+
+    carouselInner.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+    }, { passive: true });
+
+    carouselInner.addEventListener("touchmove", (e) => {
+        const deltaX = e.touches[0].clientX - touchStartX;
+        const deltaY = e.touches[0].clientY - touchStartY;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Горизонтальный свайп → блокируем скролл страницы
+            e.preventDefault();
+            touchMoved = true;
+        }
+    }, { passive: false }); // ⚠️ очень важно: passive: false — иначе preventDefault не сработает!
+
+    carouselInner.addEventListener("touchend", (e) => {
+        if (!touchMoved) return;
+
+        const touchEndX = e.changedTouches[0].clientX;
+        const deltaX = touchStartX - touchEndX;
+
+        const threshold = 50;
+
+        if (Math.abs(deltaX) > threshold) {
+            if (deltaX > 0) {
+                shift("next");
+            } else {
+                shift("prev");
+            }
+        }
+    });
 
 
 });
