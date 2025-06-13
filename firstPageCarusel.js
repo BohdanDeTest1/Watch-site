@@ -123,24 +123,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function shift(direction) {
         if (isAnimating) return;
-        isAnimating = true;
 
         const itemsLength = data[currentTab].length;
+        isAnimating = true;
 
         if (direction === "next") {
             currentIndex++;
             updateTransform(true);
 
             if (currentIndex === itemsLength + 1) {
-                setTimeout(() => {
-                    carouselInner.style.transition = "none";
-                    currentIndex = 1;
-                    updateTransform(false);
-                    requestAnimationFrame(() => {
-                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                        isAnimating = false;
-                    });
-                }, animationSpeed);
+                // мгновенный сброс в начало
+                carouselInner.addEventListener("transitionend", handleLoopNext, { once: true });
             } else {
                 setTimeout(() => isAnimating = false, animationSpeed);
             }
@@ -150,20 +143,34 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform(true);
 
             if (currentIndex === 0) {
-                setTimeout(() => {
-                    carouselInner.style.transition = "none";
-                    currentIndex = itemsLength;
-                    updateTransform(false);
-                    requestAnimationFrame(() => {
-                        carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                        isAnimating = false;
-                    });
-                }, animationSpeed);
+                // мгновенный сброс в конец
+                carouselInner.addEventListener("transitionend", handleLoopPrev, { once: true });
             } else {
                 setTimeout(() => isAnimating = false, animationSpeed);
             }
         }
+
+        function handleLoopNext() {
+            carouselInner.style.transition = "none";
+            currentIndex = 1;
+            updateTransform(false);
+            requestAnimationFrame(() => {
+                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                isAnimating = false;
+            });
+        }
+
+        function handleLoopPrev() {
+            carouselInner.style.transition = "none";
+            currentIndex = itemsLength;
+            updateTransform(false);
+            requestAnimationFrame(() => {
+                carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+                isAnimating = false;
+            });
+        }
     }
+
 
     next.addEventListener("click", () => shift("next"));
     prev.addEventListener("click", () => shift("prev"));
@@ -180,34 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     renderCarousel();
 
-    /*
-    let touchStartX = 0;
-    let touchStartY = 0;
 
-    carouselInner.addEventListener("touchstart", (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    carouselInner.addEventListener("touchend", (e) => {
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-
-        const deltaX = touchStartX - touchEndX;
-        const deltaY = Math.abs(touchStartY - touchEndY);
-
-        const threshold = 60; // минимум 60px по горизонтали
-        const maxY = 40;      // и максимум 40px по вертикали, чтобы не путать со скроллом
-
-        if (Math.abs(deltaX) > threshold && deltaY < maxY) {
-            if (deltaX > 0) {
-                shift("next");
-            } else {
-                shift("prev");
-            }
-        }
-    }, { passive: true });
-*/
     let touchStartX = 0;
     let touchStartY = 0;
     let touchMoved = false;
