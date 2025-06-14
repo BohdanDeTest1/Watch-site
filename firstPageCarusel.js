@@ -7,6 +7,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const data = {
         design: [
+            { image: "first_page_switcher/model-1_aquanaut_gold.webp", name: "Seiko Aquanaut 1", price: "$99" },
+            { image: "first_page_switcher/model-1_aquanaut_noir.webp", name: "Seiko Aquanaut 2", price: "$99" },
+            { image: "first_page_switcher/model-1_aquanaut_orange.webp", name: "Seiko Aquanaut3", price: "$99" },
+            { image: "first_page_switcher/model-1_datejust_magenta.webp", name: "Seiko Datejust 1", price: "$110" },
+            { image: "first_page_switcher/model-1_datejust_noir.webp", name: "Seiko Datejust 2", price: "$110" },
+            { image: "first_page_switcher/model-1_datejust_noir1.webp", name: "Seiko Datejust 3", price: "$110" },
+            { image: "first_page_switcher/model-1_datejust_vert.webp", name: "Seiko Datejust 4", price: "$110" },
+            { image: "first_page_switcher/model-1_datejust.webp", name: "Seiko Datejust 5", price: "$110" },
+            { image: "first_page_switcher/model-1_marine_master_noir.webp", name: "Seiko Submariner 1", price: "$130" },
+            { image: "first_page_switcher/model-1_marine_master_sprite.webp", name: "Seiko Submariner 1", price: "$130" },
+            { image: "first_page_switcher/model-1_master_batman.webp", name: "Seiko Submariner 1", price: "$130" },
+            { image: "first_page_switcher/model-1_master_pepsi.webp", name: "Seiko Submariner 1", price: "$130" },
+            { image: "first_page_switcher/model-1_nautilus_bleu_clair.webp", name: "Seiko Nautilus 1", price: "$130" },
+            { image: "first_page_switcher/model-1_nautilus_skeleton_noir.webp", name: "Seiko Nautilus 2", price: "$130" },
+            { image: "first_page_switcher/model-1_royal_oak_chronographe_bleu.webp", name: "Seiko Royal Oak 1", price: "$140" },
+            { image: "first_page_switcher/model-1_royal_oak_noir.webp", name: "Seiko Royal Oak 2", price: "$140" },
+            { image: "first_page_switcher/model-1_santos_blanc.webp", name: "Seiko Santos 1", price: "$200" },
+            { image: "first_page_switcher/model-1_santos_noir.webp", name: "Seiko Santos 2", price: "$200" },
+            { image: "first_page_switcher/model-1_speedmaster.png", name: "Seiko Speedmaster", price: "$180" },
             { image: "first_page_switcher/model-0-aquanaut.png", name: "Seiko Aquanaut", price: "$99" },
             { image: "first_page_switcher/model-1-classic.png", name: "Seiko Classic", price: "$100" },
             { image: "first_page_switcher/model-1-2-GrandSeikoGMT.png", name: "Grand Seiko GMT", price: "$190" },
@@ -20,7 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { image: "first_page_switcher/model-6.png", name: "Seiko PRX", price: "$150" },
             { image: "first_page_switcher/model-9-skx007.png", name: "Seiko SKX007", price: "$160" },
             { image: "first_page_switcher/model-12.png", name: "Seiko Speedmaster", price: "$180" },
-            { image: "first_page_switcher/model-7-santos.png", name: "Seiko Santos", price: "$200" }, { image: "first_page_switcher/model-0-aquanaut.png", name: "Seiko Aquanaut", price: "$99" },
+            { image: "first_page_switcher/model-7-santos.png", name: "Seiko Santos", price: "$200" },
+            { image: "first_page_switcher/model-0-aquanaut.png", name: "Seiko Aquanaut", price: "$99" },
             { image: "first_page_switcher/model-1-classic.png", name: "Seiko Classic", price: "$100" },
             { image: "first_page_switcher/model-1-2-GrandSeikoGMT.png", name: "Grand Seiko GMT", price: "$190" },
             { image: "first_page_switcher/model-2-Datejust.png", name: "Seiko Datejust", price: "$110" },
@@ -122,6 +142,52 @@ document.addEventListener("DOMContentLoaded", function () {
     let isAnimating = false;
 
 
+    // function shift(direction) {
+    //     if (isAnimating) return;
+    //     isAnimating = true;
+
+    //     const visibleCount = getVisibleCount();
+    //     const items = data[currentTab];
+    //     const cards = carouselInner.querySelectorAll(".carousel-card");
+
+    //     if (direction === "next") {
+    //         currentIndex++;
+    //         updateTransform(true);
+
+    //         if (currentIndex === items.length + 1) {
+    //             carouselInner.addEventListener("transitionend", () => {
+    //                 carouselInner.style.transition = "none";
+    //                 currentIndex = 1;
+    //                 updateTransform(false);
+    //                 requestAnimationFrame(() => {
+    //                     carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+    //                     isAnimating = false;
+    //                 });
+    //             }, { once: true });
+    //         } else {
+    //             setTimeout(() => isAnimating = false, animationSpeed);
+    //         }
+
+    //     } else {
+    //         currentIndex--;
+    //         updateTransform(true);
+
+    //         if (currentIndex === 0) {
+    //             carouselInner.addEventListener("transitionend", () => {
+    //                 carouselInner.style.transition = "none";
+    //                 currentIndex = items.length;
+    //                 updateTransform(false);
+    //                 requestAnimationFrame(() => {
+    //                     carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
+    //                     isAnimating = false;
+    //                 });
+    //             }, { once: true });
+    //         } else {
+    //             setTimeout(() => isAnimating = false, animationSpeed);
+    //         }
+    //     }
+    // }
+
     function shift(direction) {
         if (isAnimating) return;
         isAnimating = true;
@@ -134,42 +200,41 @@ document.addEventListener("DOMContentLoaded", function () {
             currentIndex++;
             updateTransform(true);
 
-            if (currentIndex === items.length + 1) {
-                carouselInner.addEventListener("transitionend", () => {
+            if (currentIndex >= items.length + 1) {
+                setTimeout(() => {
                     carouselInner.style.transition = "none";
                     currentIndex = 1;
                     updateTransform(false);
                     requestAnimationFrame(() => {
                         carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                        isAnimating = false;
                     });
-                }, { once: true });
-            } else {
-                setTimeout(() => isAnimating = false, animationSpeed);
+                }, animationSpeed);
             }
 
         } else {
             currentIndex--;
             updateTransform(true);
 
-            if (currentIndex === 0) {
-                carouselInner.addEventListener("transitionend", () => {
+            if (currentIndex <= 0) {
+                setTimeout(() => {
                     carouselInner.style.transition = "none";
                     currentIndex = items.length;
                     updateTransform(false);
                     requestAnimationFrame(() => {
                         carouselInner.style.transition = `transform ${animationSpeed}ms ease`;
-                        isAnimating = false;
                     });
-                }, { once: true });
-            } else {
-                setTimeout(() => isAnimating = false, animationSpeed);
+                }, animationSpeed);
             }
         }
+
+        setTimeout(() => {
+            isAnimating = false;
+        }, animationSpeed + 20);
     }
 
-
-
+    window.addEventListener("resize", () => {
+        updateTransform(false);
+    });
 
 
     next.addEventListener("click", () => shift("next"));
