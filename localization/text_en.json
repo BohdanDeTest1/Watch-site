@@ -20,6 +20,62 @@
         "footer_cookie": "ОБО МНЕ",
         "footer_cookie_settings": "ОТЗЫВЫ",
         "footer_copyright": "SURF WATCH",
-        "footer_button": "НАПИСАТЬ"
+        "footer_button": "НАПИСАТЬ",
+        "footer_question_1": "1остались вопросы?",
+        "footer_question_2": "1буду рад ответить"
+    },
+    "index": {
+        "first_block": {
+            "hero-title": "What will be your next watch?1",
+            "hero-subtitle": "Dive into the world of customization and bespoke design.1",
+            "hero-buttons-1": "Configurator1",
+            "hero-buttons-2": "MODELS1"
+        },
+        "concept-block": {
+            "h2": "1From concept to completion1",
+            "p1": "1Our commitment to excellence is reflected in every watch we create.1",
+            "p2": "1Each piece is carefully selected by and for you, to meet your highest expectations1",
+            "p3": "1From the selection of the dial to the choice of the bracelet, we ensure that each watch is a masterpiece of precision and elegance.",
+            "button-1": "1Create your concept",
+            "button-2": "1Check finished MODELS"
+        },
+        "how-it-works": {
+            "h2": "1КАК ЭТО РАБОТАЕТ?",
+            "p1": "1Выбираем дизайн",
+            "p2": "1Согласуем заказ",
+            "p3": "1Вы вносите предоплату",
+            "p4": "1Изготовление часов (2–3 недели)",
+            "p5": "1Согласовываем готовый результат и Вы вносите остаток",
+            "p6": "1Отправка часов Вам"
+        },
+        "carousel-tabs": {
+            "tab-1": "доступные для дизайна",
+            "tab-2": "готовые модели"
+        },
+        "carousel-buttons": {
+            "button-1": "1Create your concept",
+            "button-2": "1Check finished MODELS"
+        },
+        "delivery": {
+            "p1": "1Сроки изготовления - 2-3 недели",
+            "p2": "1Доставка по вашему городу",
+            "p3": "1Сроки обговариваются во время формирования заказа*"
+        },
+        "review": {
+            "card-1": "1«Получил свои часы – просто вау! Настоящее произведение искусства!»",
+            "card-2": "1«Очень довольна качеством! Часы смотрятся дорого и элегантно!»",
+            "card-3": "1«Это лучший подарок, который я себе сделал! Спасибо вам!»",
+            "card-4": "1«Невероятно! Часы выглядят даже лучше, чем на фото!»"
+        },
+        "faq": {
+            "q1": "1Стекла сапфировые?",
+            "a1": "1Да, используются сапфировые стекла высокой прозрачности и прочности.",
+            "q2": "1В часах можно купаться?",
+            "a2": "1Можно, если указана водонепроницаемость 100 м и выше.",
+            "q3": "1А ты используешь оригинальные механизмы?",
+            "a3": "1Да, я использую Японские калибры серии Seiko NH35, NH36, NH34, NH38, NH70",
+            "q4": "test?",
+            "a4": "1test"
+        }
     }
 }
