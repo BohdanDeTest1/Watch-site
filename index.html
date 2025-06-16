@@ -444,6 +444,47 @@
 
     </script>
 
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const btn = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+
+                function toggleItem() {
+                    const isActive = item.classList.contains('active');
+
+                    // Закрываем все
+                    document.querySelectorAll('.faq-item').forEach(el => {
+                        el.classList.remove('active');
+                        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                        el.querySelector('.faq-question .icon').textContent = '+';
+                    });
+
+                    // Если этот не был активен — открываем
+                    if (!isActive) {
+                        item.classList.add('active');
+                        btn.setAttribute('aria-expanded', 'true');
+                        btn.querySelector('.icon').textContent = '×';
+                    }
+                }
+
+                // Клик по вопросу
+                btn.addEventListener('click', toggleItem);
+
+                // Клик по ответу — закрывает текущий
+                answer.addEventListener('click', () => {
+                    item.classList.remove('active');
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.querySelector('.icon').textContent = '+';
+                });
+            });
+        });
+
+
+
+
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 
