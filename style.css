@@ -373,6 +373,9 @@ img {
     font-weight: 500;
     cursor: pointer;
     text-align: left;
+    color: inherit;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 
 }
 
@@ -394,14 +397,14 @@ img {
 }
 
 .faq-item.active .faq-question .icon {
-    transform: rotate(45deg);
+    transform: rotate(90deg);
     /* превращаем + в × */
 }
 
 
 .faq-item.active .faq-answer {
     max-height: none;
-    */
+
     /* Выбери достаточно большой лимит */
     opacity: 1;
     padding: 20px 0;
