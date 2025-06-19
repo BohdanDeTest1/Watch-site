@@ -78,24 +78,42 @@ function stopAutoSlide() {
     clearInterval(autoSlideInterval);
 }
 
-// FAQ переключение
-// // FAQ переключение при клике
 // document.querySelectorAll('.faq-question').forEach(btn => {
 //     btn.addEventListener('click', () => {
 //         const item = btn.closest('.faq-item');
-//         const allItems = document.querySelectorAll('.faq-item');
+//         const answer = item.querySelector('.faq-answer');
+//         const icon = btn.querySelector('.icon');
+//         const isActive = item.classList.contains('active');
 
-//         allItems.forEach(el => {
-//             if (el !== item) {
-//                 el.classList.remove('active');
-//                 el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-//                 el.querySelector('.faq-question .icon').textContent = '+';
-//             }
+//         // Закрыть всё
+//         document.querySelectorAll('.faq-item').forEach(el => {
+//             el.classList.remove('active');
+//             el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+//             el.querySelector('.faq-question .icon').textContent = '+';
+//             el.querySelector('.faq-answer').style.maxHeight = null;
 //         });
 
-//         const isExpanded = item.classList.toggle('active');
-//         btn.setAttribute('aria-expanded', isExpanded);
-//         btn.querySelector('.icon').textContent = isExpanded ? '−' : '+';
+//         // Если не был активен — открыть
+//         if (!isActive) {
+//             item.classList.add('active');
+//             btn.setAttribute('aria-expanded', 'true');
+//             icon.textContent = '×';
+
+//             // 💡 Выставляем max-height: none временно
+//             answer.style.maxHeight = 'none';
+
+//             // Измеряем после отрисовки
+//             requestAnimationFrame(() => {
+//                 // Сбрасываем обратно, чтобы сработала анимация
+//                 answer.style.maxHeight = '0px';
+
+//                 // И в следующем кадре ставим нужную высоту
+//                 requestAnimationFrame(() => {
+//                     const fullHeight = answer.scrollHeight;
+//                     answer.style.maxHeight = fullHeight + 'px';
+//                 });
+//             });
+//         }
 //     });
 // });
 
@@ -106,28 +124,27 @@ document.querySelectorAll('.faq-question').forEach(btn => {
         const icon = btn.querySelector('.icon');
         const isActive = item.classList.contains('active');
 
-        // Закрываем все открытые
+        // Закрыть всё
         document.querySelectorAll('.faq-item').forEach(el => {
-            if (el !== item) {
-                el.classList.remove('active');
-                el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-                el.querySelector('.faq-question .icon').textContent = '+';
-                el.querySelector('.faq-answer').style.maxHeight = null;
-            }
+            el.classList.remove('active');
+            el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            el.querySelector('.faq-question .icon').textContent = '+';
+            el.querySelector('.faq-answer').style.maxHeight = null;
         });
 
-        // Переключаем текущий
-        item.classList.toggle('active');
-        btn.setAttribute('aria-expanded', !isActive);
-        icon.textContent = !isActive ? '−' : '+';
-
+        // Если не был активен — открыть
         if (!isActive) {
-            answer.style.maxHeight = answer.scrollHeight + 'px';
-        } else {
-            answer.style.maxHeight = null;
+            item.classList.add('active');
+            btn.setAttribute('aria-expanded', 'true');
+            icon.textContent = '×';
+
+            // 👇 Высчитать scrollHeight и задать max-height
+            const scrollHeight = answer.scrollHeight;
+            answer.style.maxHeight = scrollHeight + 'px';
         }
     });
 });
+
 
 
 // Инициализация

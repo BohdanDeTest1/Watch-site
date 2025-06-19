@@ -48,6 +48,16 @@
         </div>
     </section>
     <!-- Второй баннер -->
+    <button onclick="resetCookiesDev()" style="position:fixed;top:10px;right:10px;z-index:9999;">Reset Cookie
+        Popup</button>
+    <script>
+        function resetCookiesDev() {
+            localStorage.removeItem('cookiesAccepted');
+            sessionStorage.removeItem('cookiesRejected');
+            localStorage.removeItem('cookieSettings');
+            location.reload();
+        }
+    </script>
     <section class="concept-block">
 
         <div class="concept-text">
@@ -379,8 +389,8 @@
     <!-- Часто задаваемые вопросы -->
     <section class="faq">
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false" data-i18n="index.faq.q1">
-                Стекла сапфировые?
+            <button class="faq-question" aria-expanded="false">
+                <span data-i18n="index.faq.q1">Стекла сапфировые?</span>
                 <span class="icon">+</span>
             </button>
             <div class="faq-answer">
@@ -388,8 +398,8 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false" data-i18n="index.faq.q2">
-                В часах можно купаться?
+            <button class="faq-question" aria-expanded="false">
+                <span data-i18n="index.faq.q2">В часах можно купаться?</span>
                 <span class="icon">+</span>
             </button>
             <div class="faq-answer">
@@ -397,8 +407,8 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false" data-i18n="index.faq.q3">
-                А ты используешь оригинальные механизмы?
+            <button class="faq-question" aria-expanded="false">
+                <span data-i18n="index.faq.q3">А ты используешь оригинальные механизмы?</span>
                 <span class="icon">+</span>
             </button>
             <div class="faq-answer">
@@ -407,8 +417,8 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false" data-i18n="index.faq.q4">
-                test?
+            <button class="faq-question" aria-expanded="false">
+                <span data-i18n="index.faq.q4">test?</span>
                 <span class="icon">+</span>
             </button>
             <div class="faq-answer">
@@ -455,45 +465,145 @@
     </script>
 
     <script>
+        // window.addEventListener("DOMContentLoaded", () => {
+        //     document.querySelectorAll('.faq-item').forEach(item => {
+        //         const btn = item.querySelector('.faq-question');
+        //         const answer = item.querySelector('.faq-answer');
+
+        //         function toggleItem() {
+        //             const isActive = item.classList.contains('active');
+
+        //             // Закрываем все
+        //             document.querySelectorAll('.faq-item').forEach(el => {
+        //                 el.classList.remove('active');
+        //                 el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        //                 el.querySelector('.faq-question .icon').textContent = '+';
+        //             });
+
+        //             //Если этот не был активен — открываем
+        //             if (!isActive) {
+        //                 item.classList.add('active');
+        //                 btn.setAttribute('aria-expanded', 'true');
+        //                 // btn.querySelector('.icon').textContent = '×';
+        //             }
+        //             if (!isActive) {
+        //                 item.classList.add('active');
+        //                 btn.setAttribute('aria-expanded', 'true');
+
+        //                 // Автоматически высчитать высоту
+        //                 const scrollHeight = answer.scrollHeight;
+        //                 answer.style.maxHeight = scrollHeight + 'px';
+        //             } else {
+        //                 item.classList.remove('active');
+        //                 btn.setAttribute('aria-expanded', 'false');
+        //                 answer.style.maxHeight = null;
+        //             }
+        //         }
+
+        //         // Клик по вопросу
+        //         btn.addEventListener('click', toggleItem);
+
+        //         // Клик по ответу — закрывает текущий
+        //         answer.addEventListener('click', () => {
+        //             item.classList.remove('active');
+        //             btn.setAttribute('aria-expanded', 'false');
+        //             // btn.querySelector('.icon').textContent = '+';
+        //         });
+        //     });
+        // });
+
+    </script>
+
+    <script>
+        // window.addEventListener("DOMContentLoaded", () => {
+        //     document.querySelectorAll('.faq-item').forEach(item => {
+        //         const btn = item.querySelector('.faq-question');
+        //         const answer = item.querySelector('.faq-answer');
+
+        //         function toggleItem() {
+        //             const isActive = item.classList.contains('active');
+
+        //             // Закрываем все
+        //             document.querySelectorAll('.faq-item').forEach(el => {
+        //                 el.classList.remove('active');
+        //                 el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        //                 el.querySelector('.faq-answer').style.maxHeight = null; // 🛠️ важный момент
+        //             });
+
+        //             // Если этот не был активен — открываем
+        //             // if (!isActive) {
+        //             //     item.classList.add('active');
+        //             //     btn.setAttribute('aria-expanded', 'true');
+
+        //             //     // Автоматически высчитать высоту
+        //             //     const scrollHeight = answer.scrollHeight;
+        //             //     answer.style.maxHeight = scrollHeight + 'px';
+        //             // }
+        //             if (!isActive) {
+        //                 item.classList.add('active');
+        //                 btn.setAttribute('aria-expanded', 'true');
+        //                 btn.querySelector('.icon').textContent = '×';
+
+        //                 // ➕ Правильный расчёт scrollHeight
+        //                 answer.style.maxHeight = 'none'; // позволяем блоку раскрыться
+        //                 const fullHeight = answer.scrollHeight;
+        //                 answer.style.maxHeight = '0px';  // откатываем
+        //                 // requestAnimationFrame(() => {
+        //                 //     answer.style.maxHeight = fullHeight + 'px';
+        //                 // });
+        //             }
+        //         }
+
+        //         // Клик по вопросу
+        //         btn.addEventListener('click', toggleItem);
+
+        //         // Клик по ответу — закрывает текущий
+        //         answer.addEventListener('click', () => {
+        //             item.classList.remove('active');
+        //             btn.setAttribute('aria-expanded', 'false');
+        //             answer.style.maxHeight = null;
+        //         });
+        //     });
+        // });
         window.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.faq-item').forEach(item => {
                 const btn = item.querySelector('.faq-question');
                 const answer = item.querySelector('.faq-answer');
+                const icon = btn.querySelector('.icon');
 
-                function toggleItem() {
+                btn.addEventListener('click', () => {
                     const isActive = item.classList.contains('active');
 
-                    // Закрываем все
                     document.querySelectorAll('.faq-item').forEach(el => {
+                        const a = el.querySelector('.faq-answer');
+                        a.style.height = '0px';
+                        a.style.opacity = '0';
                         el.classList.remove('active');
-                        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
                         el.querySelector('.faq-question .icon').textContent = '+';
                     });
 
-                    // Если этот не был активен — открываем
                     if (!isActive) {
                         item.classList.add('active');
-                        btn.setAttribute('aria-expanded', 'true');
-                        btn.querySelector('.icon').textContent = '×';
+                        icon.textContent = '×';
+
+                        // 👇 получаем scrollHeight
+                        const scrollHeight = answer.scrollHeight;
+                        answer.style.height = scrollHeight + 'px';
+                        answer.style.opacity = '1';
                     }
-                }
+                });
 
-                // Клик по вопросу
-                btn.addEventListener('click', toggleItem);
-
-                // Клик по ответу — закрывает текущий
                 answer.addEventListener('click', () => {
                     item.classList.remove('active');
-                    btn.setAttribute('aria-expanded', 'false');
-                    btn.querySelector('.icon').textContent = '+';
+                    answer.style.height = '0px';
+                    answer.style.opacity = '0';
+                    icon.textContent = '+';
                 });
             });
         });
 
-
-
-
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 

@@ -395,7 +395,6 @@ img {
 
 .faq-answer {
     max-height: 0;
-    /*  opacity: 0;*/
     overflow: hidden;
     transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
     padding: 0 0;
@@ -411,11 +410,8 @@ img {
 
 
 .faq-item.active .faq-answer {
-    max-height: none;
-
-    /* Выбери достаточно большой лимит */
     opacity: 1;
-    padding: 20px 0;
+    padding: 20px 0 50px 0;
 }
 
 

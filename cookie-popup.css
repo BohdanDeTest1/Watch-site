@@ -15,11 +15,11 @@
 
 /* Окно попапа */
 .cookie-popup {
-    background: white;
+    background: rgb(246 246 246 / 90%);
     color: #333;
     padding: 24px;
     max-width: 700px;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 9999;
     font-family: sans-serif;
@@ -31,7 +31,7 @@
 }
 
 .cookie-popup a {
-    color: #0000EE;
+    color: #00000094;
     text-decoration: underline;
 }
 
@@ -54,5 +54,164 @@
 }
 
 .cookie-buttons button:hover {
-    background: #0000cc;
+    background: #5f5f67;
+}
+
+@media (max-width: 768px) {
+    .cookie-overlay {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .cookie-popup {
+        width: 100%;
+        max-width: none;
+        border-radius: 6px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        background: rgb(246 246 246 / 86%);
+        backdrop-filter: blur(3px);
+    }
+}
+
+@media (min-width: 769px) {
+    .cookie-popup {
+        position: relative;
+        animation: fadeInUp 0.4s ease;
+    }
+}
+
+.cookie-settings {
+    padding-top: 10px;
+}
+
+.cookie-settings h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.cookie-settings label {
+    font-size: 14px;
+    display: block;
+    margin: 6px 0;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0;
+    gap: 10px;
+}
+
+.label {
+    flex: 1;
+    font-size: 15px;
+}
+
+.status {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.status.enabled {
+    color: #000000a6;
+}
+
+.status.disabled {
+    color: #888;
+}
+
+/* Свитч */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #000000a6;
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
+
+/* Индивидуальные стили для кнопок */
+.cookie-buttons .btn-accept {
+    background-color: #000000e3;
+}
+
+.cookie-buttons .btn-reject {
+    background-color: #0a070780;
+    font-size: 12px;
+}
+
+.cookie-buttons .btn-settings {
+    background-color: #0a070780;
+    font-size: 12px;
+}
+
+.cookie-buttons .btn-save {
+    background-color: #000000e3;
+}
+
+/* Ховер-состояния */
+.cookie-buttons .btn-accept:hover {
+    background-color: #545855;
+}
+
+.cookie-buttons .btn-reject:hover {
+    background-color: #545855;
+}
+
+.cookie-buttons .btn-settings:hover {
+    background-color: #545855;
+}
+
+.cookie-buttons .btn-save:hover {
+    background-color: #545855;
+}
+
+/* Мобильная верстка: вертикальные кнопки */
+@media (max-width: 768px) {
+    .cookie-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cookie-buttons button {
+        width: 100%;
+        padding: 12px 0;
+    }
 }

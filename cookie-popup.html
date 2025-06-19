@@ -1,25 +1,56 @@
 <div id="cookie-overlay" class="cookie-overlay">
     <div id="cookie-popup" class="cookie-popup">
-        <p>
-            We use cookies and similar technologies to improve and personalise your user experience,
-            deliver adverts relevant to your interests on third party platforms and analyse our web traffic.
-        </p>
-        <p>
-            By clicking on ‘accept all’, you consent to us using cookies and similar technologies for these reasons and
-            to the sharing of your data with our partners.
-            Alternatively, you can choose which types of cookies you would like to accept or disable by clicking ‘let me
-            choose’ below (you can change your mind at any time).
-        </p>
-        <p>
-            For more information on how we use cookies, please see our
-            <a href="privacyPolicy.html" target="_blank">Privacy Policy</a> and
-            <a href="cookiePolicy.html" target="_blank">Cookie Policy</a>.
-        </p>
-        <div class="cookie-buttons">
-            <button id="accept-cookies">Accept All</button>
-            <button id="reject-cookies">Reject All</button>
+        <div class="cookie-main">
+            <p>
+                We use cookies and similar technologies to improve and personalise your user experience,
+                deliver adverts relevant to your interests on third party platforms and analyse our web traffic.
+            </p>
+            <p>
+                By clicking on ‘accept all’, you consent to us using cookies and similar technologies for these reasons
+                and
+                to the sharing of your data with our partners.
+            </p>
+            <p>
+                For more information on how we use cookies, please see our
+                <a href="privacyPolicy.html" target="_blank">Privacy Policy</a> and
+                <a href="cookiePolicy.html" target="_blank">Cookie Policy</a>.
+            </p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-accept">Accept All</button>
+                <button id="reject-cookies" class="btn-reject">Reject All</button>
+                <button id="open-settings" class="btn-settings">Cookie Settings</button>
+            </div>
+        </div>
+
+        <div class="cookie-settings" style="display:none">
+            <h3>Cookie Preferences</h3>
+
+            <div class="toggle-row">
+                <span class="label">Essential Cookies</span>
+                <span class="status enabled">Always Enabled</span>
+            </div>
+
+            <div class="toggle-row">
+                <span class="label">Analytics Cookies</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-analytics" />
+                    <span class="slider round"></span>
+                </label>
+                <span id="analytics-status" class="status disabled">Disabled</span>
+            </div>
+
+            <div class="toggle-row">
+                <span class="label">Advertising Cookies</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-ads" />
+                    <span class="slider round"></span>
+                </label>
+                <span id="ads-status" class="status disabled">Disabled</span>
+            </div>
+
+            <div class="cookie-buttons">
+                <button id="save-settings" class="btn-save">Save Settings</button>
+            </div>
         </div>
     </div>
-    <script src="header-footer-loader.js"></script>
-    <script src="localization.js"></script>
 </div>
