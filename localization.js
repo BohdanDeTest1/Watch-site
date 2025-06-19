@@ -23,11 +23,31 @@ function getDefaultLanguage() {
     return 'EN';
 }
 
+// function setLanguage(langCode) {
+//     const langLabel = document.querySelector('.lang-text');
+//     if (langLabel) langLabel.textContent = getLangName(langCode);
+
+//     fetch(`localization/text_${langCode.toLowerCase()}.json`)
+//         .then(res => res.json())
+//         .then(data => {
+//             const elements = document.querySelectorAll('[data-i18n]');
+//             elements.forEach(el => {
+//                 const key = el.getAttribute('data-i18n');
+//                 const keys = key.split('.');
+//                 let text = data;
+//                 keys.forEach(k => {
+//                     if (text) text = text[k];
+//                 });
+//                 if (text) el.textContent = text;
+//             });
+//         });
+// }
+
 function setLanguage(langCode) {
     const langLabel = document.querySelector('.lang-text');
     if (langLabel) langLabel.textContent = getLangName(langCode);
 
-    fetch(`localization/text_${langCode.toLowerCase()}.json`)
+    return fetch(`localization/text_${langCode.toLowerCase()}.json`)
         .then(res => res.json())
         .then(data => {
             const elements = document.querySelectorAll('[data-i18n]');
@@ -42,6 +62,7 @@ function setLanguage(langCode) {
             });
         });
 }
+
 
 function initLanguageSelector() {
     const savedLang = sessionStorage.getItem('lang');
@@ -79,12 +100,54 @@ function initLanguageSelector() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initLanguageSelector);
+// document.addEventListener('DOMContentLoaded', initLanguageSelector);
+// document.addEventListener("DOMContentLoaded", () => {
+//     const savedLang = sessionStorage.getItem("selectedLanguage");
+//     if (savedLang) {
+//         applyLocalization(savedLang); // 👈 Применяем язык при загрузке
+//     } else {
+//         detectAndApplyLanguage(); // 👈 Автоопределение по умолчанию (например, польский)
+//     }
+// });
+
+// if (typeof initCarouselTabs === "function") {
+//     initCarouselTabs(); // функция, которая вешает обработчики на tab-button
+// }
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     const savedLang = sessionStorage.getItem("selectedLanguage");
+//     if (savedLang) {
+//         setLanguage(savedLang).then(() => {
+//             if (typeof initCarouselTabs === "function") {
+//                 initCarouselTabs();
+//             }
+//             if (typeof renderCarousel === "function") {
+//                 renderCarousel(); // 👈 добавь это
+//             }
+//         }, 100);
+//     } else {
+//         const lang = getDefaultLanguage();
+//         setLanguage(lang).then(() => {
+//             if (typeof initCarouselTabs === "function") {
+//                 initCarouselTabs();
+//             }
+//             if (typeof renderCarousel === "function") {
+//                 renderCarousel(); // 👈 добавь это
+//             }
+//         }, 100);
+//     }
+// });
 document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = sessionStorage.getItem("selectedLanguage");
-    if (savedLang) {
-        applyLocalization(savedLang); // 👈 Применяем язык при загрузке
-    } else {
-        detectAndApplyLanguage(); // 👈 Автоопределение по умолчанию (например, польский)
-    }
+    const savedLang = sessionStorage.getItem("selectedLanguage") || getDefaultLanguage();
+
+    setLanguage(savedLang).then(() => {
+        // ❗ Ждём пока всё переведётся, и потом запускаем карусель и вкладки
+        if (typeof initCarouselTabs === "function") {
+            initCarouselTabs();
+        }
+        if (typeof renderCarousel === "function") {
+            renderCarousel();  // 👉 здесь нужен вызов, чтобы отрисовать карусель
+        }
+    });
 });
+

@@ -107,7 +107,7 @@
     right: 10px;
 }
 
-.btn-to-watch {
+.watch-button {
     background-color: #333;
     color: #fff;
     padding: 10px 50px;
@@ -121,6 +121,7 @@
     display: inline-block;
     margin-top: 10px;
     border: 1px solid transparent;
+    font-size: clamp(10px, 1.4vw, 14px);
 }
 
 
@@ -131,13 +132,20 @@
 }
 
 @media (max-width: 768px) {
-    .btn-to-watch {
+    .watch-button {
         background-color: #333 !important;
         color: #fff !important;
         border-radius: 4px !important;
         text-transform: uppercase;
         letter-spacing: 1px;
         font-weight: 400 !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .watch-button {
+        padding: 8px 4px;
+        font-size: 14px;
     }
 }
 
