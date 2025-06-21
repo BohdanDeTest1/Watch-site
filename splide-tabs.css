@@ -102,9 +102,11 @@
 
 .watch-button {
     background: #333;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
     color: #fff;
-    padding: 14px 50px;
-    font-size: 12px;
+    padding: 14px 0;
     border-radius: 3px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -112,6 +114,17 @@
     text-decoration: none;
     display: inline-block;
     transition: background 0.3s ease;
+    margin-top: 10px;
+    border: 1px solid transparent;
+    overflow: hidden;
+    /* скрывает выходящий текст */
+    text-overflow: ellipsis;
+    /* добавляет многоточие */
+    white-space: nowrap;
+    /* запрещает перенос строки */
+
+    font-size: clamp(10px, 3vw, 12px);
+    /* масштабируемый текст */
 }
 
 .watch-button:hover {
