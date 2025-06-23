@@ -1,60 +1,81 @@
 <header class="header-desk collapsed">
     <div class="header-content" id="headerToggle">
-        <a href="index.html">
-            <img src="logo/header-logo.png" alt="Logo" class="logo mobile-only" />
-        </a>
+        <div class="mobile-header-layout mobile-only">
+            <div class="mobile-burger" id="burgerBtn">☰</div>
 
-        <nav class="desktop-only">
-            <a href="pageConstructorsSections.html" data-i18n="header.header_constructor">конструктор</a>
-            <a href="pageModel.html" data-i18n="header.header_catalog">каталог</a>
-            <a href="pageAbout.html" data-i18n="header.header_about">обо мне</a>
-            <a href="https://t.me/Tvoi_otzivi_zdes" target="_blank" data-i18n="header.header_review">отзывы</a>
-        </nav>
-        <!-- <div class="language-selector desktop-lang">
-            <div class="language-selector-wrapper">
+            <a href="index.html" class="mobile-logo">
+                <img src="logo/header-logo.png" alt="Logo" class="logo" />
+            </a>
+
+            <div class="language-selector-wrapper lang-header-wrapper mobile-only">
                 <button class="language-toggle" id="langToggleHeader">
                     <img src="logo/icon-lang_1.png" alt="Language Icon" class="lang-icon" />
-                    <span class="lang-label">ENGLISH</span>
+                    <span class="lang-label short">PL</span>
                 </button>
                 <ul class="language-menu" id="langMenuHeader">
-                    <li data-lang="RU">РУССКИЙ</li>
-                    <li data-lang="PL">POLSKI</li>
-                    <li data-lang="EN">ENGLISH</li>
+                    <li data-lang="RU">RU</li>
+                    <li data-lang="PL">PL</li>
+                    <li data-lang="EN">EN</li>
                 </ul>
             </div>
-        </div>-->
-        <a href="https://t.me/watch_craft" target="_blank" class="btn-buy-desk mobile-only"
-            data-i18n="header.header_buy_button">купить часы</a>
-    </div>
-
-    <!-- Мобильное меню -->
-    <div class="mobile-nav" id="mobileNav">
-        <button class="close-btn" id="mobileNavClose">×</button>
-        <nav class="mobile-nav-links">
-            <a href="pageConstructorsSections.html" data-i18n="header.header_constructor">конструктор</a>
-            <a href="pageModel.html" data-i18n="header.header_catalog">каталог</a>
-            <a href="pageAbout.html" data-i18n="header.header_about">обо мне</a>
-            <a href="https://t.me/Tvoi_otzivi_zdes" target="_blank" data-i18n="header.header_review">отзывы</a>
-        </nav>
-
-
-        <a href="https://t.me/watch_craft" target="_blank" class="btn-buy-mobile">купить часы</a>
-        <div class="social-links mobile-social">
-            <a href="https://t.me/watch_craft" target="_blank">
-                <img src="logo/icon-telegram.png" alt="Telegram" />
-            </a>
-            <a href="https://www.instagram.com/tvoi_chasi_zdes/?igsh=aGxjNDBlOXRweHky&utm_source=qr#" target="_blank">
-                <img src="logo/icon-instagram.png" alt="Instagram" />
-            </a>
-            <a href="https://www.youtube.com/@watch_time121" target="_blank">
-                <img src="logo/icon-youtube.png" alt="YouTube" />
-            </a>
-            <a href="https://google.com" target="_blank">
-                <img src="logo/icon-tik-tok.png" alt="TikTok" />
-            </a>
-            <a href="https://google.com" target="_blank">
-                <img src="logo/icon-whatsapp.png" alt="WhatsApp" />
-            </a>
         </div>
-    </div>
+
+        <div class="desktop-nav-wrapper desktop-only">
+            <div class="logo-container desktop-only">
+                <a href="index.html" class="mobile-logo">
+                    <img src="logo/header-logo.png" alt="Logo" class="logo" />
+                </a>
+            </div>
+            <nav class="desktop-only">
+                <a href="pageConstructorsSections.html" data-i18n="header.header_constructor">конструктор</a>
+                <a href="pageModel.html" data-i18n="header.header_catalog">каталог</a>
+                <a href="pageAbout.html" data-i18n="header.header_about">обо мне</a>
+                <a href="https://t.me/Tvoi_otzivi_zdes" target="_blank" data-i18n="header.header_review">отзывы</a>
+            </nav>
+
+            <div class="language-selector-wrapper lang-header-wrapper desktop-lang-only">
+                <button class="language-toggle" id="langToggleHeaderDesktop">
+                    <img src="logo/icon-lang_1.png" alt="Language Icon" class="lang-icon" />
+                    <span class="lang-label short">PL</span>
+                </button>
+                <ul class="language-menu" id="langMenuHeaderDesktop">
+                    <li data-lang="RU">RU</li>
+                    <li data-lang="PL">PL</li>
+                    <li data-lang="EN">EN</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- Мобильное меню -->
+        <div class="mobile-nav" id="mobileNav">
+            <button class="close-btn" id="mobileNavClose">×</button>
+            <nav class="mobile-nav-links">
+                <a href="pageConstructorsSections.html" data-i18n="header.header_constructor">конструктор</a>
+                <a href="pageModel.html" data-i18n="header.header_catalog">каталог</a>
+                <a href="pageAbout.html" data-i18n="header.header_about">обо мне</a>
+                <a href="https://t.me/Tvoi_otzivi_zdes" target="_blank" data-i18n="header.header_review">отзывы</a>
+            </nav>
+
+
+            <a href="https://t.me/watch_craft" target="_blank" class="btn-buy-mobile">купить часы</a>
+            <div class="social-links mobile-social">
+                <a href="https://t.me/watch_craft" target="_blank">
+                    <img src="logo/icon-telegram.png" alt="Telegram" />
+                </a>
+                <a href="https://www.instagram.com/tvoi_chasi_zdes/?igsh=aGxjNDBlOXRweHky&utm_source=qr#"
+                    target="_blank">
+                    <img src="logo/icon-instagram.png" alt="Instagram" />
+                </a>
+                <a href="https://www.youtube.com/@watch_time121" target="_blank">
+                    <img src="logo/icon-youtube.png" alt="YouTube" />
+                </a>
+                <a href="https://google.com" target="_blank">
+                    <img src="logo/icon-tik-tok.png" alt="TikTok" />
+                </a>
+                <a href="https://google.com" target="_blank">
+                    <img src="logo/icon-whatsapp.png" alt="WhatsApp" />
+                </a>
+            </div>
+        </div>
 </header>

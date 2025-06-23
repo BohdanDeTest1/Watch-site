@@ -137,6 +137,36 @@ body {
     display: none;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: flex-start;
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 45vh;
+    width: 100%;
+    /* ширина меню */
+
+    padding: 60px 20px 20px 20px !important;
+
+    background-color: rgba(250, 245, 239, 0.95);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    font-size: 9px;
+    font-family: 'Inter', sans-serif;
+
+    overflow-y: auto;
+    z-index: 9999;
+
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+
+/*.mobile-nav {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
     background-color: rgba(250, 245, 239, 0.8);
     backdrop-filter: none;
     -webkit-backdrop-filter: blur(6px);
@@ -144,7 +174,7 @@ body {
     position: relative;
     font-size: 9px;
     font-family: 'Inter', sans-serif;
-}
+}*/
 
 .mobile-nav-links a {
     display: block;
@@ -179,8 +209,8 @@ body {
 
 .mobile-nav .close-btn {
     position: absolute;
-    top: 12px;
-    right: 20px;
+    top: 16px;
+    left: 22px;
     font-size: 24px;
     font-weight: bold;
     background: none;
@@ -356,9 +386,7 @@ footer {
         display: flex;
     }
 
-    .header-desk:not(.collapsed) .header-content {
-        display: none;
-    }
+
 }
 
 @media (min-width: 769px) {
@@ -375,7 +403,7 @@ footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 100%;
+        width: 70%;
     }
 
     .mobile-nav {
@@ -466,7 +494,7 @@ footer {
     }
 
     .header-content .logo {
-        margin-left: 10px;
+        margin-left: 85px;
     }
 }
 
@@ -839,7 +867,7 @@ main {
     padding: 0 0;
     z-index: 1000;
     width: max-content;
-    min-width: 120px;
+    min-width: 100px;
     text-align: center;
     overflow: hidden;
 
@@ -906,4 +934,202 @@ main {
     order: 2;
     /* переносим в конец */
     align-items: flex-end;
+}
+
+/* === Языковая кнопка в хедере — стили меню вниз === */
+.lang-header-wrapper .language-menu {
+    bottom: auto;
+    /* убираем bottom вверх */
+    top: 100%;
+    /* показываем снизу */
+    left: 0;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    padding: 0;
+    margin-top: 6px;
+    display: none;
+    position: absolute;
+    text-align: center;
+    min-width: 53px;
+    margin-left: -6px;
+}
+
+.lang-header-wrapper.open .language-menu {
+    display: block;
+}
+
+.lang-header-wrapper .language-menu li {
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    color: #333;
+}
+
+.lang-header-wrapper .language-menu li:hover {
+    background-color: #f0f0f0;
+    color: #9a1212;
+}
+
+@media (max-width: 768px) {
+    .mobile-header-layout {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 4px;
+        width: 100%;
+    }
+
+    .mobile-burger {
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .mobile-logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        /* убираем лишнее */
+        margin: 0 auto;
+    }
+
+    .mobile-logo img.logo {
+        height: 32px;
+    }
+
+    .lang-header-wrapper {
+        margin-left: auto;
+    }
+
+    .lang-header-wrapper .language-toggle {
+        padding: 6px 0px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .lang-header-wrapper .lang-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .lang-header-wrapper .lang-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (min-width: 769px) {
+    .desktop-only {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .desktop-menu {
+        display: flex;
+        gap: 24px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .desktop-menu li a {
+        text-decoration: none;
+        color: #000;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .desktop-lang.lang-header-wrapper {
+        margin-left: auto;
+    }
+
+    .mobile-burger {
+        display: none !important;
+    }
+
+
+}
+
+/* Скрываем десктопную языковую кнопку на мобилке */
+
+
+@media (min-width: 769px) {
+
+    /* Показываем кнопку в десктопе */
+    .language-selector-wrapper.desktop-lang-only {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+
+    .language-toggle {
+        padding: 6px 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .language-menu {
+        margin-top: 4px;
+    }
+
+    .lang-header-wrapper .language-menu li {
+        padding: 13px 30px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        color: #333;
+    }
+}
+
+/* Контейнер для навигации и языка на десктопе */
+.desktop-nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    width: 100%;
+}
+
+.desktop-nav-wrapper nav {
+    display: flex;
+    gap: 40px;
+}
+
+/* Добавим прижатие к правому краю */
+.language-selector-wrapper.desktop-lang-only {
+    margin-left: auto;
+}
+
+/* Скрыть mobile-only на десктопе */
+@media (min-width: 769px) {
+    .mobile-only {
+        display: none !important;
+    }
+
+    .desktop-only {
+        display: flex !important;
+    }
+}
+
+/* Скрыть desktop-only на мобиле */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: flex !important;
+    }
 }

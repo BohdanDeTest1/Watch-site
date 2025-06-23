@@ -18,6 +18,7 @@ function getDefaultLanguage() {
         'ru', 'be', 'uk', 'kz', 'kg', 'az', 'am', 'md', 'tj', 'tm', 'uz', 'lv', 'lt'
     ];
 
+    if (lowerLang.startsWith('pl')) return 'PL';
     if (lowerLang.startsWith('en')) return 'EN';  // 👈 тут дефолтный язык при загрузке
     if (ruCountries.some(code => lowerLang.startsWith(code))) return 'RU';
     return 'EN';
