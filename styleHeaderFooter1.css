@@ -400,9 +400,10 @@ footer {
     }
 
     .header-content {
-        display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
+        width: 100%;
+        padding: 0 0px;
     }
 
     .header-content>a.mobile-logo {
@@ -446,9 +447,7 @@ footer {
         margin: 0 40px;
         padding: 25px 0 25px 0;
         /* ← создаёт место для полоски */
-        margin: -25px 0 -25px -15px;
-
-
+        margin: -25px 0 -25px 0;
         position: relative;
         overflow: visible;
     }
@@ -1202,64 +1201,5 @@ main {
         text-align: center;
         overflow: hidden;
 
-    }
-}
-
-@media (min-width: 769px) {
-    .header-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 1440px;
-        width: 100%;
-        margin: 0 auto;
-        box-sizing: border-box;
-    }
-
-
-
-    .header-content .logo {
-        justify-self: start;
-    }
-
-    .desktop-nav-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .logo-container {
-        margin-right: auto;
-    }
-
-    nav.desktop-only {
-        display: flex;
-        gap: 40px;
-        justify-content: center;
-        flex-grow: 1;
-    }
-
-    .language-selector-wrapper.desktop-lang-only {
-        margin-left: auto;
-    }
-
-    .lang-header-wrapper .language-menu {
-        top: 75% !important;
-    }
-
-    .logo-container a:hover {
-        text-decoration: none !important;
-        color: inherit !important;
-    }
-
-    a.mobile-logo:hover {
-        text-decoration: none !important;
-        color: inherit !important;
-    }
-
-    img.logo:hover {
-        text-decoration: none !important;
-        color: inherit !important;
     }
 }
