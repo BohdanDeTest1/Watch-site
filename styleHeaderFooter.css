@@ -141,11 +141,11 @@ body {
     position: fixed;
     top: 0;
     right: 0;
-    height: 46vh;
+    height: 43vh;
     width: 100%;
     /* ширина меню */
 
-    padding: 60px 20px 20px 20px !important;
+    padding: 60px 20px 0px 20px !important;
 
     background-color: rgba(250, 245, 239, 0.95);
     backdrop-filter: blur(6px);
