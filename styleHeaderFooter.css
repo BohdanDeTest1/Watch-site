@@ -1261,4 +1261,9 @@ main {
         text-decoration: none !important;
         color: inherit !important;
     }
+
+    body.nav-open {
+        overflow: hidden;
+        position: relative;
+    }
 }
