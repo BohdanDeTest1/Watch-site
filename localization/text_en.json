@@ -82,5 +82,10 @@
             "q4": "test?",
             "a4": "1test"
         }
+    },
+    "pageConstructorsSections": {
+        "title": "КОНСТРУКТОР RU",
+        "sport": "SPORT RU",
+        "classic": "CLASSIC RU"
     }
 }

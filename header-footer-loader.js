@@ -16,6 +16,10 @@ function loadHeaderFooter() {
             requestAnimationFrame(() => {
                 initNewLangSelector();
             });
+            // setTimeout(() => {
+            //     initCollapsibleHeader();
+            //     initHoverUnderline();
+            // }, 50);
         });
 }
 

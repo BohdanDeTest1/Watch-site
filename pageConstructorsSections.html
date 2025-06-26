@@ -13,16 +13,16 @@
     <div id="header"></div>
 
     <main class="constructor-sections">
-        <h1>КОНСТРУКТОР ЧАСОВ</h1>
+        <h1 data-i18n="pageConstructorsSections.title">КОНСТРУКТОР ЧАСОВ</h1>
 
         <div class="sections-wrapper">
             <div class="section-box" data-target="pageConstructorSport.html">
                 <img src="subsections_img/subSectionSport.png" alt="Sport/Casual" />
-                <div class="section-title">SPORT/<br>CASUAL</div>
+                <div class="section-title" data-i18n="pageConstructorsSections.sport">SPORT/<br>CASUAL</div>
             </div>
             <div class="section-box" data-target="pageConstructorClassic.html">
                 <img src="subsections_img/subSectionClassics.png" alt="Classic" />
-                <div class="section-title">CLASSIC</div>
+                <div class="section-title" data-i18n="pageConstructorsSections.classic">CLASSIC</div>
             </div>
         </div>
     </main>
@@ -30,10 +30,56 @@
     <!-- Футер будет загружен через JS -->
     <div id="footer"></div>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Проверяем каждые 100мс, появился ли элемент с id="burgerBtn"
+            const interval = setInterval(() => {
+                const burger = document.getElementById("burgerBtn");
+                const header = document.querySelector(".header-desk");
+                const nav = document.getElementById("mobileNav");
+                const closeBtn = document.getElementById("mobileNavClose");
+
+                if (burger && header && nav && closeBtn) {
+                    clearInterval(interval); // Остановить таймер как только всё найдено
+
+                    // Скрыть по умолчанию
+                    header.classList.add("collapsed");
+                    nav.style.display = "none";
+
+                    // Открыть меню
+                    burger.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        const isVisible = nav.style.display === "flex";
+                        nav.style.display = isVisible ? "none" : "flex";
+                        header.classList.toggle("collapsed", isVisible);
+                        document.body.classList.toggle("nav-open", !isVisible);
+                    });
+
+                    // Закрыть по кнопке ×
+                    closeBtn.addEventListener("click", function () {
+                        nav.style.display = "none";
+                        header.classList.add("collapsed");
+                        document.body.classList.remove("nav-open");
+                    });
+
+                    // Закрыть по клику вне меню
+                    document.addEventListener("click", function (e) {
+                        if (!header.contains(e.target) && window.innerWidth <= 768) {
+                            nav.style.display = "none";
+                            header.classList.add("collapsed");
+                            document.body.classList.remove("nav-open");
+                        }
+                    });
+                }
+            }, 100);
+        });
+    </script>
+
+
     <script src="header-footer-loader.js"></script>
     <script src="scriptConstructorsSections.js"></script>
     <script src="localization.js"></script>
-
 </body>
 
 </html>
