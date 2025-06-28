@@ -1,14 +1,12 @@
 // scriptConstructorSport.js
 
 const availability = {
-    "AQUANAUT": true,
-    "NUTILUS-SPORT": true,
-    "PRX": false,
-    "ROYAL-CHRONOGRAPH": true,
-    "ROYAL": true,
-    "SEMASTER": false,
-    "SKX007": false,
-    "SUBMARINER": true
+    "CLASSIC": true,
+    "DATEJUST": true,
+    "DAY-DATE": true,
+    "NAUTILYS": false,
+    "SANTOS": true,
+    "CUBITS": false,
 };
 
 document.addEventListener("DOMContentLoaded", () => {

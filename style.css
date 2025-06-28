@@ -377,11 +377,12 @@ img {
     justify-content: space-between;
     align-items: flex-start;
     padding: 2px 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     cursor: pointer;
     text-align: left;
-    color: inherit;
+    color: rgb(85, 85, 85);
+    letter-spacing: 1px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
 
@@ -390,6 +391,8 @@ img {
 .faq-question .icon {
     font-size: 22px;
     transition: transform 0.3s ease;
+    color: rgb(85, 85, 85);
+    letter-spacing: 1px;
 
 }
 
@@ -398,8 +401,9 @@ img {
     overflow: hidden;
     transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
     padding: 0 0;
-    color: #555;
-    font-size: 14px;
+    font-size: 16px;
+    color: rgb(85, 85, 85);
+    letter-spacing: 1px;
 
 }
 

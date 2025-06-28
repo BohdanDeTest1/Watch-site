@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 
 <head>
     <meta charset="UTF-8" />
@@ -7,14 +7,15 @@
     <title>SPORT/CASUAL</title>
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="styleConstructorSport.css" />
+
 </head>
 
 <body>
     <div id="header"></div>
-
     <main class="sport-constructor">
-        <button class="back-button" onclick="history.back()">&laquo; назад</button>
-        <h1>SPORT/CASUAL</h1>
+        <button class="back-button" onclick="history.back()" data-i18n="pageConstructorsSport.BackButton">&laquo;
+        </button>
+        <h1 data-i18n="pageConstructorsSport.titleSport"></h1>
         <div class="buttons-grid">
             <button class="sport-btn" data-name="AQUANAUT"
                 data-url="constSport/consSportAquanaut.html">AQUANAUT</button>
@@ -30,7 +31,7 @@
             <button class="sport-btn" data-name="SUBMARINER"
                 data-url="constSport/consSportSubmariner.html">SUBMARINER</button>
         </div>
-        <div id="popup" class="popup">ВРЕМЕННО НЕДОСТУПНО</div>
+        <div id="popup" class="popup" data-i18n="pageConstructorsSport.unavailable"></div>
     </main>
 
     <div id="footer"></div>

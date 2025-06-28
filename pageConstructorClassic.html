@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPORT/CASUAL</title>
+    <link rel="stylesheet" href="styleHeaderFooter.css" />
+    <link rel="stylesheet" href="styleConstructorClassic.css" />
+
+</head>
+
+<body>
+    <div id="header"></div>
+    <main class="sport-constructor">
+        <button class="back-button" onclick="history.back()" data-i18n="pageConstructorsSport.BackButton">&laquo;
+        </button>
+        <h1 data-i18n="pageConstructorsSport.titleClassic"></h1>
+        <div class="buttons-grid">
+            <button class="sport-btn" data-name="CLASSIC"
+                data-url="constClassic/consClassicClassic.html">CLASSIC</button>
+            <button class="sport-btn" data-name="DATEJUST"
+                data-url="constClassic/consClassicDatejust.html">DATEJUST</button>
+            <button class="sport-btn" data-name="DAY-DATE"
+                data-url="constClassic/consClassicDayDate.html">DAY-DATE</button>
+            <button class="sport-btn" data-name="NAUTILYS"
+                data-url="constClassic/consClassicNautilys.html">NAUTILYS</button>
+            <button class="sport-btn" data-name="SANTOS" data-url="constClassic/consClassicSantos.html">SANTOS</button>
+            <button class="sport-btn" data-name="CUBITS" data-url="constClassic/consClassictCubits.html">CUBITS</button>
+        </div>
+        <div id="popup" class="popup" data-i18n="pageConstructorsSport.unavailable">ВРЕМЕННО НЕДОСТУПНО</div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="header-footer-loader.js"></script>
+    <script src="scriptConstructorClassic.js"></script>
+    <script src="localization.js"></script>
+</body>
+
+</html>

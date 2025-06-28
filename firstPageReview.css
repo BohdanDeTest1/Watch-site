@@ -5,10 +5,11 @@
 }
 
 .review-title {
-    font-size: 2rem;
+    font-size: 24px;
     margin-bottom: 40px;
     font-weight: 600;
-    color: #1e1e1e;
+    color: rgb(85, 85, 85);
+    letter-spacing: 1px;
 }
 
 .review-grid {
@@ -37,8 +38,9 @@
 .review-card p {
     font-size: 1rem;
     margin-bottom: 16px;
-    color: #333;
     font-style: italic;
+    color: rgb(85, 85, 85);
+    letter-spacing: 1px;
 }
 
 .review-card img {

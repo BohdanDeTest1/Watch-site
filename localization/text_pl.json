@@ -1,27 +1,98 @@
 {
     "header": {
-        "header_constructor": "КОНСТРУКТОР PL",
-        "header_catalog": "КАТАЛОГ PL",
-        "header_about": "ОБО МНЕ PL",
-        "header_review": "ОТЗЫВЫ PL",
-        "header_buy_button": "КУПИТЬ ЧАСЫ PL"
+        "header_constructor": "KONFIGURATOR",
+        "header_catalog": "KATALOG",
+        "header_about": "O MNIE",
+        "header_review": "OPINIE",
+        "header_buy_button": "KUP ZEGAREK"
     },
     "main_page": {
         "first_gallery_watch_name": {
-            "slide_1": "Часы №1",
-            "slide_2": "Часы №3",
-            "slide_3": "Часы №3",
-            "first_gallery_watch_button": "посмотреть"
+            "slide_1": "Zegarek nr 1",
+            "slide_2": "Zegarek nr 3",
+            "slide_3": "Zegarek nr 3",
+            "first_gallery_watch_button": "zobacz"
         }
     },
+    "index": {
+        "first_block": {
+            "hero-title": "Jaki będzie Twój następny zegarek?",
+            "hero-subtitle": "Zanurz się w świat personalizacji i unikalnego designu.",
+            "hero-buttons-1": "Konfigurator",
+            "hero-buttons-2": "MODELE"
+        },
+        "concept-block": {
+            "h2": "Od pomysłu do realizacji",
+            "p1": "Nasze zaangażowanie w jakość widać w każdym zegarku, który tworzymy.",
+            "p2": "Każdy element jest starannie dobierany przez Ciebie i dla Ciebie, aby spełnić najwyższe oczekiwania.",
+            "p3": "Od wyboru tarczy po dobór bransolety – każdy model to dzieło precyzji i elegancji.",
+            "button-1": "Stwórz swój koncept",
+            "button-2": "Zobacz gotowe MODELE"
+        },
+        "how-it-works": {
+            "h2": "JAK TO DZIAŁA?",
+            "p1": "Wybierz design",
+            "p2": "Uzgodnij zamówienie",
+            "p3": "Wpłać zaliczkę",
+            "p4": "Produkcja zegarka (2–3 tygodnie)",
+            "p5": "Zatwierdzenie efektu i dopłata reszty",
+            "p6": "Wysyłka zegarka do Ciebie"
+        },
+        "carousel-tabs": {
+            "tab-1": "dostępne do projektowania",
+            "tab-2": "gotowe modele"
+        },
+        "carousel-cards-buttons": {
+            "constructor": "Konfigurator",
+            "models": "MODELE"
+        },
+        "carousel-buttons": {
+            "button-1": "Stwórz swój koncept",
+            "button-2": "Zobacz gotowe MODELE"
+        },
+        "delivery": {
+            "p1": "Czas realizacji – 2-3 tygodnie",
+            "p2": "Dostawa do Twojego miasta",
+            "p3": "Terminy są ustalane podczas składania zamówienia*"
+        },
+        "review": {
+            "review-title": "OPINIE NASZYCH KLIENTÓW",
+            "card-1": "„Odebrałem zegarek – wow! Prawdziwe dzieło sztuki!”",
+            "card-2": "„Jestem bardzo zadowolona z jakości! Zegarek wygląda luksusowo i elegancko!”",
+            "card-3": "„To najlepszy prezent, jaki sobie zrobiłem! Dziękuję!”",
+            "card-4": "„Niesamowite! Zegarek wygląda jeszcze lepiej niż na zdjęciach!”"
+        },
+        "faq": {
+            "q1": "Czy szkło jest szafirowe?",
+            "a1": "Tak, stosujemy szkło szafirowe o wysokiej przejrzystości i trwałości.",
+            "q2": "Czy można się kąpać w zegarku?",
+            "a2": "Tak, jeśli wodoodporność wynosi 100 m lub więcej.",
+            "q3": "Czy używasz oryginalnych mechanizmów?",
+            "a3": "Tak, używam japońskich mechanizmów Seiko: NH35, NH36, NH34, NH38, NH70.",
+            "q4": "test?",
+            "a4": "1test"
+        }
+    },
+    "pageConstructorsSections": {
+        "title": "KONFIGURATOR",
+        "sport": "SPORTOWE/CODZIENNE",
+        "classic": "KLASYCZNE"
+    },
+    "pageConstructorsSport": {
+        "BackButton": "wróć",
+        "titleSport": "SPORTOWE/CODZIENNE",
+        "titleClassic": "KLASYCZNE",
+        "unavailable": "Tymczasowo niedostępne"
+    },
     "footer": {
-        "footer_question_1": "PL остались вопросы?",
-        "footer_question_2": "PL буду рад ответить",
-        "footer_terms": "...",
-        "footer_privacy": "PL Политика конфиденциальности",
-        "footer_cookie": "PL Политика использования файлов cookie",
-        "footer_cookie_settings": "...",
-        "footer_copyright": "PL Copyright © SURF WATCH. Все права защищены.",
-        "footer_FeedbackButton": "PL НАПИСАТЬ"
+        "footer_question_1": "Masz pytania?",
+        "footer_question_2": "Chętnie odpowiem",
+        "footer_terms": "regulamin",
+        "footer_privacy": "Polityka prywatności",
+        "footer_cookie": "Polityka cookies",
+        "footer_cookie_settings": "ustawienia cookies",
+        "footer_copyright": "© SURF WATCH. Wszelkie prawa zastrzeżone.",
+        "footer_FeedbackButton": "NAPISZ",
+        "footer_vat": "VAT no. IT10115350158"
     }
 }
