@@ -126,7 +126,7 @@ h1 {
     .popup {
         display: none;
         position: fixed;
-        bottom: 360px;
+        bottom: 160px;
     }
 }
 
