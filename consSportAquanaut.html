@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AQUANAUT</title>
+    <link rel="stylesheet" href="styleHeaderFooter.css" />
+    <link rel="stylesheet" href="styleConstructorSport.css" />
+    <link rel="stylesheet" href="styleConsSportAquanaut.css" />
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <main class="constructor-page">
+        <button class="back-button" onclick="history.back()">&laquo; AQUANAUT</button>
+
+        <div class="constructor-container">
+            <div class="watch-preview-box">
+                <div class="watch-preview">
+                    <img id="braceletLayer" class="layer" src="watchParts/1_Aquanaut/bracelet/Bracelet_1.png" />
+                    <img id="caseLayer" class="layer" src="watchParts/1_Aquanaut/case/case_1.png" />
+                    <img id="dialLayer" class="layer" src="watchParts/1_Aquanaut/dial/dial_1.png" />
+                    <div class="corner-text left" id="engraveText">Без гравировки</div>
+                    <div class="corner-text right" id="logoText">Без логотипа</div>
+                </div>
+            </div>
+
+            <div class="options-panel">
+                <div class="option-group">
+                    <div class="option-header" id="braceletToggle">БРАСЛЕТ</div>
+                    <div class="option-images" id="braceletOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/1_Aquanaut/bracelet/Bracelet_1.png" alt="Bracelet 1">
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/1_Aquanaut/bracelet/Bracelet_2.png" alt="Bracelet 2">
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/1_Aquanaut/bracelet/Bracelet_3.png" alt="Bracelet 3">
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/1_Aquanaut/bracelet/Bracelet_4.png" alt="Bracelet 4">
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/1_Aquanaut/bracelet/Bracelet_5.png" alt="Bracelet 5">
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="option-group">
+                    <div class="option-header" id="dialToggle">ЦИФЕРБЛАТ</div>
+                    <div class="option-images" id="dialOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/1_Aquanaut/dial/dial_1.png" alt="Dial 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/1_Aquanaut/dial/dial_2.png" alt="Dial 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/1_Aquanaut/dial/dial_3.png" alt="Dial 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/1_Aquanaut/dial/dial_4.png" alt="Dial 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/1_Aquanaut/dial/dial_5.png" alt="Dial 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/1_Aquanaut/dial/dial_6.png" alt="Dial 6" />
+                        </button>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <div class="option-header" id="caseToggle">КОРПУС</div>
+                    <div class="option-images" id="caseOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/1_Aquanaut/case/case_1.png" alt="Case 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/1_Aquanaut/case/case_2.png" alt="Case 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/1_Aquanaut/case/case_3.png" alt="Case 3" />
+                        </button>
+                    </div>
+                </div>
+
+
+                <label>Гравировка:
+                    <select id="engravingSelect">
+                        <option value="withoutIngrave">Без гравировки</option>
+                        <option value="withIngrave">Гравировка (+200PLN)</option>
+                    </select>
+
+                    <div class="corner-text left" id="engraveText">Без гравировки</div>
+                </label>
+
+                <label>Логотип:
+                    <select id="logoSelect">
+                        <option value="noLogo">Без логотипа</option>
+                        <option value="sLogo">логотип "SEIKO"</option>
+                        <option value="otherLogo">Свой логотип</option>
+                    </select>
+
+                    <div class="corner-text right" id="logoText">Без логотипа</div>
+
+                </label>
+
+                <button id="downloadBtn">Скачать изображение</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="header-footer-loader.js"></script>
+    <script src="scriptConsSportAquanaut.js"></script>
+</body>
+
+</html>

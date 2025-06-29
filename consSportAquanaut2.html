@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AQUANAUT</title>
+  <link rel="stylesheet" href="styleHeaderFooter.css" />
+  <link rel="stylesheet" href="styleConstructorSport.css" />
+  <link rel="stylesheet" href="styleConsSportAquanaut.css" />
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main class="constructor-page">
+    <button class="back-button" onclick="history.back()">&laquo; AQUANAUT</button>
+
+    <div class="constructor-container">
+      <div class="watch-preview">
+        <img id="braceletLayer" class="layer" src="watchParts/1_Aquanaut/bracelet/Bracelet_1.png" />
+        <img id="caseLayer" class="layer" src="watchParts/1_Aquanaut/case/case_1.png" />
+        <img id="dialLayer" class="layer" src="watchParts/1_Aquanaut/dial/dial_1.png" />
+        <div class="description-text">
+          <span id="engraveText">Без гравировки</span>
+          <span id="logoText">Без логотипа</span>
+        </div>
+      </div>
+
+      <div class="options-panel">
+        <label>Браслет:
+          <select id="braceletSelect">
+            <option value="1">Bracelet 1</option>
+            <option value="2">Bracelet 2</option>
+            <option value="3">Bracelet 3</option>
+            <option value="4">Bracelet 4</option>
+            <option value="5">Bracelet 5</option>
+          </select>
+        </label>
+
+        <label>Циферблат:
+          <select id="dialSelect">
+            <option value="1">Dial 1</option>
+            <option value="2">Dial 2</option>
+            <option value="3">Dial 3</option>
+            <option value="4">Dial 4</option>
+            <option value="5">Dial 5</option>
+            <option value="6">Dial 6</option>
+          </select>
+        </label>
+
+        <label>Корпус:
+          <select id="caseSelect">
+            <option value="1">Case 1</option>
+            <option value="2">Case 2</option>
+            <option value="3">Case 3</option>
+          </select>
+        </label>
+
+        <label>Гравировка:
+          <select id="engraveSelect">
+            <option value="noLogo">Без гравировки</option>
+            <option value="sLogo">Гравировка (+200PLN)</option>
+            <option value="otherLogo">Свой текст</option>
+          </select>
+        </label>
+
+        <label>Логотип:
+          <select id="logoSelect">
+            <option value="withIngrave">логотип "SEIKO"</option>
+            <option value="withoutIngrave">Без логотипа</option>
+          </select>
+        </label>
+
+        <button id="downloadBtn">Скачать изображение</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="header-footer-loader.js"></script>
+  <script src="scriptConsSportAquanaut.js"></script>
+</body>
+
+</html>
