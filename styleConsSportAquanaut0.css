@@ -1,0 +1,252 @@
+.constructor-page {
+  padding: 120px 20px 180px;
+  background: #f0e9df;
+  font-family: 'Inter', sans-serif;
+}
+
+.constructor-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.watch-preview {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+
+.watch-preview .layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.options-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 260px;
+}
+
+.options-panel label {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.options-panel select,
+.options-panel button {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.options-panel button {
+  background-color: #333;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.options-panel button:hover {
+  background-color: #555;
+}
+
+@media (max-width: 768px) {
+  .constructor-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .watch-preview {
+    width: 100%;
+    height: auto;
+    max-width: 250px;
+    position: sticky;
+    z-index: 2;
+    padding-bottom: 20px;
+  }
+
+  .watch-preview .layer {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.watch-preview-box {
+  border: 0px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  background: #F5F1EB;
+  position: relative;
+  width: 340px;
+  height: 500px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 600px) {
+  .watch-preview-box {
+    width: 100%;
+    height: 400px;
+  }
+}
+
+
+
+.watch-preview {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+
+.corner-text {
+  position: absolute;
+  bottom: 6px;
+  font-size: 12px;
+  color: #111;
+  background: #f0e9df;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 5;
+}
+
+.corner-text.left {
+  left: 6px;
+}
+
+.corner-text.right {
+  right: 6px;
+}
+
+.image-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.image-options button {
+  border: 2px solid transparent;
+  background: none;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: border 0.3s;
+}
+
+.image-options button.selected {
+  border-color: #251d17;
+  /* оранжевая рамка как на скрине */
+}
+
+.image-options img {
+  width: 60px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.option-group {
+  margin-bottom: 20px;
+}
+
+.option-header {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.option-images {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.option-images.active {
+  display: flex;
+}
+
+.option {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 4px;
+  cursor: pointer;
+  transition: border 0.3s;
+}
+
+.option.selected {
+  border: 2px solid #f26c2a;
+}
+
+.option img {
+  width: 40px;
+  height: auto;
+  display: block;
+}
+
+.option-images {
+  transition: all 0.3s ease;
+}
+
+/* ==== МОБИЛЬНЫЙ: Фиксированный просмотр конструктора ==== */
+@media (max-width: 768px) {
+  .watch-preview-box {
+    position: fixed;
+    top: 150px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  }
+
+  .watch-preview-box .watch-preview {
+    width: 100%;
+  }
+
+  .watch-preview-box img.layer {
+    width: 100%;
+    height: auto;
+  }
+
+  .constructor-container {
+    margin-top: 520px;
+    /* Отступ вниз, чтобы всё остальное не перекрывалось */
+  }
+
+  .corner-text {
+    position: absolute;
+    top: 0px;
+    font-size: 9px;
+    color: #111;
+    background: transparent;
+    padding: 0px 0px;
+    border-radius: 10px;
+    z-index: 5;
+  }
+
+  .constructor-page {
+    padding: 65px 20px 180px;
+  }
+}
