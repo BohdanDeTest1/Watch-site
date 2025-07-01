@@ -133,6 +133,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.querySelectorAll('.select-wrapper select').forEach(select => {
+        select.addEventListener('focus', () => {
+            select.parentElement.classList.add('select-open');
+        });
+
+        select.addEventListener('blur', () => {
+            select.parentElement.classList.remove('select-open');
+        });
+    });
+
+
     loadFromLocalOrURL();
 
 
