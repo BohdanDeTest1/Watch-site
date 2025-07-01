@@ -32,7 +32,7 @@
 .options-panel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   min-width: 260px;
 }
 
@@ -46,17 +46,18 @@
 
 .options-panel select,
 .options-panel button {
-  padding: 10px;
+  padding: 7px;
   font-size: 14px;
-  border: 1px solid #2b2020;
-  border-radius: 4px;
+  border: 1px solid rgb(85, 85, 85);
+  border-radius: 3px;
+  color: rgb(85, 85, 85);
   background: transparent;
   cursor: pointer;
 }
 
 .options-panel button {
   background-color: #333;
-  color: #fff;
+  color: #F5F1EB;
   transition: background-color 0.3s;
 }
 
@@ -100,13 +101,13 @@
   box-sizing: border-box;
 }
 
-/* Адаптив для мобильных */
+/* Адаптив для мобильных 
 @media (max-width: 600px) {
   .watch-preview-box {
     width: 100%;
     height: 400px;
   }
-}
+}*/
 
 
 
@@ -168,17 +169,30 @@
 
 .option-header {
   cursor: pointer;
-  padding: 8px;
-  border: 1px solid #2b2020;
-  border-radius: 4px;
-  display: inline-block;
+  padding: 7px;
+  border: 1px solid rgb(85, 85, 85);
+  border-radius: 3px;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 30px;
 }
 
 .option-images {
-  display: none;
+  display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+  justify-content: flex-start;
+  max-width: 320px;
+  /* либо в пикселях, например 540px */
+  width: 100%;
+}
+
+.option-images .option {
+  width: calc(20% - 8px);
+  /* 5 элементов + gap */
 }
 
 .option-images.active {
@@ -252,7 +266,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 769px) {
   .constructor-container {
     display: flex;
     flex-direction: row;
@@ -264,9 +278,9 @@
 
   .watch-preview-box {
     flex: 0 0 auto;
-    max-width: 350px;
+    max-width: 325px;
     /* ⬅️ Меняй это значение, чтобы сделать блок уже или шире */
-    min-height: 450px;
+    min-height: 375px;
     /* ⬅️ Меняй это значение, чтобы сделать блок ниже или выше */
     width: 100%;
     height: auto;
@@ -292,19 +306,104 @@
 
   #downloadBtn {
     margin-top: 20px;
-    width: 425px;
+    width: 320px;
   }
 
   .option-header {
-    width: 425px;
+    width: 320px;
+    cursor: pointer;
+    padding: 7px;
+    border: 1px solid rgb(85, 85, 85);
+    border-radius: 3px;
+    display: inline-block;
+    color: rgb(85, 85, 85);
+    margin: 0;
+    /* padding: 0; */
+    font-size: 13px;
+
+
+
   }
 
   .options-panel label {
-    font-size: 14px;
+    font-size: 12px;
     color: #333;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    width: 425px;
+    width: 320px;
   }
+}
+
+@media (min-width: 769px) {
+  .constructor-container {
+    display: flex;
+    justify-content: center;
+    /* центрируем весь блок */
+    align-items: flex-start;
+    max-width: 1400px;
+    /* или любое значение по ширине */
+    margin: 0 auto;
+    /* центрирование контейнера */
+    /* расстояние между блоками */
+    padding: 0 270px;
+    box-sizing: border-box;
+  }
+}
+
+/* 
+.arrow-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: rotate(45deg);
+
+  transition: transform 0.3s ease;
+  margin-left: 10px;
+}
+
+.option-header.open .arrow-icon {
+  transform: rotate(225deg);
+}
+
+ */
+
+.arrow-icon {
+  position: absolute;
+  right: 10px;
+  /* прижимает к правому краю */
+  top: 50%;
+  transform: translateY(-50%) rotate(225deg);
+  /* выравнивает по центру + начальный поворот */
+  transition: transform 0.3s ease;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.option-header.open .arrow-icon {
+  transform: translateY(-50%) rotate(45deg);
+  /* поворот вверх */
+}
+
+/*
+.option-images {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  opacity: 0;
+}
+
+
+.option-images.visible {
+  max-height: 500px;
+  opacity: 1;
+}*/
+.option-images.visible {
+  max-height: 500px;
+  /* можно больше, если нужно больше строк */
+  opacity: 1;
 }

@@ -55,46 +55,55 @@ document.addEventListener("DOMContentLoaded", function () {
         applySelections();
     }
 
-    // // Toggle BARS
-    // document.getElementById("braceletToggle")?.addEventListener("click", () => {
-    //     const el = document.getElementById("braceletOptions");
-    //     el.style.display = el.style.display === "none" ? "flex" : "none";
-    // });
-
-    // document.getElementById("dialToggle")?.addEventListener("click", () => {
-    //     const el = document.getElementById("dialOptions");
-    //     el.style.display = el.style.display === "none" ? "flex" : "none";
-    // });
-
-    // document.getElementById("caseToggle")?.addEventListener("click", () => {
-    //     const el = document.getElementById("caseOptions");
-    //     el.style.display = el.style.display === "none" ? "flex" : "none";
-    // });
-    // Универсальное поведение для раскрытия только одного меню
     const toggles = [
         { toggleId: "braceletToggle", menuId: "braceletOptions" },
         { toggleId: "dialToggle", menuId: "dialOptions" },
         { toggleId: "caseToggle", menuId: "caseOptions" }
     ];
 
+
+    // toggles.forEach(({ toggleId, menuId }) => {
+    //     const toggleEl = document.getElementById(toggleId);
+    //     const menuEl = document.getElementById(menuId);
+
+    //     toggleEl?.addEventListener("click", () => {
+    //         const isVisible = menuEl.style.display === "flex";
+
+    //         // Закрываем все меню и стрелки
+    //         toggles.forEach(({ toggleId: otherToggleId, menuId: otherMenuId }) => {
+    //             const otherMenu = document.getElementById(otherMenuId);
+    //             const otherToggle = document.getElementById(otherToggleId);
+    //             if (otherMenu && otherToggle) {
+    //                 otherMenu.style.display = "none";
+    //                 otherToggle.classList.remove("open");
+    //             }
+    //         });
+
+    //         // Переключаем текущее меню и стрелку
+    //         if (!isVisible) {
+    //             menuEl.style.display = "flex";
+    //             toggleEl.classList.add("open");
+    //         }
+    //     });
+    // });
+
     toggles.forEach(({ toggleId, menuId }) => {
         const toggleEl = document.getElementById(toggleId);
         const menuEl = document.getElementById(menuId);
 
         toggleEl?.addEventListener("click", () => {
-            // Закрываем все меню, кроме текущего
-            toggles.forEach(({ menuId: otherMenuId }) => {
-                const otherMenu = document.getElementById(otherMenuId);
-                if (otherMenu && otherMenuId !== menuId) {
-                    otherMenu.style.display = "none";
-                }
-            });
+            const isVisible = menuEl.style.display === "flex";
 
-            // Переключаем текущее меню
-            menuEl.style.display = menuEl.style.display === "none" ? "flex" : "none";
+            // Переключаем только текущее меню и стрелку
+            menuEl.style.display = isVisible ? "none" : "flex";
+            toggleEl.classList.toggle("open", !isVisible);
         });
     });
+
+
     document.getElementById("braceletOptions").style.display = "flex";
+    document.getElementById("braceletToggle").classList.add("open");
+
 
     // SELECTORS
     document.querySelectorAll("#braceletOptions button").forEach(btn => {
