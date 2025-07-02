@@ -480,3 +480,32 @@
   outline: none;
   box-shadow: none;
 }
+
+.specs-box {
+  margin-top: 30px;
+  padding: 16px 20px;
+  background-color: #f5f1eb;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 320px;
+  box-sizing: border-box;
+}
+
+.specs-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  color: #444;
+}
+
+.specs-list li {
+  margin-bottom: 4px;
+}
