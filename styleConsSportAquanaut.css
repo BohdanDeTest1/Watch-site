@@ -57,7 +57,7 @@
 .options-panel select,
 .options-panel button {
   padding: 0px;
-  font-size: 13px !important;
+  font-size: 15px !important;
   border: 1px solid transparent;
   border-radius: 3px;
   color: rgb(85, 85, 85);
@@ -401,7 +401,7 @@
   }
 
   .options-panel label {
-    font-size: 12px;
+    font-size: 13px;
     color: rgb(85, 85, 85) !important;
     display: flex;
     flex-direction: column;
@@ -546,4 +546,150 @@
 
 .specs-list li {
   margin-bottom: 4px;
+}
+
+
+.bezel-config-box {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #fef9f1;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.bezel-config-box label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.bezel-config-box input[type="number"] {
+  width: 100%;
+  max-width: 320px;
+  /* фиксированная ширина как у других элементов */
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.input-full {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: 16px;
+}
+
+
+.bezel-carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.bezel-carousel img {
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.bezel-carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 320px;
+  margin-top: 10px;
+}
+
+.bezel-carousel {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.bezel-img {
+  display: none;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.bezel-img.active {
+  display: block;
+}
+
+.bezel-prev-btn,
+.bezel-next-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 28px !important;
+  cursor: pointer !important;
+  padding: 10px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+  transition: transform 0.2s ease !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  user-select: none !important;
+}
+
+
+/* 
+.bezel-prev-btn,
+.bezel-next-btn {
+  background: none;         /* Убирает фон */
+/*border: none;             /* Убирает бордер */
+/*color: #333;              /* Цвет символа (тёмный) */
+/*font-size: 28px;          /* Увеличенный размер */
+/*font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 2;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  user-select: none;
+}
+*/
+
+.bezel-prev-btn:hover,
+.bezel-next-btn:hover {
+  transform: scale(1.1);
+}
+
+
+
+/* Сдвигаем влево и вправо на десктопе  */
+.bezel-prev-btn {
+  left: 16px;
+}
+
+.bezel-next-btn {
+  right: 16px;
+}
+
+/* На мобильных — ближе к краю экрана */
+@media (max-width: 768px) {
+  .bezel-prev-btn {
+    left: 3vw;
+  }
+
+  .bezel-next-btn {
+    right: 3vw;
+  }
 }

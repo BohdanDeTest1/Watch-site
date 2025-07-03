@@ -143,7 +143,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
+    // if (!localStorage.getItem("caseback")) {
+    //     casebackSelect.value = "solid";
+    //     casebackText.textContent = casebackSelect.options[casebackSelect.selectedIndex].textContent;
+    //     bezelConfigBox.style.display = "block";
+    // }
 
     loadFromLocalOrURL();
 
@@ -170,10 +174,53 @@ document.addEventListener("DOMContentLoaded", function () {
     const casebackSelect = document.getElementById("casebackSelect");
     const casebackText = document.getElementById("casebackText");
 
+
+    const bezelConfigBox = document.getElementById("bezelConfigBox");
+
     casebackSelect.addEventListener("change", () => {
         const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
         casebackText.textContent = selectedOption.textContent;
+
+        // Показ/скрытие блока
+        if (selectedOption.value === "transparent") {
+            bezelConfigBox.style.display = "block";
+        } else {
+            bezelConfigBox.style.display = "none";
+        }
     });
+
+    if (casebackSelect.value === "transparent") {
+        bezelConfigBox.style.display = "block";
+    }
+    else {
+        bezelConfigBox.style.display = "none";
+    }
+
+    // === Галерея бейзелов ===
+    const bezelImages = document.querySelectorAll(".bezel-img");
+    const prevBtn = document.querySelector(".bezel-prev-btn");
+    const nextBtn = document.querySelector(".bezel-next-btn");
+
+    let currentBezelIndex = 0;
+
+    function updateBezelGallery() {
+        bezelImages.forEach((img, index) => {
+            img.classList.toggle("active", index === currentBezelIndex);
+        });
+    }
+
+    prevBtn.addEventListener("click", () => {
+        currentBezelIndex = (currentBezelIndex - 1 + bezelImages.length) % bezelImages.length;
+        updateBezelGallery();
+    });
+
+    nextBtn.addEventListener("click", () => {
+        currentBezelIndex = (currentBezelIndex + 1) % bezelImages.length;
+        updateBezelGallery();
+    });
+
+    // Показываем первый бейзел по умолчанию
+    updateBezelGallery();
 
 
 });
