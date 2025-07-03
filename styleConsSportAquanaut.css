@@ -139,11 +139,21 @@
 }
 
 .corner-text.left {
-  left: 6px;
+  left: 0px;
+  right: auto;
+}
+
+.corner-text.left2 {
+  left: 0px;
+  /* ← будет отображать гравировку */
+  right: auto;
+  bottom: 8px;
 }
 
 .corner-text.right {
-  right: 6px;
+  right: 0px;
+  /* ← будет отображать гравировку */
+  left: auto;
 }
 
 .image-options {
@@ -302,6 +312,34 @@
     height: 600px;
     /* Ограничивает зону "прилипания" */
     overflow: hidden;
+  }
+
+  .specs-box {
+    margin-top: 30px;
+    padding: 16px 20px;
+    background-color: #f5f1eb;
+    border: 0px solid #ccc;
+    border-radius: 5px;
+    width: 320px;
+    box-sizing: border-box;
+  }
+
+  .corner-text.left {
+    left: 0px;
+    right: auto;
+  }
+
+  .corner-text.left2 {
+    left: 0px;
+    /* ← будет отображать гравировку */
+    right: auto;
+    top: 12px;
+  }
+
+  .corner-text.right {
+    right: 0px;
+    /* ← будет отображать гравировку */
+    left: auto;
   }
 }
 

@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+
     loadFromLocalOrURL();
 
 
@@ -163,6 +164,15 @@ document.addEventListener("DOMContentLoaded", function () {
     logoSelect.addEventListener("change", () => {
         const selectedOption = logoSelect.options[logoSelect.selectedIndex];
         logoText.textContent = selectedOption.textContent;
+    });
+
+    // === Задняя крышка ===
+    const casebackSelect = document.getElementById("casebackSelect");
+    const casebackText = document.getElementById("casebackText");
+
+    casebackSelect.addEventListener("change", () => {
+        const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
+        casebackText.textContent = selectedOption.textContent;
     });
 
 
