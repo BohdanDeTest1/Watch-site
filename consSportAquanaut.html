@@ -29,7 +29,9 @@
                     <img id="dialLayer" class="layer" src="watchParts/1_Aquanaut/dial/dial_1.png" />
                     <div class="corner-text left" id="engraveText">Без гравировки</div>
                     <div class="corner-text left2" id="logoText">Без логотипа</div>
-                    <div class="corner-text right" id="casebackText">цельная крышка</div>
+                    <div class="corner-text right" id="casebackText">Цельная крышка</div>
+                    <div id="bezelText" class="corner-text right2">Стандартный безель</div>
+
 
                 </div>
             </div>
@@ -109,6 +111,14 @@
                     </label>
                 </div>
 
+                <div id="bezelTypeWrapper" class="select-wrapper hidden">
+                    <label>Безель:
+                        <select id="bezelTypeSelect">
+                            <option value="standard">Стандартный безель</option>
+                            <option value="custom">Кастомный безель</option>
+                        </select>
+                    </label>
+                </div>
 
                 <div id="bezelConfigBox" class="hidden">
                     <label for="bezelNumber">Введи номер безеля:</label>

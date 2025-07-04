@@ -186,30 +186,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // === Задняя крышка ===
+    // === Задняя крышка ===
     const casebackSelect = document.getElementById("casebackSelect");
     const casebackText = document.getElementById("casebackText");
-
-
+    const bezelTypeWrapper = document.getElementById("bezelTypeWrapper");
+    const bezelTypeSelect = document.getElementById("bezelTypeSelect");
     const bezelConfigBox = document.getElementById("bezelConfigBox");
+    const bezelText = document.getElementById("bezelText");
+
+    function updateBezelVisibility() {
+        const isTransparent = casebackSelect.value === "transparent";
+        const bezelValue = bezelTypeSelect.value;
+
+        // Показываем селектор "Безель", только если крышка прозрачная
+        bezelTypeWrapper.style.display = isTransparent ? "block" : "none";
+
+        // Показываем номер и галерею, только если и прозрачная крышка и кастомный безель
+        bezelConfigBox.style.display = (isTransparent && bezelValue === "custom") ? "block" : "none";
+
+        // Отображение текста "Стандартный безель"
+        if (isTransparent && bezelValue === "standard") {
+            bezelText.textContent = "Стандартный безель";
+            bezelText.style.display = "block";
+        } else {
+            bezelText.textContent = "";
+            bezelText.style.display = "none";
+        }
+    }
+
+
 
     casebackSelect.addEventListener("change", () => {
         const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
         casebackText.textContent = selectedOption.textContent;
-
-        // Показ/скрытие блока
-        if (selectedOption.value === "transparent") {
-            bezelConfigBox.style.display = "block";
-        } else {
-            bezelConfigBox.style.display = "none";
-        }
+        updateBezelVisibility();
     });
 
-    if (casebackSelect.value === "transparent") {
-        bezelConfigBox.style.display = "block";
-    }
-    else {
-        bezelConfigBox.style.display = "none";
-    }
+    bezelTypeSelect.addEventListener("change", () => {
+        updateBezelVisibility();
+    });
+
+    // начальная проверка при загрузке
+    updateBezelVisibility();
+
 
     // === Галерея бейзелов ===
     const bezelImages = document.querySelectorAll(".bezel-img");

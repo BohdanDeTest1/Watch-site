@@ -156,6 +156,13 @@
   left: auto;
 }
 
+.corner-text.right2 {
+  right: 0px;
+  /* ← будет отображать гравировку */
+  left: auto;
+  bottom: 8px;
+}
+
 .image-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -253,7 +260,7 @@
     width: 100%;
     max-width: 321px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 3px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
     height: 370px;
     border-radius: 5px;
@@ -327,21 +334,28 @@
   }
 
   .corner-text.left {
-    left: 0px;
+    left: -15px;
     right: auto;
   }
 
   .corner-text.left2 {
-    left: 0px;
+    left: -15px;
     /* ← будет отображать гравировку */
     right: auto;
     top: 12px;
   }
 
   .corner-text.right {
-    right: 0px;
+    right: -20px !important;
     /* ← будет отображать гравировку */
-    left: auto;
+    left: auto !important;
+  }
+
+  .corner-text.right2 {
+    right: -23px !important;
+    /* ← будет отображать гравировку */
+    left: auto !important;
+    top: 12px !important;
   }
 }
 
@@ -377,7 +391,7 @@
     top: 180px;
     background: #F5F1EB;
     box-sizing: border-box;
-    padding: 20px;
+    padding: 10px;
   }
 
   .options-panel {
