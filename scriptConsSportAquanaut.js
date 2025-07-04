@@ -1,4 +1,19 @@
 
+let lastScrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+    const header = document.getElementById("header");
+
+    if (window.innerWidth <= 768) { // Только для мобильных
+        if (window.scrollY > lastScrollY) {
+            header.classList.add("hide-on-scroll");
+        } else {
+            header.classList.remove("hide-on-scroll");
+        }
+        lastScrollY = window.scrollY;
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const braceletLayer = document.getElementById("braceletLayer");
     const dialLayer = document.getElementById("dialLayer");
@@ -222,5 +237,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // Показываем первый бейзел по умолчанию
     updateBezelGallery();
 
+    let lastScrollTop = 0;
+    const header = document.getElementById('header');
 
+    window.addEventListener('scroll', function () {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // скроллим вниз
+            header.style.top = '-100px';
+        } else {
+            // скроллим вверх
+            header.style.top = '0';
+        }
+
+        lastScrollTop = scrollTop;
+    });
 });

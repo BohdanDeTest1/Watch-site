@@ -24,7 +24,7 @@ main.sport-constructor {
 }
 
 .back-button {
-    position: absolute;
+    position: fixed;
     top: 100px;
     left: 30px;
     padding: 8px 20px;
@@ -134,6 +134,13 @@ h1 {
     .sport-constructor {
         margin-top: 10px;
         /* регулируй это значение по вкусу */
+    }
+}
+
+@media (max-width: 769px) {
+    .back-button {
+
+        position: absolute;
     }
 }
 

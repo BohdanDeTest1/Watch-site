@@ -83,11 +83,11 @@
 
   .watch-preview {
     width: 100%;
-    height: auto;
     max-width: 250px;
     position: sticky;
     z-index: 2;
     padding-bottom: 20px;
+    height: 350px !important;
   }
 
   .watch-preview .layer {
@@ -255,7 +255,7 @@
     margin: 0 auto;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-    height: 400px;
+    height: 370px;
     border-radius: 5px;
   }
 
@@ -290,7 +290,7 @@
   }
 
   .constructor-page {
-    padding: 65px 20px 70px;
+    padding: 25px 20px 77px;
   }
 
   .option-header {
@@ -302,10 +302,12 @@
   .watch-preview-box {
     position: -webkit-sticky;
     position: sticky;
-    top: 80px;
+    top: 60px;
     /* или сколько нужно */
     z-index: 2;
   }
+
+
 
   .watch-sticky-limiter {
     position: relative;
@@ -346,6 +348,10 @@
 @media (min-width: 769px) {
   .constructor-page {
     padding: 65px 20px 70px;
+  }
+
+  .back-button {
+    position: fixed;
   }
 
   .constructor-container {
@@ -696,5 +702,31 @@
 
   .bezel-next-btn {
     right: 3vw;
+  }
+}
+
+@media (max-width: 768px) {
+  #header {
+    transition: transform 0.3s ease;
+  }
+
+  #header.hide-on-scroll {
+    transform: translateY(-100%);
+  }
+
+  #header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: inherit;
+    /* или конкретный цвет */
+    transition: top 0.3s ease;
+  }
+
+  .header-placeholder {
+    height: 60px;
+    /* или высота вашего хедера */
   }
 }
