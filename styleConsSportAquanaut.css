@@ -130,7 +130,7 @@
 .corner-text {
   position: absolute;
   bottom: 6px;
-  font-size: 12px;
+  font-size: 10px;
   color: #111;
   background: transparent;
   padding: 4px 8px;
@@ -147,7 +147,7 @@
   left: 0px;
   /* ← будет отображать гравировку */
   right: auto;
-  bottom: 8px;
+  bottom: -5px;
 }
 
 .corner-text.right {
@@ -160,7 +160,7 @@
   right: 0px;
   /* ← будет отображать гравировку */
   left: auto;
-  bottom: 8px;
+  bottom: -5px;
 }
 
 .image-options {
@@ -288,7 +288,7 @@
   .corner-text {
     position: absolute;
     top: 0px;
-    font-size: 9px;
+    font-size: 10px;
     color: #111;
     background: transparent;
     padding: 0px 0px;
@@ -380,7 +380,7 @@
     flex: 0 0 auto;
     max-width: 325px;
     /* ⬅️ Меняй это значение, чтобы сделать блок уже или шире */
-    min-height: 375px;
+    min-height: 400px;
     /* ⬅️ Меняй это значение, чтобы сделать блок ниже или выше */
     width: 100%;
     height: auto;
@@ -434,6 +434,10 @@
   .options-panel button {
     font-size: 12px !important;
   }
+
+  .watch-preview {
+    height: 350px;
+  }
 }
 
 @media (min-width: 769px) {
@@ -454,7 +458,21 @@
 
   .corner-text {
     position: absolute;
-    bottom: -12px;
+    bottom: -25px;
+  }
+
+  .option-subtitle {
+    font-size: 13px !important;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    margin-top: 2px;
+    /* text-align: center; */
+    /* letter-spacing: 0.5px; */
+    text-transform: uppercase;
+    font-weight: 500 !important;
+    letter-spacing: 1px;
+    padding: 5px 0px 0px 59px !important;
   }
 }
 
@@ -674,24 +692,6 @@
 }
 
 
-/* 
-.bezel-prev-btn,
-.bezel-next-btn {
-  background: none;         /* Убирает фон */
-/*border: none;             /* Убирает бордер */
-/*color: #333;              /* Цвет символа (тёмный) */
-/*font-size: 28px;          /* Увеличенный размер */
-/*font-weight: bold;
-  cursor: pointer;
-  padding: 10px;
-  z-index: 2;
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  user-select: none;
-}
-*/
-
 .bezel-prev-btn:hover,
 .bezel-next-btn:hover {
   transform: scale(1.1);
@@ -743,4 +743,30 @@
     height: 60px;
     /* или высота вашего хедера */
   }
+
+  .option-subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    text-align: center;
+    /* letter-spacing: 0.5px; */
+    text-transform: uppercase;
+    font-weight: 500 !important;
+    letter-spacing: 1px;
+  }
+
+}
+
+.option-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  margin-top: 20px;
+  /* letter-spacing: 0.5px; */
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
 }
