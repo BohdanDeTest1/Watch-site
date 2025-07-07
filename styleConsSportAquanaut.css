@@ -770,3 +770,40 @@
   font-weight: 500 !important;
   letter-spacing: 1px;
 }
+
+@media (min-width: 769px) {
+  .bezel-carousel-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .bezel-carousel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    max-width: 500px;
+    /* или ширина, соответствующая ширине галереи */
+  }
+
+  .bezel-prev-btn,
+  .bezel-next-btn {
+    position: absolute !important;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    box-shadow: none !important;
+  }
+
+  .bezel-prev-btn {
+    left: -30px;
+    /* сдвиг влево от галереи */
+  }
+
+  .bezel-next-btn {
+    right: -30px;
+    /* сдвиг вправо от галереи */
+  }
+}
