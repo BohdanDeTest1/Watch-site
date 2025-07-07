@@ -124,10 +124,17 @@
 
                 <div id="bezelConfigBox" class="hidden">
                     <label for="bezelNumber">Введи номер ротора:</label>
-                    <input type="number" id="bezelNumber" name="bezelNumber" class="input-full" min="1" max="300"
-                        placeholder="1–300" />
+                    <div class="bezel-input-wrapper">
+                        <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
+                            placeholder="1–300" />
+                        <button id="applyBezelNumberBtn" type="button">Применить</button>
+                    </div>
 
                     <div class="bezel-carousel-wrapper">
+                        <div class="bezel-carousel-controls">
+                            <button class="bezel-prev-btn" aria-label="Previous bezel">&#60;</button>
+                            <button class="bezel-next-btn" aria-label="Next bezel">&#62;</button>
+                        </div>
 
                         <div class="bezel-carousel">
                             <img src="bezel/bezel_1.png" alt="Bezel 1" class="bezel-img active" />
@@ -135,8 +142,6 @@
                             <img src="bezel/bezel_3.png" alt="Bezel 3" class="bezel-img" />
                             <img src="bezel/bezel_4.png" alt="Bezel 4" class="bezel-img" />
                         </div>
-                        <button class="bezel-prev-btn" aria-label="Previous bezel">&#60;</button>
-                        <button class="bezel-next-btn" aria-label="Next bezel">&#62;</button>
                     </div>
                 </div>
 

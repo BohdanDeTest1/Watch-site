@@ -629,7 +629,7 @@
   border-radius: 4px;
   box-sizing: border-box;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 
@@ -774,36 +774,27 @@
 @media (min-width: 769px) {
   .bezel-carousel-wrapper {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    position: relative;
   }
 
-  .bezel-carousel {
+  .bezel-carousel-controls {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 5px;
-    max-width: 500px;
-    /* или ширина, соответствующая ширине галереи */
+    justify-content: space-between;
+    width: 100%;
+    max-width: 560px;
+    /* ширина как у галереи */
+    margin: 5px 0;
   }
 
   .bezel-prev-btn,
   .bezel-next-btn {
-    position: absolute !important;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    box-shadow: none !important;
-  }
-
-  .bezel-prev-btn {
-    left: -30px;
-    /* сдвиг влево от галереи */
-  }
-
-  .bezel-next-btn {
-    right: -30px;
-    /* сдвиг вправо от галереи */
+    background: none !important;
+    position: relative !important;
+    top: 0;
+    margin: 2px 1px 10px 2px;
+    padding: 9px 28px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
   }
 }
