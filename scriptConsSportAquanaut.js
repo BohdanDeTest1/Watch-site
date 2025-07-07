@@ -214,6 +214,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    const bezelNumberInput = document.getElementById("bezelNumber");
+    const applyBezelNumberBtn = document.getElementById("applyBezelNumberBtn");
+    const bezelNumberError = document.getElementById("bezelNumberError");
+
+    applyBezelNumberBtn.addEventListener("click", () => {
+        const number = parseInt(bezelNumberInput.value.trim(), 10);
+
+        if (!number || number < 1 || number > 129) {
+            bezelNumberError.style.display = "block";
+            bezelText.textContent = "";
+            bezelText.style.display = "none";
+        } else {
+            bezelNumberError.style.display = "none";
+            bezelText.textContent = `Ротор №${number}`;
+            bezelText.style.display = "block";
+        }
+    });
+
+
 
 
     casebackSelect.addEventListener("change", () => {
