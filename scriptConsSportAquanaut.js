@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Отображение текста "Стандартный безель"
         if (isTransparent && bezelValue === "standard") {
-            bezelText.textContent = "Стандартный безель";
+            bezelText.textContent = "Стандартный ротор";
             bezelText.style.display = "block";
         } else {
             bezelText.textContent = "";
@@ -291,4 +291,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
         lastScrollTop = scrollTop;
     });
+
+    const infoBtn = document.getElementById("infoButton");
+    const infoTooltip = document.getElementById("infoTooltip");
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        infoBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // важно!
+            const isVisible = infoTooltip.style.display === "block";
+            infoTooltip.style.display = isVisible ? "none" : "block";
+        });
+
+        // Закрытие при тапе вне тултипа
+        document.addEventListener("click", (e) => {
+            if (!infoTooltip.contains(e.target) && !infoBtn.contains(e.target)) {
+                infoTooltip.style.display = "none";
+            }
+        });
+    } else {
+        // для десктопа — при наведении
+        infoBtn.addEventListener("mouseenter", () => {
+            infoTooltip.style.display = "block";
+        });
+        infoBtn.addEventListener("mouseleave", () => {
+            infoTooltip.style.display = "none";
+        });
+        infoTooltip.addEventListener("mouseleave", () => {
+            infoTooltip.style.display = "none";
+        });
+    }
+
+
+
 });
