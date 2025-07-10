@@ -759,6 +759,13 @@
     letter-spacing: 1px;
   }
 
+  .input-error {
+    color: #d9534f;
+    font-size: 14px !important;
+    margin-top: 5px;
+    margin-left: 8px;
+  }
+
 }
 
 .option-subtitle {
@@ -834,6 +841,15 @@
   .info-hint-text {
     font-size: 10px !important;
   }
+
+  .input-error {
+    color: #d9534f;
+    font-size: 10px;
+    margin-top: 5px;
+    margin-left: 8px;
+  }
+
+
 }
 
 .bezel-input-wrapper {
@@ -871,8 +887,9 @@
 
 .input-error {
   color: #d9534f;
-  font-size: 14px;
+  font-size: 10px;
   margin-top: 5px;
+  margin-left: 8px;
 }
 
 @media (min-width: 768px) {
