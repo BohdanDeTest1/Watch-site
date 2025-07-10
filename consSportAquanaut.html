@@ -39,7 +39,7 @@
 
             <div class="options-panel">
                 <div class="option-group">
-                    <div class="option-header" id="braceletToggle">Bracelet <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="braceletToggle">Браслет <span class="arrow-icon"></span></div>
 
                     <div class="option-images" id="braceletOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -58,11 +58,12 @@
                             <img src="watchParts/1_Aquanaut/bracelet/Bracelet_5.png" alt="Bracelet 5">
                         </button>
                     </div>
-
                 </div>
 
+                <hr class="option-divider">
+
                 <div class="option-group">
-                    <div class="option-header" id="dialToggle">Dial <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="dialToggle">Циферблат <span class="arrow-icon"></span></div>
 
                     <div class="option-images" id="dialOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -86,8 +87,10 @@
                     </div>
                 </div>
 
+                <hr class="option-divider">
+
                 <div class="option-group">
-                    <div class="option-header" id="caseToggle">Case <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="caseToggle">Корпус <span class="arrow-icon"></span></div>
 
                     <div class="option-images" id="caseOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -115,26 +118,6 @@
 
                 <div id="bezelTypeWrapper" class="select-wrapper hidden">
 
-                    <!--  
-
-                    <div class="label-with-info">
-                        <div class="info-container">
-                            <button id="infoButton" class="info-btn">i</button>
-                            <div id="infoTooltip" class="info-tooltip">
-                                <img src="bezel/Rotor.png" alt="Инфо" />
-                                <p class="info-hint-text">Подвижная деталь на задней стороне часов, заводит механизм при
-                                    движении руки.</p>
-
-                            </div>
-                        </div>
-                        <label for="bezelTypeSelect" class="label-text">Ротор:</label>
-                    </div> 
-
-                    <select id="bezelTypeSelect">
-                        <option value="standard">Стандартный ротор</option>
-                        <option value="custom">Кастомный ротор</option>
-                    </select> -->
-
                     <label>
                         <div class="label-with-info">
                             <div class="info-container">
@@ -160,10 +143,10 @@
                     <label for="bezelNumber">Введи номер ротора:</label>
                     <div class="bezel-input-wrapper">
                         <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
-                            placeholder="1–126" />
+                            placeholder="1–129" />
                         <button id="applyBezelNumberBtn" type="button">Применить</button>
                     </div>
-                    <p id="bezelNumberError" class="input-error" style="display: none;">Значение только от 1 до 126</p>
+                    <p id="bezelNumberError" class="input-error" style="display: none;">Значение только от 1 до 129</p>
 
 
                     <div class="bezel-carousel-wrapper">
@@ -173,10 +156,26 @@
                         </div>
 
                         <div class="bezel-carousel">
+                            <!--
                             <img src="bezel/bezel_1.png" alt="Bezel 1" class="bezel-img active" />
                             <img src="bezel/bezel_2.png" alt="Bezel 2" class="bezel-img" />
                             <img src="bezel/bezel_3.png" alt="Bezel 3" class="bezel-img" />
-                            <img src="bezel/bezel_4.png" alt="Bezel 4" class="bezel-img" />
+                            <img src="bezel/bezel_4.png" alt="Bezel 4" class="bezel-img" /> -->
+                            <img src="bezel/rotor_0_0.png" alt="Bezel 1" class="bezel-img active" />
+                            <img src="bezel/rotor_1_0.png" alt="Bezel 2" class="bezel-img" />
+                            <img src="bezel/rotor_1_1.png" alt="Bezel 3" class="bezel-img" />
+                            <img src="bezel/rotor_1_2.png" alt="Bezel 4" class="bezel-img" />
+                            <img src="bezel/rotor_1_3.png" alt="Bezel 5" class="bezel-img" />
+                            <img src="bezel/rotor_2_0.png" alt="Bezel 6" class="bezel-img" />
+                            <img src="bezel/rotor_2_1.png" alt="Bezel 7" class="bezel-img" />
+                            <img src="bezel/rotor_2_2.png" alt="Bezel 8" class="bezel-img" />
+                            <img src="bezel/rotor_2_3.png" alt="Bezel 9" class="bezel-img" />
+                            <img src="bezel/rotor_3_0.png" alt="Bezel 10" class="bezel-img" />
+                            <img src="bezel/rotor_3_1.png" alt="Bezel 11" class="bezel-img" />
+                            <img src="bezel/rotor_3_2.png" alt="Bezel 12" class="bezel-img" />
+                            <img src="bezel/rotor_3_3.png" alt="Bezel 13" class="bezel-img" />
+                            <img src="bezel/rotor_3_4.png" alt="Bezel 14" class="bezel-img" />
+                            <img src="bezel/rotor_3_5.png" alt="Bezel 15" class="bezel-img" />
                         </div>
                     </div>
                 </div>
@@ -196,7 +195,7 @@
                     <label>Логотип:
                         <select id="logoSelect">
                             <option value="noLogo">Без логотипа</option>
-                            <option value="sLogo">логотип "SEIKO"</option>
+                            <option value="sLogo">Логотип "SEIKO"</option>
                             <option value="otherLogo">Свой логотип</option>
                         </select>
 
@@ -212,6 +211,7 @@
                         <li>Водозащита: 10ATM</li>
                         <li>Задняя крышка: прозрачная</li>
                     </ul>
+                    <h1 class="specs-title">1090 PLN</h1>
                 </div>
                 <button id="downloadBtn">Скачать изображение</button>
             </div>

@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
             bezelText.style.display = "none";
         } else {
             bezelNumberError.style.display = "none";
-            bezelText.textContent = `Ротор №${number}`;
+            bezelText.textContent = `Rotor #${number} (+100PLN)`;
             bezelText.style.display = "block";
         }
     });
