@@ -322,6 +322,65 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function updateTotalPrice() {
+        let basePrice = 1090;
+        let total = basePrice;
+
+        // Гравировка
+        const engravingSelect = document.getElementById("engravingSelect");
+        if (engravingSelect?.value === "withIngrave") {
+            total += 150;
+        }
+
+        // Логотип
+        const logoSelect = document.getElementById("logoSelect");
+        if (logoSelect?.value === "otherLogo") {
+            total += 50;
+        }
+
+        // Ротор (если кастомный и валидный номер от 1 до 129)
+        const bezelTypeSelect = document.getElementById("bezelTypeSelect");
+        const bezelNumberInput = document.getElementById("bezelNumber");
+        if (bezelTypeSelect?.value === "custom") {
+            const number = parseInt(bezelNumberInput.value, 10);
+            if (!isNaN(number) && number >= 1 && number <= 129) {
+                total += 100;
+            }
+        }
+
+        // Обновляем текст
+        const priceDisplay = document.getElementById("priceDisplay");
+        if (priceDisplay) {
+            priceDisplay.textContent = `${total} PLN`;
+        }
+    }
+    engravingSelect.addEventListener("change", () => {
+        const selectedOption = engravingSelect.options[engravingSelect.selectedIndex];
+        engravingText.textContent = selectedOption.textContent;
+        updateTotalPrice();
+    });
+
+    logoSelect.addEventListener("change", () => {
+        const selectedOption = logoSelect.options[logoSelect.selectedIndex];
+        logoText.textContent = selectedOption.textContent;
+        updateTotalPrice();
+    });
+
+    applyBezelNumberBtn.addEventListener("click", () => {
+        const number = parseInt(bezelNumberInput.value.trim(), 10);
+
+        if (!number || number < 1 || number > 129) {
+            bezelNumberError.style.display = "block";
+            bezelText.textContent = "";
+            bezelText.style.display = "none";
+        } else {
+            bezelNumberError.style.display = "none";
+            bezelText.textContent = `Rotor #${number} (+100PLN)`;
+            bezelText.style.display = "block";
+        }
+
+        updateTotalPrice(); // ← Добавь сюда
+    });
 
 
 });

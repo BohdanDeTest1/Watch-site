@@ -13,6 +13,7 @@
   color: #555;
 }
 
+
 .constructor-container {
   display: flex;
   flex-wrap: wrap;
@@ -144,26 +145,28 @@
 .corner-text.left {
   left: 0px;
   right: auto;
+  bottom: -22px;
 }
 
 .corner-text.left2 {
   left: 0px;
   /* ← будет отображать гравировку */
   right: auto;
-  bottom: -5px;
+  bottom: -10px;
 }
 
 .corner-text.right {
   right: 0px;
   /* ← будет отображать гравировку */
   left: auto;
+  bottom: -22px;
 }
 
 .corner-text.right2 {
   right: 0px;
   /* ← будет отображать гравировку */
   left: auto;
-  bottom: -5px;
+  bottom: -10px;
 }
 
 .image-options {
@@ -275,7 +278,7 @@
     margin: 0 auto;
     padding: 3px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-    height: 370px;
+    height: 380px;
     border-radius: 5px;
   }
 
@@ -347,29 +350,29 @@
   }
 
   .corner-text.left {
-    left: -15px;
+    left: -23px;
     right: auto;
-    top: -5px !important;
+    top: -8px !important;
   }
 
   .corner-text.left2 {
-    left: -15px;
+    left: -23px;
     /* ← будет отображать гравировку */
     right: auto;
-    top: 8px;
+    top: 5px;
   }
 
   .corner-text.right {
-    right: -17px !important;
+    right: -23px !important;
     left: auto !important;
-    top: -5px !important;
+    top: -8px !important;
   }
 
   .corner-text.right2 {
     right: -23px !important;
     /* ← будет отображать гравировку */
     left: auto !important;
-    top: 8px !important;
+    top: 5px !important;
   }
 }
 
@@ -520,6 +523,8 @@
   padding: 12px 0px 12px 0px;
   color: #f5f5f5;
   background: #333;
+  border-radius: 3px;
+  letter-spacing: 1px;
 }
 
 #downloadBtn:hover {
@@ -527,7 +532,7 @@
   width: 320px;
   padding: 12px 0px 12px 0px;
   color: #333;
-  background: #f5f5f5;
+  background: transparent;
   border: 1px solid #333;
 }
 
@@ -745,6 +750,15 @@
 
   .bezel-next-btn {
     right: 3vw;
+  }
+
+  #downloadBtn:hover {
+    margin-top: 20px;
+    width: 320px;
+    padding: 12px 0px 12px 0px;
+    color: #f5f5f5;
+    background: #333;
+    border: 1px solid #333;
   }
 }
 
@@ -972,7 +986,7 @@
 .info-btn {
   width: 24px;
   height: 24px;
-  background-color: transparent;
+  background-color: rgb(85, 85, 85) !important;
   border: 1px solid #aaa;
   border-radius: 50% !important;
   font-size: 14px;
@@ -1053,4 +1067,21 @@ button,
 button:focus,
 .option-header:focus {
   outline: none;
+}
+
+.specs-box h3 {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 1px;
+  color: #555;
+  margin-bottom: 0px !important;
+}
+
+#priceDisplay.specs-price {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  color: #555;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
 }
