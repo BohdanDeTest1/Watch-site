@@ -262,6 +262,16 @@ document.addEventListener("DOMContentLoaded", function () {
     bezelTypeSelect.addEventListener("change", () => {
         updateBezelVisibility();
         updateTotalPrice();
+
+        const bezelValue = bezelTypeSelect.value;
+        const number = parseInt(bezelNumberInput.value.trim(), 10);
+        if (bezelValue === "custom" && !isNaN(number) && number >= 1 && number <= 129) {
+            bezelText.textContent = `Rotor #${number} (+100PLN)`;
+            bezelText.style.display = "block";
+        } else {
+            bezelText.textContent = "";
+            bezelText.style.display = "none";
+        }
     });
 
     // начальная проверка при загрузке
