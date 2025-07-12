@@ -429,11 +429,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const watchArea = document.getElementById("watchPreviewBox"); // Это div с часами
 
     downloadBtn.addEventListener("click", () => {
+
+        const originalHeight = watchArea.style.height;
+        const originalWidth = watchArea.style.width;
+
+        // Временно задаем фиксированные размеры
+        watchArea.style.width = "270px";
+        watchArea.style.height = "400px";
+
         html2canvas(watchArea, { scale: 2 }).then(canvas => {
             const link = document.createElement("a");
             link.download = "watch.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
+
+            // Возвращаем оригинальные стили
+            watchArea.style.height = originalHeight;
+            watchArea.style.width = originalWidth;
         });
     });
 

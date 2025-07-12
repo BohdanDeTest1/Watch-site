@@ -274,7 +274,7 @@
     right: 0;
     z-index: 1000;
     width: 100%;
-    max-width: 321px;
+    max-width: 340px;
     margin: 0 auto;
     padding: 3px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
@@ -1041,6 +1041,7 @@
   border: none;
   border-bottom: 1px solid rgb(85 85 85 / 39%);
   margin: 0px 54px 0px 5px !important;
+  width: 320px;
 }
 
 @media (max-width: 767px) {
