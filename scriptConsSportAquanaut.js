@@ -77,31 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
 
-    // toggles.forEach(({ toggleId, menuId }) => {
-    //     const toggleEl = document.getElementById(toggleId);
-    //     const menuEl = document.getElementById(menuId);
-
-    //     toggleEl?.addEventListener("click", () => {
-    //         const isVisible = menuEl.style.display === "flex";
-
-    //         // Закрываем все меню и стрелки
-    //         toggles.forEach(({ toggleId: otherToggleId, menuId: otherMenuId }) => {
-    //             const otherMenu = document.getElementById(otherMenuId);
-    //             const otherToggle = document.getElementById(otherToggleId);
-    //             if (otherMenu && otherToggle) {
-    //                 otherMenu.style.display = "none";
-    //                 otherToggle.classList.remove("open");
-    //             }
-    //         });
-
-    //         // Переключаем текущее меню и стрелку
-    //         if (!isVisible) {
-    //             menuEl.style.display = "flex";
-    //             toggleEl.classList.add("open");
-    //         }
-    //     });
-    // });
-
     toggles.forEach(({ toggleId, menuId }) => {
         const toggleEl = document.getElementById(toggleId);
         const menuEl = document.getElementById(menuId);
@@ -235,28 +210,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
     // casebackSelect.addEventListener("change", () => {
     //     const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
     //     casebackText.textContent = selectedOption.textContent;
     //     updateBezelVisibility();
+
+    //     // Показать нужную строку характеристик
+    //     const solidLine = document.getElementById("spec-caseback-solid");
+    //     const transparentLine = document.getElementById("spec-caseback-transparent");
+
+    //     if (casebackSelect.value === "solid") {
+    //         solidLine.style.display = "list-item";
+    //         transparentLine.style.display = "none";
+    //     } else {
+    //         solidLine.style.display = "none";
+    //         transparentLine.style.display = "list-item";
+    //     }
     // });
+
     casebackSelect.addEventListener("change", () => {
         const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
         casebackText.textContent = selectedOption.textContent;
         updateBezelVisibility();
 
-        // Показать нужную строку характеристик
         const solidLine = document.getElementById("spec-caseback-solid");
         const transparentLine = document.getElementById("spec-caseback-transparent");
 
         if (casebackSelect.value === "solid") {
             solidLine.style.display = "list-item";
             transparentLine.style.display = "none";
+            bezelText.textContent = "";
+            bezelText.style.display = "none";
         } else {
             solidLine.style.display = "none";
             transparentLine.style.display = "list-item";
+
+            if (bezelTypeSelect.value === "custom") {
+                const number = parseInt(bezelNumberInput.value.trim(), 10);
+                if (!isNaN(number) && number >= 1 && number <= 129) {
+                    bezelText.textContent = `Rotor #${number} (+100PLN)`;
+                    bezelText.style.display = "block";
+                }
+            } else if (bezelTypeSelect.value === "standard") {
+                bezelText.textContent = bezelTypeSelect.options[0].textContent;
+                bezelText.style.display = "block";
+            } else {
+                bezelText.textContent = "";
+                bezelText.style.display = "none";
+            }
         }
+
     });
+
 
 
     bezelTypeSelect.addEventListener("change", () => {
@@ -268,10 +274,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (bezelValue === "custom" && !isNaN(number) && number >= 1 && number <= 129) {
             bezelText.textContent = `Rotor #${number} (+100PLN)`;
             bezelText.style.display = "block";
+        } else if (bezelValue === "standard") {
+            const standardText = bezelTypeSelect.options[bezelTypeSelect.selectedIndex].textContent;
+            bezelText.textContent = standardText;
+            bezelText.style.display = "block";
         } else {
             bezelText.textContent = "";
             bezelText.style.display = "none";
         }
+
     });
 
     // начальная проверка при загрузке
@@ -412,5 +423,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const event = new Event("change");
     casebackSelect.dispatchEvent(event);
+
+
+    const downloadBtn = document.getElementById("downloadBtn");
+    const watchArea = document.getElementById("watchPreviewBox"); // Это div с часами
+
+    downloadBtn.addEventListener("click", () => {
+        html2canvas(watchArea, { scale: 2 }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "watch.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    });
+
 
 });
