@@ -1073,7 +1073,7 @@ button:focus,
   font-size: 15px !important;
   font-weight: 400 !important;
   letter-spacing: 1px;
-  color: #555;
+  color: #444;
   margin-bottom: 0px !important;
 }
 
@@ -1081,7 +1081,7 @@ button:focus,
   font-size: 21px !important;
   font-weight: 600 !important;
   letter-spacing: 1px;
-  color: #555;
+  color: #444;
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }

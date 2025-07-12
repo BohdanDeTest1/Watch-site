@@ -235,14 +235,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+    // casebackSelect.addEventListener("change", () => {
+    //     const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
+    //     casebackText.textContent = selectedOption.textContent;
+    //     updateBezelVisibility();
+    // });
     casebackSelect.addEventListener("change", () => {
         const selectedOption = casebackSelect.options[casebackSelect.selectedIndex];
         casebackText.textContent = selectedOption.textContent;
         updateBezelVisibility();
+
+        // Показать нужную строку характеристик
+        const solidLine = document.getElementById("spec-caseback-solid");
+        const transparentLine = document.getElementById("spec-caseback-transparent");
+
+        if (casebackSelect.value === "solid") {
+            solidLine.style.display = "list-item";
+            transparentLine.style.display = "none";
+        } else {
+            solidLine.style.display = "none";
+            transparentLine.style.display = "list-item";
+        }
     });
+
 
     bezelTypeSelect.addEventListener("change", () => {
         updateBezelVisibility();
+        updateTotalPrice();
     });
 
     // начальная проверка при загрузке
@@ -381,6 +400,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateTotalPrice(); // ← Добавь сюда
     });
-
+    const event = new Event("change");
+    casebackSelect.dispatchEvent(event);
 
 });
