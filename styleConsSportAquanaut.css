@@ -610,7 +610,7 @@
   margin: 0 0 10px 0;
   font-size: 14px;
   font-weight: bold;
-  color: #333;
+  color: #555;
 }
 
 .specs-list {
@@ -1070,7 +1070,7 @@ button:focus,
 }
 
 .specs-box h3 {
-  font-size: 14px !important;
+  font-size: 15px !important;
   font-weight: 400 !important;
   letter-spacing: 1px;
   color: #555;
@@ -1078,7 +1078,7 @@ button:focus,
 }
 
 #priceDisplay.specs-price {
-  font-size: 20px !important;
+  font-size: 21px !important;
   font-weight: 600 !important;
   letter-spacing: 1px;
   color: #555;
