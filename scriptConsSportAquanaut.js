@@ -428,14 +428,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const downloadBtn = document.getElementById("downloadBtn");
     const watchArea = document.getElementById("watchPreviewBox"); // Это div с часами
 
+    // downloadBtn.addEventListener("click", () => {
+
+    //     const originalHeight = watchArea.style.height;
+    //     const originalWidth = watchArea.style.width;
+
+    //     // Временно задаем фиксированные размеры
+    //     watchArea.style.width = "400px";
+    //     watchArea.style.height = "400px";
+
     downloadBtn.addEventListener("click", () => {
+        const isMobile = window.innerWidth <= 768;
 
         const originalHeight = watchArea.style.height;
         const originalWidth = watchArea.style.width;
 
-        // Временно задаем фиксированные размеры
-        watchArea.style.width = "270px";
-        watchArea.style.height = "400px";
+        // Временно задаем фиксированные размеры в зависимости от устройства
+        if (isMobile) {
+            watchArea.style.width = "320px";
+            watchArea.style.height = "400px";
+        } else {
+            watchArea.style.width = "270px";
+            watchArea.style.height = "400px";
+        }
 
         html2canvas(watchArea, { scale: 2 }).then(canvas => {
             const link = document.createElement("a");
@@ -448,6 +463,19 @@ document.addEventListener("DOMContentLoaded", function () {
             watchArea.style.width = originalWidth;
         });
     });
+
+    downloadBtn.addEventListener("click", () => {
+        html2canvas(watchArea, {
+            scale: 2,
+            useCORS: true
+        }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "watch.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    });
+
 
 
 });

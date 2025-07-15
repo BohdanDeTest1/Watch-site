@@ -145,28 +145,28 @@
 .corner-text.left {
   left: 0px;
   right: auto;
-  bottom: -22px;
+  bottom: -13px;
 }
 
 .corner-text.left2 {
   left: 0px;
   /* ← будет отображать гравировку */
   right: auto;
-  bottom: -10px;
+  bottom: 0px;
 }
 
 .corner-text.right {
   right: 0px;
   /* ← будет отображать гравировку */
   left: auto;
-  bottom: -22px;
+  bottom: -13px;
 }
 
 .corner-text.right2 {
   right: 0px;
   /* ← будет отображать гравировку */
   left: auto;
-  bottom: -10px;
+  bottom: 0px;
 }
 
 .image-options {
@@ -397,7 +397,7 @@
     flex: 0 0 auto;
     max-width: 325px;
     /* ⬅️ Меняй это значение, чтобы сделать блок уже или шире */
-    min-height: 400px;
+    min-height: 380px;
     /* ⬅️ Меняй это значение, чтобы сделать блок ниже или выше */
     width: 100%;
     height: auto;
