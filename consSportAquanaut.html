@@ -29,10 +29,14 @@
                     <img id="braceletLayer" class="layer" src="watchParts/1_Aquanaut/bracelet/Bracelet_1.png" />
                     <img id="caseLayer" class="layer" src="watchParts/1_Aquanaut/case/case_1.png" />
                     <img id="dialLayer" class="layer" src="watchParts/1_Aquanaut/dial/dial_1.png" />
-                    <div class="corner-text left" id="engraveText">Без гравировки</div>
-                    <div class="corner-text left2" id="logoText">Без логотипа</div>
-                    <div class="corner-text right" id="casebackText">Цельная крышка</div>
-                    <div id="bezelText" class="corner-text right2">Стандартный ротор</div>
+                    <div class="corner-text left" id="engraveText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
+                    <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
+                        Без логотипа</div>
+                    <div class="corner-text right" id="casebackText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная крышка</div>
+                    <div id="bezelText" class="corner-text right2"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">Стандартный ротор</div>
 
 
                 </div>
@@ -41,7 +45,10 @@
 
             <div class="options-panel">
                 <div class="option-group">
-                    <div class="option-header" id="braceletToggle">Браслет <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="braceletToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.bracelet">Браслет</span>
+                        <span class="arrow-icon"></span>
+                    </div>
 
                     <div class="option-images" id="braceletOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -65,7 +72,10 @@
                 <hr class="option-divider">
 
                 <div class="option-group">
-                    <div class="option-header" id="dialToggle">Циферблат <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="dialToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dial">Циферблат</span>
+                        <span class="arrow-icon"></span>
+                    </div>
 
                     <div class="option-images" id="dialOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -92,7 +102,10 @@
                 <hr class="option-divider">
 
                 <div class="option-group">
-                    <div class="option-header" id="caseToggle">Корпус <span class="arrow-icon"></span></div>
+                    <div class="option-header" id="caseToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.case">Корпус</span>
+                        <span class="arrow-icon"></span>
+                    </div>
 
                     <div class="option-images" id="caseOptions" style="display: none;">
                         <button class="option" data-value="1">
@@ -107,13 +120,39 @@
                     </div>
                 </div>
 
-                <div class="option-subtitle">Дополнительные опции</div>
+                <div class="option-subtitle" data-i18n="pageConstructorsWatchView.watchMenu.additionalOptions">
+                    Дополнительные опции</div>
 
-                <div class="select-wrapper">
+                <!--  <div class="select-wrapper">
                     <label>Задняя крышка:
                         <select id="casebackSelect">
                             <option value="solid">Цельная крышка</option>
                             <option value="transparent">Прозрачная крышка</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="select-wrapper">
+                    <label data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:
+                        <select id="casebackSelect">
+                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
+                                крышка</option>
+                            <option value="transparent"
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
+                            </option>
+                        </select>
+                    </label>
+                </div> -->
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
+                        <select id="casebackSelect">
+                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
+                                крышка</option>
+                            <option value="transparent"
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
+                            </option>
                         </select>
                     </label>
                 </div>
@@ -126,15 +165,18 @@
                                 <button id="infoButton" class="info-btn">i</button>
                                 <div id="infoTooltip" class="info-tooltip">
                                     <img src="bezel/Rotor.png" alt="Инфо" />
-                                    <p class="info-hint-text">Подвижная деталь на задней стороне часов, заводит механизм
+                                    <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.rotorHint">
+                                        Подвижная деталь на задней стороне часов, заводит механизм
                                         при движении руки.</p>
                                 </div>
                             </div>
-                            <span class="label-text">Ротор:</span>
+                            <span class="label-text" data-i18n="pageConstructorsWatchView.watchMenu.rotor">Ротор:</span>
                         </div>
                         <select id="bezelTypeSelect">
-                            <option value="standard">Стандартный ротор</option>
-                            <option value="custom">Кастомный ротор</option>
+                            <option value="standard" data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">
+                                Стандартный ротор</option>
+                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">Кастомный
+                                ротор</option>
                         </select>
                     </label>
 
@@ -142,13 +184,16 @@
                 </div>
 
                 <div id="bezelConfigBox" class="hidden">
-                    <label for="bezelNumber">Введи номер ротора:</label>
+                    <label for="bezelNumber" data-i18n="pageConstructorsWatchView.watchMenu.rotorNumber">Введи номер
+                        ротора:</label>
                     <div class="bezel-input-wrapper">
                         <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
                             placeholder="1–129" />
-                        <button id="applyBezelNumberBtn" type="button">Применить</button>
+                        <button id="applyBezelNumberBtn" type="button"
+                            data-i18n="pageConstructorsWatchView.watchMenu.rotorAcceptButton">Применить</button>
                     </div>
-                    <p id="bezelNumberError" class="input-error" style="display: none;">Значение только от 1 до 129</p>
+                    <p id="bezelNumberError" class="input-error" style="display: none;"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129</p>
 
 
                     <div class="bezel-carousel-wrapper">
@@ -158,11 +203,6 @@
                         </div>
 
                         <div class="bezel-carousel">
-                            <!--
-                            <img src="bezel/bezel_1.png" alt="Bezel 1" class="bezel-img active" />
-                            <img src="bezel/bezel_2.png" alt="Bezel 2" class="bezel-img" />
-                            <img src="bezel/bezel_3.png" alt="Bezel 3" class="bezel-img" />
-                            <img src="bezel/bezel_4.png" alt="Bezel 4" class="bezel-img" /> -->
                             <img src="bezel/rotor_0_0.png" alt="Bezel 1" class="bezel-img active" />
                             <img src="bezel/rotor_1_0.png" alt="Bezel 2" class="bezel-img" />
                             <img src="bezel/rotor_1_1.png" alt="Bezel 3" class="bezel-img" />
@@ -184,45 +224,60 @@
 
 
                 <div class="select-wrapper">
-                    <label>Гравировка:
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.ingraveTitle">Гравировка:</span>
                         <select id="engravingSelect">
-                            <option value="withoutIngrave">Без гравировки</option>
-                            <option value="withIngrave">Гравировка (+150PLN)</option>
+                            <option value="withoutIngrave" data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без
+                                гравировки</option>
+                            <option value="withIngrave" data-i18n="pageConstructorsWatchView.watchMenu.ingrave">
+                                Гравировка (+150PLN)</option>
                         </select>
                     </label>
                 </div>
 
 
                 <div class="select-wrapper">
-                    <label>Логотип:
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dialLogoTitle">Логотип на
+                            циферблате:</span>
                         <select id="logoSelect">
-                            <option value="noLogo">Без логотипа</option>
-                            <option value="sLogo">Логотип "SEIKO"</option>
-                            <option value="otherLogo">Свой логотип (+50PLN)</option>
+                            <option value="noLogo" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">Без логотипа
+                            </option>
+                            <option value="sLogo" data-i18n="pageConstructorsWatchView.watchMenu.sLogo">Логотип "SEIKO"
+                            </option>
+                            <option value="otherLogo" data-i18n="pageConstructorsWatchView.watchMenu.otherLogo">Свой
+                                логотип (+50PLN)</option>
                         </select>
 
                     </label>
                 </div>
 
                 <div class="specs-box">
-                    <h2 class="specs-title">Характеристики</h2>
+                    <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
                     <ul class="specs-list">
-                        <li><strong>Механизм:</strong> Seiko NH35</li>
-                        <li><strong>Диаметр корпуса:</strong> 40 мм</li>
-                        <li><strong>Материал корпуса:</strong> нерж. сталь 316L</li>
-                        <li><strong>Водозащита:</strong> 10ATM</li>
-                        <!--<li><strong>Задняя крышка:</strong> прозрачная</li>-->
-                        <li id="spec-caseback-solid" style="display: none;"><strong data-i18n="caseback.label">Задняя
-                                крышка:</strong> <span data-i18n="caseback.solid">цельная</span></li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.movement"><strong>Механизм:</strong> Seiko
+                            NH35</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseSize"><strong>Диаметр корпуса:</strong>
+                            40 мм</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial"><strong>Материал
+                                корпуса:</strong> нерж. сталь 316L</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile"><strong>Водозащита:</strong>
+                            10ATM</li>
+                        <li id="spec-caseback-solid" style="display: none;"><strong
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
+                                крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackSolid">цельная</span></li>
                         <li id="spec-caseback-transparent" style="display: none;"><strong
-                                data-i18n="caseback.label">Задняя крышка:</strong> <span
-                                data-i18n="caseback.transparent">прозрачная</span></li>
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
+                        </li>
 
                     </ul>
-                    <h3>Стоимость: </h3>
+                    <h3 data-i18n="pageConstructorsWatchView.price">Стоимость: </h3>
                     <h2 id="priceDisplay" class="specs-price">1090 PLN</h2>
                 </div>
-                <button id="downloadBtn">Скачать изображение</button>
+                <button id="downloadBtn" data-i18n="pageConstructorsWatchView.imageDownloadButton">Скачать
+                    изображение</button>
             </div>
         </div>
     </main>

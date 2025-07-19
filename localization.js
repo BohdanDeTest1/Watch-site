@@ -59,7 +59,7 @@ function setLanguage(langCode) {
                 keys.forEach(k => {
                     if (text) text = text[k];
                 });
-                if (text) el.textContent = text;
+                if (text) el.innerHTML = text;
             });
         });
 }

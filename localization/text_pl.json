@@ -84,6 +84,42 @@
         "titleClassic": "KLASYCZNE",
         "unavailable": "Tymczasowo niedostępne"
     },
+    "pageConstructorsWatchView": {
+        "watchMenu": {
+            "bracelet": "Bransoleta",
+            "dial": "Tarcza",
+            "case": "Koperta",
+            "additionalOptions": "Opcje dodatkowe",
+            "watchBack": "Dekiel:",
+            "watchBackSolid": "Pełny dekiel",
+            "watchBackTransparent": "Przezroczysty dekiel",
+            "rotor": "Rotor",
+            "rotorStandart": "Standardowy rotor",
+            "rotorCustom": "Niestandardowy rotor",
+            "rotorHint": "Ruchomy element z tyłu zegarka, który nakręca mechanizm podczas ruchu ręki.",
+            "rotorNumber": "Wprowadź numer rotora:",
+            "rotorAcceptButton": "Zastosuj",
+            "rotorNumberError": "Wartość tylko od 1 do 129",
+            "ingraveTitle": "Grawer:",
+            "noIngrave": "Bez graweru",
+            "ingrave": "Grawer (+150PLN)",
+            "dialLogoTitle": "Logo na tarczy:",
+            "noLogo": "Bez logo",
+            "sLogo": "Logo \"SEIKO\"",
+            "otherLogo": "Własne logo (+50PLN)"
+        },
+        "watchInfo": {
+            "title": "Specyfikacja",
+            "movement": "<strong>Mechanizm:</strong> Seiko NH35",
+            "caseSize": "<strong>Średnica koperty:</strong> 40 mm",
+            "caseMaterial": "<strong>Materiał koperty:</strong> Stal nierdzewna 316L",
+            "waterProfile": "<strong>Wodoszczelność:</strong> 10ATM",
+            "watchBackSolid": "pełny",
+            "watchBackTransparent": "przezroczysty"
+        },
+        "price": "Cena:",
+        "imageDownloadButton": "Pobierz obraz"
+    },
     "footer": {
         "footer_question_1": "Masz pytania?",
         "footer_question_2": "Chętnie odpowiem",

@@ -84,6 +84,42 @@
         "titleClassic": "КЛАССИЧЕСКИЕ",
         "unavailable": "Временно недоступно"
     },
+    "pageConstructorsWatchView": {
+        "watchMenu": {
+            "bracelet": "Браслет ",
+            "dial": "Циферблат ",
+            "case": "Корпус ",
+            "additionalOptions": "Дополнительные опции",
+            "watchBack": "Задняя крышка:",
+            "watchBackSolid": "Цельная крышка",
+            "watchBackTransparent": "Прозрачная крышка",
+            "rotor": "Ротор",
+            "rotorStandart": "Стандартный ротор",
+            "rotorCustom": "Кастомный ротор",
+            "rotorHint": "Подвижная деталь на задней стороне часов, заводит механизм при движении руки",
+            "rotorNumber": "Введи номер ротора:",
+            "rotorAcceptButton": "Применить",
+            "rotorNumberError": "Значение только от 1 до 129",
+            "ingraveTitle": "Гравировка:",
+            "noIngrave": "Без гравировки",
+            "ingrave": "Гравировка (+150PLN)",
+            "dialLogoTitle": "Логотип на циферблате:",
+            "noLogo": "Без логотипа",
+            "sLogo": "Логотип \"SEIKO\"",
+            "otherLogo": "Свой логотип (+50PLN)"
+        },
+        "watchInfo": {
+            "title": "Характеристики",
+            "movement": "<strong>Механизм:</strong> Seiko NH35",
+            "caseSize": "<strong>Диаметр корпуса:</strong> 40 мм",
+            "caseMaterial": "<strong>Материал корпуса:</strong> нерж. сталь 316L",
+            "waterProfile": "<strong>Водозащита:</strong> 10ATM",
+            "watchBackSolid": "цельная",
+            "watchBackTransparent": "прозрачная"
+        },
+        "price": "Стоимость: ",
+        "imageDownloadButton": "Скачать изображение"
+    },
     "footer": {
         "footer_question_1": "Остались вопросы?",
         "footer_question_2": "Буду рад ответить",

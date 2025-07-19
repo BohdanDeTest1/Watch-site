@@ -14,7 +14,10 @@ window.addEventListener("scroll", () => {
     }
 });
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
+
     const braceletLayer = document.getElementById("braceletLayer");
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
@@ -427,15 +430,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const downloadBtn = document.getElementById("downloadBtn");
     const watchArea = document.getElementById("watchPreviewBox"); // Это div с часами
-
-    // downloadBtn.addEventListener("click", () => {
-
-    //     const originalHeight = watchArea.style.height;
-    //     const originalWidth = watchArea.style.width;
-
-    //     // Временно задаем фиксированные размеры
-    //     watchArea.style.width = "400px";
-    //     watchArea.style.height = "400px";
 
     downloadBtn.addEventListener("click", () => {
         const isMobile = window.innerWidth <= 768;

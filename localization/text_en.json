@@ -84,6 +84,42 @@
         "titleClassic": "CLASSIC",
         "unavailable": "Temporarily unavailable"
     },
+    "pageConstructorsWatchView": {
+        "watchMenu": {
+            "bracelet": "Bracelet",
+            "dial": "Dial",
+            "case": "Case",
+            "additionalOptions": "Additional options",
+            "watchBack": "Caseback:",
+            "watchBackSolid": "Solid caseback",
+            "watchBackTransparent": "Transparent caseback",
+            "rotor": "Rotor",
+            "rotorStandart": "Standard rotor",
+            "rotorCustom": "Custom rotor",
+            "rotorHint": "A moving part on the back of the watch that winds the movement as your hand moves.",
+            "rotorNumber": "Enter rotor number:",
+            "rotorAcceptButton": "Apply",
+            "rotorNumberError": "Value must be between 1 and 129",
+            "ingraveTitle": "Engraving:",
+            "noIngrave": "No engraving",
+            "ingrave": "Engraving (+150PLN)",
+            "dialLogoTitle": "Dial logo:",
+            "noLogo": "No logo",
+            "sLogo": "Logo \"SEIKO\"",
+            "otherLogo": "Custom logo (+50PLN)"
+        },
+        "watchInfo": {
+            "title": "Specifications",
+            "movement": "<strong>Movement:</strong> Seiko NH35",
+            "caseSize": "<strong>Case diameter:</strong> 40 mm",
+            "caseMaterial": "<strong>Case material:</strong> Stainless steel 316L",
+            "waterProfile": "<strong>Water resistance:</strong> 10ATM",
+            "watchBackSolid": "solid",
+            "watchBackTransparent": "transparent"
+        },
+        "price": "Price:",
+        "imageDownloadButton": "Download image"
+    },
     "footer": {
         "footer_question_1": "Any questions?",
         "footer_question_2": "I'll be happy to help",

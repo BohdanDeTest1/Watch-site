@@ -37,7 +37,7 @@
 
 
 .splide__container-with-padding {
-    padding: 0 30px 0 50px;
+    padding: 0 5px 0 80px;
     /* 👈 симметричный отступ слева и справа */
     box-sizing: border-box;
 }
