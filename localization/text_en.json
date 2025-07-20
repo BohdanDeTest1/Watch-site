@@ -89,6 +89,8 @@
             "bracelet": "Bracelet",
             "dial": "Dial",
             "case": "Case",
+            "hands": "Hands",
+            "secondHand": "Second hand",
             "additionalOptions": "Additional options",
             "watchBack": "Caseback:",
             "watchBackSolid": "Solid caseback",

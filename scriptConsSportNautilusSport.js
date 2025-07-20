@@ -1,5 +1,6 @@
 
 let lastScrollY = window.scrollY;
+const storageKey = "nautilusConfig";
 
 window.addEventListener("scroll", () => {
     const header = document.getElementById("header");
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             secondHand: secondHandButton?.dataset.value || "1"
         };
 
-        localStorage.setItem("aquanautConfig", JSON.stringify(config));
+        localStorage.setItem(storageKey, JSON.stringify(config));
     }
 
     function applySelections() {
@@ -70,13 +71,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function loadFromLocalOrURL() {
-        const config = JSON.parse(localStorage.getItem("aquanautConfig")) || {
+        const config = JSON.parse(localStorage.getItem(storageKey)) || {
             bracelet: "1",
             dial: "1",
             case: "1",
             hands: "1",
             secondHand: "1"
-
         };
 
         const braceletButtons = document.querySelectorAll("#braceletOptions button");
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         caseButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.case));
 
         const handsLayerButtons = document.querySelectorAll("#handsOptions button");
-        handsLayerButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.handsLayer));
+        handsLayerButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.hands));
 
         const secondHandButtons = document.querySelectorAll("#secondHandOptions button");
         secondHandButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.secondHand));

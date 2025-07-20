@@ -1,5 +1,6 @@
 
 let lastScrollY = window.scrollY;
+const storageKey = "aquanautConfig";
 
 window.addEventListener("scroll", () => {
     const header = document.getElementById("header");
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             case: caseButton?.dataset.value || "1",
         };
 
-        localStorage.setItem("aquanautConfig", JSON.stringify(config));
+        localStorage.setItem(storageKey, JSON.stringify(config));
     }
 
     function applySelections() {
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function loadFromLocalOrURL() {
-        const config = JSON.parse(localStorage.getItem("aquanautConfig")) || {
+        const config = JSON.parse(localStorage.getItem(storageKey)) || {
             bracelet: "1",
             dial: "1",
             case: "1",

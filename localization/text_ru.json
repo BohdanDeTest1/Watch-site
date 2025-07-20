@@ -89,6 +89,8 @@
             "bracelet": "Браслет ",
             "dial": "Циферблат ",
             "case": "Корпус ",
+            "hands": "Стрелки",
+            "secondHand": "Секундная стрелка",
             "additionalOptions": "Дополнительные опции",
             "watchBack": "Задняя крышка:",
             "watchBackSolid": "Цельная крышка",
