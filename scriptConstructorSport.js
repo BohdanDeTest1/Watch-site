@@ -3,10 +3,10 @@
 const availability = {
     "AQUANAUT": true,
     "NUTILUS-SPORT": true,
-    "PRX": false,
+    "PRX": true,
     "ROYAL-CHRONOGRAPH": true,
     "ROYAL": true,
-    "SEMASTER": false,
+    "SEMASTER": true,
     "SKX007": false,
     "SUBMARINER": true
 };
