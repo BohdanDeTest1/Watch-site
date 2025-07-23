@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRX</title>
+    <link rel="stylesheet" href="styleHeaderFooter.css" />
+    <link rel="stylesheet" href="styleConstructorSport.css" />
+    <link rel="stylesheet" href="styleConsSportPRX.css" />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div style="height: 60px;"></div> <!-- Заменить на точную высоту хедера -->
+
+    <div class="header-placeholder"></div>
+
+    <main class="constructor-page">
+        <button class="back-button" onclick="history.back()"
+            data-i18n="pageConstructorsSport.BackButton">&laquo;</button>
+        <h1>NAUTILUS-SPORT</h1>
+        <div class="constructor-container">
+            <div class="watch-preview-box" id="watchPreviewBox">
+                <div class="watch-preview">
+
+                    <img id="caseLayer" class="layer" src="watchParts/3_PRX/case/case_1.png" />
+                    <img id="dialLayer" class="layer" src="watchParts/3_PRX/dial/dial_1_sun.png" />
+                    <img id="handsLayer" class="layer" src="watchParts/3_PRX/hands/hands_1.png" />
+
+
+                    <div class="corner-text left" id="engraveText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
+                    <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
+                        Без логотипа</div>
+                    <div class="corner-text right" id="casebackText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная крышка</div>
+                    <div id="bezelText" class="corner-text right2"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">Стандартный ротор</div>
+
+
+                </div>
+            </div>
+
+
+            <div class="options-panel">
+
+                <div class="option-group">
+                    <div class="option-header" id="caseToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.case">Корпус</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="caseOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/3_PRX/case/case_1.png" alt="Case 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/3_PRX/case/case_2.png" alt="Case 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/3_PRX/case/case_3.png" alt="Case 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/3_PRX/case/case_4.png" alt="Case 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/3_PRX/case/case_5.png" alt="Case 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/3_PRX/case/case_6.png" alt="Case 6" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+                <div class="option-group">
+                    <div class="option-header" id="dialToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dial">Циферблат</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="dialOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/3_PRX/dial/dial_1.png" alt="Dial 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/3_PRX/dial/dial_2.png" alt="Dial 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/3_PRX/dial/dial_3.png" alt="Dial 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/3_PRX/dial/dial_4.png" alt="Dial 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/3_PRX/dial/dial_5.png" alt="Dial 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/3_PRX/dial/dial_6.png" alt="Dial 6" />
+                        </button>
+                        <button class="option" data-value="7">
+                            <img src="watchParts/3_PRX/dial/dial_7.png" alt="Dial 7" />
+                        </button>
+                        <button class="option" data-value="8">
+                            <img src="watchParts/3_PRX/dial/dial_8.png" alt="Dial 8" />
+                        </button>
+                        <button class="option" data-value="9">
+                            <img src="watchParts/3_PRX/dial/dial_9.png" alt="Dial 9" />
+                        </button>
+                        <button class="option" data-value="10">
+                            <img src="watchParts/3_PRX/dial/dial_10.png" alt="Dial 10" />
+                        </button>
+                        <button class="option" data-value="11">
+                            <img src="watchParts/3_PRX/dial/dial_11.png" alt="Dial 11" />
+                        </button>
+                        <button class="option" data-value="12">
+                            <img src="watchParts/3_PRX/dial/dial_12.png" alt="Dial 12" />
+                        </button>
+                        <button class="option" data-value="13">
+                            <img src="watchParts/3_PRX/dial/dial_13.png" alt="Dial 13" />
+                        </button>
+                        <button class="option" data-value="14">
+                            <img src="watchParts/3_PRX/dial/dial_14.png" alt="Dial 14" />
+                        </button>
+                        <button class="option" data-value="15">
+                            <img src="watchParts/3_PRX/dial/dial_15.png" alt="Dial 15" />
+                        </button>
+                        <button class="option" data-value="16">
+                            <img src="watchParts/3_PRX/dial/dial_16.png" alt="Dial 16" />
+                        </button>
+                        <button class="option" data-value="17">
+                            <img src="watchParts/3_PRX/dial/dial_17.png" alt="Dial 17" />
+                        </button>
+                        <button class="option" data-value="18">
+                            <img src="watchParts/3_PRX/dial/dial_18.png" alt="Dial 18" />
+                        </button>
+                        <button class="option" data-value="19">
+                            <img src="watchParts/3_PRX/dial/dial_19.png" alt="Dial 19" />
+                        </button>
+                        <button class="option" data-value="20">
+                            <img src="watchParts/3_PRX/dial/dial_20.png" alt="Dial 20" />
+                        </button>
+                        <button class="option" data-value="21">
+                            <img src="watchParts/3_PRX/dial/dial_21.png" alt="Dial 21" />
+                        </button>
+                        <button class="option" data-value="22">
+                            <img src="watchParts/3_PRX/dial/dial_22.png" alt="Dial 22" />
+                        </button>
+                        <button class="option" data-value="23">
+                            <img src="watchParts/3_PRX/dial/dial_23.png" alt="Dial 23" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+
+                <div class="option-group">
+                    <div class="option-header" id="handsToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.hands">Стрелки</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="handsOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/3_PRX/hands/hands_1.png" alt="Hands 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/3_PRX/hands/hands_2.png" alt="Hands 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/3_PRX/hands/hands_3.png" alt="Hands 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/3_PRX/hands/hands_4.png" alt="Hands 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/3_PRX/hands/hands_5.png" alt="Hands 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/3_PRX/hands/hands_6.png" alt="Hands 6" />
+                        </button>
+                        <button class="option" data-value="7">
+                            <img src="watchParts/3_PRX/hands/hands_7.png" alt="Hands 7" />
+                        </button>
+                        <button class="option" data-value="8">
+                            <img src="watchParts/3_PRX/hands/hands_8.png" alt="Hands 8" />
+                        </button>
+                        <button class="option" data-value="9">
+                            <img src="watchParts/3_PRX/hands/hands_9.png" alt="Hands 9" />
+                        </button>
+                        <button class="option" data-value="10">
+                            <img src="watchParts/3_PRX/hands/hands_10.png" alt="Hands 10" />
+                        </button>
+                        <button class="option" data-value="11">
+                            <img src="watchParts/3_PRX/hands/hands_11.png" alt="Hands 11" />
+                        </button>
+                        <button class="option" data-value="12">
+                            <img src="watchParts/3_PRX/hands/hands_12.png" alt="Hands 12" />
+                        </button>
+                        <button class="option" data-value="13">
+                            <img src="watchParts/3_PRX/hands/hands_13.png" alt="Hands 13" />
+                        </button>
+                        <button class="option" data-value="14">
+                            <img src="watchParts/3_PRX/hands/hands_14.png" alt="Hands 14" />
+                        </button>
+                        <button class="option" data-value="15">
+                            <img src="watchParts/3_PRX/hands/hands_15.png" alt="Hands 15" />
+                        </button>
+                        <button class="option" data-value="16">
+                            <img src="watchParts/3_PRX/hands/hands_16.png" alt="Hands 16" />
+                        </button>
+                        <button class="option" data-value="17">
+                            <img src="watchParts/3_PRX/hands/hands_17.png" alt="Hands 17" />
+                        </button>
+                        <button class="option" data-value="18">
+                            <img src="watchParts/3_PRX/hands/hands_18.png" alt="Hands 18" />
+                        </button>
+                        <button class="option" data-value="19">
+                            <img src="watchParts/3_PRX/hands/hands_19.png" alt="Hands 19" />
+                        </button>
+                        <button class="option" data-value="20">
+                            <img src="watchParts/3_PRX/hands/hands_20.png" alt="Hands 20" />
+                        </button>
+                        <button class="option" data-value="21">
+                            <img src="watchParts/3_PRX/hands/hands_21.png" alt="Hands 21" />
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="option-subtitle" data-i18n="pageConstructorsWatchView.watchMenu.additionalOptions">
+                    Дополнительные опции</div>
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
+                        <select id="casebackSelect">
+                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
+                                крышка</option>
+                            <option value="transparent"
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
+                            </option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="bezelTypeWrapper" class="select-wrapper hidden">
+
+                    <label>
+                        <div class="label-with-info">
+                            <div class="info-container">
+                                <button id="infoButton" class="info-btn">i</button>
+                                <div id="infoTooltip" class="info-tooltip">
+                                    <img src="bezel/Rotor.png" alt="Инфо" />
+                                    <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.rotorHint">
+                                        Подвижная деталь на задней стороне часов, заводит механизм
+                                        при движении руки.</p>
+                                </div>
+                            </div>
+                            <span class="label-text" data-i18n="pageConstructorsWatchView.watchMenu.rotor">Ротор:</span>
+                        </div>
+                        <select id="bezelTypeSelect">
+                            <option value="standard" data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">
+                                Стандартный ротор</option>
+                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">Кастомный
+                                ротор</option>
+                        </select>
+                    </label>
+
+
+                </div>
+
+                <div id="bezelConfigBox" class="hidden">
+                    <label for="bezelNumber" data-i18n="pageConstructorsWatchView.watchMenu.rotorNumber">Введи номер
+                        ротора:</label>
+                    <div class="bezel-input-wrapper">
+                        <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
+                            placeholder="1–129" />
+                        <button id="applyBezelNumberBtn" type="button"
+                            data-i18n="pageConstructorsWatchView.watchMenu.rotorAcceptButton">Применить</button>
+                    </div>
+                    <p id="bezelNumberError" class="input-error" style="display: none;"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129</p>
+
+
+                    <div class="bezel-carousel-wrapper">
+                        <div class="bezel-carousel-controls">
+                            <button class="bezel-prev-btn" aria-label="Previous bezel">&#60;</button>
+                            <button class="bezel-next-btn" aria-label="Next bezel">&#62;</button>
+                        </div>
+
+                        <div class="bezel-carousel">
+                            <img src="bezel/rotor_0_0.png" alt="Bezel 1" class="bezel-img active" />
+                            <img src="bezel/rotor_1_0.png" alt="Bezel 2" class="bezel-img" />
+                            <img src="bezel/rotor_1_1.png" alt="Bezel 3" class="bezel-img" />
+                            <img src="bezel/rotor_1_2.png" alt="Bezel 4" class="bezel-img" />
+                            <img src="bezel/rotor_1_3.png" alt="Bezel 5" class="bezel-img" />
+                            <img src="bezel/rotor_2_0.png" alt="Bezel 6" class="bezel-img" />
+                            <img src="bezel/rotor_2_1.png" alt="Bezel 7" class="bezel-img" />
+                            <img src="bezel/rotor_2_2.png" alt="Bezel 8" class="bezel-img" />
+                            <img src="bezel/rotor_2_3.png" alt="Bezel 9" class="bezel-img" />
+                            <img src="bezel/rotor_3_0.png" alt="Bezel 10" class="bezel-img" />
+                            <img src="bezel/rotor_3_1.png" alt="Bezel 11" class="bezel-img" />
+                            <img src="bezel/rotor_3_2.png" alt="Bezel 12" class="bezel-img" />
+                            <img src="bezel/rotor_3_3.png" alt="Bezel 13" class="bezel-img" />
+                            <img src="bezel/rotor_3_4.png" alt="Bezel 14" class="bezel-img" />
+                            <img src="bezel/rotor_3_5.png" alt="Bezel 15" class="bezel-img" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.ingraveTitle">Гравировка:</span>
+                        <select id="engravingSelect">
+                            <option value="withoutIngrave" data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без
+                                гравировки</option>
+                            <option value="withIngrave" data-i18n="pageConstructorsWatchView.watchMenu.ingrave">
+                                Гравировка (+150PLN)</option>
+                        </select>
+                    </label>
+                </div>
+
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dialLogoTitle">Логотип на
+                            циферблате:</span>
+                        <select id="logoSelect">
+                            <option value="noLogo" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">Без логотипа
+                            </option>
+                            <option value="sLogo" data-i18n="pageConstructorsWatchView.watchMenu.sLogo">Логотип "SEIKO"
+                            </option>
+                            <option value="otherLogo" data-i18n="pageConstructorsWatchView.watchMenu.otherLogo">Свой
+                                логотип (+50PLN)</option>
+                        </select>
+
+                    </label>
+                </div>
+
+                <div class="specs-box">
+                    <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
+                    <ul class="specs-list">
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.movement"><strong>Механизм:</strong> Seiko
+                            NH35</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseSize"><strong>Диаметр корпуса:</strong>
+                            40 мм</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial"><strong>Материал
+                                корпуса:</strong> нерж. сталь 316L</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile"><strong>Водозащита:</strong>
+                            10ATM</li>
+                        <li id="spec-caseback-solid" style="display: none;"><strong
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
+                                крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackSolid">цельная</span></li>
+                        <li id="spec-caseback-transparent" style="display: none;"><strong
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
+                        </li>
+
+                    </ul>
+                    <h3 data-i18n="pageConstructorsWatchView.price">Стоимость: </h3>
+                    <h2 id="priceDisplay" class="specs-price">1090 PLN</h2>
+                </div>
+                <button id="downloadBtn" data-i18n="pageConstructorsWatchView.imageDownloadButton">Скачать
+                    изображение</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="header-footer-loader.js"></script>
+    <script src="scriptConsSportPRX.js"></script>
+    <script src="localization.js"></script>
+</body>
+
+</html>
