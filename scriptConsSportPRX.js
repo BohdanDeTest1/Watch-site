@@ -19,39 +19,30 @@ window.addEventListener("scroll", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const braceletLayer = document.getElementById("braceletLayer");
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
     const handsLayer = document.getElementById("handsLayer");
-    const secondHandLayer = document.getElementById("secondHandLayer");
 
 
     function updateLayer(layer, path, name, ext = "png") {
-        layer.src = `watchParts/2_Nautilus-sport/${path}/${name}.${ext}`;
+        layer.src = `watchParts/3_PRX/${path}/${name}.${ext}`;
     }
 
     function saveToLocal() {
-        const braceletButton = document.querySelector("#braceletOptions button.selected");
         const dialButton = document.querySelector("#dialOptions button.selected");
         const caseButton = document.querySelector("#caseOptions button.selected");
         const handsButton = document.querySelector("#handsOptions button.selected");
-        const secondHandButton = document.querySelector("#secondHandOptions button.selected");
 
         const config = {
-            bracelet: braceletButton?.dataset.value || "1",
             dial: dialButton?.dataset.value || "1",
             case: caseButton?.dataset.value || "1",
-            hands: handsButton?.dataset.value || "1",
-            secondHand: secondHandButton?.dataset.value || "1"
+            hands: handsButton?.dataset.value || "1"
         };
 
         localStorage.setItem(storageKey, JSON.stringify(config));
     }
 
     function applySelections() {
-        const braceletBtn = document.querySelector("#braceletOptions button.selected");
-        const braceletValue = braceletBtn ? braceletBtn.dataset.value : "1";
-        updateLayer(braceletLayer, "bracelet", `Bracelet_${braceletValue}`);
 
         const dialBtn = document.querySelector("#dialOptions button.selected");
         const dialValue = dialBtn ? dialBtn.dataset.value : "1";
@@ -64,23 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const handsBtn = document.querySelector("#handsOptions button.selected");
         const handsValue = handsBtn ? handsBtn.dataset.value : "1";
         updateLayer(handsLayer, "hands", `hands_${handsValue}`);
-
-        const secondHandBtn = document.querySelector("#secondHandOptions button.selected");
-        const secondHandValue = secondHandBtn ? secondHandBtn.dataset.value : "1";
-        updateLayer(secondHandLayer, "secondHand", `second_${secondHandValue}`);
     }
 
     function loadFromLocalOrURL() {
         const config = JSON.parse(localStorage.getItem(storageKey)) || {
-            bracelet: "1",
             dial: "1",
             case: "1",
-            hands: "1",
-            secondHand: "1"
+            hands: "1"
         };
-
-        const braceletButtons = document.querySelectorAll("#braceletOptions button");
-        braceletButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.bracelet));
 
         const dialButtons = document.querySelectorAll("#dialOptions button");
         dialButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.dial));
@@ -91,18 +73,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const handsLayerButtons = document.querySelectorAll("#handsOptions button");
         handsLayerButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.hands));
 
-        const secondHandButtons = document.querySelectorAll("#secondHandOptions button");
-        secondHandButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.secondHand));
-
         applySelections();
     }
 
     const toggles = [
-        { toggleId: "braceletToggle", menuId: "braceletOptions" },
+
         { toggleId: "dialToggle", menuId: "dialOptions" },
         { toggleId: "caseToggle", menuId: "caseOptions" },
-        { toggleId: "handsToggle", menuId: "handsOptions" },
-        { toggleId: "secondHandToggle", menuId: "secondHandOptions" }
+        { toggleId: "handsToggle", menuId: "handsOptions" }
     ];
 
 
@@ -120,19 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    document.getElementById("braceletOptions").style.display = "flex";
-    document.getElementById("braceletToggle").classList.add("open");
+    document.getElementById("caseOptions").style.display = "flex";
+    document.getElementById("caseToggle").classList.add("open");
 
 
     // SELECTORS
-    document.querySelectorAll("#braceletOptions button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll("#braceletOptions button").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            updateLayer(braceletLayer, "bracelet", `Bracelet_${btn.dataset.value}`);
-            saveToLocal();
-        });
-    });
 
     document.querySelectorAll("#dialOptions button").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -157,15 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll("#handsOptions button").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
             updateLayer(handsLayer, "hands", `hands_${btn.dataset.value}`);
-            saveToLocal();
-        });
-    });
-
-    document.querySelectorAll("#secondHandOptions button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll("#secondHandOptions button").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            updateLayer(secondHandLayer, "secondHand", `second_${btn.dataset.value}`);
             saveToLocal();
         });
     });
