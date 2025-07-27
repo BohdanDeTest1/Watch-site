@@ -216,8 +216,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.getElementById("watchPreviewBox"); 
-    const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
+    const watchArea = document.getElementById("watchPreviewBox");
+    //const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
 
 
     downloadBtn.addEventListener("click", () => {
@@ -231,10 +231,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Временно задаем фиксированные размеры в зависимости от устройства
         if (isMobile) {
             watchArea.style.width = "320px";
-            watchArea.style.height = "500px";
+            watchArea.style.height = "400px";
         } else {
             watchArea.style.width = "270px";
-            watchArea.style.height = "500px";
+            watchArea.style.height = "400px";
         }
 
         html2canvas(watchArea, { scale: 2, backgroundColor: null }).then(canvas => {
@@ -261,47 +261,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
-
-    // if (downloadBtn && watchArea) {
-    //     downloadBtn.addEventListener("click", () => {
-    //         alert("Кнопка работает!");
-    //     });
-    // } else {
-    //     console.warn("Кнопка или watchArea не найдены");
-    // // }
-    // const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
-
-    // if (downloadBtn && watchArea) {
-    //     downloadBtn.addEventListener("click", () => {
-    //         const isMobile = window.innerWidth <= 768;
-
-    //         // Сохраняем оригинальные размеры
-    //         const originalWidth = watchArea.style.width;
-    //         const originalHeight = watchArea.style.height;
-
-    //         // Временно задаем фиксированные размеры
-    //         watchArea.style.width = isMobile ? "320px" : "270px";
-    //         watchArea.style.height = "400px";
-
-    //         html2canvas(watchArea, {
-    //             scale: 2,
-    //             backgroundColor: null, // Прозрачный фон
-    //             useCORS: true
-    //         }).then(canvas => {
-    //             const link = document.createElement("a");
-    //             link.download = "watch.png";
-    //             link.href = canvas.toDataURL("image/png");
-    //             link.click();
-
-    //             // Восстановление размеров
-    //             watchArea.style.width = originalWidth;
-    //             watchArea.style.height = originalHeight;
-    //         });
-    //     });
-    // }
 
 
 
