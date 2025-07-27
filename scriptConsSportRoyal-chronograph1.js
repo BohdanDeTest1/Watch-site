@@ -140,9 +140,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     loadFromLocalOrURL();
-    updateTotalPrice();
+// === Гравировка ===
+const engravingSelect = document.getElementById("engravingSelect");
+const engravingText = document.getElementById("engraveText");
 
-    // Добавляем вызов обновления после загрузки локальных данных
+engravingSelect.addEventListener("change", () => {
+    const selectedOption = engravingSelect.options[engravingSelect.selectedIndex];
+    const i18nKey = selectedOption.getAttribute("data-i18n");
+    engravingText.textContent = i18nKey ? i18next.t(i18nKey) : selectedOption.textContent;
+    updateTotalPrice();
+});
+
+// === Логотип ===
+const logoSelect = document.getElementById("logoSelect");
+const logoText = document.getElementById("logoText");
+
+logoSelect.addEventListener("change", () => {
+    const selectedOption = logoSelect.options[logoSelect.selectedIndex];
+    const i18nKey = selectedOption.getAttribute("data-i18n");
+    logoText.textContent = i18nKey ? i18next.t(i18nKey) : selectedOption.textContent;
+    updateTotalPrice();
+});
+
+// === Применяем при загрузке страницы
+engravingSelect.dispatchEvent(new Event("change"));
+logoSelect.dispatchEvent(new Event("change"));
+    updateTotalPrice();
 
 
     // === Гравировка ===
@@ -152,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
     engravingSelect.addEventListener("change", () => {
         const selectedOption = engravingSelect.options[engravingSelect.selectedIndex];
         engravingText.textContent = selectedOption.textContent;
-        updateTotalPrice();
     });
 
     // === Логотип ===
@@ -162,7 +184,6 @@ document.addEventListener("DOMContentLoaded", function () {
     logoSelect.addEventListener("change", () => {
         const selectedOption = logoSelect.options[logoSelect.selectedIndex];
         logoText.textContent = selectedOption.textContent;
-        updateTotalPrice();
     });
 
 
@@ -184,6 +205,35 @@ document.addEventListener("DOMContentLoaded", function () {
         lastScrollTop = scrollTop;
     });
 
+    const infoBtn = document.getElementById("infoButton");
+    const infoTooltip = document.getElementById("infoTooltip");
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        infoBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // важно!
+            const isVisible = infoTooltip.style.display === "block";
+            infoTooltip.style.display = isVisible ? "none" : "block";
+        });
+
+        // Закрытие при тапе вне тултипа
+        document.addEventListener("click", (e) => {
+            if (!infoTooltip.contains(e.target) && !infoBtn.contains(e.target)) {
+                infoTooltip.style.display = "none";
+            }
+        });
+    } else {
+        // для десктопа — при наведении
+        infoBtn.addEventListener("mouseenter", () => {
+            infoTooltip.style.display = "block";
+        });
+        infoBtn.addEventListener("mouseleave", () => {
+            infoTooltip.style.display = "none";
+        });
+        infoTooltip.addEventListener("mouseleave", () => {
+            infoTooltip.style.display = "none";
+        });
+    }
 
     function updateTotalPrice() {
         let basePrice = 1090;
@@ -208,36 +258,41 @@ document.addEventListener("DOMContentLoaded", function () {
             priceDisplay.textContent = `${total} PLN`;
         }
     }
+    engravingSelect.addEventListener("change", () => {
+        const selectedOption = engravingSelect.options[engravingSelect.selectedIndex];
+        engravingText.textContent = selectedOption.textContent;
+        updateTotalPrice();
+    });
 
-    engravingSelect.dispatchEvent(new Event("change"));
-    logoSelect.dispatchEvent(new Event("change"));
+    logoSelect.addEventListener("change", () => {
+        const selectedOption = logoSelect.options[logoSelect.selectedIndex];
+        logoText.textContent = selectedOption.textContent;
+        updateTotalPrice();
+    });
+
 
 
 
 
     const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.getElementById("watchPreviewBox"); 
-    const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
-
+    const watchArea = document.getElementById("watchPreviewBox"); // Это div с часами
 
     downloadBtn.addEventListener("click", () => {
         const isMobile = window.innerWidth <= 768;
 
-        // const originalHeight = watchArea.style.height;
-        // const originalWidth = watchArea.style.width;
-        const originalHeight = watchArea.offsetHeight + "px";
-        const originalWidth = watchArea.offsetWidth + "px";
+        const originalHeight = watchArea.style.height;
+        const originalWidth = watchArea.style.width;
 
         // Временно задаем фиксированные размеры в зависимости от устройства
         if (isMobile) {
             watchArea.style.width = "320px";
-            watchArea.style.height = "500px";
+            watchArea.style.height = "400px";
         } else {
             watchArea.style.width = "270px";
-            watchArea.style.height = "500px";
+            watchArea.style.height = "400px";
         }
 
-        html2canvas(watchArea, { scale: 2, backgroundColor: null }).then(canvas => {
+        html2canvas(watchArea, { scale: 2 }).then(canvas => {
             const link = document.createElement("a");
             link.download = "watch.png";
             link.href = canvas.toDataURL("image/png");
@@ -260,48 +315,6 @@ document.addEventListener("DOMContentLoaded", function () {
             link.click();
         });
     });
-
-    // const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
-
-    // if (downloadBtn && watchArea) {
-    //     downloadBtn.addEventListener("click", () => {
-    //         alert("Кнопка работает!");
-    //     });
-    // } else {
-    //     console.warn("Кнопка или watchArea не найдены");
-    // // }
-    // const downloadBtn = document.getElementById("downloadBtn");
-    // const watchArea = document.querySelector("#watchPreviewBox .watch-preview");
-
-    // if (downloadBtn && watchArea) {
-    //     downloadBtn.addEventListener("click", () => {
-    //         const isMobile = window.innerWidth <= 768;
-
-    //         // Сохраняем оригинальные размеры
-    //         const originalWidth = watchArea.style.width;
-    //         const originalHeight = watchArea.style.height;
-
-    //         // Временно задаем фиксированные размеры
-    //         watchArea.style.width = isMobile ? "320px" : "270px";
-    //         watchArea.style.height = "400px";
-
-    //         html2canvas(watchArea, {
-    //             scale: 2,
-    //             backgroundColor: null, // Прозрачный фон
-    //             useCORS: true
-    //         }).then(canvas => {
-    //             const link = document.createElement("a");
-    //             link.download = "watch.png";
-    //             link.href = canvas.toDataURL("image/png");
-    //             link.click();
-
-    //             // Восстановление размеров
-    //             watchArea.style.width = originalWidth;
-    //             watchArea.style.height = originalHeight;
-    //         });
-    //     });
-    // }
 
 
 

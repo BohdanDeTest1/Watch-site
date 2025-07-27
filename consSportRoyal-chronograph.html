@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AQUANAUT</title>
+    <title>royal-chronograph</title>
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="styleConstructorSport.css" />
-    <link rel="stylesheet" href="styleConsSportAquanaut.css" />
+    <link rel="stylesheet" href="styleConsSportRoyal-chronograph.css" />
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </head>
@@ -22,7 +22,7 @@
     <main class="constructor-page">
         <button class="back-button" onclick="history.back()"
             data-i18n="pageConstructorsSport.BackButton">&laquo;</button>
-        <h1>AQUANAUT</h1>
+        <h1>royal-chronograph</h1>
         <div class="constructor-container">
             <div class="watch-preview-box" id="watchPreviewBox">
                 <div class="watch-preview">
@@ -33,10 +33,7 @@
                         data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
                     <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
                         Без логотипа</div>
-                    <div class="corner-text right" id="casebackText"
-                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная крышка</div>
-                    <div id="bezelText" class="corner-text right2"
-                        data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">Стандартный ротор</div>
+
 
 
                 </div>
@@ -127,85 +124,6 @@
 
                 <div class="select-wrapper">
                     <label>
-                        <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
-                        <select id="casebackSelect">
-                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
-                                крышка</option>
-                            <option value="transparent"
-                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
-                            </option>
-                        </select>
-                    </label>
-                </div>
-
-                <div id="bezelTypeWrapper" class="select-wrapper hidden">
-
-                    <label>
-                        <div class="label-with-info">
-                            <div class="info-container">
-                                <button id="infoButton" class="info-btn">i</button>
-                                <div id="infoTooltip" class="info-tooltip">
-                                    <img src="bezel/Rotor.png" alt="Инфо" />
-                                    <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.rotorHint">
-                                        Подвижная деталь на задней стороне часов, заводит механизм
-                                        при движении руки.</p>
-                                </div>
-                            </div>
-                            <span class="label-text" data-i18n="pageConstructorsWatchView.watchMenu.rotor">Ротор:</span>
-                        </div>
-                        <select id="bezelTypeSelect">
-                            <option value="standard" data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">
-                                Стандартный ротор</option>
-                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">Кастомный
-                                ротор</option>
-                        </select>
-                    </label>
-
-
-                </div>
-
-                <div id="bezelConfigBox" class="hidden">
-                    <label for="bezelNumber" data-i18n="pageConstructorsWatchView.watchMenu.rotorNumber">Введи номер
-                        ротора:</label>
-                    <div class="bezel-input-wrapper">
-                        <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
-                            placeholder="1–129" />
-                        <button id="applyBezelNumberBtn" type="button"
-                            data-i18n="pageConstructorsWatchView.watchMenu.rotorAcceptButton">Применить</button>
-                    </div>
-                    <p id="bezelNumberError" class="input-error" style="display: none;"
-                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129</p>
-
-
-                    <div class="bezel-carousel-wrapper">
-                        <div class="bezel-carousel-controls">
-                            <button class="bezel-prev-btn" aria-label="Previous bezel">&#60;</button>
-                            <button class="bezel-next-btn" aria-label="Next bezel">&#62;</button>
-                        </div>
-
-                        <div class="bezel-carousel">
-                            <img src="bezel/rotor_0_0.png" alt="Bezel 1" class="bezel-img active" />
-                            <img src="bezel/rotor_1_0.png" alt="Bezel 2" class="bezel-img" />
-                            <img src="bezel/rotor_1_1.png" alt="Bezel 3" class="bezel-img" />
-                            <img src="bezel/rotor_1_2.png" alt="Bezel 4" class="bezel-img" />
-                            <img src="bezel/rotor_1_3.png" alt="Bezel 5" class="bezel-img" />
-                            <img src="bezel/rotor_2_0.png" alt="Bezel 6" class="bezel-img" />
-                            <img src="bezel/rotor_2_1.png" alt="Bezel 7" class="bezel-img" />
-                            <img src="bezel/rotor_2_2.png" alt="Bezel 8" class="bezel-img" />
-                            <img src="bezel/rotor_2_3.png" alt="Bezel 9" class="bezel-img" />
-                            <img src="bezel/rotor_3_0.png" alt="Bezel 10" class="bezel-img" />
-                            <img src="bezel/rotor_3_1.png" alt="Bezel 11" class="bezel-img" />
-                            <img src="bezel/rotor_3_2.png" alt="Bezel 12" class="bezel-img" />
-                            <img src="bezel/rotor_3_3.png" alt="Bezel 13" class="bezel-img" />
-                            <img src="bezel/rotor_3_4.png" alt="Bezel 14" class="bezel-img" />
-                            <img src="bezel/rotor_3_5.png" alt="Bezel 15" class="bezel-img" />
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="select-wrapper">
-                    <label>
                         <span data-i18n="pageConstructorsWatchView.watchMenu.ingraveTitle">Гравировка:</span>
                         <select id="engravingSelect">
                             <option value="withoutIngrave" data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без
@@ -244,14 +162,6 @@
                                 корпуса:</strong> нерж. сталь 316L</li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile"><strong>Водозащита:</strong>
                             10ATM</li>
-                        <li id="spec-caseback-solid" style="display: none;"><strong
-                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
-                                крышка:</strong> <span
-                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackSolid">цельная</span></li>
-                        <li id="spec-caseback-transparent" style="display: none;"><strong
-                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong> <span
-                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
-                        </li>
 
                     </ul>
                     <h3 data-i18n="pageConstructorsWatchView.price">Стоимость: </h3>
@@ -266,7 +176,7 @@
     <div id="footer"></div>
 
     <script src="header-footer-loader.js"></script>
-    <script src="scriptConsSportAquanaut.js"></script>
+    <script src="scriptConsSportRoyal-chronograph.js"></script>
     <script src="localization.js"></script>
 </body>
 
