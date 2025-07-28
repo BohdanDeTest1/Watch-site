@@ -19,21 +19,18 @@ window.addEventListener("scroll", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const braceletLayer = document.getElementById("braceletLayer");
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
 
     function updateLayer(layer, path, name, ext = "png") {
-        layer.src = `watchParts/1_Aquanaut/${path}/${name}.${ext}`;
+        layer.src = `watchParts/4_Royal-chronograph/${path}/${name}.${ext}`;
     }
 
     function saveToLocal() {
-        const braceletButton = document.querySelector("#braceletOptions button.selected");
         const dialButton = document.querySelector("#dialOptions button.selected");
         const caseButton = document.querySelector("#caseOptions button.selected");
 
         const config = {
-            bracelet: braceletButton?.dataset.value || "1",
             dial: dialButton?.dataset.value || "1",
             case: caseButton?.dataset.value || "1",
         };
@@ -42,9 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applySelections() {
-        const braceletBtn = document.querySelector("#braceletOptions button.selected");
-        const braceletValue = braceletBtn ? braceletBtn.dataset.value : "1";
-        updateLayer(braceletLayer, "bracelet", `Bracelet_${braceletValue}`);
 
         const dialBtn = document.querySelector("#dialOptions button.selected");
         const dialValue = dialBtn ? dialBtn.dataset.value : "1";
@@ -57,13 +51,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadFromLocalOrURL() {
         const config = JSON.parse(localStorage.getItem(storageKey)) || {
-            bracelet: "1",
             dial: "1",
             case: "1",
         };
 
-        const braceletButtons = document.querySelectorAll("#braceletOptions button");
-        braceletButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.bracelet));
 
         const dialButtons = document.querySelectorAll("#dialOptions button");
         dialButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.dial));
@@ -75,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const toggles = [
-        { toggleId: "braceletToggle", menuId: "braceletOptions" },
         { toggleId: "dialToggle", menuId: "dialOptions" },
         { toggleId: "caseToggle", menuId: "caseOptions" }
     ];
@@ -95,19 +85,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    document.getElementById("braceletOptions").style.display = "flex";
-    document.getElementById("braceletToggle").classList.add("open");
+    document.getElementById("caseOptions").style.display = "flex";
+    document.getElementById("caseToggle").classList.add("open");
 
 
     // SELECTORS
-    document.querySelectorAll("#braceletOptions button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll("#braceletOptions button").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            updateLayer(braceletLayer, "bracelet", `Bracelet_${btn.dataset.value}`);
-            saveToLocal();
-        });
-    });
 
     document.querySelectorAll("#dialOptions button").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -233,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
             watchArea.style.width = "320px";
             watchArea.style.height = "400px";
         } else {
-            watchArea.style.width = "270px";
+            watchArea.style.width = "290px";
             watchArea.style.height = "400px";
         }
 

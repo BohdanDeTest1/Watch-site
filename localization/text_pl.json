@@ -89,6 +89,7 @@
             "bracelet": "Bransoleta",
             "dial": "Tarcza",
             "case": "Koperta",
+            "caseAndBracelet": "Koperta i bransoleta",
             "hands": "Wskazówki",
             "secondHand": "Sekundnik",
             "additionalOptions": "Opcje dodatkowe",
@@ -113,9 +114,13 @@
         "watchInfo": {
             "title": "Specyfikacja",
             "movement": "<strong>Mechanizm:</strong> Seiko NH35",
+            "movementVK63": "<strong>Mechanizm:</strong> Seiko VK63 (kwarcowy)",
+            "cristal": "<strong>Szkło:</strong> Szafirowe",
             "caseSize": "<strong>Średnica koperty:</strong> 40 mm",
+            "caseSize42": "<strong>Średnica koperty:</strong> 42 mm",
             "caseMaterial": "<strong>Materiał koperty:</strong> Stal nierdzewna 316L",
-            "waterProfile": "<strong>Wodoszczelność:</strong> 10ATM",
+            "waterProfile": "<strong>Wodoszczelność:</strong> 100 m",
+            "waterProfile50": "<strong>Wodoszczelność:</strong> 50 m",
             "watchBackSolid": "pełny",
             "watchBackTransparent": "przezroczysty"
         },
