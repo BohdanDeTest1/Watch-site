@@ -120,7 +120,10 @@
             "watchBackTransparent": "transparent"
         },
         "price": "Price:",
-        "imageDownloadButton": "Download image"
+        "imageDownloadButton": "Download image",
+        "buyNote": "You can also change or remove the SEIKO logo and add an engraving. <br> <br> To place an order, click the \"Download\" button and send this image to me via messenger.",
+        "whatsAppButton": "Message via WhatsApp",
+        "viberButton": "Message via Viber"
     },
     "footer": {
         "footer_question_1": "Any questions?",

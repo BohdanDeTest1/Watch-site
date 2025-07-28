@@ -120,7 +120,10 @@
             "watchBackTransparent": "przezroczysty"
         },
         "price": "Cena:",
-        "imageDownloadButton": "Pobierz obraz"
+        "imageDownloadButton": "Pobierz obraz",
+        "buyNote": "Możesz również zmienić lub usunąć logo SEIKO oraz dodać grawer. <br> <br> Aby złożyć zamówienie, kliknij przycisk „Pobierz” i wyślij mi to zdjęcie przez komunikator.",
+        "whatsAppButton": "Napisz na WhatsApp",
+        "viberButton": "Napisz na Viber"
     },
     "footer": {
         "footer_question_1": "Masz pytania?",

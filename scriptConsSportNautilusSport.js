@@ -511,6 +511,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.getElementById("whatsappBtn").addEventListener("click", () => {
+        window.open("https://wa.me/48453303550?text=Здравствуйте,%20интересует%20конфигурация%20часов", "_blank");
+    });
 
+    document.getElementById("viberBtn").addEventListener("click", () => {
+        window.open("viber://chat?number=%2B380668580062", "_blank");
+    });
 
 });
