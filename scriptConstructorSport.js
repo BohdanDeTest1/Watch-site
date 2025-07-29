@@ -6,9 +6,10 @@ const availability = {
     "PRX": true,
     "ROYAL-CHRONOGRAPH": true,
     "ROYAL": true,
-    "SEMASTER": true,
+    "BLACK-BAY": false,
+    "SEMASTER": false,
     "SKX007": false,
-    "SUBMARINER": true
+    "SUBMARINER": false
 };
 
 document.addEventListener("DOMContentLoaded", () => {

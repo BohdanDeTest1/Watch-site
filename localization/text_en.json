@@ -114,12 +114,14 @@
         "watchInfo": {
             "title": "Specifications",
             "movement": "<strong>Movement:</strong> Seiko NH35",
+            "movementNH35_NH70": "<strong>Movement:</strong> Seiko NH35/NH70",
             "movementVK63": "<strong>Movement:</strong> Seiko VK63 (quartz)",
             "cristal": "<strong>Crystal:</strong> Sapphire",
-            "caseSize": "<strong>Case diameter:</strong> 40 mm",
+            "caseSize40": "<strong>Case diameter:</strong> 40 mm",
+            "caseSize41": "<strong>Case diameter:</strong> 41 mm",
             "caseSize42": "<strong>Case diameter:</strong> 42 mm",
             "caseMaterial": "<strong>Case material:</strong> Stainless steel 316L",
-            "waterProfile": "<strong>Water resistance:</strong> 100 m",
+            "waterProfile100": "<strong>Water resistance:</strong> 100 m",
             "waterProfile50": "<strong>Water resistance:</strong> 50 m",
             "watchBackSolid": "solid",
             "watchBackTransparent": "transparent"

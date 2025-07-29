@@ -116,10 +116,11 @@
             "movement": "<strong>Механизм:</strong> Seiko NH35",
             "movementVK63": "<strong>Механизм:</strong> Seiko VK63 (кварц)",
             "cristal": "<strong>Стекло:</strong> Сапфировое",
-            "caseSize": "<strong>Диаметр корпуса:</strong> 40 мм",
+            "caseSize40": "<strong>Диаметр корпуса:</strong> 40 мм",
+            "caseSize41": "<strong>Диаметр корпуса:</strong> 41 мм",
             "caseSize42": "<strong>Диаметр корпуса:</strong> 42 мм",
             "caseMaterial": "<strong>Материал корпуса:</strong> нерж. сталь 316L",
-            "waterProfile": "<strong>Водозащита:</strong> 100 м",
+            "waterProfile100": "<strong>Водозащита:</strong> 100 м",
             "waterProfile50": "<strong>Водозащита:</strong> 50 м",
             "watchBackSolid": "цельная",
             "watchBackTransparent": "прозрачная"

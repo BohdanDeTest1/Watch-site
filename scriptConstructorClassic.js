@@ -1,11 +1,12 @@
 // scriptConstructorSport.js
 
 const availability = {
-    "CLASSIC": true,
+
     "DATEJUST": true,
-    "DAY-DATE": true,
+    "DAY-DATE": false,
     "NAUTILYS": false,
-    "SANTOS": true,
+    "CLASSIC": false,
+    "SANTOS": false,
     "CUBITS": false,
 };
 
