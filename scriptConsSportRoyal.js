@@ -1,6 +1,6 @@
 
 let lastScrollY = window.scrollY;
-const storageKey = "aquanautConfig";
+const storageKey = "nautilusConfig";
 
 window.addEventListener("scroll", () => {
     const header = document.getElementById("header");
@@ -19,32 +19,30 @@ window.addEventListener("scroll", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const braceletLayer = document.getElementById("braceletLayer");
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
+    const handsLayer = document.getElementById("handsLayer");
+
 
     function updateLayer(layer, path, name, ext = "png") {
-        layer.src = `watchParts/1_Aquanaut/${path}/${name}.${ext}`;
+        layer.src = `watchParts/5_Royal/${path}/${name}.${ext}`;
     }
 
     function saveToLocal() {
-        const braceletButton = document.querySelector("#braceletOptions button.selected");
         const dialButton = document.querySelector("#dialOptions button.selected");
         const caseButton = document.querySelector("#caseOptions button.selected");
+        const handsButton = document.querySelector("#handsOptions button.selected");
 
         const config = {
-            bracelet: braceletButton?.dataset.value || "1",
             dial: dialButton?.dataset.value || "1",
             case: caseButton?.dataset.value || "1",
+            hands: handsButton?.dataset.value || "1"
         };
 
         localStorage.setItem(storageKey, JSON.stringify(config));
     }
 
     function applySelections() {
-        const braceletBtn = document.querySelector("#braceletOptions button.selected");
-        const braceletValue = braceletBtn ? braceletBtn.dataset.value : "1";
-        updateLayer(braceletLayer, "bracelet", `Bracelet_${braceletValue}`);
 
         const dialBtn = document.querySelector("#dialOptions button.selected");
         const dialValue = dialBtn ? dialBtn.dataset.value : "1";
@@ -53,17 +51,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseBtn = document.querySelector("#caseOptions button.selected");
         const caseValue = caseBtn ? caseBtn.dataset.value : "1";
         updateLayer(caseLayer, "case", `case_${caseValue}`);
+
+        const handsBtn = document.querySelector("#handsOptions button.selected");
+        const handsValue = handsBtn ? handsBtn.dataset.value : "1";
+        updateLayer(handsLayer, "hands", `hands_${handsValue}`);
     }
 
     function loadFromLocalOrURL() {
         const config = JSON.parse(localStorage.getItem(storageKey)) || {
-            bracelet: "1",
             dial: "1",
             case: "1",
+            hands: "1"
         };
-
-        const braceletButtons = document.querySelectorAll("#braceletOptions button");
-        braceletButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.bracelet));
 
         const dialButtons = document.querySelectorAll("#dialOptions button");
         dialButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.dial));
@@ -71,13 +70,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseButtons = document.querySelectorAll("#caseOptions button");
         caseButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.case));
 
+        const handsLayerButtons = document.querySelectorAll("#handsOptions button");
+        handsLayerButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.hands));
+
         applySelections();
     }
 
     const toggles = [
-        { toggleId: "braceletToggle", menuId: "braceletOptions" },
+
         { toggleId: "dialToggle", menuId: "dialOptions" },
-        { toggleId: "caseToggle", menuId: "caseOptions" }
+        { toggleId: "caseToggle", menuId: "caseOptions" },
+        { toggleId: "handsToggle", menuId: "handsOptions" }
     ];
 
 
@@ -95,19 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    document.getElementById("braceletOptions").style.display = "flex";
-    document.getElementById("braceletToggle").classList.add("open");
+    document.getElementById("caseOptions").style.display = "flex";
+    document.getElementById("caseToggle").classList.add("open");
 
 
     // SELECTORS
-    document.querySelectorAll("#braceletOptions button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll("#braceletOptions button").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            updateLayer(braceletLayer, "bracelet", `Bracelet_${btn.dataset.value}`);
-            saveToLocal();
-        });
-    });
 
     document.querySelectorAll("#dialOptions button").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -127,6 +122,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.querySelectorAll("#handsOptions button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll("#handsOptions button").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            updateLayer(handsLayer, "hands", `hands_${btn.dataset.value}`);
+            saveToLocal();
+        });
+    });
+
+
     document.querySelectorAll('.select-wrapper select').forEach(select => {
         select.addEventListener('focus', () => {
             select.parentElement.classList.add('select-open');
@@ -137,11 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // if (!localStorage.getItem("caseback")) {
-    //     casebackSelect.value = "solid";
-    //     casebackText.textContent = casebackSelect.options[casebackSelect.selectedIndex].textContent;
-    //     bezelConfigBox.style.display = "block";
-    // }
+
 
     loadFromLocalOrURL();
 

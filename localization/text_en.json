@@ -115,6 +115,7 @@
             "title": "Specifications",
             "movement": "<strong>Movement:</strong> Seiko NH35",
             "movementNH35_NH70": "<strong>Movement:</strong> Seiko NH35/NH70",
+            "movementNH35_NH70_NH71_NH72": "<strong>Movement:</strong> Seiko NH35/NH70/NH71/NH72",
             "movementVK63": "<strong>Movement:</strong> Seiko VK63 (quartz)",
             "cristal": "<strong>Crystal:</strong> Sapphire",
             "caseSize40": "<strong>Case diameter:</strong> 40 mm",
