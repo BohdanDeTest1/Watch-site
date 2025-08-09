@@ -15,24 +15,31 @@
 <body>
     <div id="header"></div>
 
-    <div style="height: 60px;"></div>
+    <div style="height: 60px;"></div> <!-- Заменить на точную высоту хедера -->
 
     <div class="header-placeholder"></div>
 
     <main class="constructor-page">
         <button class="back-button" onclick="history.back()"
             data-i18n="pageConstructorsSport.BackButton">&laquo;</button>
-        <h1>Black bay</h1>
+        <h1>Black Bay</h1>
         <div class="constructor-container">
             <div class="watch-preview-box" id="watchPreviewBox">
                 <div class="watch-preview">
-                    <img id="caseLayer" class="layer" src="watchParts/1_Aquanaut/case/case_1.png" />
-                    <img id="dialLayer" class="layer" src="watchParts/1_Aquanaut/dial/dial_1.png" />
+                    <img id="caseLayer" class="layer" src="watchParts/6_Black_Bay/case/case_1.png" />
+                    <img id="dialLayer" class="layer" src="watchParts/6_Black_Bay/dial/dial_1.png" />
+                    <img id="secondHandLayer" class="layer" src="watchParts/6_Black_Bay/GMT_hand/hand_1.png" />
+                    <img id="handsLayer" class="layer" src="watchParts/6_Black_Bay/hands/hands_1.png" />
+
+
                     <div class="corner-text left" id="engraveText"
                         data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
                     <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
                         Без логотипа</div>
-
+                    <div class="corner-text right" id="casebackText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная крышка</div>
+                    <div id="bezelText" class="corner-text right2"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">Стандартный ротор</div>
 
 
                 </div>
@@ -41,84 +48,52 @@
 
             <div class="options-panel">
 
+
                 <div class="option-group">
                     <div class="option-header" id="caseToggle">
-                        <span data-i18n="pageConstructorsWatchView.watchMenu.case">Корпус</span>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.caseAndBezel">Кейс и безель</span>
                         <span class="arrow-icon"></span>
                     </div>
 
                     <div class="option-images" id="caseOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/4_Royal-chronograph/case/case_1.png" alt="Case 1" />
+                            <img src="watchParts/6_Black_Bay/case/case_1.png" alt="Case 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/4_Royal-chronograph/case/case_2.png" alt="Case 2" />
+                            <img src="watchParts/6_Black_Bay/case/case_2.png" alt="Case 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/4_Royal-chronograph/case/case_3.png" alt="Case 3" />
+                            <img src="watchParts/6_Black_Bay/case/case_3.png" alt="Case 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/4_Royal-chronograph/case/case_4.png" alt="Case 4" />
+                            <img src="watchParts/6_Black_Bay/case/case_4.png" alt="Case 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/4_Royal-chronograph/case/case_5.png" alt="Case 5" />
+                            <img src="watchParts/6_Black_Bay/case/case_5.png" alt="Case 5" />
                         </button>
                         <button class="option" data-value="6">
-                            <img src="watchParts/4_Royal-chronograph/case/case_6.png" alt="Case 6" />
+                            <img src="watchParts/6_Black_Bay/case/case_6.png" alt="Case 6" />
                         </button>
                         <button class="option" data-value="7">
-                            <img src="watchParts/4_Royal-chronograph/case/case_7.png" alt="Case 7" />
+                            <img src="watchParts/6_Black_Bay/case/case_7.png" alt="Case 7" />
                         </button>
                         <button class="option" data-value="8">
-                            <img src="watchParts/4_Royal-chronograph/case/case_8.png" alt="Case 8" />
+                            <img src="watchParts/6_Black_Bay/case/case_8.png" alt="Case 8" />
                         </button>
                         <button class="option" data-value="9">
-                            <img src="watchParts/4_Royal-chronograph/case/case_9.png" alt="Case 9" />
+                            <img src="watchParts/6_Black_Bay/case/case_9.png" alt="Case 9" />
                         </button>
                         <button class="option" data-value="10">
-                            <img src="watchParts/4_Royal-chronograph/case/case_10.png" alt="Case 10" />
+                            <img src="watchParts/6_Black_Bay/case/case_10.png" alt="Case 10" />
                         </button>
                         <button class="option" data-value="11">
-                            <img src="watchParts/4_Royal-chronograph/case/case_11.png" alt="Case 11" />
+                            <img src="watchParts/6_Black_Bay/case/case_11.png" alt="Case 11" />
                         </button>
                         <button class="option" data-value="12">
-                            <img src="watchParts/4_Royal-chronograph/case/case_12.png" alt="Case 12" />
+                            <img src="watchParts/6_Black_Bay/case/case_12.png" alt="Case 12" />
                         </button>
                         <button class="option" data-value="13">
-                            <img src="watchParts/4_Royal-chronograph/case/case_13.png" alt="Case 13" />
-                        </button>
-                        <button class="option" data-value="14">
-                            <img src="watchParts/4_Royal-chronograph/case/case_14.png" alt="Case 14" />
-                        </button>
-                        <button class="option" data-value="15">
-                            <img src="watchParts/4_Royal-chronograph/case/case_15.png" alt="Case 15" />
-                        </button>
-                        <button class="option" data-value="16">
-                            <img src="watchParts/4_Royal-chronograph/case/case_16.png" alt="Case 16" />
-                        </button>
-                        <button class="option" data-value="17">
-                            <img src="watchParts/4_Royal-chronograph/case/case_17.png" alt="Case 17" />
-                        </button>
-                        <button class="option" data-value="18">
-                            <img src="watchParts/4_Royal-chronograph/case/case_18.png" alt="Case 18" />
-                        </button>
-                        <button class="option" data-value="19">
-                            <img src="watchParts/4_Royal-chronograph/case/case_19.png" alt="Case 19" />
-                        </button>
-                        <button class="option" data-value="20">
-                            <img src="watchParts/4_Royal-chronograph/case/case_20.png" alt="Case 20" />
-                        </button>
-                        <button class="option" data-value="21">
-                            <img src="watchParts/4_Royal-chronograph/case/case_21.png" alt="Case 21" />
-                        </button>
-                        <button class="option" data-value="22">
-                            <img src="watchParts/4_Royal-chronograph/case/case_22.png" alt="Case 22" />
-                        </button>
-                        <button class="option" data-value="23">
-                            <img src="watchParts/4_Royal-chronograph/case/case_23.png" alt="Case 23" />
-                        </button>
-                        <button class="option" data-value="24">
-                            <img src="watchParts/4_Royal-chronograph/case/case_24.png" alt="Case 24" />
+                            <img src="watchParts/6_Black_Bay/case/case_13.png" alt="Case 13" />
                         </button>
                     </div>
                 </div>
@@ -133,91 +108,305 @@
 
                     <div class="option-images" id="dialOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_1.png" alt="Dial 1" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_1.png" alt="Dial 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_2.png" alt="Dial 2" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_2.png" alt="Dial 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_3.png" alt="Dial 3" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_3.png" alt="Dial 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_4.png" alt="Dial 4" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_4.png" alt="Dial 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_5.png" alt="Dial 5" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_5.png" alt="Dial 5" />
                         </button>
                         <button class="option" data-value="6">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_6.png" alt="Dial 6" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_6.png" alt="Dial 6" />
                         </button>
                         <button class="option" data-value="7">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_7.png" alt="Dial 7" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_7.png" alt="Dial 7" />
                         </button>
                         <button class="option" data-value="8">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_8.png" alt="Dial 8" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_8.png" alt="Dial 8" />
                         </button>
                         <button class="option" data-value="9">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_9.png" alt="Dial 9" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_9.png" alt="Dial 9" />
                         </button>
                         <button class="option" data-value="10">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_10.png" alt="Dial 10" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_10.png" alt="Dial 10" />
                         </button>
                         <button class="option" data-value="11">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_11.png" alt="Dial 11" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_11.png" alt="Dial 11" />
                         </button>
                         <button class="option" data-value="12">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_12.png" alt="Dial 12" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_12.png" alt="Dial 12" />
                         </button>
                         <button class="option" data-value="13">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_13.png" alt="Dial 13" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_13.png" alt="Dial 13" />
                         </button>
                         <button class="option" data-value="14">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_14.png" alt="Dial 14" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_14.png" alt="Dial 14" />
                         </button>
                         <button class="option" data-value="15">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_15.png" alt="Dial 15" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_15.png" alt="Dial 15" />
                         </button>
                         <button class="option" data-value="16">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_16.png" alt="Dial 16" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_16.png" alt="Dial 16" />
                         </button>
                         <button class="option" data-value="17">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_17.png" alt="Dial 17" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_17.png" alt="Dial 17" />
                         </button>
                         <button class="option" data-value="18">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_18.png" alt="Dial 18" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_18.png" alt="Dial 18" />
                         </button>
                         <button class="option" data-value="19">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_19.png" alt="Dial 19" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_19.png" alt="Dial 19" />
                         </button>
                         <button class="option" data-value="20">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_20.png" alt="Dial 20" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_20.png" alt="Dial 20" />
                         </button>
                         <button class="option" data-value="21">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_21.png" alt="Dial 21" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_21.png" alt="Dial 21" />
                         </button>
                         <button class="option" data-value="22">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_22.png" alt="Dial 22" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_22.png" alt="Dial 22" />
                         </button>
                         <button class="option" data-value="23">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_23.png" alt="Dial 23" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_23.png" alt="Dial 23" />
                         </button>
                         <button class="option" data-value="24">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_24.png" alt="Dial 24" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_24.png" alt="Dial 24" />
                         </button>
                         <button class="option" data-value="25">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_25.png" alt="Dial 25" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_25.png" alt="Dial 25" />
                         </button>
                         <button class="option" data-value="26">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_26.png" alt="Dial 26" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_26.png" alt="Dial 26" />
                         </button>
                         <button class="option" data-value="27">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_27.png" alt="Dial 27" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_27.png" alt="Dial 27" />
                         </button>
                         <button class="option" data-value="28">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_28.png" alt="Dial 28" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_28.png" alt="Dial 28" />
                         </button>
                         <button class="option" data-value="29">
-                            <img src="watchParts/4_Royal-chronograph/dial/dial_29.png" alt="Dial 29" />
+                            <img src="watchParts/6_Black_Bay/dial/dial_29.png" alt="Dial 29" />
+                        </button>
+                        <button class="option" data-value="30">
+                            <img src="watchParts/6_Black_Bay/dial/dial_30.png" alt="Dial 30" />
+                        </button>
+                        <button class="option" data-value="31">
+                            <img src="watchParts/6_Black_Bay/dial/dial_31.png" alt="Dial 31" />
+                        </button>
+                        <button class="option" data-value="32">
+                            <img src="watchParts/6_Black_Bay/dial/dial_32.png" alt="Dial 32" />
+                        </button>
+                        <button class="option" data-value="33">
+                            <img src="watchParts/6_Black_Bay/dial/dial_33.png" alt="Dial 33" />
+                        </button>
+                        <button class="option" data-value="34">
+                            <img src="watchParts/6_Black_Bay/dial/dial_34.png" alt="Dial 34" />
+                        </button>
+                        <button class="option" data-value="35">
+                            <img src="watchParts/6_Black_Bay/dial/dial_35.png" alt="Dial 35" />
+                        </button>
+                        <button class="option" data-value="36">
+                            <img src="watchParts/6_Black_Bay/dial/dial_36.png" alt="Dial 36" />
+                        </button>
+                        <button class="option" data-value="37">
+                            <img src="watchParts/6_Black_Bay/dial/dial_37.png" alt="Dial 37" />
+                        </button>
+                        <button class="option" data-value="38">
+                            <img src="watchParts/6_Black_Bay/dial/dial_38.png" alt="Dial 38" />
+                        </button>
+                        <button class="option" data-value="39">
+                            <img src="watchParts/6_Black_Bay/dial/dial_39.png" alt="Dial 39" />
+                        </button>
+                        <button class="option" data-value="40">
+                            <img src="watchParts/6_Black_Bay/dial/dial_40.png" alt="Dial 40" />
+                        </button>
+                        <button class="option" data-value="41">
+                            <img src="watchParts/6_Black_Bay/dial/dial_41.png" alt="Dial 41" />
+                        </button>
+                        <button class="option" data-value="42">
+                            <img src="watchParts/6_Black_Bay/dial/dial_42.png" alt="Dial 42" />
+                        </button>
+                        <button class="option" data-value="43">
+                            <img src="watchParts/6_Black_Bay/dial/dial_43.png" alt="Dial 43" />
+                        </button>
+                        <button class="option" data-value="44">
+                            <img src="watchParts/6_Black_Bay/dial/dial_44.png" alt="Dial 44" />
+                        </button>
+                        <button class="option" data-value="45">
+                            <img src="watchParts/6_Black_Bay/dial/dial_45.png" alt="Dial 45" />
+                        </button>
+                        <button class="option" data-value="46">
+                            <img src="watchParts/6_Black_Bay/dial/dial_46.png" alt="Dial 46" />
+                        </button>
+                        <button class="option" data-value="47">
+                            <img src="watchParts/6_Black_Bay/dial/dial_47.png" alt="Dial 47" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+
+                <div class="option-group">
+                    <div class="option-header" id="handsToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.hands">Стрелки</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="handsOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/6_Black_Bay/hands/hands_1.png" alt="Hands 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/6_Black_Bay/hands/hands_2.png" alt="Hands 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/6_Black_Bay/hands/hands_3.png" alt="Hands 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/6_Black_Bay/hands/hands_4.png" alt="Hands 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/6_Black_Bay/hands/hands_5.png" alt="Hands 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/6_Black_Bay/hands/hands_6.png" alt="Hands 6" />
+                        </button>
+                        <button class="option" data-value="7">
+                            <img src="watchParts/6_Black_Bay/hands/hands_7.png" alt="Hands 7" />
+                        </button>
+                        <button class="option" data-value="8">
+                            <img src="watchParts/6_Black_Bay/hands/hands_8.png" alt="Hands 8" />
+                        </button>
+                        <button class="option" data-value="9">
+                            <img src="watchParts/6_Black_Bay/hands/hands_9.png" alt="Hands 9" />
+                        </button>
+                        <button class="option" data-value="10">
+                            <img src="watchParts/6_Black_Bay/hands/hands_10.png" alt="Hands 10" />
+                        </button>
+                        <button class="option" data-value="11">
+                            <img src="watchParts/6_Black_Bay/hands/hands_11.png" alt="Hands 11" />
+                        </button>
+                        <button class="option" data-value="12">
+                            <img src="watchParts/6_Black_Bay/hands/hands_12.png" alt="Hands 12" />
+                        </button>
+                        <button class="option" data-value="13">
+                            <img src="watchParts/6_Black_Bay/hands/hands_13.png" alt="Hands 13" />
+                        </button>
+                        <button class="option" data-value="14">
+                            <img src="watchParts/6_Black_Bay/hands/hands_14.png" alt="Hands 14" />
+                        </button>
+                        <button class="option" data-value="15">
+                            <img src="watchParts/6_Black_Bay/hands/hands_15.png" alt="Hands 15" />
+                        </button>
+                        <button class="option" data-value="16">
+                            <img src="watchParts/6_Black_Bay/hands/hands_16.png" alt="Hands 16" />
+                        </button>
+                        <button class="option" data-value="17">
+                            <img src="watchParts/6_Black_Bay/hands/hands_17.png" alt="Hands 17" />
+                        </button>
+                        <button class="option" data-value="18">
+                            <img src="watchParts/6_Black_Bay/hands/hands_18.png" alt="Hands 18" />
+                        </button>
+                        <button class="option" data-value="19">
+                            <img src="watchParts/6_Black_Bay/hands/hands_19.png" alt="Hands 19" />
+                        </button>
+                        <button class="option" data-value="20">
+                            <img src="watchParts/6_Black_Bay/hands/hands_20.png" alt="Hands 20" />
+                        </button>
+                        <button class="option" data-value="21">
+                            <img src="watchParts/6_Black_Bay/hands/hands_21.png" alt="Hands 21" />
+                        </button>
+                        <button class="option" data-value="22">
+                            <img src="watchParts/6_Black_Bay/hands/hands_22.png" alt="Hands 22" />
+                        </button>
+                        <button class="option" data-value="32">
+                            <img src="watchParts/6_Black_Bay/hands/hands_23.png" alt="Hands 23" />
+                        </button>
+                        <button class="option" data-value="24">
+                            <img src="watchParts/6_Black_Bay/hands/hands_24.png" alt="Hands 24" />
+                        </button>
+                        <button class="option" data-value="25">
+                            <img src="watchParts/6_Black_Bay/hands/hands_25.png" alt="Hands 25" />
+                        </button>
+                        <button class="option" data-value="26">
+                            <img src="watchParts/6_Black_Bay/hands/hands_26.png" alt="Hands 26" />
+                        </button>
+                        <button class="option" data-value="27">
+                            <img src="watchParts/6_Black_Bay/hands/hands_27.png" alt="Hands 27" />
+                        </button>
+                        <button class="option" data-value="28">
+                            <img src="watchParts/6_Black_Bay/hands/hands_28.png" alt="Hands 28" />
+                        </button>
+                        <button class="option" data-value="29">
+                            <img src="watchParts/6_Black_Bay/hands/hands_29.png" alt="Hands 29" />
+                        </button>
+                        <button class="option" data-value="30">
+                            <img src="watchParts/6_Black_Bay/hands/hands_30.png" alt="Hands 30" />
+                        </button>
+                        <button class="option" data-value="31">
+                            <img src="watchParts/6_Black_Bay/hands/hands_31.png" alt="Hands 31" />
+                        </button>
+                        <button class="option" data-value="32">
+                            <img src="watchParts/6_Black_Bay/hands/hands_32.png" alt="Hands 32" />
+                        </button>
+                        <button class="option" data-value="33">
+                            <img src="watchParts/6_Black_Bay/hands/hands_33.png" alt="Hands 33" />
+                        </button>
+                        <button class="option" data-value="34">
+                            <img src="watchParts/6_Black_Bay/hands/hands_34.png" alt="Hands 34" />
+                        </button>
+                        <button class="option" data-value="35">
+                            <img src="watchParts/6_Black_Bay/hands/hands_35.png" alt="Hands 35" />
+                        </button>
+                        <button class="option" data-value="36">
+                            <img src="watchParts/6_Black_Bay/hands/hands_36.png" alt="Hands 36" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+                <div class="option-group">
+                    <div class="option-header" id="secondHandToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.GMTHand">GMT стрелка</span>
+                        <span class="arrow-icon"></span>
+                        <button id="infoButton2" class="info-btn-2">i</button>
+                        <div id="infoTooltip2" class="info-tooltip-2">
+                            <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.GMTHint">
+                                Подвижная деталь на задней стороне часов, заводит механизм
+                                при движении руки.</p>
+                        </div>
+                    </div>
+
+                    <div class="option-images" id="secondHandOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_1.png" alt="Second Hand 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_2.png" alt="Second Hand 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_3.png" alt="Second Hand 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_4.png" alt="Second Hand 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_5.png" alt="Second Hand 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_6.png" alt="Second Hand 6" />
+                        </button>
+                        <button class="option" data-value="7">
+                            <img src="watchParts/6_Black_Bay/GMT_hand/hand_7.png" alt="Second Hand 7" />
                         </button>
                     </div>
                 </div>
@@ -225,6 +414,84 @@
 
                 <div class="option-subtitle" data-i18n="pageConstructorsWatchView.watchMenu.additionalOptions">
                     Дополнительные опции</div>
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
+                        <select id="casebackSelect">
+                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
+                                крышка</option>
+                            <option value="transparent"
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
+                            </option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="bezelTypeWrapper" class="select-wrapper hidden">
+
+                    <label>
+                        <div class="label-with-info">
+                            <div class="info-container">
+                                <button id="infoButton" class="info-btn">i</button>
+                                <div id="infoTooltip" class="info-tooltip">
+                                    <img src="bezel/Rotor.png" alt="Инфо" />
+                                    <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.rotorHint">
+                                        Подвижная деталь на задней стороне часов, заводит механизм
+                                        при движении руки.</p>
+                                </div>
+                            </div>
+                            <span class="label-text" data-i18n="pageConstructorsWatchView.watchMenu.rotor">Ротор:</span>
+                        </div>
+                        <select id="bezelTypeSelect">
+                            <option value="standard" data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">
+                                Стандартный ротор</option>
+                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">Кастомный
+                                ротор</option>
+                        </select>
+                    </label>
+
+
+                </div>
+
+                <div id="bezelConfigBox" class="hidden">
+                    <label for="bezelNumber" data-i18n="pageConstructorsWatchView.watchMenu.rotorNumber">Введи номер
+                        ротора:</label>
+                    <div class="bezel-input-wrapper">
+                        <input type="number" id="bezelNumber" name="bezelNumber" class="input-short" min="1" max="300"
+                            placeholder="1–129" />
+                        <button id="applyBezelNumberBtn" type="button"
+                            data-i18n="pageConstructorsWatchView.watchMenu.rotorAcceptButton">Применить</button>
+                    </div>
+                    <p id="bezelNumberError" class="input-error" style="display: none;"
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129</p>
+
+
+                    <div class="bezel-carousel-wrapper">
+                        <div class="bezel-carousel-controls">
+                            <button class="bezel-prev-btn" aria-label="Previous bezel">&#60;</button>
+                            <button class="bezel-next-btn" aria-label="Next bezel">&#62;</button>
+                        </div>
+
+                        <div class="bezel-carousel">
+                            <img src="bezel/rotor_0_0.png" alt="Bezel 1" class="bezel-img active" />
+                            <img src="bezel/rotor_1_0.png" alt="Bezel 2" class="bezel-img" />
+                            <img src="bezel/rotor_1_1.png" alt="Bezel 3" class="bezel-img" />
+                            <img src="bezel/rotor_1_2.png" alt="Bezel 4" class="bezel-img" />
+                            <img src="bezel/rotor_1_3.png" alt="Bezel 5" class="bezel-img" />
+                            <img src="bezel/rotor_2_0.png" alt="Bezel 6" class="bezel-img" />
+                            <img src="bezel/rotor_2_1.png" alt="Bezel 7" class="bezel-img" />
+                            <img src="bezel/rotor_2_2.png" alt="Bezel 8" class="bezel-img" />
+                            <img src="bezel/rotor_2_3.png" alt="Bezel 9" class="bezel-img" />
+                            <img src="bezel/rotor_3_0.png" alt="Bezel 10" class="bezel-img" />
+                            <img src="bezel/rotor_3_1.png" alt="Bezel 11" class="bezel-img" />
+                            <img src="bezel/rotor_3_2.png" alt="Bezel 12" class="bezel-img" />
+                            <img src="bezel/rotor_3_3.png" alt="Bezel 13" class="bezel-img" />
+                            <img src="bezel/rotor_3_4.png" alt="Bezel 14" class="bezel-img" />
+                            <img src="bezel/rotor_3_5.png" alt="Bezel 15" class="bezel-img" />
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="select-wrapper">
@@ -259,8 +526,7 @@
                 <div class="specs-box">
                     <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
                     <ul class="specs-list">
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.movementVK63"><strong>Механизм:</strong>
-                            Seiko
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.movement"><strong>Механизм:</strong> Seiko
                             NH35</li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.cristal"><strong>Стекло:</strong>
                             Сапфировое</li>
@@ -268,8 +534,16 @@
                             40 мм</li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial"><strong>Материал
                                 корпуса:</strong> нерж. сталь 316L</li>
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile50"><strong>Водозащита:</strong>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile100"><strong>Водозащита:</strong>
                             10ATM</li>
+                        <li id="spec-caseback-solid" style="display: none;"><strong
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
+                                крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackSolid">цельная</span></li>
+                        <li id="spec-caseback-transparent" style="display: none;"><strong
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
+                        </li>
 
                     </ul>
                     <h3 data-i18n="pageConstructorsWatchView.price">Стоимость: </h3>
