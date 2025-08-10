@@ -7,7 +7,7 @@ const availability = {
     "ROYAL-CHRONOGRAPH": true,
     "ROYAL": true,
     "BLACK-BAY": true,
-    "SPEEDMASTER": false,
+    "SPEEDMASTER": true,
     "SUBMARINER": false,
     "SEAMASTER": false,
     "SKX007": false,

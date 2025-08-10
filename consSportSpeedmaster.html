@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speedmaster</title>
+    <link rel="stylesheet" href="styleHeaderFooter.css" />
+    <link rel="stylesheet" href="styleConstructorSport.css" />
+    <link rel="stylesheet" href="styleConsSportSpeedmaster.css" />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div style="height: 60px;"></div>
+
+    <div class="header-placeholder"></div>
+
+    <main class="constructor-page">
+        <button class="back-button" onclick="history.back()"
+            data-i18n="pageConstructorsSport.BackButton">&laquo;</button>
+        <h1>Speedmaster</h1>
+        <div class="constructor-container">
+            <div class="watch-preview-box" id="watchPreviewBox">
+                <div class="watch-preview">
+                    <img id="caseLayer" class="layer" src="watchParts/7_Speedmaster/case/case_1.png" />
+                    <img id="bandLayer" class="layer" src="watchParts/7_Speedmaster/band/band_1.png" />
+                    <img id="dialLayer" class="layer" src="watchParts/7_Speedmaster/dial/dial_1.png" />
+                    <div class="corner-text left" id="engraveText"
+                        data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
+                    <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
+                        Без логотипа</div>
+
+
+
+                </div>
+            </div>
+
+
+            <div class="options-panel">
+
+                <div class="option-group">
+                    <div class="option-header" id="caseToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.caseAndBezel">Корпус</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="caseOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/7_Speedmaster/case/case_1.png" alt="Case 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/7_Speedmaster/case/case_2.png" alt="Case 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/7_Speedmaster/case/case_3.png" alt="Case 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/7_Speedmaster/case/case_4.png" alt="Case 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/7_Speedmaster/case/case_5.png" alt="Case 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/7_Speedmaster/case/case_6.png" alt="Case 6" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+                <div class="option-group">
+                    <div class="option-header" id="bandToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.band">Браслет/Ремешок</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="bandOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/7_Speedmaster/band/band_1.png" alt="Band 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/7_Speedmaster/band/band_2.png" alt="Band 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/7_Speedmaster/band/band_3.png" alt="Band 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/7_Speedmasterh/band/band_4.png" alt="Band 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/7_Speedmaster/band/band_5.png" alt="Band 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/7_Speedmaster/band/band_6.png" alt="Band 6" />
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="option-divider">
+
+                <div class="option-group">
+                    <div class="option-header" id="dialToggle">
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dial">Циферблат</span>
+                        <span class="arrow-icon"></span>
+                    </div>
+
+                    <div class="option-images" id="dialOptions" style="display: none;">
+                        <button class="option" data-value="1">
+                            <img src="watchParts/7_Speedmaster/dial/dial_1.png" alt="Dial 1" />
+                        </button>
+                        <button class="option" data-value="2">
+                            <img src="watchParts/7_Speedmaster/dial/dial_2.png" alt="Dial 2" />
+                        </button>
+                        <button class="option" data-value="3">
+                            <img src="watchParts/7_Speedmaster/dial/dial_3.png" alt="Dial 3" />
+                        </button>
+                        <button class="option" data-value="4">
+                            <img src="watchParts/7_Speedmaster/dial/dial_4.png" alt="Dial 4" />
+                        </button>
+                        <button class="option" data-value="5">
+                            <img src="watchParts/7_Speedmaster/dial/dial_5.png" alt="Dial 5" />
+                        </button>
+                        <button class="option" data-value="6">
+                            <img src="watchParts/7_Speedmaster/dial/dial_6.png" alt="Dial 6" />
+                        </button>
+                        <button class="option" data-value="7">
+                            <img src="watchParts/7_Speedmaster/dial/dial_7.png" alt="Dial 7" />
+                        </button>
+                        <button class="option" data-value="8">
+                            <img src="watchParts/7_Speedmaster/dial/dial_8.png" alt="Dial 8" />
+                        </button>
+                        <button class="option" data-value="9">
+                            <img src="watchParts/7_Speedmaster/dial/dial_9.png" alt="Dial 9" />
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="option-subtitle" data-i18n="pageConstructorsWatchView.watchMenu.additionalOptions">
+                    Дополнительные опции</div>
+
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.ingraveTitle">Гравировка:</span>
+                        <select id="engravingSelect">
+                            <option value="withoutIngrave" data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без
+                                гравировки</option>
+                            <option value="withIngrave" data-i18n="pageConstructorsWatchView.watchMenu.ingrave">
+                                Гравировка (+150PLN)</option>
+                        </select>
+                    </label>
+                </div>
+
+
+                <div class="select-wrapper">
+                    <label>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.dialLogoTitle">Логотип на
+                            циферблате:</span>
+                        <select id="logoSelect">
+                            <option value="noLogo" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">Без логотипа
+                            </option>
+                            <option value="sLogo" data-i18n="pageConstructorsWatchView.watchMenu.sLogo">Логотип "SEIKO"
+                            </option>
+                            <option value="otherLogo" data-i18n="pageConstructorsWatchView.watchMenu.otherLogo">Свой
+                                логотип (+50PLN)</option>
+                        </select>
+
+                    </label>
+                </div>
+
+                <div class="specs-box">
+                    <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
+                    <ul class="specs-list">
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.movementVK63"><strong>Механизм:</strong>
+                            Seiko
+                            NH35</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.cristal"><strong>Стекло:</strong>
+                            Сапфировое</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseSize397"><strong>Диаметр
+                                корпуса:</strong>
+                            39.7 мм</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseThickness15"><strong>Толщина
+                                корпуса:</strong>
+                            39.7 мм</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial"><strong>Материал
+                                корпуса:</strong> нерж. сталь 316L</li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile50"><strong>Водозащита:</strong>
+                            10ATM</li>
+
+                    </ul>
+                    <h3 data-i18n="pageConstructorsWatchView.price">Стоимость: </h3>
+                    <h2 id="priceDisplay" class="specs-price">1090 PLN</h2>
+                </div>
+                <button id="downloadBtn" data-i18n="pageConstructorsWatchView.imageDownloadButton">Скачать
+                    изображение</button>
+                <div class="contactButtons">
+                    <p class="watch__warning" data-i18n="pageConstructorsWatchView.buyNote">
+                        Кроме того вы можете поменять или убрать логотип seiko и добавить гравировку1.
+                        <br>
+                        <br>
+                        Чтобы сделать заказ нажмите на кнопку "Скачать"1
+                        и отправьте данную фотографию мне в месенджер1
+                    </p>
+                </div>
+                <button id="whatsappBtn" data-i18n="pageConstructorsWatchView.whatsAppButton">Написать в
+                    WhatsApp1</button>
+                <button id="viberBtn" data-i18n="pageConstructorsWatchView.viberButton">Написать в Viber1</button>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="header-footer-loader.js"></script>
+    <script src="scriptConsSportSpeedmaster.js"></script>
+    <script src="localization.js"></script>
+</body>
+
+</html>
