@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const secondHandBtn = document.querySelector("#secondHandOptions button.selected");
         const secondHandValue = secondHandBtn ? secondHandBtn.dataset.value : "1";
-        updateLayer(secondHandLayer, "hand", `hand_${secondHandValue}`);
+        updateLayer(secondHandLayer, "secondHand", `second_${secondHandValue}`);
     }
 
     function loadFromLocalOrURL() {
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
         btn.addEventListener("click", () => {
             document.querySelectorAll("#secondHandOptions button").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
-            updateLayer(secondHandLayer, "secondHand", `hand_${btn.dataset.value}`);
+            updateLayer(secondHandLayer, "secondHand", `second_${btn.dataset.value}`);
             saveToLocal();
         });
     });
