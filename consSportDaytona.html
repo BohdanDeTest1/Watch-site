@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+hands
+-->
 
 <head>
     <meta charset="UTF-8" />
@@ -7,7 +10,7 @@
     <title>Daytona</title>
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="styleConstructorSport.css" />
-    <link rel="stylesheet" href="styleConsSportSpeedmaster.css" />
+    <link rel="stylesheet" href="styleConsSportDaytona.css" />
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </head>
@@ -26,10 +29,10 @@
         <div class="constructor-container">
             <div class="watch-preview-box" id="watchPreviewBox">
                 <div class="watch-preview">
-                    <img id="caseLayer" class="layer" src="watchParts/7_Speedmaster/case/case_1.png" />
-                    <img id="bandLayer" class="layer" src="watchParts/7_Speedmaster/bezel/bezel_1.png" />
-                    <img id="dialLayer" class="layer" src="watchParts/7_Speedmaster/dial/dial_1.png" />
-                    <img id="handsLayer" class="layer" src="watchParts/7_Speedmaster/hands/hands_1.png" />
+                    <img id="caseLayer" class="layer" src="watchParts/8_Daytona/case/case_1.png" />
+                    <img id="bezelLayer" class="layer" src="watchParts/8_Daytona/bezel/bezel_1.png" />
+                    <img id="dialLayer" class="layer" src="watchParts/8_Daytona/dial/dial_1.png" />
+                    <img id="handsLayer" class="layer" src="watchParts/8_Daytona/hands/hands_1.png" />
                     <div class="corner-text left" id="engraveText"
                         data-i18n="pageConstructorsWatchView.watchMenu.noIngrave">Без гравировки</div>
                     <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
@@ -51,22 +54,22 @@
 
                     <div class="option-images" id="caseOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/7_Speedmaster/case/case_1.png" alt="Case 1" />
+                            <img src="watchParts/8_Daytona/case/case_1.png" alt="Case 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/7_Speedmaster/case/case_2.png" alt="Case 2" />
+                            <img src="watchParts/8_Daytona/case/case_2.png" alt="Case 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/7_Speedmaster/case/case_3.png" alt="Case 3" />
+                            <img src="watchParts/8_Daytona/case/case_3.png" alt="Case 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/7_Speedmaster/case/case_4.png" alt="Case 4" />
+                            <img src="watchParts/8_Daytona/case/case_4.png" alt="Case 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/7_Speedmaster/case/case_5.png" alt="Case 5" />
+                            <img src="watchParts/8_Daytona/case/case_5.png" alt="Case 5" />
                         </button>
                         <button class="option" data-value="6">
-                            <img src="watchParts/7_Speedmaster/case/case_6.png" alt="Case 6" />
+                            <img src="watchParts/8_Daytona/case/case_6.png" alt="Case 6" />
                         </button>
                     </div>
                 </div>
@@ -74,29 +77,29 @@
                 <hr class="option-divider">
 
                 <div class="option-group">
-                    <div class="option-header" id="bandToggle">
+                    <div class="option-header" id="bezelToggle">
                         <span data-i18n="pageConstructorsWatchView.watchMenu.bezel">Безель</span>
                         <span class="arrow-icon"></span>
                     </div>
 
-                    <div class="option-images" id="bandOptions" style="display: none;">
+                    <div class="option-images" id="bezelOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/7_Speedmaster/bezel/bezel_1.png" alt="Band 1" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_1.png" alt="bezel 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/7_Speedmaster/bezel/bezeld_2.png" alt="Band 2" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_2.png" alt="Bezel 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/7_Speedmaster/bezel/bezel_3.png" alt="Band 3" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_3.png" alt="Bezel 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/7_Speedmaster/bezel/bezel_4.png" alt="Band 4" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_4.png" alt="Bezel 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/7_Speedmaster/bezel/bezel_5.png" alt="Band 5" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_5.png" alt="Bezel 5" />
                         </button>
                         <button class="option" data-value="6">
-                            <img src="watchParts/7_Speedmaster/bezel/bezel_6.png" alt="Band 6" />
+                            <img src="watchParts/8_Daytona/bezel/bezel_6.png" alt="Bezel 6" />
                         </button>
                     </div>
                 </div>
@@ -111,82 +114,88 @@
 
                     <div class="option-images" id="dialOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/7_Speedmaster/dial/dial_1.png" alt="Dial 1" />
+                            <img src="watchParts/8_Daytona/dial/dial_1.png" alt="Dial 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/7_Speedmaster/dial/dial_2.png" alt="Dial 2" />
+                            <img src="watchParts/8_Daytona/dial/dial_2.png" alt="Dial 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/7_Speedmaster/dial/dial_3.png" alt="Dial 3" />
+                            <img src="watchParts/8_Daytona/dial/dial_3.png" alt="Dial 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/7_Speedmaster/dial/dial_4.png" alt="Dial 4" />
+                            <img src="watchParts/8_Daytona/dial/dial_4.png" alt="Dial 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/7_Speedmaster/dial/dial_5.png" alt="Dial 5" />
+                            <img src="watchParts/8_Daytona/dial/dial_5.png" alt="Dial 5" />
                         </button>
                         <button class="option" data-value="6">
-                            <img src="watchParts/7_Speedmaster/dial/dial_6.png" alt="Dial 6" />
+                            <img src="watchParts/8_Daytona/dial/dial_6.png" alt="Dial 6" />
                         </button>
                         <button class="option" data-value="7">
-                            <img src="watchParts/7_Speedmaster/dial/dial_7.png" alt="Dial 7" />
+                            <img src="watchParts/8_Daytona/dial/dial_7.png" alt="Dial 7" />
                         </button>
                         <button class="option" data-value="8">
-                            <img src="watchParts/7_Speedmaster/dial/dial_8.png" alt="Dial 8" />
+                            <img src="watchParts/8_Daytona/dial/dial_8.png" alt="Dial 8" />
                         </button>
                         <button class="option" data-value="9">
-                            <img src="watchParts/7_Speedmaster/dial/dial_9.png" alt="Dial 9" />
+                            <img src="watchParts/8_Daytona/dial/dial_9.png" alt="Dial 9" />
                         </button>
                         <button class="option" data-value="10">
-                            <img src="watchParts/7_Speedmaster/dial/dial_10.png" alt="Dial 10" />
+                            <img src="watchParts/8_Daytona/dial/dial_10.png" alt="Dial 10" />
                         </button>
                         <button class="option" data-value="11">
-                            <img src="watchParts/7_Speedmaster/dial/dial_11.png" alt="Dial 11" />
+                            <img src="watchParts/8_Daytona/dial/dial_11.png" alt="Dial 11" />
                         </button>
                         <button class="option" data-value="12">
-                            <img src="watchParts/7_Speedmaster/dial/dial_12.png" alt="Dial 12" />
+                            <img src="watchParts/8_Daytona/dial/dial_12.png" alt="Dial 12" />
                         </button>
                         <button class="option" data-value="13">
-                            <img src="watchParts/7_Speedmaster/dial/dial_13.png" alt="Dial 13" />
+                            <img src="watchParts/8_Daytona/dial/dial_13.png" alt="Dial 13" />
                         </button>
                         <button class="option" data-value="14">
-                            <img src="watchParts/7_Speedmaster/dial/dial_14.png" alt="Dial 14" />
+                            <img src="watchParts/8_Daytona/dial/dial_14.png" alt="Dial 14" />
                         </button>
                         <button class="option" data-value="15">
-                            <img src="watchParts/7_Speedmaster/dial/dial_15.png" alt="Dial 15" />
+                            <img src="watchParts/8_Daytona/dial/dial_15.png" alt="Dial 15" />
                         </button>
                         <button class="option" data-value="16">
-                            <img src="watchParts/7_Speedmaster/dial/dial_16.png" alt="Dial 16" />
+                            <img src="watchParts/8_Daytona/dial/dial_16.png" alt="Dial 16" />
                         </button>
                         <button class="option" data-value="17">
-                            <img src="watchParts/7_Speedmaster/dial/dial_17.png" alt="Dial 17" />
+                            <img src="watchParts/8_Daytona/dial/dial_17.png" alt="Dial 17" />
                         </button>
                         <button class="option" data-value="18">
-                            <img src="watchParts/7_Speedmaster/dial/dial_18.png" alt="Dial 18" />
+                            <img src="watchParts/8_Daytona/dial/dial_18.png" alt="Dial 18" />
                         </button>
                         <button class="option" data-value="9">
-                            <img src="watchParts/7_Speedmaster/dial/dial_19.png" alt="Dial 19" />
+                            <img src="watchParts/8_Daytona/dial/dial_19.png" alt="Dial 19" />
                         </button>
                         <button class="option" data-value="20">
-                            <img src="watchParts/7_Speedmaster/dial/dial_20.png" alt="Dial 20" />
+                            <img src="watchParts/8_Daytona/dial/dial_20.png" alt="Dial 20" />
                         </button>
                         <button class="option" data-value="21">
-                            <img src="watchParts/7_Speedmaster/dial/dial_21.png" alt="Dial 21" />
+                            <img src="watchParts/8_Daytona/dial/dial_21.png" alt="Dial 21" />
                         </button>
                         <button class="option" data-value="22">
-                            <img src="watchParts/7_Speedmaster/dial/dial_22.png" alt="Dial 22" />
+                            <img src="watchParts/8_Daytona/dial/dial_22.png" alt="Dial 22" />
                         </button>
                         <button class="option" data-value="23">
-                            <img src="watchParts/7_Speedmaster/dial/dial_23.png" alt="Dial 23" />
+                            <img src="watchParts/8_Daytona/dial/dial_23.png" alt="Dial 23" />
                         </button>
                         <button class="option" data-value="24">
-                            <img src="watchParts/7_Speedmaster/dial/dial_24.png" alt="Dial 24" />
+                            <img src="watchParts/8_Daytona/dial/dial_24.png" alt="Dial 24" />
                         </button>
                         <button class="option" data-value="25">
-                            <img src="watchParts/7_Speedmaster/dial/dial_25.png" alt="Dial 25" />
+                            <img src="watchParts/8_Daytona/dial/dial_25.png" alt="Dial 25" />
                         </button>
                         <button class="option" data-value="26">
-                            <img src="watchParts/7_Speedmaster/dial/dial_26.png" alt="Dial 26" />
+                            <img src="watchParts/8_Daytona/dial/dial_26.png" alt="Dial 26" />
+                        </button>
+                        <button class="option" data-value="27">
+                            <img src="watchParts/8_Daytona/dial/dial_27.png" alt="Dial 27" />
+                        </button>
+                        <button class="option" data-value="28">
+                            <img src="watchParts/8_Daytona/dial/dial_28.png" alt="Dial 28" />
                         </button>
                     </div>
                 </div>
@@ -201,19 +210,19 @@
 
                     <div class="option-images" id="handsOptions" style="display: none;">
                         <button class="option" data-value="1">
-                            <img src="watchParts/7_Speedmaster/hands/hands_1.png" alt="Hands 1" />
+                            <img src="watchParts/8_Daytona/hands/hands_1.png" alt="Hands 1" />
                         </button>
                         <button class="option" data-value="2">
-                            <img src="watchParts/7_Speedmaster/hands/hands_2.png" alt="Hands 2" />
+                            <img src="watchParts/8_Daytona/hands/hands_2.png" alt="Hands 2" />
                         </button>
                         <button class="option" data-value="3">
-                            <img src="watchParts/7_Speedmaster/hands/handsl_3.png" alt="Hands 3" />
+                            <img src="watchParts/8_Daytona/hands/hands_3.png" alt="Hands 3" />
                         </button>
                         <button class="option" data-value="4">
-                            <img src="watchParts/7_Speedmaster/hands/hands_4.png" alt="Hands 4" />
+                            <img src="watchParts/8_Daytona/hands/hands_4.png" alt="Hands 4" />
                         </button>
                         <button class="option" data-value="5">
-                            <img src="watchParts/7_Speedmaster/hands/handsl_5.png" alt="Hands 5" />
+                            <img src="watchParts/8_Daytona/hands/hands_5.png" alt="Hands 5" />
                         </button>
 
                     </div>
@@ -298,7 +307,7 @@
     <div id="footer"></div>
 
     <script src="header-footer-loader.js"></script>
-    <script src="scriptConsSportSpeedmaster.js"></script>
+    <script src="scriptConsSportDaytona.js"></script>
     <script src="localization.js"></script>
 </body>
 

@@ -21,21 +21,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
-    const bandLayer = document.getElementById("bandLayer");
+    const bezelLayer = document.getElementById("bezelLayer");
+    const handsLayer = document.getElementById("handsLayer");
 
     function updateLayer(layer, path, name, ext = "png") {
-        layer.src = `watchParts/7_Speedmaster/${path}/${name}.${ext}`;
+        layer.src = `watchParts/8_Daytona/${path}/${name}.${ext}`;
     }
 
     function saveToLocal() {
         const dialButton = document.querySelector("#dialOptions button.selected");
         const caseButton = document.querySelector("#caseOptions button.selected");
-        const bandButton = document.querySelector("#bandOptions button.selected");
+        const bezelButton = document.querySelector("#bezelOptions button.selected");
+        const handsButton = document.querySelector("#handsOptions button.selected");
 
         const config = {
             dial: dialButton?.dataset.value || "1",
             case: caseButton?.dataset.value || "1",
-            band: bandButton?.dataset.value || "1",
+            bezel: bezelButton?.dataset.value || "1",
+            hands: handsButton?.dataset.value || "1"
         };
 
         localStorage.setItem(storageKey, JSON.stringify(config));
@@ -51,16 +54,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseValue = caseBtn ? caseBtn.dataset.value : "1";
         updateLayer(caseLayer, "case", `case_${caseValue}`);
 
-        const bandBtn = document.querySelector("#bandOptions button.selected");
-        const bandValue = bandBtn ? bandBtn.dataset.value : "1";
-        updateLayer(bandLayer, "band", `band_${bandValue}`);
+        const bezeldBtn = document.querySelector("#bezelOptions button.selected");
+        const bezelValue = bezelBtn ? bezelBtn.dataset.value : "1";
+        updateLayer(bezelLayer, "bezel", `bezel_${bezelValue}`);
+
+        const handsBtn = document.querySelector("#handsOptions button.selected");
+        const handsValue = handsBtn ? handsBtn.dataset.value : "1";
+        updateLayer(handsLayer, "hands", `hands_${handsValue}`);
     }
 
     function loadFromLocalOrURL() {
         const config = JSON.parse(localStorage.getItem(storageKey)) || {
             dial: "1",
             case: "1",
-            band: "1"
+            bezel: "1",
+            hands: "1"
         };
 
 
@@ -70,8 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseButtons = document.querySelectorAll("#caseOptions button");
         caseButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.case));
 
-        const bandButtons = document.querySelectorAll("#bandOptions button");
-        bandButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.band));
+        const bezelButtons = document.querySelectorAll("#bezelOptions button");
+        bezelButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.bezel));
+
+        const handsButtons = document.querySelectorAll("#handsOptions button");
+        handsButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.hands));
+
 
         applySelections();
     }
@@ -79,7 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const toggles = [
         { toggleId: "dialToggle", menuId: "dialOptions" },
         { toggleId: "caseToggle", menuId: "caseOptions" },
-        { toggleId: "bandToggle", menuId: "bandOptions" }
+        { toggleId: "bezelToggle", menuId: "bezelOptions" },
+        { toggleId: "handsToggle", menuId: "handsOptions" }
     ];
 
 
@@ -121,11 +134,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    document.querySelectorAll("#bandOptions button").forEach(btn => {
+    document.querySelectorAll("#bezelOptions button").forEach(btn => {
         btn.addEventListener("click", () => {
-            document.querySelectorAll("#bandOptions button").forEach(b => b.classList.remove("selected"));
+            document.querySelectorAll("#bezelOptions button").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
-            updateLayer(bandLayer, "band", `band_${btn.dataset.value}`);
+            updateLayer(bezelLayer, "bezel", `bezel_${btn.dataset.value}`);
+            saveToLocal();
+        });
+    });
+
+    document.querySelectorAll("#handsOptions button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll("#handsOptions button").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            updateLayer(handsLayer, "hands", `hands_${btn.dataset.value}`);
             saveToLocal();
         });
     });
