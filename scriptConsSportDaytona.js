@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseValue = caseBtn ? caseBtn.dataset.value : "1";
         updateLayer(caseLayer, "case", `case_${caseValue}`);
 
-        const bezeldBtn = document.querySelector("#bezelOptions button.selected");
+        const bezelBtn = document.querySelector("#bezelOptions button.selected");
         const bezelValue = bezelBtn ? bezelBtn.dataset.value : "1";
         updateLayer(bezelLayer, "bezel", `bezel_${bezelValue}`);
 
