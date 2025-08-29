@@ -9,7 +9,7 @@ const availability = {
     "BLACK-BAY": true,
     "SPEEDMASTER": true,
     "DAYTONA": true,
-    "SUBMARINER": false,
+    "SUBMARINER": true,
     "SEAMASTER": false,
     "SKX007": false,
 };
