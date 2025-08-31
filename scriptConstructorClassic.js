@@ -3,7 +3,7 @@
 const availability = {
 
     "DATEJUST": true,
-    "DAY-DATE": false,
+    "DAY-DATE": true,
     "NAUTILYS": false,
     "CLASSIC": false,
     "SANTOS": false,
