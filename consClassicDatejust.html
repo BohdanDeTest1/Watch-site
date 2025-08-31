@@ -7,7 +7,7 @@
     <title>Datejust</title>
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="styleConstructorSport.css" />
-    <link rel="stylesheet" href="styleConsClassicDatejust.css" />
+    <link rel="stylesheet" href="styleConsSportRoyal.css" />
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </head>
@@ -15,8 +15,7 @@
 <body>
     <div id="header"></div>
 
-    <div style="height: 60px;"></div>
-
+    <div style="height: 60px;"></div> <!-- Заменить на точную высоту хедера -->
 
     <div class="header-placeholder"></div>
 
@@ -26,12 +25,11 @@
         <h1>Datejust</h1>
         <div class="constructor-container">
             <div class="watch-preview-box" id="watchPreviewBox">
-                <div class="watch-preview" id="watchPreview">
+                <div class="watch-preview">
+
                     <img id="caseLayer" class="layer" src="watchParts/12_Datejust/case/case_1.png" />
                     <img id="dialLayer" class="layer" src="watchParts/12_Datejust/dial/dial_1.png" />
                     <img id="handsLayer" class="layer" src="watchParts/12_Datejust/hands/hands_1.png" />
-                    <img id="cristalLayer" class="layer" src="watchParts/12_Datejust/cristal/cristal_1.png" />
-
 
 
                     <div class="corner-text left" id="engraveText"
@@ -50,10 +48,9 @@
 
             <div class="options-panel">
 
-
                 <div class="option-group">
                     <div class="option-header" id="caseToggle">
-                        <span data-i18n="pageConstructorsWatchView.watchMenu.caseAndBracelet">Кейс и безель</span>
+                        <span data-i18n="pageConstructorsWatchView.watchMenu.caseAndBracelet">Корпус</span>
                         <span class="arrow-icon"></span>
                     </div>
 
@@ -97,6 +94,7 @@
                         <button class="option" data-value="13">
                             <img src="watchParts/12_Datejust/case/case_13.png" alt="Case 13" />
                         </button>
+
                     </div>
                 </div>
 
@@ -109,9 +107,7 @@
                     </div>
 
                     <div class="option-images" id="dialOptions" style="display: none;">
-                        <!-- <button class="option" data-value="0">
-                            <img src="watchParts/12_Datejust/dial/dial_0.png" alt="Dial 0" />
-                        </button>-->
+
                         <button class="option" data-value="1">
                             <img src="watchParts/12_Datejust/dial/dial_1.png" alt="Dial 1" />
                         </button>
@@ -217,6 +213,9 @@
                         <button class="option" data-value="35">
                             <img src="watchParts/12_Datejust/dial/dial_35.png" alt="Dial 35" />
                         </button>
+                        <button class="option" data-value="36">
+                            <img src="watchParts/12_Datejust/dial/dial_36.png" alt="Dial 36" />
+                        </button>
                     </div>
                 </div>
 
@@ -278,30 +277,17 @@
                         <button class="option" data-value="16">
                             <img src="watchParts/12_Datejust/hands/hands_16.png" alt="Hands 16" />
                         </button>
-                    </div>
-                </div>
-
-                <hr class="option-divider">
-
-                <div class="option-group">
-                    <div class="option-header" id="cristalToggle">
-                        <span data-i18n="pageConstructorsWatchView.watchMenu.cristalLinz">GMT стрелка</span>
-                        <span class="arrow-icon"></span>
-                        <button id="infoButton2" class="info-btn-3">i</button>
-                        <div id="infoTooltip2" class="info-tooltip-3">
-                            <img src="bezel/Cyclop.png" alt="Инфо" />
-                            <p class="info-hint-text" data-i18n="pageConstructorsWatchView.watchMenu.cyclopHint">
-                                Линза-циклоп — это увеличительное окошко на стекле часов над датой с приближением 2.5x.
-                                Она делает цифры даты крупнее и легче читаемыми</p>
-                        </div>
-                    </div>
-
-                    <div class="option-images" id="cristalOptions" style="display: none;">
-                        <button class="option" data-value="1">
-                            <img src="watchParts/12_Datejust/cristal/cristal_1.png" alt="Cristal 1" />
+                        <button class="option" data-value="17">
+                            <img src="watchParts/12_Datejust/hands/hands_17.png" alt="Hands 17" />
                         </button>
-                        <button class="option" data-value="2">
-                            <img src="watchParts/12_Datejust/cristal/cristal_1.png" alt="Cristal 2" />
+                        <button class="option" data-value="18">
+                            <img src="watchParts/12_Datejust/hands/hands_18.png" alt="Hands 18" />
+                        </button>
+                        <button class="option" data-value="19">
+                            <img src="watchParts/12_Datejust/hands/hands_19.png" alt="Hands 19" />
+                        </button>
+                        <button class="option" data-value="20">
+                            <img src="watchParts/12_Datejust/hands/hands_20.png" alt="Hands 20" />
                         </button>
                     </div>
                 </div>
@@ -314,16 +300,15 @@
                     <label>
                         <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
                         <select id="casebackSelect">
-                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">
-                                Цельная
+                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
                                 крышка</option>
                             <option value="transparent"
-                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная
-                                крышка
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
                             </option>
                         </select>
                     </label>
                 </div>
+
 
                 <div id="bezelTypeWrapper" class="select-wrapper hidden">
 
@@ -343,8 +328,7 @@
                         <select id="bezelTypeSelect">
                             <option value="standard" data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">
                                 Стандартный ротор</option>
-                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">
-                                Кастомный
+                            <option value="custom" data-i18n="pageConstructorsWatchView.watchMenu.rotorCustom">Кастомный
                                 ротор</option>
                         </select>
                     </label>
@@ -362,8 +346,7 @@
                             data-i18n="pageConstructorsWatchView.watchMenu.rotorAcceptButton">Применить</button>
                     </div>
                     <p id="bezelNumberError" class="input-error" style="display: none;"
-                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129
-                    </p>
+                        data-i18n="pageConstructorsWatchView.watchMenu.rotorNumberError">Значение только от 1 до 129</p>
 
 
                     <div class="bezel-carousel-wrapper">
@@ -411,11 +394,9 @@
                         <span data-i18n="pageConstructorsWatchView.watchMenu.dialLogoTitle">Логотип на
                             циферблате:</span>
                         <select id="logoSelect">
-                            <option value="noLogo" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">Без
-                                логотипа
+                            <option value="noLogo" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">Без логотипа
                             </option>
-                            <option value="sLogo" data-i18n="pageConstructorsWatchView.watchMenu.sLogo">Логотип
-                                "SEIKO"
+                            <option value="sLogo" data-i18n="pageConstructorsWatchView.watchMenu.sLogo">Логотип "SEIKO"
                             </option>
                             <option value="otherLogo" data-i18n="pageConstructorsWatchView.watchMenu.otherLogo">Свой
                                 логотип (+50PLN)</option>
@@ -425,12 +406,10 @@
                 </div>
 
                 <div class="specs-box">
-                    <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики
-                    </h2>
+                    <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
                     <ul class="specs-list">
                         <li data-i18n="pageConstructorsWatchView.watchInfo.movementNH35_NH36">
-                            <strong>Механизм:</strong>
-                            Seiko
+                            <strong>Механизм:</strong> Seiko
                             NH35
                         </li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.cristal"><strong>Стекло:</strong>
@@ -443,17 +422,15 @@
                             39.7 мм</li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial316_904"><strong>Материал
                                 корпуса:</strong> нерж. сталь 316L</li>
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile100">
-                            <strong>Водозащита:</strong>
-                            10ATM
-                        </li>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile100"><strong>Водозащита:</strong>
+                            100 v</li>
                         <li id="spec-caseback-solid" style="display: none;"><strong
                                 data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
                                 крышка:</strong> <span
                                 data-i18n="pageConstructorsWatchView.watchInfo.watchBackSolid">цельная</span></li>
                         <li id="spec-caseback-transparent" style="display: none;"><strong
-                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong>
-                            <span data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
+                                data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</strong> <span
+                                data-i18n="pageConstructorsWatchView.watchInfo.watchBackTransparent">прозрачная</span>
                         </li>
 
                     </ul>
@@ -472,9 +449,8 @@
                     </p>
                 </div>
                 <button id="whatsappBtn" data-i18n="pageConstructorsWatchView.whatsAppButton">Написать в
-                    WhatsApp</button>
-                <button id="viberBtn" data-i18n="pageConstructorsWatchView.viberButton">Написать в
-                    Viber</button>
+                    WhatsApp1</button>
+                <button id="viberBtn" data-i18n="pageConstructorsWatchView.viberButton">Написать в Viber1</button>
 
             </div>
         </div>
@@ -483,7 +459,7 @@
     <div id="footer"></div>
 
     <script src="header-footer-loader.js"></script>
-    <script src="scriptConsClassicDatejust_1.js"></script>
+    <script src="scriptConsClassicDatejust.js"></script>
     <script src="localization.js"></script>
 </body>
 

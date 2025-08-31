@@ -1,6 +1,6 @@
 
 let lastScrollY = window.scrollY;
-const storageKey = "blackBayConfig";
+const storageKey = "nautilusConfig";
 
 window.addEventListener("scroll", () => {
     const header = document.getElementById("header");
@@ -21,9 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const dialLayer = document.getElementById("dialLayer");
     const caseLayer = document.getElementById("caseLayer");
-    const cristalLayer = document.getElementById("cristalLayer");
     const handsLayer = document.getElementById("handsLayer");
-
 
 
     function updateLayer(layer, path, name, ext = "png") {
@@ -33,16 +31,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function saveToLocal() {
         const dialButton = document.querySelector("#dialOptions button.selected");
         const caseButton = document.querySelector("#caseOptions button.selected");
-        const cristalButton = document.querySelector("#cristalOptions button.selected");
         const handsButton = document.querySelector("#handsOptions button.selected");
 
         const config = {
             dial: dialButton?.dataset.value || "1",
             case: caseButton?.dataset.value || "1",
-            cristal: cristalButton?.dataset.value || "1",
-            hands: handsButton?.dataset.value || "1",
-
+            hands: handsButton?.dataset.value || "1"
         };
+
 
         localStorage.setItem(storageKey, JSON.stringify(config));
     }
@@ -57,10 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseValue = caseBtn ? caseBtn.dataset.value : "1";
         updateLayer(caseLayer, "case", `case_${caseValue}`);
 
-        const cristalBtn = document.querySelector("#cristalOptions button.selected");
-        const cristalValue = cristalBtn ? cristalBtn.dataset.value : "1";
-        updateLayer(cristalLayer, "cristal", `cristal_${cristalValue}`);
-
         const handsBtn = document.querySelector("#handsOptions button.selected");
         const handsValue = handsBtn ? handsBtn.dataset.value : "1";
         updateLayer(handsLayer, "hands", `hands_${handsValue}`);
@@ -68,10 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadFromLocalOrURL() {
         const config = JSON.parse(localStorage.getItem(storageKey)) || {
-
             dial: "1",
             case: "1",
-            cristal: "1",
             hands: "1"
         };
 
@@ -81,9 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const caseButtons = document.querySelectorAll("#caseOptions button");
         caseButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.case));
 
-        const cristalButtons = document.querySelectorAll("#cristalOptions button");
-        cristalButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.cristal));
-
         const handsLayerButtons = document.querySelectorAll("#handsOptions button");
         handsLayerButtons.forEach(b => b.classList.toggle("selected", b.dataset.value === config.hands));
 
@@ -91,9 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const toggles = [
+
         { toggleId: "dialToggle", menuId: "dialOptions" },
         { toggleId: "caseToggle", menuId: "caseOptions" },
-        { toggleId: "cristalToggle", menuId: "cristalOptions" },
         { toggleId: "handsToggle", menuId: "handsOptions" }
     ];
 
@@ -117,14 +104,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // SELECTORS
-    // document.querySelectorAll("#braceletOptions button").forEach(btn => {
-    //     btn.addEventListener("click", () => {
-    //         document.querySelectorAll("#braceletOptions button").forEach(b => b.classList.remove("selected"));
-    //         btn.classList.add("selected");
-    //         updateLayer(braceletLayer, "bracelet", `Bracelet_${btn.dataset.value}`);
-    //         saveToLocal();
-    //     });
-    // });
 
     document.querySelectorAll("#dialOptions button").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -149,16 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll("#handsOptions button").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
             updateLayer(handsLayer, "hands", `hands_${btn.dataset.value}`);
-            saveToLocal();
-        });
-    });
-
-
-    document.querySelectorAll("#cristalOptions button").forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll("#cristalOptions button").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            updateLayer(cristalLayer, "cristal", `cristal_${btn.dataset.value}`);
             saveToLocal();
         });
     });
@@ -399,80 +368,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    const infoBtn2 = document.getElementById("infoButton2");
-    const infoTooltip2 = document.getElementById("infoTooltip2");
-
-
-    if (isMobile) {
-        infoBtn.addEventListener("click", (e) => {
-            e.stopPropagation(); // важно!
-            const isVisible = infoTooltip2.style.display === "block";
-            infoTooltip2.style.display = isVisible ? "none" : "block";
-        });
-
-        // Закрытие при тапе вне тултипа
-        document.addEventListener("click", (e) => {
-            if (!infoTooltip2.contains(e.target) && !infoBtn2.contains(e.target)) {
-                infoTooltip2.style.display = "none";
-            }
-        });
-    } else {
-        // для десктопа — при наведении
-        infoBtn2.addEventListener("mouseenter", () => {
-            infoTooltip2.style.display = "block";
-        });
-        infoBtn2.addEventListener("mouseleave", () => {
-            infoTooltip2.style.display = "none";
-        });
-        infoTooltip2.addEventListener("mouseleave", () => {
-            infoTooltip2.style.display = "none";
-        });
-    }
-    if (window.innerWidth <= 768) {
-        infoBtn2.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isVisible = infoTooltip2.style.display === "block";
-            infoTooltip2.style.display = isVisible ? "none" : "block";
-        });
-    }
-
-    const infoBtn3 = document.getElementById("infoButton3");
-    const infoTooltip3 = document.getElementById("infoTooltip3");
-
-
-    if (isMobile) {
-        infoBtn3.addEventListener("click", (e) => {
-            e.stopPropagation(); // важно!
-            const isVisible = infoTooltip3.style.display === "block";
-            infoTooltip3.style.display = isVisible ? "none" : "block";
-        });
-
-        // Закрытие при тапе вне тултипа
-        document.addEventListener("click", (e) => {
-            if (!infoTooltip3.contains(e.target) && !infoBtn3.contains(e.target)) {
-                infoTooltip3.style.display = "none";
-            }
-        });
-    } else {
-        // для десктопа — при наведении
-        infoBtn3.addEventListener("mouseenter", () => {
-            infoTooltip3.style.display = "block";
-        });
-        infoBtn3.addEventListener("mouseleave", () => {
-            infoTooltip3.style.display = "none";
-        });
-        infoTooltip3.addEventListener("mouseleave", () => {
-            infoTooltip3.style.display = "none";
-        });
-    }
-    if (window.innerWidth <= 768) {
-        infoBtn3.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isVisible = infoTooltip3.style.display === "block";
-            infoTooltip3.style.display = isVisible ? "none" : "block";
-        });
-    }
-
     function updateTotalPrice() {
         let basePrice = 1090;
         let total = basePrice;
@@ -547,10 +442,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Временно задаем фиксированные размеры в зависимости от устройства
         if (isMobile) {
-            watchArea.style.width = "360px";
+            watchArea.style.width = "320px";
             watchArea.style.height = "400px";
         } else {
-            watchArea.style.width = "280px";
+            watchArea.style.width = "290px";
             watchArea.style.height = "400px";
         }
 
@@ -566,17 +461,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // downloadBtn.addEventListener("click", () => {
-    //     html2canvas(watchArea, {
-    //         scale: 2,
-    //         useCORS: true
-    //     }).then(canvas => {
-    //         const link = document.createElement("a");
-    //         link.download = "watch.png";
-    //         link.href = canvas.toDataURL("image/png");
-    //         link.click();
-    //     });
-    // });
+    downloadBtn.addEventListener("click", () => {
+        html2canvas(watchArea, {
+            scale: 2,
+            useCORS: true
+        }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "watch.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    });
 
     document.getElementById("whatsappBtn").addEventListener("click", () => {
         window.open("https://wa.me/48453303550?text=Здравствуйте,%20интересует%20конфигурация%20часов", "_blank");
