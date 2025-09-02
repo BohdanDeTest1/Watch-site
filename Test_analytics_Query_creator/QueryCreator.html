@@ -33,7 +33,7 @@
 
 </html>
 -->
-<!-- Файл: pageConfigurator.html -->
+<!-- Файл: test_analytics_query_creator/querycreator.html -->
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -41,41 +41,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Конфигуратор</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="QueryCreator.css">
 </head>
 
 <body>
-    <h1>Конфигуратор часов</h1>
-    <div class="constructor">
-        <div class="watch-preview">
-            <img id="layer-case" src="img/case1.png" />
-            <img id="layer-dial" src="img/dial1.png" />
-            <img id="layer-hands" src="img/hands1.png" />
-            <img id="layer-strap" src="img/strap1.png" />
-        </div>
 
-        <div class="controls">
-            <h2>Корпус</h2>
-            <button onclick="changePart('case', 1)">Корпус 1</button>
-            <button onclick="changePart('case', 2)">Корпус 2</button>
+    <header class="container">
+        <h1>Query Creator</h1>
+        <h3>Moonactive</h3>
+        <p class="muted">
+            Вставь (Ctrl/Cmd+V) скопированную таблицу из Google Sheets.
+            Столбцы <strong>Event</strong> и <strong>Property</strong> будут определены автоматически.
+        </p>
+    </header>
 
-            <h2>Циферблат</h2>
-            <button onclick="changePart('dial', 1)">Циферблат 1</button>
-            <button onclick="changePart('dial', 2)">Циферблат 2</button>
+    <main class="container grid">
+        <section class="card">
+            <h2>1) Вставка таблицы</h2>
+            <label class="label">Данные из Google Sheets</label>
+            <textarea id="pasteArea" placeholder="Вставь сюда строки (обычно TSV из Google Sheets)"></textarea>
 
-            <h2>Стрелки</h2>
-            <button onclick="changePart('hands', 1)">Стрелки 1</button>
-            <button onclick="changePart('hands', 2)">Стрелки 2</button>
+            <div class="row">
+                <div class="field">
+                    <div class="field">
+                        <label class="label">Источник данных</label>
+                        <select id="tableEnv">
+                            <option value="stage">Stage / RC</option>
+                            <option value="prod">Production</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Режим генерации</label>
+                    <select id="mode">
+                        <option value="property_in">WHERE event = ... AND property IN (...)</option>
+                        <option value="distinct_props">SELECT DISTINCT property WHERE event = ...</option>
+                    </select>
+                </div>
+            </div>
 
-            <h2>Ремешок</h2>
-            <button onclick="changePart('strap', 1)">Ремешок 1</button>
-            <button onclick="changePart('strap', 2)">Ремешок 2</button>
-        </div>
-    </div>
-    <script src="watch-configurator.js"></script>
-    <script src="header-footer-loader.js"></script>
-    <script src="localization.js"></script>
-    <script src="script.js"></script>
+            <!-- ↓↓↓ Новый блок Дата ↓↓↓ -->
+            <div class="row" id="dateRow">
+                <div class="field">
+                    <label class="label">Дата</label>
+
+                    <div class="date-col">
+                        <!-- Линия 1: Сегодня -->
+                        <label class="date-option">
+                            <input type="radio" name="dateMode" id="dateModeToday" checked>
+                            Сегодня (<span id="todayText"></span>)
+                        </label>
+
+                        <!-- Линия 2: Диапазон + поля дат в своей строке -->
+                        <div class="date-option">
+                            <label class="inline">
+                                <input type="radio" name="dateMode" id="dateModeRange">
+                                Диапазон
+                            </label>
+
+                            <div class="date-range" id="dateRangeWrap" style="display:none;">
+                                <input type="date" id="dateStart" style="max-width:180px;">
+                                <input type="date" id="dateEnd" style="max-width:180px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ↑↑↑ Новый блок Дата ↑↑↑ -->
+
+
+            <div class="row">
+                <button id="parseBtn">Разобрать таблицу</button>
+                <button id="refreshBtn" class="btn-refresh">Refresh</button>
+            </div>
+            <div id="errorBox" class="hidden"></div>
+            <div id="infoBox" class="hidden"></div>
+            <span id="parseStatus" class="muted small"></span>
+
+            <div id="eventPicker" class="row" style="display:none;">
+                <div class="field">
+                    <label class="label">Events</label>
+                    <!-- multiple + высота списка -->
+                    <select id="eventSelect" multiple size="8"></select>
+                    <label class="label" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                        <input type="checkbox" id="selectAllEvents"> Выбрать все
+                    </label>
+                </div>
+                <button id="genBtn">Сгенерировать SQL</button>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2>2) Результат</h2>
+            <label class="label">SQL запрос</label>
+            <textarea id="sqlOutput" readonly placeholder="Здесь появится SQL"></textarea>
+            <div class="row">
+                <button id="copyBtn">Скопировать</button>
+                <span id="copyStatus" class="muted"></span>
+            </div>
+
+            <details class="help">
+                <summary>Как это работает?</summary>
+                <ol>
+                    <li>Скопируй строки из Google Sheets (они попадают как TSV — табами разделённые).</li>
+                    <li>Нажми «Разобрать таблицу» — скрипт найдёт столбцы <em>Event</em> и <em>Property</em> (регистр не
+                        важен).</li>
+                    <li>Выбери нужный Event и нажми «Сгенерировать SQL».</li>
+                </ol>
+            </details>
+        </section>
+    </main>
+
+    <footer class="container muted small">
+        Сделано для быстрого прототипа. Позже можно добавить загрузку CSV, предпросмотр и фильтры.
+    </footer>
+    <script src="QueryCreator.js"></script>
 </body>
 
 </html>

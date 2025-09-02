@@ -1,0 +1,208 @@
+:root {
+    --bg: #0b0c10;
+    --card: #121318;
+    --text: #e7e9ee;
+    --muted: #a3a8b3;
+    --accent: #4ea1ff;
+    --border: #22252d;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px
+}
+
+@media (max-width:960px) {
+    .grid {
+        grid-template-columns: 1fr
+    }
+}
+
+h1 {
+    margin: 8px 0 2px;
+    font-size: 28px
+}
+
+h2 {
+    margin: 0 0 10px;
+    font-size: 18px
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
+}
+
+.muted {
+    color: var(--muted)
+}
+
+.small {
+    font-size: 13px
+}
+
+.label {
+    display: block;
+    margin: 10px 0 6px;
+    color: #cfd3db
+}
+
+textarea,
+input,
+select,
+button {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0e1015;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical
+}
+
+#sqlOutput {
+    min-height: 160px
+}
+
+button {
+    background: var(--accent);
+    color: #06111f;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .05s ease, opacity .2s ease;
+}
+
+button:hover {
+    opacity: .95
+}
+
+button:active {
+    transform: scale(.98)
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px
+}
+
+.field {
+    flex: 1
+}
+
+.help {
+    margin-top: 16px
+}
+
+.help summary {
+    cursor: pointer
+}
+
+button.btn-refresh {
+    background: #3a4452;
+    /* не контрастный, приглушённый синий-серый */
+    color: #e7e9ee;
+}
+
+button.btn-refresh:hover {
+    opacity: 0.9;
+}
+
+#errorBox {
+    margin-top: 10px;
+    font-weight: 600;
+    color: #ff9800;
+    /* ярко-оранжевый */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#errorBox.hidden {
+    display: none;
+}
+
+#errorBox .icon {
+    font-size: 20px;
+    color: #ffeb3b;
+    /* жёлтый треугольник */
+}
+
+.hidden {
+    display: none !important;
+}
+
+#errorBox .icon {
+    /* жёлтый треугольник/иконка */
+    font-size: 20px;
+    color: #ffeb3b;
+}
+
+#infoBox {
+    margin-top: 10px;
+    font-weight: 600;
+    color: #4fc3f7;
+    /* голубой */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#infoBox.hidden {
+    display: none;
+}
+
+#infoBox .icon {
+    font-size: 20px;
+    color: #2196f3;
+    /* ярко-синий кружок */
+}
+
+/* Иконка для infoBox */
+#infoBox .info-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #2196f3;
+    /* ярко-синий фон */
+    color: #ffffff;
+    /* белая буква */
+    font-size: 14px;
+    font-weight: bold;
+}
