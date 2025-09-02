@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DAY-DATE</title>
+    <title>Nautilus</title>
     <link rel="stylesheet" href="styleHeaderFooter.css" />
     <link rel="stylesheet" href="styleConstructorSport.css" />
     <link rel="stylesheet" href="styleConsSportRoyal.css" />
@@ -22,7 +22,7 @@
     <main class="constructor-page">
         <button class="back-button" onclick="history.back()"
             data-i18n="pageConstructorsSport.BackButton">&laquo;</button>
-        <h1>DAY-DATE</h1>
+        <h1>Nautilus</h1>
         <div class="constructor-container">
             <div class="watch-preview-box" id="watchPreviewBox">
                 <div class="watch-preview">
@@ -37,7 +37,7 @@
                     <div class="corner-text left2" id="logoText" data-i18n="pageConstructorsWatchView.watchMenu.noLogo">
                         Без логотипа</div>
                     <div class="corner-text right" id="casebackText"
-                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная крышка</div>
+                        data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Цельная крышка</div>
                     <div id="bezelText" class="corner-text right2"
                         data-i18n="pageConstructorsWatchView.watchMenu.rotorStandart">Стандартный ротор</div>
 
@@ -240,8 +240,8 @@
                     <label>
                         <span data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя крышка:</span>
                         <select id="casebackSelect">
-                            <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
-                                крышка</option>
+                            <!-- <option value="solid" data-i18n="pageConstructorsWatchView.watchMenu.watchBackSolid">Цельная
+                                крышка</option>-->
                             <option value="transparent"
                                 data-i18n="pageConstructorsWatchView.watchMenu.watchBackTransparent">Прозрачная крышка
                             </option>
@@ -348,21 +348,21 @@
                 <div class="specs-box">
                     <h2 class="specs-title" data-i18n="pageConstructorsWatchView.watchInfo.title">Характеристики</h2>
                     <ul class="specs-list">
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.movemen_Miyota_8285">
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.movementNH35_NH38">
                             <strong>Механизм:</strong> Seiko
                             NH35
                         </li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.cristal"><strong>Стекло:</strong>
                             Сапфировое</li>
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseSize40"><strong>Диаметр
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseSize41"><strong>Диаметр
                                 корпуса:</strong>
                             40 мм</li>
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseThickness12_3"><strong>Толщина
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.caseThickness12_5"><strong>Толщина
                                 корпуса:</strong>
                             39.7 мм</li>
                         <li data-i18n="pageConstructorsWatchView.watchInfo.caseMaterial"><strong>Материал
                                 корпуса:</strong> нерж. сталь 316L</li>
-                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile100"><strong>Водозащита:</strong>
+                        <li data-i18n="pageConstructorsWatchView.watchInfo.waterProfile50"><strong>Водозащита:</strong>
                             100 v</li>
                         <li id="spec-caseback-solid" style="display: none;"><strong
                                 data-i18n="pageConstructorsWatchView.watchMenu.watchBack">Задняя
@@ -399,7 +399,7 @@
     <div id="footer"></div>
 
     <script src="header-footer-loader.js"></script>
-    <script src="scriptConsClassicDaydate.js"></script>
+    <script src="scriptConsClassicNautilus.js"></script>
     <script src="localization.js"></script>
 </body>
 
