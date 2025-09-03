@@ -44,15 +44,22 @@ const els = {
 };
 
 // ---- Инициализация даты и переключение Today/Range ----
-const toISO = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0, 10);
-const todayISO = toISO(new Date());
+// Локальные форматтеры без перевода в UTC
+const pad = (n) => String(n).padStart(2, "0");
+const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; // YYYY-MM-DD (локально)
+const toDMY = (d) => `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`; // DD.MM.YYYY
 
-// Показать сегодняшнюю дату в подписи
-if (els.todayText) els.todayText.textContent = todayISO;
+const today = new Date();
+const todayISO = toISO(today);
+const todayDMY = toDMY(today);
 
-// По умолчанию выставим обе даты в "сегодня"
+// В «Сегодня» показываем человекочитаемый формат как у инпутов диапазона
+if (els.todayText) els.todayText.textContent = todayDMY;
+
+// По умолчанию значения инпутов-дат — ISO для value
 if (els.dateStart) els.dateStart.value = todayISO;
 if (els.dateEnd) els.dateEnd.value = todayISO;
+
 
 // Переключатель: показываем/скрываем поля диапазона
 function toggleDateInputs() {
@@ -207,7 +214,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
         .filter(Boolean);
 
     if (selectedEvents.length === 0) {
-        els.sqlOutput.value = 'Сначала выбери хотя бы один Event.';
+        els.sqlOutput.value = 'First select at least one Event';
         return;
     }
 
@@ -228,7 +235,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     }
 
     if (uniqueProps.length === 0) {
-        els.sqlOutput.value = 'Для выбранных событий свойства не найдены.';
+        els.sqlOutput.value = 'For the selected events, no properties were found';
         return;
     }
 
@@ -283,15 +290,13 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     let sql = '';
     if (mode === 'property_in') {
         sql =
-            `-- Связанные свойства
-SELECT ${selectFields}
+            `SELECT ${selectFields}
 ${fromClause}
 ${whereFinal}
 ORDER BY client_time DESC limit 1000;`;
     } else {
         sql =
-            `-- Уникальные свойства для события(й)
-SELECT ${selectFields}
+            `SELECT ${selectFields}
 ${fromClause}
 ${whereFinal}
 ORDER BY client_time DESC limit 1000;`;
@@ -303,17 +308,17 @@ ORDER BY client_time DESC limit 1000;`;
 els.copyBtn.addEventListener('click', async () => {
     const txt = els.sqlOutput.value;
     if (!txt.trim()) {
-        els.copyStatus.textContent = 'Нечего копировать.';
+        els.copyStatus.textContent = 'nothing to copy';
         return;
     }
     try {
         await navigator.clipboard.writeText(txt);
-        els.copyStatus.textContent = 'Скопировано в буфер обмена.';
+        els.copyStatus.textContent = 'Copied to clipboard';
     } catch {
         // Фолбэк
         els.sqlOutput.select();
         document.execCommand('copy');
-        els.copyStatus.textContent = 'Скопировано (fallback).';
+        els.copyStatus.textContent = 'Copied (fallback)';
     }
 
 });

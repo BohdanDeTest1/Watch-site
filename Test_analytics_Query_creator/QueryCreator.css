@@ -74,7 +74,7 @@ h2 {
 }
 
 textarea,
-input,
+input :not([type="radio"]):not([type="checkbox"]),
 select,
 button {
     width: 100%;
@@ -205,4 +205,148 @@ button.btn-refresh:hover {
     /* белая буква */
     font-size: 14px;
     font-weight: bold;
+}
+
+/* Вертикальная компоновка блока даты */
+#dateRow .date-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+#dateRow .date-option {
+    display: flex;
+    /* подпункты/вложенные элементы один под другим */
+    gap: 6px;
+}
+
+#dateRow .date-option .inline {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+#dateRangeWrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Радиокнопки слева от текста в блоке "Дата" */
+#dateRow label.date-option,
+#dateRow label.inline {
+    display: inline-flex;
+    flex-direction: row !important;
+    /* не даём переворачивать порядок */
+    align-items: center;
+    gap: 8px;
+}
+
+/* на всякий случай не даём стилям где-то задать row-reverse */
+#dateRow label.date-option[style*="row-reverse"],
+#dateRow label.inline[style*="row-reverse"] {
+    flex-direction: row !important;
+}
+
+#dateRow .date-option,
+#dateRow .inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    align-items: center;
+    width: auto;
+}
+
+#dateRow input[type="radio"] {
+    width: auto !important;
+    margin: 0 6px 0 0;
+    flex: 0 0 auto;
+}
+
+/* НЕ растягивать переключатели и чекбоксы на 100% и не добавлять им паддинги */
+input[type="radio"],
+input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    flex: 0 0 auto;
+    /* чтобы не тянулись в flex-контейнере */
+}
+
+/* На всякий случай: радиокнопка слева, текст справа */
+#dateRow .date-option,
+#dateRow .inline,
+#dateRow label.date-option,
+#dateRow label.inline {
+    display: inline-grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 8px;
+}
+
+textarea,
+input:not([type="radio"]):not([type="checkbox"]),
+select,
+button {
+    width: 100%;
+}
+
+/* 1) Не применять общий виджет-стиль к радио/чекбоксам */
+textarea,
+input:not([type="radio"]):not([type="checkbox"]),
+select,
+button {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0e1015;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+}
+
+/* 2) Радио и чекбоксы — компактные, не растягиваются */
+input[type="radio"],
+input[type="checkbox"] {
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 6px 0 0;
+    border: 0;
+    background: transparent;
+    flex: 0 0 auto;
+}
+
+/* 3) Лейблы с радио — строго горизонтально: кружок слева, текст справа */
+#dateRow label.date-option,
+#dateRow label.inline {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Визуальный "чип" даты Сегодня — как input[type="date"] */
+.chip-date {
+    display: inline-block;
+    padding: 10px 12px;
+    background: #0e1015;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    line-height: 1;
+    font-size: 13px;
+
+}
+
+/* Чтобы цифры в date-инпутах и "чипе" выглядели одинаково */
+input[type="date"] {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    /* одинаковая ширина цифр */
+    letter-spacing: 0.02em;
+    color: var(--text);
 }
