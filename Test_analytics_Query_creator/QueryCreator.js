@@ -34,6 +34,7 @@ const els = {
     refreshBtn: document.getElementById('refreshBtn'),
     errorBox: document.getElementById('errorBox'),
     infoBox: document.getElementById('infoBox'),
+    clearBtn: document.getElementById('clearBtn'),
 
     // --- Дата ---
     dateModeToday: document.getElementById('dateModeToday'),
@@ -43,36 +44,223 @@ const els = {
     todayText: document.getElementById('todayText'),
 };
 
+// ---- Clean pasted TSV: drop empty lines ----
+function cleanPastedTSV(text) {
+    // убираем BOM/zero-width, режем на строки и фильтруем строки,
+    // где после удаления табов/пробелов не осталось символов
+    return (text || '')
+        .replace(/\uFEFF|\u200B|\u200C|\u200D/g, '')
+        .split(/\r?\n/)
+        .filter(line => line.replace(/[\t\s]/g, '') !== '')
+        .join('\n');
+}
+
+// Обработка вставки из буфера
+els.pasteArea?.addEventListener('paste', (e) => {
+    const cd = e.clipboardData || window.clipboardData;
+    if (!cd) return; // на всякий случай — пусть браузер вставит как есть
+    e.preventDefault();
+    const raw = cd.getData('text/plain');
+    els.pasteArea.value = cleanPastedTSV(raw);
+});
+
+// Поддержка "перетаскивания" текста (drag&drop)
+els.pasteArea?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const raw = e.dataTransfer?.getData('text/plain') || '';
+    els.pasteArea.value = cleanPastedTSV(raw);
+});
+
+
 // ---- Инициализация даты и переключение Today/Range ----
-// Локальные форматтеры без перевода в UTC
-const pad = (n) => String(n).padStart(2, "0");
-const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; // YYYY-MM-DD (локально)
-const toDMY = (d) => `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`; // DD.MM.YYYY
+const pad = n => String(n).padStart(2, "0");
+const toISO = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;   // YYYY-MM-DD
+const toDMY = d => `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;   // DD.MM.YYYY
+const parseDMYtoDate = str => {
+    const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec((str || "").trim());
+    if (!m) return null;
+    return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+};
+const parseISOtoDate = str => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((str || "").trim());
+    if (!m) return null;
+    return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+};
 
 const today = new Date();
 const todayISO = toISO(today);
 const todayDMY = toDMY(today);
 
-// В «Сегодня» показываем человекочитаемый формат как у инпутов диапазона
 if (els.todayText) els.todayText.textContent = todayDMY;
 
-// По умолчанию значения инпутов-дат — ISO для value
-if (els.dateStart) els.dateStart.value = todayISO;
-if (els.dateEnd) els.dateEnd.value = todayISO;
+// заполняем отображение инпутов диапазона в формате DD.MM.YYYY
+if (els.dateStart) { els.dateStart.value = todayDMY; els.dateStart.dataset.iso = todayISO; }
+if (els.dateEnd) { els.dateEnd.value = todayDMY; els.dateEnd.dataset.iso = todayISO; }
 
-
-// Переключатель: показываем/скрываем поля диапазона
+// Переключатель диапазона — показать/скрыть блок
 function toggleDateInputs() {
     const wrap = document.getElementById('dateRangeWrap');
     const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
     if (wrap) wrap.style.display = isRange ? 'flex' : 'none';
 }
-
-
 toggleDateInputs();
 els.dateModeToday?.addEventListener('change', toggleDateInputs);
 els.dateModeRange?.addEventListener('change', toggleDateInputs);
-// --------------------------------------------------------
+
+// ------ ЛЁГКИЙ ПОП-АП КАЛЕНДАРЬ ------
+(function initDatePicker() {
+    let dpEl = null;
+    let boundInput = null;          // к какому инпуту сейчас привязан попап
+    let current = new Date();
+
+    function buildDP() {
+        if (dpEl) return dpEl;
+        dpEl = document.createElement('div');
+        dpEl.className = 'dp hidden';
+        dpEl.innerHTML = `
+      <div class="dp-header">
+        <div class="dp-nav">
+          <button class="dp-btn" data-nav="-12">«</button>
+          <button class="dp-btn" data-nav="-1">‹</button>
+        </div>
+        <div>
+          <select class="dp-select" id="dpMonth"></select>
+          <select class="dp-select" id="dpYear"></select>
+        </div>
+        <div class="dp-nav">
+          <button class="dp-btn" data-nav="1">›</button>
+          <button class="dp-btn" data-nav="12">»</button>
+        </div>
+      </div>
+      <div class="dp-grid" id="dpGrid"></div>
+    `;
+        document.body.appendChild(dpEl);
+        // заполнить селекты
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const mSel = dpEl.querySelector('#dpMonth');
+        monthNames.forEach((m, i) => {
+            const o = document.createElement('option');
+            o.value = i; o.textContent = m; mSel.appendChild(o);
+        });
+        const ySel = dpEl.querySelector('#dpYear');
+        const thisYear = (new Date()).getFullYear();
+        for (let y = thisYear - 10; y <= thisYear + 10; y++) {
+            const o = document.createElement('option');
+            o.value = y; o.textContent = y; ySel.appendChild(o);
+        }
+
+        dpEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.dp-btn');
+            if (btn) {
+                const shift = Number(btn.dataset.nav || 0);
+                current.setMonth(current.getMonth() + shift);
+                render();
+                return;
+            }
+            const dayBtn = e.target.closest('.dp-day');
+            if (dayBtn && boundInput) {
+                const y = Number(dayBtn.dataset.y);
+                const m = Number(dayBtn.dataset.m);
+                const d = Number(dayBtn.dataset.d);
+                const date = new Date(y, m, d);
+                const iso = toISO(date);
+                const dmy = toDMY(date);
+                boundInput.value = dmy;
+                boundInput.dataset.iso = iso;    // для генерации SQL
+                hide();
+            }
+        });
+
+        mSel.addEventListener('change', () => { current.setMonth(Number(mSel.value)); render(); });
+        ySel.addEventListener('change', () => { current.setFullYear(Number(ySel.value)); render(); });
+
+        // клик вне попапа — закрыть
+        document.addEventListener('click', (e) => {
+            if (!dpEl || dpEl.classList.contains('hidden')) return;
+            if (e.target === boundInput) return;
+            if (!dpEl.contains(e.target)) hide();
+        });
+        window.addEventListener('resize', () => hide());
+        return dpEl;
+    }
+
+    function showForInput(input) {
+        boundInput = input;
+        buildDP();
+        // если в инпуте уже есть дата — открыть на ней
+        const d = parseDMYtoDate(input.value) || new Date();
+        current = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        render();
+        // позиционирование
+        const r = input.getBoundingClientRect();
+        dpEl.style.left = `${window.scrollX + r.left}px`;
+        dpEl.style.top = `${window.scrollY + r.bottom + 6}px`;
+        dpEl.classList.remove('hidden');
+    }
+
+    function hide() {
+        dpEl?.classList.add('hidden');
+        boundInput = null;
+    }
+
+    function render() {
+        const mSel = dpEl.querySelector('#dpMonth');
+        const ySel = dpEl.querySelector('#dpYear');
+        mSel.value = current.getMonth();
+        ySel.value = current.getFullYear();
+
+        const grid = dpEl.querySelector('#dpGrid');
+        grid.innerHTML = '';
+
+        // шапка дней (начинаем с понедельника)
+        const dow = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        dow.forEach(w => {
+            const el = document.createElement('div');
+            el.className = 'dp-dow';
+            el.textContent = w;
+            grid.appendChild(el);
+        });
+
+        // вычисляем начало сетки
+        const first = new Date(current.getFullYear(), current.getMonth(), 1);
+        let startIdx = first.getDay(); // 0=Sun ... 6=Sat
+        if (startIdx === 0) startIdx = 7;   // хотим Mon..Sun
+        const start = new Date(first);
+        start.setDate(first.getDate() - (startIdx - 1));
+
+        // 6 недель * 7 дней
+        const todayKey = toISO(new Date());
+        const selISO = (boundInput?.dataset.iso) || '';
+        for (let i = 0; i < 42; i++) {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            const cell = document.createElement('button');
+            cell.type = 'button';
+            cell.className = 'dp-day';
+            cell.dataset.y = d.getFullYear();
+            cell.dataset.m = d.getMonth();
+            cell.dataset.d = d.getDate();
+            cell.textContent = pad(d.getDate());
+
+            if (d.getMonth() !== current.getMonth()) {
+                cell.style.opacity = .45;
+            }
+            if (toISO(d) === todayKey) cell.classList.add('is-today');
+            if (selISO && toISO(d) === selISO) cell.classList.add('is-selected');
+
+            grid.appendChild(cell);
+        }
+    }
+
+    // повесим на оба инпута
+    [document.getElementById('dateStart'), document.getElementById('dateEnd')].forEach(inp => {
+        inp?.addEventListener('click', (e) => {
+            e.preventDefault();
+            showForInput(inp);
+        });
+    });
+})();
+
 
 
 els.parseBtn.addEventListener('click', () => {
@@ -149,8 +337,10 @@ els.parseBtn.addEventListener('click', () => {
         const opt = document.createElement('option');
         opt.value = ev;
         opt.textContent = ev;
+        opt.title = ev;                 // подсказка с полным именем при наведении
         els.eventSelect.appendChild(opt);
     }
+
 
     // сброс «Выбрать все»
     if (els.selectAllEvents) els.selectAllEvents.checked = false;
@@ -242,27 +432,29 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     const selectFields = `event, client_time, server_time, written_by, ${uniqueProps.join(', ')}`;
 
 
-    // 3) WHERE: = 'one' или IN ('a','b',...)
-    // 3) WHERE: = 'one' или IN ("a","b",...)
     const whereEvent = (selectedEvents.length === 1)
         ? `AND event = "${esc(selectedEvents[0])}"`
         : `AND event IN (${selectedEvents.map(e => `"${esc(e)}"`).join(', ')})`;
 
-    // 4) Даты:
-    // - Если выбран "Сегодня": 
-    //   WHERE   DATE(insertion_date) >= "YYYY-MM-DD"
-    //   AND     client_time >= "YYYY-MM-DD 00:00:00 UTC"
-    // - Если выбран "Диапазон": 
-    //   WHERE   DATE(insertion_date) >= "start"
-    //   AND     client_time BETWEEN 'start 00:00:00 UTC' AND 'end 00:00:00 UTC'
     let start = todayISO;
     let end = todayISO;
     const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
     if (isRange) {
-        start = (els.dateStart?.value || todayISO);
-        end = (els.dateEnd?.value || start);
+        // приоритет — ISO в data-атрибуте; иначе пробуем распарсить текст DD.MM.YYYY
+        const sISO = els.dateStart?.dataset.iso || (() => {
+            const d = parseDMYtoDate(els.dateStart?.value);
+            return d ? toISO(d) : todayISO;
+        })();
+        const eISO = els.dateEnd?.dataset.iso || (() => {
+            const d = parseDMYtoDate(els.dateEnd?.value);
+            return d ? toISO(d) : sISO;
+        })();
+
+        start = sISO;
+        end = eISO;
         if (start > end) { const t = start; start = end; end = t; }
     }
+
 
     const whereParts = [];
     if (!isRange) {
@@ -322,6 +514,13 @@ els.copyBtn.addEventListener('click', async () => {
     }
 
 });
+
+els.clearBtn?.addEventListener('click', () => {
+    els.sqlOutput.value = '';
+    els.copyStatus.textContent = '';
+    els.sqlOutput.focus(); // опционально: ставим фокус в поле
+});
+
 
 els.refreshBtn.addEventListener('click', () => {
     // очищаем все поля и статусы

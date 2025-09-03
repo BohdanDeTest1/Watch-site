@@ -350,3 +350,223 @@ input[type="date"] {
     letter-spacing: 0.02em;
     color: var(--text);
 }
+
+/* Единый вид для инпутов диапазона (текстовые) */
+.date-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: #0e1015;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .02em;
+    cursor: pointer;
+}
+
+/* Попап календаря */
+.dp {
+    position: absolute;
+    z-index: 9999;
+    width: 300px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+    padding: 10px;
+}
+
+.dp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.dp-nav {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.dp-btn {
+    background: #3a4452;
+    color: #e7e9ee;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.dp-select {
+    background: #0e1015;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.dp-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.dp-dow,
+.dp-day {
+    text-align: center;
+    padding: 8px 0;
+    border-radius: 10px;
+    user-select: none;
+}
+
+.dp-dow {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.dp-day {
+    background: #0e1015;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.dp-day:hover {
+    border-color: var(--accent);
+}
+
+.dp-day.is-today {
+    outline: 2px solid var(--accent);
+}
+
+.dp-day.is-selected {
+    background: var(--accent);
+    color: #06111f;
+    font-weight: 700;
+}
+
+/* скрыть попап по умолчанию */
+.dp.hidden {
+    display: none;
+}
+
+/* Compact DatePicker (~1.5x smaller) */
+.dp {
+    width: 200px;
+    /* было 300px */
+    padding: 8px;
+    /* было 10px */
+    border-radius: 12px;
+    /* было 14px */
+    font-size: 13px;
+    /* уменьшили шрифт */
+}
+
+.dp-header {
+    gap: 6px;
+    margin-bottom: 6px;
+    /* было 8px */
+}
+
+.dp-btn {
+    padding: 4px 8px;
+    /* было 6px 10px */
+    border-radius: 8px;
+    /* чуть компактнее */
+    font-size: 12px;
+}
+
+.dp-select {
+    padding: 4px 8px;
+    /* было 6px 10px */
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+    /* чтобы не распирало при узкой ширине */
+}
+
+.dp-grid {
+    gap: 4px;
+    /* было 6px */
+}
+
+.dp-dow {
+    font-size: 11px;
+    /* было 12px */
+    padding: 6px 0;
+    /* было 8px 0 */
+}
+
+.dp-day {
+    padding: 6px 0;
+    /* было 8px 0 */
+    border-radius: 8px;
+    /* было 10px */
+}
+
+.dp-day.is-today {
+    outline-width: 1.5px;
+}
+
+/* Делим строку на 2 колонки: широкий список + кнопка справа */
+#eventPicker {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    /* список занимает всё, кнопка — по содержимому */
+    gap: 176px;
+    align-items: start;
+}
+
+/* Сам список — максимум ширины карточки, с видимым скроллом */
+#eventSelect {
+    width: 230%;
+    height: 240px;
+    /* переопределяет size при необходимости */
+    overflow: auto;
+    /* показать скролл при переполнении */
+    scrollbar-gutter: stable;
+    /* оставлять место под полосу прокрутки */
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+/* Видимый, «хватаемый» скроллбар (WebKit/Chromium) */
+#eventSelect::-webkit-scrollbar {
+    width: 10px;
+}
+
+#eventSelect::-webkit-scrollbar-track {
+    background: #0e1015;
+    border-radius: 10px;
+}
+
+#eventSelect::-webkit-scrollbar-thumb {
+    background: #3a4452;
+    border-radius: 10px;
+}
+
+#eventSelect::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Firefox: делаем полосу шире и обычной (не тонкой) */
+#eventSelect {
+    scrollbar-width: auto;
+    /* вместо thin */
+}
+
+button.btn-primary {
+    background: var(--accent);
+    color: #06111f;
+    font-weight: 700;
+    border: none;
+}
+
+button.btn-primary:hover {
+    opacity: .95;
+}
+
+button.btn-primary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
