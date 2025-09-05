@@ -279,14 +279,37 @@ els.parseBtn.addEventListener('click', () => {
         return;
     }
 
-    const rows = parseTSV(text);
+    let rows = parseTSV(text);
+
+
+
     if (rows.length === 0) {
         els.infoBox.classList.remove('hidden');
         els.infoBox.style.display = 'flex';
         els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Could not parse the data.`;
         return;
-
     }
+
+    // 🔧 FIX: если первая колонка пустая (например, "Story" отсутствует), но дальше есть нормальные заголовки — сдвигаем строку
+
+
+    // if (rows[0][0] === '' && rows[0].length > 2 && rows[0][1].toLowerCase() === 'event') {
+    //     rows = rows.map(r => r.slice(1));
+    // }
+
+    const norm = s => (s || '').toString().trim().toLowerCase();
+    let headerRow = rows[0].map(h => norm(h));
+
+    const eventIndex = headerRow.indexOf('event');
+    const propIndex = headerRow.indexOf('property');
+
+    // если event и property не в первых колонках — сдвигаем все строки влево
+    if (eventIndex > 0 && propIndex > 0) {
+        const shift = Math.min(eventIndex, propIndex);
+        rows = rows.map(r => r.slice(shift));
+    }
+
+
 
     // Определяем заголовки
     const headers = rows[0].map(h => h.trim());
@@ -316,18 +339,27 @@ els.parseBtn.addEventListener('click', () => {
     let lastEvent = ''; // «протягиваем» последнее значение Event
 
     for (const r of state.rows) {
-        const evCell = (r[eventIdx] ?? '').trim();
-        const pr = (r[propIdx] ?? '').trim();
+        const evRaw = r[eventIdx];
+        const prRaw = r[propIdx];
 
-        if (evCell) lastEvent = evCell;          // обновляем, если в строке указан Event
-        if (!lastEvent || !pr) continue;         // пропускаем, если нет Event вообще или пустая property
+        const evCell = (evRaw ?? '').trim();
+        const pr = (prRaw ?? '').trim();
 
-        if (!state.byEvent.has(lastEvent)) state.byEvent.set(lastEvent, []);
+        // если в строке есть Event, запоминаем
+        if (evCell) lastEvent = evCell;
+
+        // если у нас нет актуального события или проперти — пропускаем
+        if (!lastEvent || !pr) continue;
+
+        // сохраняем
+        if (!state.byEvent.has(lastEvent)) {
+            state.byEvent.set(lastEvent, []);
+        }
+
         const arr = state.byEvent.get(lastEvent);
-
-        // добавляем property, сохраняя порядок и избегая дублей
         if (!arr.includes(pr)) arr.push(pr);
     }
+
 
 
     // Заполним селект Event
@@ -549,3 +581,110 @@ els.refreshBtn.addEventListener('click', () => {
     state.colIdx = { event: -1, property: -1 };
     state.byEvent = new Map();
 });
+
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    sb.classList.toggle('collapsed');
+    document.body.classList.toggle('sb-collapsed');
+}
+
+
+function switchTab(tabId) {
+    // Скрываем все табы
+    for (let i = 1; i <= 4; i++) {
+        const view = document.getElementById(`tab${i}View`);
+        const tab = document.querySelector(`.tab:nth-child(${i})`);
+        if (view && tab) {
+            view.classList.add("hidden");
+            tab.classList.remove("active");
+        }
+    }
+
+    function switchTab(viewId) {
+        // активная кнопка
+        document.querySelectorAll('#sidebar .tab').forEach(t => t.classList.remove('active'));
+        // текущая кнопка — через event.currentTarget
+        if (window.event && window.event.currentTarget) {
+            window.event.currentTarget.classList.add('active');
+        }
+        // переключаем view
+        ['tab1View', 'tab2View', 'tab3View', 'tab4View'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', id !== viewId + 'View' && id !== viewId);
+        });
+    }
+
+    // Показываем активный таб
+    const selectedView = document.getElementById(`${tabId}View`);
+    const selectedTab = document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`);
+    if (selectedView && selectedTab) {
+        selectedView.classList.remove("hidden");
+        selectedTab.classList.add("active");
+    }
+}
+
+// ===== Side panel logic =====
+// const sidePanel = document.getElementById('sidePanel');
+// const brandToggle = document.getElementById('brandToggle');
+// const navItems = Array.from(document.querySelectorAll('.sidepanel .nav-item'));
+// const main = document.querySelector('.main') || document.body;
+
+// // клик по шапке — открыть/закрыть панель
+// brandToggle.addEventListener('click', () => {
+//     sidePanel.classList.toggle('collapsed');
+//     // тень справа от панели (создадим один раз)
+//     ensureSideShadow();
+// });
+
+// // переключение вкладок
+// navItems.forEach(btn => {
+//     btn.addEventListener('click', () => {
+//         navItems.forEach(b => b.classList.remove('active'));
+//         btn.classList.add('active');
+
+//         const tabId = btn.dataset.tab;
+//         document.querySelectorAll('[id^="tab"]').forEach(el => {
+//             el.style.display = (el.id === tabId) ? '' : 'none';
+//         });
+//     });
+// });
+
+// // создать «тень» у панели, если её ещё нет
+// function ensureSideShadow() {
+//     if (!document.querySelector('.side-shadow')) {
+//         const sh = document.createElement('div');
+//         sh.className = 'side-shadow';
+//         sidePanel.insertAdjacentElement('afterend', sh);
+//     }
+// }
+// ensureSideShadow();
+
+function switchTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('[id$="View"]').forEach(v => v.classList.add('hidden'));
+    document.querySelector(`.tab[onclick*="${id}"]`).classList.add('active');
+    document.getElementById(id + 'View').classList.remove('hidden');
+}
+
+// Открывать панель кликом по пустому месту, когда она закрыта
+(() => {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+
+    sidebar.addEventListener('click', (e) => {
+        // работаем только когда панель закрыта
+        if (!sidebar.classList.contains('collapsed')) return;
+
+        // если клик пришёлся по интерактивному элементу — выходим
+        const interactive = e.target.closest(
+            '#sidebarTop, .tab, .toggle-btn, #themeSlider, button, a, input, select, textarea'
+        );
+        if (interactive) return;
+
+        // пустое место → открыть панель
+        if (typeof toggleSidebar === 'function') toggleSidebar();
+    });
+})();
+
+
+

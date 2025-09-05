@@ -9,123 +9,211 @@
 </head>
 
 <body>
+    <div id="sidebar" class="collapsed">
+        <div id="sidebarTop" onclick="toggleSidebar()">
+            <span class="brand">
+                <span id="sidebarInitial">M</span>
+                <!-- Иконка для ховера по M в свернутом состоянии -->
+                <img id="menuIconHover" src="menu_icon.png" alt="menu" />
+            </span>
+
+            <span id="sidebarTitle">Moon Active</span>
+            <!-- Иконка справа в открытом состоянии -->
+            <img id="sidebarMenuRight" src="menu_icon.png" alt="menu" />
+        </div>
+
+        <nav class="tabs">
+            <div class="tab active" onclick="switchTab('tab1')">
+                <img class="icon" src="icon_1.png" alt="">
+                <span class="label">Query Creator</span>
+            </div>
+            <div class="tab" onclick="switchTab('tab2')">
+                <img class="icon" src="icon_2.png" alt="">
+                <span class="label">Tab 2</span>
+            </div>
+            <div class="tab" onclick="switchTab('tab3')">
+                <img class="icon" src="icon_3.png" alt="">
+                <span class="label">Tab 3</span>
+            </div>
+            <div class="tab" onclick="switchTab('tab4')">
+                <img class="icon" src="icon_4.png" alt="">
+                <span class="label">Tab 4</span>
+            </div>
+        </nav>
+        <!-- ▼ Заменить весь старый блок футера на этот -->
+        <div id="sidebarFooter">
+            <button id="themeSlider" class="is-night" aria-label="Theme toggle">
+                <span class="knob" aria-hidden="true"></span>
+
+                <!-- Иконки внутри слайдера -->
+                <img src="day.png" class="ico day" alt="">
+                <img src="night.png" class="ico night" alt="">
+
+                <!-- «Хит-зоны» для ховеров подсказок -->
+                <span class="hit hit-left" aria-hidden="true"></span>
+                <span class="hit hit-right" aria-hidden="true"></span>
+
+                <!-- Тултипы -->
+                <span class="tip tip-left">Light Mode</span>
+                <span class="tip tip-right">Night Mode</span>
+            </button>
+        </div>
+
+
+    </div>
 
     <header class="container">
         <h1>Query Creator</h1>
-        <h3>Moonactive</h3>
         <p class="muted">
-            Paste (Cmd+V) the copied table from Google Sheets
-            The columns <strong>Event</strong> and <strong>Property</strong> will be detected automatically
+            Paste (Cmd+V) the copied table from Google Sheets.
+            Columns <strong>Event</strong> and <strong>Property</strong> will be detected automatically.
         </p>
     </header>
 
-    <main class="container grid">
-        <section class="card">
-            <h2>1. Analytics table input</h2>
-            <label class="label">Data from the Google Sheets with analytics requirements</label>
-            <textarea id="pasteArea" placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
+    <!-- TAB 1 -->
+    <div id="tab1View">
+        <!---------my code---------->
+        <main class="container grid">
+            <section class="card">
+                <h2>1. Analytics table input</h2>
+                <label class="label">Data from the Google Sheets with analytics requirements</label>
+                <textarea id="pasteArea" placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
 
-            <div class="row">
-                <div class="field">
+                <div class="row">
                     <div class="field">
-                        <label class="label">Table</label>
-                        <select id="tableEnv">
-                            <option value="stage">Stage / RC</option>
-                            <option value="prod">Production</option>
+                        <div class="field">
+                            <label class="label">Table</label>
+                            <select id="tableEnv">
+                                <option value="stage">Stage / RC</option>
+                                <option value="prod">Production</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Generation mode</label>
+                        <select id="mode">
+                            <option value="property_in">SELECT event ...</option>
+                            <option value="distinct_props">SELECT DISTINCT event ...</option>
                         </select>
                     </div>
                 </div>
-                <div class="field">
-                    <label class="label">Generation mode</label>
-                    <select id="mode">
-                        <option value="property_in">SELECT event ...</option>
-                        <option value="distinct_props">SELECT DISTINCT event ...</option>
-                    </select>
-                </div>
-            </div>
 
-            <!-- ↓↓↓ Новый блок Дата ↓↓↓ -->
-            <div class="row" id="dateRow">
-                <div class="field">
-                    <label class="label">Date</label>
+                <!-- ↓↓↓ Новый блок Дата ↓↓↓ -->
+                <div class="row" id="dateRow">
+                    <div class="field">
+                        <label class="label">Date</label>
 
-                    <div class="date-col">
-                        <!-- Линия 1: Сегодня -->
-                        <label class="date-option">
-                            <input type="radio" name="dateMode" id="dateModeToday" checked>
-                            Today <span id="todayText" class="chip-date"></span>
-                        </label>
-
-
-                        <!-- Линия 2: Диапазон + поля дат в своей строке -->
-                        <div class="date-option">
-                            <label class="inline">
-                                <input type="radio" name="dateMode" id="dateModeRange">
-                                Range
+                        <div class="date-col">
+                            <!-- Линия 1: Сегодня -->
+                            <label class="date-option">
+                                <input type="radio" name="dateMode" id="dateModeToday" checked>
+                                Today <span id="todayText" class="chip-date"></span>
                             </label>
 
-                            <div class="date-range" id="dateRangeWrap" style="display:none;">
-                                <input type="text" id="dateStart" class="date-input" inputmode="none" readonly
-                                    style="max-width:180px;">
-                                <input type="text" id="dateEnd" class="date-input" inputmode="none" readonly
-                                    style="max-width:180px;">
-                            </div>
 
+                            <!-- Линия 2: Диапазон + поля дат в своей строке -->
+                            <div class="date-option">
+                                <label class="inline">
+                                    <input type="radio" name="dateMode" id="dateModeRange">
+                                    Range
+                                </label>
+
+                                <div class="date-range" id="dateRangeWrap" style="display:none;">
+                                    <input type="text" id="dateStart" class="date-input" inputmode="none" readonly
+                                        style="max-width:180px;">
+                                    <input type="text" id="dateEnd" class="date-input" inputmode="none" readonly
+                                        style="max-width:180px;">
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ↑↑↑ Новый блок Дата ↑↑↑ -->
+                <!-- ↑↑↑ Новый блок Дата ↑↑↑ -->
 
 
-            <div class="row">
-                <button id="parseBtn" class="btn-primary">Table decompose</button>
-                <button id="refreshBtn" class="btn-refresh">Refresh</button>
-            </div>
-            <div id="errorBox" class="hidden"></div>
-            <div id="infoBox" class="hidden"></div>
-            <span id="parseStatus" class="muted small"></span>
-
-            <div id="eventPicker" class="row" style="display:none;">
-                <div class="field">
-                    <label class="label">Events</label>
-                    <!-- multiple + высота списка -->
-                    <select id="eventSelect" multiple size="12"></select>
-                    <label class="label" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-                        <input type="checkbox" id="selectAllEvents"> Select all
-                    </label>
+                <div class="row">
+                    <button id="parseBtn" class="btn-primary">Table decompose</button>
+                    <button id="refreshBtn" class="btn-refresh">Refresh</button>
                 </div>
-                <button id="genBtn" class="btn-primary">SQL generating</button>
-            </div>
+                <div id="errorBox" class="hidden"></div>
+                <div id="infoBox" class="hidden"></div>
+                <span id="parseStatus" class="muted small"></span>
 
-        </section>
+                <div id="eventPicker" class="row" style="display:none;">
+                    <div class="field">
+                        <label class="label">Events</label>
+                        <!-- multiple + высота списка -->
+                        <select id="eventSelect" multiple size="12"></select>
+                        <label class="label" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                            <input type="checkbox" id="selectAllEvents"> Select all
+                        </label>
+                    </div>
+                    <button id="genBtn" class="btn-primary">SQL generating</button>
+                </div>
 
-        <section class="card">
-            <h2>2. Generated query</h2>
-            <label class="label">SQL query</label>
-            <textarea id="sqlOutput" readonly placeholder="SQL will appear here"></textarea>
-            <div class="row">
-                <button id="copyBtn" class="btn-primary">Copy</button>
-                <button id="clearBtn" class="btn-refresh">Clear SQL</button>
-                <span id="copyStatus" class="muted"></span>
-            </div>
+            </section>
 
-            <details class="help">
-                <summary>How it works?</summary>
-                <ol>
-                    <li>Copy the rows from Google Sheets (they come in as TSV - tab-separated)</li>
-                    <li>Click “Parse table” - the script will find the <em>Event</em> and <em>Property</em> columns
-                        (case insensitive)</li>
-                    <li>Select the desired Event and click “Generate SQL”</li>
-                </ol>
-            </details>
-        </section>
-    </main>
+            <section class="card">
+                <h2>2. Generated query</h2>
+                <label class="label">SQL query</label>
+                <textarea id="sqlOutput" readonly placeholder="SQL will appear here"></textarea>
+                <div class="row">
+                    <button id="copyBtn" class="btn-primary">Copy</button>
+                    <button id="clearBtn" class="btn-refresh">Clear SQL</button>
+                    <span id="copyStatus" class="muted"></span>
+                </div>
 
-    <footer class="container muted small">
-        v.1.05 - 2025
-    </footer>
+                <details class="help">
+                    <summary>How it works?</summary>
+                    <ol>
+                        <li>Copy the rows from Google Sheets (they come in as TSV - tab-separated)</li>
+                        <li>Click “Parse table” - the script will find the <em>Event</em> and <em>Property</em> columns
+                            (case insensitive)</li>
+                        <li>Select the desired Event and click “Generate SQL”</li>
+                    </ol>
+                </details>
+            </section>
+        </main>
+    </div>
+    <!---------my code---------->
+    </div>
+
+
+    <!-- TAB 2 -->
+    <div id="tab2View" class="hidden">
+        <main class="container grid">
+            <section class="card">
+                <h2>Second Tab Content</h2>
+                <p>Another interface will go here.</p>
+            </section>
+        </main>
+    </div>
+
+    <!-- TAB 3 -->
+    <div id="tab3View" class="hidden">
+        <main class="container grid">
+            <section class="card">
+                <h2>Third Tab Content</h2>
+                <p>Something else here.</p>
+            </section>
+        </main>
+    </div>
+
+    <!-- TAB 4 -->
+    <div id="tab4View" class="hidden">
+        <main class="container grid">
+            <section class="card">
+                <h2>Fourth Tab Content</h2>
+                <p>More functionality here.</p>
+            </section>
+        </main>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="container muted small">v.1.10 - 2025</footer>
     <script src="QueryCreator.js"></script>
 </body>
 
