@@ -29,6 +29,9 @@
     /* фон активной пилюли */
     --sidebar-active-fg: #eef3ff;
     /* текст на активной пилюле */
+    --dp-bg: #12111b;
+    /* фон панели календаря */
+    --dp-border: #000000;
 }
 
 
@@ -142,7 +145,6 @@ button:active {
     gap: 12px;
     align-items: center;
     margin-top: 12px;
-    margin-left: 13px;
 }
 
 .field {
@@ -200,7 +202,7 @@ button.btn-refresh:hover {
 #infoBox {
     margin-top: 10px;
     font-weight: 600;
-    color: #4fc3f7;
+    color: #ff9800;
     /* голубой */
     display: flex;
     align-items: center;
@@ -225,10 +227,9 @@ button.btn-refresh:hover {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #2196f3;
-    /* ярко-синий фон */
+    background-color: #ff9800;
+    /* ярко-оранжевый */
     color: #ffffff;
-    /* белая буква */
     font-size: 14px;
     font-weight: bold;
 }
@@ -405,8 +406,8 @@ input[type="date"] {
     position: absolute;
     z-index: 9999;
     width: 300px;
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--dp-bg, var(--card));
+    border: 1px solid var(--dp-border, var(--border));
     border-radius: 14px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
     padding: 10px;
@@ -547,15 +548,17 @@ input[type="date"] {
 /* Делим строку на 2 колонки: широкий список + кнопка справа */
 #eventPicker {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(420px, 1fr) auto;
     /* список занимает всё, кнопка — по содержимому */
-    gap: 176px;
+    gap: 20px;
     align-items: start;
 }
 
 /* Сам список — максимум ширины карточки, с видимым скроллом */
 #eventSelect {
-    width: 230%;
+    -webkit-appearance: none;
+    appearance: none;
+    /*  width: 230%;*/
     height: 240px;
     /* переопределяет size при необходимости */
     overflow: auto;
@@ -564,6 +567,8 @@ input[type="date"] {
     /* оставлять место под полосу прокрутки */
     font-size: 12px;
     line-height: 1.3;
+    background-image: none !important;
+    padding-right: 12px;
 }
 
 /* Видимый, «хватаемый» скроллбар (WebKit/Chromium) */
@@ -590,6 +595,65 @@ input[type="date"] {
     scrollbar-width: auto;
     /* вместо thin */
 }
+
+/* Список ивентов с чекбоксами (замена select) */
+.event-list {
+    height: 240px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    background: #0e1015;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.3;
+    min-width: 375px;
+    /* ← фиксируем минимальную ширину */
+    min-width: 226px;
+    max-width: 360px;
+    flex: 0 0 420px;
+}
+
+/* Элементы внутри списка */
+.event-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.event-item span {
+    flex: 1 1 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Скроллбар как у старого списка */
+.event-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.event-list::-webkit-scrollbar-track {
+    background: #0e1015;
+    border-radius: 10px;
+}
+
+.event-list::-webkit-scrollbar-thumb {
+    background: #3a4452;
+    border-radius: 10px;
+}
+
+.event-list::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
 
 button.btn-primary {
     background: var(--accent);
@@ -1407,4 +1471,54 @@ textarea.no-scroll {
 #mode-separate .input-section {
     margin-bottom: 18px;
     /* расстояние между блоками Event и Property */
+}
+
+/* full-width utility только для выбранных кнопок слева */
+.btn-full {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+/* на всякий случай выравниваем с полями слева */
+#eventPicker .btn-full,
+#mode-separate .btn-full {
+    margin-top: 36px;
+    /* визуально как у Refresh-строки */
+}
+
+/* Строка с Copy / Clear + статусом */
+.row-copy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    /* только статус уходит на вторую строку */
+}
+
+/* КНОПКИ: держим в одной строке слева-направо */
+.row-copy button {
+    width: auto;
+    /* переопределяем глобальное 100% */
+    flex: 1 1 0;
+    /* две кнопки занимают строку поровну */
+}
+
+/* Статус копирования под кнопками Copy / Clear */
+.copy-status {
+    order: 3;
+    /* после кнопок */
+    flex-basis: 100%;
+    /* своя строка */
+    margin-top: 6px;
+    font-weight: 600;
+    color: #8FE388;
+    /* мягкий зелёный */
+    white-space: nowrap;
+    /* всегда в одну строку */
+}
+
+/* Когда текста нет — статус не занимает места */
+.copy-status:empty {
+    display: none;
 }

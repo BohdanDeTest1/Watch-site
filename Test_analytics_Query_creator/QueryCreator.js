@@ -43,6 +43,11 @@ const els = {
     modeFile: document.getElementById('modeFile'),
     modePaste: document.getElementById('modePaste'),
 
+    eventList: document.getElementById('eventList'),
+    selectAllBtn: document.getElementById('selectAllBtn'),
+    clearAllBtn: document.getElementById('clearAllBtn'),
+
+
 
     // --- Дата ---
     dateModeToday: document.getElementById('dateModeToday'),
@@ -51,6 +56,18 @@ const els = {
     dateEnd: document.getElementById('dateEnd'),
     todayText: document.getElementById('todayText'),
 };
+
+// --- Select all / Clear all (навешиваем один раз при загрузке) ---
+els.selectAllBtn?.addEventListener('click', () => {
+    els.eventList?.querySelectorAll('input[type="checkbox"]')
+        .forEach(cb => cb.checked = true);
+});
+
+els.clearAllBtn?.addEventListener('click', () => {
+    els.eventList?.querySelectorAll('input[type="checkbox"]')
+        .forEach(cb => cb.checked = false);
+});
+
 
 function getInputMode() {
     if (els.modeSeparate?.checked) return 'separate';
@@ -171,17 +188,20 @@ function resetTlsInput() {
         }
     }
 
-    // 2) Обновим ссылку els.tlsFile на актуальный узел и повесим обработчик change
+
     els.tlsFile = document.getElementById('tlsFile');
     if (els.tlsFile) {
         els.tlsFile.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files.length > 0) {
-                els.infoBox.classList.add('hidden'); els.infoBox.innerHTML = '';
-                els.errorBox.classList.add('hidden'); els.errorBox.innerHTML = '';
-                parseFromFile(e.target.files[0]);
-            }
+            // только почистим плашки и, при желании, отобразим имя файла.
+            els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = '';
+            els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = '';
+
+            const nameEl = document.getElementById('tlsFileName');
+            if (nameEl) nameEl.textContent = (e.target.files && e.target.files[0]) ? e.target.files[0].name : '';
+            // НЕ парсим здесь — ждём кнопку Decompose
         });
     }
+
 
     // 3) Если есть кастомный лейбл с именем файла — очистим
     const nameEl = document.getElementById('tlsFileName');
@@ -311,10 +331,32 @@ els.dateModeRange?.addEventListener('change', toggleDateInputs);
         current = new Date(d.getFullYear(), d.getMonth(), d.getDate());
         render();
         // позиционирование
+        // const r = input.getBoundingClientRect();
+        // dpEl.style.left = `${window.scrollX + r.left}px`;
+        // dpEl.style.top = `${window.scrollY + r.bottom + 6}px`;
+        // dpEl.classList.remove('hidden');
+        // позиционирование — показываем ПО-НАД инпутом
         const r = input.getBoundingClientRect();
-        dpEl.style.left = `${window.scrollX + r.left}px`;
-        dpEl.style.top = `${window.scrollY + r.bottom + 6}px`;
+        const gap = 8; // отступ между инпутом и попапом
+
+        // сделать видимым, чтобы измерить высоту (без мерцания)
+        dpEl.style.visibility = 'hidden';
         dpEl.classList.remove('hidden');
+        const popH = dpEl.offsetHeight;
+
+        // координаты
+        const left = window.scrollX + r.left;
+        let top = window.scrollY + r.top - gap - popH;
+
+        // если не хватает места сверху — показываем снизу (фолбэк)
+        if (top < window.scrollY + 8) {
+            top = window.scrollY + r.bottom + gap;
+        }
+
+        dpEl.style.left = `${left}px`;
+        dpEl.style.top = `${top}px`;
+        dpEl.style.visibility = 'visible';
+
     }
 
     function hide() {
@@ -380,30 +422,6 @@ els.dateModeRange?.addEventListener('change', toggleDateInputs);
     });
 })();
 
-// function parseFromSeparateInputs() {
-//     const events = els.eventsInput?.value.split('\n').map(x => x.trim()).filter(Boolean) || [];
-//     const props = els.propertiesInput?.value.split('\n').map(x => x.trim()) || [];
-
-//     state.byEvent = new Map();
-//     state.eventOrder = [];
-
-//     let currentEvent = null;
-//     for (let i = 0; i < Math.max(events.length, props.length); i++) {
-//         if (events[i]) {
-//             currentEvent = events[i];
-//             if (!state.byEvent.has(currentEvent)) {
-//                 state.byEvent.set(currentEvent, []);
-//                 state.eventOrder.push(currentEvent);
-//             }
-//         }
-//         const p = props[i];
-//         if (currentEvent && p) {
-//             const arr = state.byEvent.get(currentEvent);
-//             if (!arr.includes(p)) arr.push(p);
-//         }
-//     }
-//     renderEvents();
-// }
 
 function parseFromSeparateInputs() {
     // не удаляем пустые строки — они важны для выравнивания!
@@ -484,70 +502,35 @@ function parseFromFile(file) {
     reader.readAsText(file);
 }
 
-// отдельная функция для отрисовки событий (переиспользуем)
+
 function renderEvents() {
-    els.eventSelect.innerHTML = '';
-    const events = state.eventOrder.slice();
+    if (!els.eventList) return;
+    els.eventList.innerHTML = '';
+    const events = state.eventOrder.slice(); // порядок как в таблице
+
     for (const ev of events) {
-        const opt = document.createElement('option');
-        opt.value = opt.textContent = opt.title = ev;
-        els.eventSelect.appendChild(opt);
+        const id = 'ev_' + ev.replace(/[^a-z0-9_]+/gi, '_');
+        const wrap = document.createElement('label');
+        wrap.className = 'event-item';
+        wrap.title = ev;
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = ev;
+        cb.id = id;
+
+        const text = document.createElement('span');
+        text.textContent = ev;
+
+        wrap.appendChild(cb);
+        wrap.appendChild(text);
+        els.eventList.appendChild(wrap);
     }
+
     els.eventPicker.style.display = events.length ? 'flex' : 'none';
 }
 
 
-// els.parseBtn.addEventListener('click', () => {
-//     // очищаем сообщения
-//     els.errorBox.innerHTML = '';
-//     els.errorBox.classList.add('hidden');
-//     els.infoBox.innerHTML = '';
-//     els.infoBox.classList.add('hidden');
-
-//     // 👉 1) если выбран файл TSV/TLS — парсим его и выходим
-//     if (els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0) {
-//         parseFromFile(els.tlsFile.files[0]);  // эта функция уже есть из наших правок
-//         return;
-//     }
-
-//     // 👉 2) старый режим: парсинг из textarea
-//     const text = els.pasteArea.value;
-//     if (!text.trim()) {
-//         els.infoBox.classList.remove('hidden');
-//         els.infoBox.style.display = 'flex';
-//         els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please enter data before parsing.`;
-//         return;
-//     }
-
-// els.parseBtn.addEventListener('click', () => {
-//     // очищаем сообщения
-//     els.errorBox.innerHTML = '';
-//     els.errorBox.classList.add('hidden');
-//     els.infoBox.innerHTML = '';
-//     els.infoBox.classList.add('hidden');
-
-//     // 👉 0) если заполнены отдельные поля Events/Properties — парсим их и выходим
-//     const hasEventsInput = !!(els.eventsInput && els.eventsInput.value.trim());
-//     const hasPropsInput = !!(els.propertiesInput && els.propertiesInput.value.trim());
-//     if (hasEventsInput || hasPropsInput) {
-//         parseFromSeparateInputs();   // эта функция уже есть ниже
-//         return;
-//     }
-
-//     // 👉 1) если выбран файл TSV/TLS — парсим его и выходим
-//     if (els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0) {
-//         parseFromFile(els.tlsFile.files[0]);
-//         return;
-//     }
-
-//     // 👉 2) старый режим: парсинг из textarea
-//     const text = els.pasteArea.value;
-//     if (!text.trim()) {
-//         els.infoBox.classList.remove('hidden');
-//         els.infoBox.style.display = 'flex';
-//         els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please enter data before parsing.`;
-//         return;
-//     }
 
 // --- начало обработчика Decompose ---
 els.parseBtn.addEventListener('click', () => {
@@ -560,13 +543,16 @@ els.parseBtn.addEventListener('click', () => {
     // ► Режимы ввода
     const mode = getInputMode();
 
+    const WARN = '<span class="icon warn-emoji" aria-hidden="true">⚠️</span>';
+
+
     if (mode === 'separate') {
         const hasEvents = !!(els.eventsInput && els.eventsInput.value.trim());
         const hasProps = !!(els.propertiesInput && els.propertiesInput.value.trim());
         if (!hasEvents && !hasProps) {
             els.infoBox.classList.remove('hidden');
             els.infoBox.style.display = 'flex';
-            els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please paste Events and/or Properties.`;
+            els.infoBox.innerHTML = `${WARN} Enter values in both the 'Events' and 'Properties' fields`;
             return;
         }
         parseFromSeparateInputs();
@@ -577,7 +563,7 @@ els.parseBtn.addEventListener('click', () => {
         if (!(els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0)) {
             els.infoBox.classList.remove('hidden');
             els.infoBox.style.display = 'flex';
-            els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please choose a TSV/TLS file.`;
+            els.infoBox.innerHTML = `${WARN} Please upload a TSV/TLS file`;
             return;
         }
         parseFromFile(els.tlsFile.files[0]);
@@ -589,12 +575,9 @@ els.parseBtn.addEventListener('click', () => {
     if (!text.trim()) {
         els.infoBox.classList.remove('hidden');
         els.infoBox.style.display = 'flex';
-        els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please paste the full table (TSV).`;
+        els.infoBox.innerHTML = `${WARN} Please paste the full spreadsheet (TSV)`;
         return;
     }
-
-    // далее оставляем твой существующий код для «паста-режима» (парсинг pasteArea) без изменений
-
 
     let rows = parseTSV(text);
 
@@ -603,16 +586,11 @@ els.parseBtn.addEventListener('click', () => {
     if (rows.length === 0) {
         els.infoBox.classList.remove('hidden');
         els.infoBox.style.display = 'flex';
-        els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Could not parse the data.`;
+        els.infoBox.innerHTML = `${WARN} Could not parse the data`;
         return;
     }
 
-    // 🔧 FIX: если первая колонка пустая (например, "Story" отсутствует), но дальше есть нормальные заголовки — сдвигаем строку
 
-
-    // if (rows[0][0] === '' && rows[0].length > 2 && rows[0][1].toLowerCase() === 'event') {
-    //     rows = rows.map(r => r.slice(1));
-    // }
 
     const norm = s => (s || '').toString().trim().toLowerCase();
     let headerRow = rows[0].map(h => norm(h));
@@ -620,20 +598,7 @@ els.parseBtn.addEventListener('click', () => {
     const eventIndex = headerRow.indexOf('event');
     const propIndex = headerRow.indexOf('property');
 
-    // // если event и property не в первых колонках — сдвигаем все строки влево
-    // if (eventIndex > 0 && propIndex > 0) {
-    //     const shift = Math.min(eventIndex, propIndex);
-    //     rows = rows.map(r => r.slice(shift));
-    // }
 
-
-
-    // Определяем заголовки
-    // const headers = rows[0].map(h => h.trim());
-    // const eventIdx = headers.findIndex(h => ['event'].includes(norm(h)));
-    // const propIdx = headers.findIndex(h => ['property'].includes(norm(h)));
-
-    // нормализуем заголовки: трим + в нижний регистр + схлопываем пробелы
     const headers = rows[0].map(h => (h ?? '').toLowerCase().trim().replace(/\s+/g, ' '));
 
     const eventIdx = headers.findIndex(h => h === 'event');
@@ -656,12 +621,6 @@ els.parseBtn.addEventListener('click', () => {
     }
 
 
-    // state.rows = rows.slice(1);
-    // state.headers = headers;
-    // state.colIdx = { event: eventIdx, property: propIdx };
-    // state.byEvent = new Map();
-    // let lastEvent = ''; // «протягиваем» последнее значение Event
-
     state.rows = rows.slice(1);
     state.headers = headers;
     state.colIdx = { event: eventIdx, property: propIdx };
@@ -673,23 +632,6 @@ els.parseBtn.addEventListener('click', () => {
     for (const r of state.rows) {
         const evRaw = r[eventIdx];
         const prRaw = r[propIdx];
-
-        // const evCell = (evRaw ?? '').trim();
-        // const pr = (prRaw ?? '').trim();
-
-        // // если в строке есть Event, запоминаем
-        // if (evCell) lastEvent = evCell;
-
-        // // если у нас нет актуального события или проперти — пропускаем
-        // if (!lastEvent || !pr) continue;
-
-        // // сохраняем
-        // if (!state.byEvent.has(lastEvent)) {
-        //     state.byEvent.set(lastEvent, []);
-        // }
-
-        // const arr = state.byEvent.get(lastEvent);
-        // if (!arr.includes(pr)) arr.push(pr);
 
         const evCell = (evRaw ?? '').trim();
         const pr = (prRaw ?? '').trim();
@@ -713,69 +655,13 @@ els.parseBtn.addEventListener('click', () => {
 
     }
 
+    renderEvents();
 
-
-    // // Заполним селект Event
-    // els.eventSelect.innerHTML = '';
-    // const events = Array.from(state.byEvent.keys()).sort((a, b) => a.localeCompare(b));
-    // for (const ev of events) {
-    //     const opt = document.createElement('option');
-    //     opt.value = ev;
-    //     opt.textContent = ev;
-    //     opt.title = ev;                 // подсказка с полным именем при наведении
-    //     els.eventSelect.appendChild(opt);
-    // }
-
-    els.eventSelect.innerHTML = '';
-    const events = state.eventOrder.slice(); // как в исходной таблице
-    for (const ev of events) {
-        const opt = document.createElement('option');
-        opt.value = opt.textContent = opt.title = ev;
-        els.eventSelect.appendChild(opt);
-    }
-
-
-    // сброс «Выбрать все»
-    if (els.selectAllEvents) els.selectAllEvents.checked = false;
-
-    // «Выбрать все» — отмечает/снимает все опции
-    els.selectAllEvents?.addEventListener('change', () => {
-        const all = els.selectAllEvents.checked;
-        for (const opt of els.eventSelect.options) opt.selected = all;
-    });
-
-    // при ручном выборе синхронизируем чекбокс
-    els.eventSelect.addEventListener('change', () => {
-        const total = els.eventSelect.options.length;
-        const selected = Array.from(els.eventSelect.options).filter(o => o.selected).length;
-        if (total === 0) return;
-        els.selectAllEvents.checked = (selected === total);
-    });
-
-
-
-    els.eventPicker.style.display = events.length ? 'flex' : 'none';
-    // if (els.parseStatus) {
-    //     els.parseStatus.textContent = events.length
-    //         ? `Готово. Найдено событий: ${events.length}.`
-    //         : 'События не найдены.';
-    // }
     els.infoBox.innerHTML = '';
     els.infoBox.classList.add('hidden');
     els.sqlOutput.value = '';
     els.copyStatus.textContent = '';
 });
-
-// els.errorBox.innerHTML = '';
-// els.errorBox.classList.add('hidden');
-// els.errorBox.style.display = 'none';  // на всякий случай инлайн
-
-// els.eventPicker.style.display = events.length ? 'flex' : 'none';
-// els.parseStatus.textContent = events.length ? `Готово. Найдено событий: ${events.length}.` : 'События не найдены.';
-// els.sqlOutput.value = '';
-// els.copyStatus.textContent = '';
-// // ← ВСТАВЬ ТУТ три строки из вставки выше
-
 
 els.genBtn.addEventListener('click', () => {
     const mode = els.mode.value; // можно оставить как было
@@ -790,10 +676,10 @@ els.genBtn.addEventListener('click', () => {
 FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     }
 
-    // 1) выбранные события (может быть несколько)
-    const selectedEvents = Array.from(els.eventSelect.options)
-        .filter(o => o.selected)
-        .map(o => o.value)
+
+    const selectedEvents = Array
+        .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
+        .map(cb => cb.value)
         .filter(Boolean);
 
     if (selectedEvents.length === 0) {
@@ -826,8 +712,8 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
 
 
     const whereEvent = (selectedEvents.length === 1)
-        ? `AND event = "${esc(selectedEvents[0])}"`
-        : `AND event IN (${selectedEvents.map(e => `"${esc(e)}"`).join(', ')})`;
+        ? `AND event = '${esc(selectedEvents[0])}'`
+        : `AND event IN (${selectedEvents.map(e => `'${esc(e)}'`).join(', ')})`;
 
     let start = todayISO;
     let end = todayISO;
@@ -852,11 +738,11 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     const whereParts = [];
     if (!isRange) {
         // Сегодня
-        whereParts.push(`WHERE DATE(insertion_date) >= "${start}"`);
-        whereParts.push(`AND client_time >= "${start} 00:00:00 UTC"`);
+        whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+        whereParts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
     } else {
         // Диапазон
-        whereParts.push(`WHERE DATE(insertion_date) >= "${start}"`);
+        whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
         whereParts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
     }
 
@@ -864,7 +750,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     whereParts.push(whereEvent);
 
     // user_id всегда после даты/события
-    whereParts.push(`AND user_id = "test_user_ID"`);
+    whereParts.push(`AND user_id = 'test_user_ID'`);
 
     // twelve_traits_enabled всегда перед ORDER BY
     whereParts.push(`AND twelve_traits_enabled IS NULL`);
@@ -878,7 +764,9 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
             `SELECT ${selectFields}
 ${fromClause}
 ${whereFinal}
-ORDER BY client_time DESC limit 1000;`;
+ORDER BY client_time DESC 
+--ORDER BY server_time DESC 
+--limit 1000;`;
     } else {
         sql =
             `SELECT ${selectFields}
@@ -915,68 +803,6 @@ els.clearBtn?.addEventListener('click', () => {
 });
 
 
-
-// При выборе файла сразу парсим его
-els.tlsFile?.addEventListener('change', (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-        // скрываем инфо-плашки
-        els.infoBox.classList.add('hidden');
-        els.infoBox.innerHTML = '';
-        els.errorBox.classList.add('hidden');
-        els.errorBox.innerHTML = '';
-
-        parseFromFile(e.target.files[0]);
-    }
-});
-
-
-
-// els.refreshBtn.addEventListener('click', () => {
-//     // очищаем все поля и статусы
-//     els.pasteArea.value = '';
-//     els.sqlOutput.value = '';
-//     if (els.parseStatus) els.parseStatus.textContent = '';
-
-//     els.copyStatus.textContent = '';
-//     els.errorBox.innerHTML = '';
-//     els.errorBox.classList.add('hidden');
-//     els.infoBox.innerHTML = '';
-//     els.infoBox.classList.add('hidden');
-//     els.eventSelect.innerHTML = '';
-//     els.eventPicker.style.display = 'none';
-//     // Сброс режима даты и значений
-//     if (els.dateModeToday) els.dateModeToday.checked = true;
-//     if (els.dateModeRange) els.dateModeRange.checked = false;
-//     if (els.dateStart) els.dateStart.value = todayISO;
-//     if (els.dateEnd) els.dateEnd.value = todayISO;
-//     toggleDateInputs?.();
-//     if (els.selectAllEvents) els.selectAllEvents.checked = false;
-
-//     // очистить выбранный файл и заново повесить listener
-//     if (els.tlsFile) {
-//         const old = els.tlsFile;
-//         const fresh = old.cloneNode(true);         // полноценная замена
-//         old.parentNode.replaceChild(fresh, old);
-//         els.tlsFile = fresh;                       // обновить ссылку в els
-
-//         // снова навешиваем change
-//         els.tlsFile.addEventListener('change', (e) => {
-//             if (e.target.files && e.target.files.length > 0) {
-//                 els.infoBox.classList.add('hidden');
-//                 els.infoBox.innerHTML = '';
-//                 els.errorBox.classList.add('hidden');
-//                 els.errorBox.innerHTML = '';
-//                 parseFromFile(e.target.files[0]);
-//             }
-//         });
-//     }
-//  //сброс state
-// state.rows = [];
-// state.headers = [];
-// state.colIdx = { event: -1, property: -1 };
-// state.byEvent = new Map();
-// });
-
 els.refreshBtn.addEventListener('click', () => {
     // очищаем все поля и статусы
     els.pasteArea.value = '';
@@ -987,12 +813,20 @@ els.refreshBtn.addEventListener('click', () => {
     els.errorBox.classList.add('hidden');
     els.infoBox.innerHTML = '';
     els.infoBox.classList.add('hidden');
-    els.eventSelect.innerHTML = '';
-    els.eventPicker.style.display = 'none';
 
-    // очищаем отдельные поля Event/Property
+    // УДАЛИТЬ строки со старым select:
+    // els.eventSelect.innerHTML = '';   // ← ЭТОГО БОЛЬШЕ НЕТ
+
+    // Скрыть и очистить новый список чекбоксов
+    els.eventPicker.style.display = 'none';
+    if (els.eventList) els.eventList.innerHTML = '';
+
+    // Очистить отдельные поля Event/Property (режим Separate)
     if (els.eventsInput) els.eventsInput.value = '';
     if (els.propertiesInput) els.propertiesInput.value = '';
+    // Схлопнуть высоту textarea после очистки
+    if (els.eventsInput) { try { els.eventsInput.style.height = 'auto'; } catch (e) { } }
+    if (els.propertiesInput) { try { els.propertiesInput.style.height = 'auto'; } catch (e) { } }
 
     // Сброс режима даты и значений
     if (els.dateModeToday) els.dateModeToday.checked = true;
@@ -1000,34 +834,20 @@ els.refreshBtn.addEventListener('click', () => {
     if (els.dateStart) { els.dateStart.value = todayDMY; els.dateStart.dataset.iso = todayISO; }
     if (els.dateEnd) { els.dateEnd.value = todayDMY; els.dateEnd.dataset.iso = todayISO; }
     toggleDateInputs?.();
+
+    // Снять «выбрать все» если где-то остался
     if (els.selectAllEvents) els.selectAllEvents.checked = false;
 
-    // очистить выбранный файл и заново повесить listener
-    // if (els.tlsFile) {
-    //     const old = els.tlsFile;
-    //     const fresh = old.cloneNode(true);
-    //     old.parentNode.replaceChild(fresh, old);
-    //     els.tlsFile = fresh;
-    //     els.tlsFile.addEventListener('change', (e) => {
-    //         if (e.target.files && e.target.files.length > 0) {
-    //             els.infoBox.classList.add('hidden');
-    //             els.infoBox.innerHTML = '';
-    //             els.errorBox.classList.add('hidden');
-    //             els.errorBox.innerHTML = '';
-    //             parseFromFile(e.target.files[0]);
-    //         }
-    //     });
-    // }
+    // Полностью сбросить file input (режим File)
     resetTlsInput();
 
-    // сброс state
+    // Обнулить состояние
     state.rows = [];
     state.headers = [];
     state.colIdx = { event: -1, property: -1 };
     state.byEvent = new Map();
+    state.eventOrder = [];
 });
-
-
 
 
 
@@ -1071,42 +891,6 @@ function switchTab(tabId) {
         selectedTab.classList.add("active");
     }
 }
-
-// ===== Side panel logic =====
-// const sidePanel = document.getElementById('sidePanel');
-// const brandToggle = document.getElementById('brandToggle');
-// const navItems = Array.from(document.querySelectorAll('.sidepanel .nav-item'));
-// const main = document.querySelector('.main') || document.body;
-
-// // клик по шапке — открыть/закрыть панель
-// brandToggle.addEventListener('click', () => {
-//     sidePanel.classList.toggle('collapsed');
-//     // тень справа от панели (создадим один раз)
-//     ensureSideShadow();
-// });
-
-// // переключение вкладок
-// navItems.forEach(btn => {
-//     btn.addEventListener('click', () => {
-//         navItems.forEach(b => b.classList.remove('active'));
-//         btn.classList.add('active');
-
-//         const tabId = btn.dataset.tab;
-//         document.querySelectorAll('[id^="tab"]').forEach(el => {
-//             el.style.display = (el.id === tabId) ? '' : 'none';
-//         });
-//     });
-// });
-
-// // создать «тень» у панели, если её ещё нет
-// function ensureSideShadow() {
-//     if (!document.querySelector('.side-shadow')) {
-//         const sh = document.createElement('div');
-//         sh.className = 'side-shadow';
-//         sidePanel.insertAdjacentElement('afterend', sh);
-//     }
-// }
-// ensureSideShadow();
 
 function switchTab(id) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

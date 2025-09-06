@@ -134,7 +134,7 @@
                         <div class="field">
                             <label class="label">Table</label>
                             <select id="tableEnv">
-                                <option value="stage">Stage / RC</option>
+                                <option value="stage">Stage / RC (od-rc)</option>
                                 <option value="prod">Production</option>
                             </select>
                         </div>
@@ -153,8 +153,6 @@
                 <!-- ↓↓↓ Новый блок Дата ↓↓↓ -->
                 <div class="row" id="dateRow">
                     <div class="field">
-                        <label class="label">Date</label>
-
                         <div class="date-col">
                             <!-- Линия 1: Сегодня -->
                             <label class="date-option">
@@ -196,13 +194,18 @@
                 <div id="eventPicker" class="row" style="display:none;">
                     <div class="field">
                         <label class="label">Events</label>
-                        <!-- multiple + высота списка -->
-                        <select id="eventSelect" multiple size="12"></select>
-                        <label class="label" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-                            <input type="checkbox" id="selectAllEvents"> Select all
-                        </label>
+
+                        <!-- Новый список чекбоксов -->
+                        <div id="eventList" class="event-list" role="group" aria-label="Events list"></div>
+
+                        <!-- Кнопки выбора -->
+                        <div class="row" style="margin-top:8px;">
+                            <button id="selectAllBtn" class="btn-refresh" type="button">Select all</button>
+                            <button id="clearAllBtn" class="btn-refresh" type="button">Clear</button>
+                        </div>
                     </div>
-                    <button id="genBtn" class="btn-primary">SQL generating</button>
+
+                    <button id="genBtn" class="btn-primary btn-full">SQL generating</button>
                 </div>
 
             </section>
@@ -211,11 +214,13 @@
                 <h2>2. Generated query</h2>
                 <label class="label">SQL query</label>
                 <textarea id="sqlOutput" readonly placeholder="SQL will appear here"></textarea>
-                <div class="row">
-                    <button id="copyBtn" class="btn-primary">Copy</button>
-                    <button id="clearBtn" class="btn-refresh">Clear SQL</button>
-                    <span id="copyStatus" class="muted"></span>
+                <div class="row row-copy">
+                    <button id="copyBtn" class="btn-primary">Copy to clipboard</button>
+                    <button id="clearBtn" class="btn-refresh">Clear SQL query field
+                    </button>
+                    <span id="copyStatus" class="copy-status" aria-live="polite" role="status"></span>
                 </div>
+
 
                 <details class="help">
                     <summary>How it works?</summary>
@@ -265,7 +270,7 @@
 
 
     <!-- FOOTER -->
-    <footer class="container muted small">v.1.11 - 2025</footer>
+    <footer class="container muted small">v.1.12 - 2025</footer>
     <script src="QueryCreator.js"></script>
 </body>
 
