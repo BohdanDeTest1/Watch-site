@@ -7,9 +7,10 @@
     --muted: #aab3d2;
     /* вторичный текст */
 
-    /* карточки/бордеры */
-    --card: #101728;
-    --border: #1b2237;
+    /* карточки/бордеры #232a464f*/
+    --card: #29314687;
+    --border: #213243b5;
+    --card-bg: #232a464f;
 
     /* акцент (кнопки) */
     --accent: #79a8ff;
@@ -88,10 +89,10 @@ h2 {
 }
 
 .card {
-    background: var(--card);
+    background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 18px;
+    padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
 }
 
@@ -106,20 +107,8 @@ h2 {
 .label {
     display: block;
     margin: 5px 0 6px;
-    color: #cfd3db
-}
-
-textarea,
-input :not([type="radio"]):not([type="checkbox"]),
-select,
-button {
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: #0e1015;
-    color: var(--text);
-    padding: 10px 12px;
-    outline: none;
+    color: #cfd3db;
+    margin-left: 12px;
 }
 
 textarea {
@@ -152,7 +141,8 @@ button:active {
     display: flex;
     gap: 12px;
     align-items: center;
-    margin-top: 12px
+    margin-top: 12px;
+    margin-left: 13px;
 }
 
 .field {
@@ -323,12 +313,7 @@ input[type="checkbox"] {
     column-gap: 8px;
 }
 
-textarea,
-input:not([type="radio"]):not([type="checkbox"]),
-select,
-button {
-    width: 100%;
-}
+
 
 /* 1) Не применять общий виджет-стиль к радио/чекбоксам */
 textarea,
@@ -336,12 +321,26 @@ input:not([type="radio"]):not([type="checkbox"]),
 select,
 button {
     width: 100%;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: #0e1015;
     color: var(--text);
     padding: 10px 12px;
     outline: none;
+    width: 100%;
+}
+
+select {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 40px;
+    /* место под стрелку */
+    background-color: #0e1015;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%23aab3d2' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    /* ← сдвиг стрелки */
+    background-size: 12px 12px;
 }
 
 /* 2) Радио и чекбоксы — компактные, не растягиваются */
@@ -354,6 +353,7 @@ input[type="checkbox"] {
     background: transparent;
     flex: 0 0 auto;
 }
+
 
 /* 3) Лейблы с радио — строго горизонтально: кружок слева, текст справа */
 #dateRow label.date-option,
@@ -1340,4 +1340,71 @@ themeSlider .tip-left {
     pointer-events: auto;
     cursor: e-resize;
     /* → */
+}
+
+/* --- Input mode switcher --- */
+/* override: make input mode options vertical */
+.input-modes {
+    display: flex;
+    flex-direction: column;
+    /* вертикально */
+    align-items: flex-start;
+    /* выравнивание по левому краю */
+    gap: 8px;
+    margin: 15px 0 30px;
+}
+
+.input-modes .mode-item {
+    display: inline-flex;
+    flex-direction: row;
+    /* кружок слева, текст справа */
+    align-items: center;
+    gap: 8px;
+}
+
+.input-modes input[type="radio"] {
+    transform: translateY(1px);
+}
+
+.input-mode {
+    display: none;
+}
+
+.input-mode.active {
+    display: block;
+}
+
+/* Step labels for user actions */
+.step-label {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 34px 0 10px;
+    /* ↑ больше отступ сверху */
+    display: block;
+    color: var(--text-strong, #fff);
+    /* или твоя палитра */
+}
+
+textarea.no-scroll {
+    height: 160px;
+    /* подбери 140–200px по вкусу */
+    max-height: 160px;
+    overflow: hidden;
+    /* не показываем внутренний скролл */
+    resize: none;
+    /* нельзя растягивать мышкой */
+}
+
+/* Отступы для подписей инпутов (Events/Properties) */
+#mode-separate .input-section label {
+    display: block;
+    margin-bottom: 6px;
+    margin-left: 13px;
+    /* расстояние от надписи до textarea */
+    font-weight: 500;
+}
+
+#mode-separate .input-section {
+    margin-bottom: 18px;
+    /* расстояние между блоками Event и Property */
 }

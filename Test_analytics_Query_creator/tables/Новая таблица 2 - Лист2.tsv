@@ -1,0 +1,109 @@
+	Event	Event description	Written by	Exists?	Status	property status?	Area	Property	Type	Property description	Complete output list	Approval query -QA	QA User id	Type (hide this column)	New fileds
+	board_event_tooltip_displayed	will be triggered when the tooltip that the user triggered is displayed	Client	Yes	untested	No change	Eventidentification	type	STRING	the type of information displayed in popup				STRING	
+					untested	No change		view_id	STRING	when popup appears - which location is it in				STRING	
+					untested	No change	User state	theme_id	STRING	Popup art theme				STRING	
+					untested	No change		reason	STRING	what triggered the popup				STRING	
+					untested	No change		start_date	TIMESTAMP	Start time of event				TIMESTAMP	
+					untested	No change		end_date	TIMESTAMP	End time of event				TIMESTAMP	
+					untested	No change	Segmentation	length	FLOAT	Total duration of the event in minutes (end_date - start_date)				FLOAT	
+					untested	No change		live_ops_event_level	INTEGER	the live ops event level of the user				INTEGER	
+					untested	No change	Configuration	live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index				STRING	
+					untested	No change		event_index	INTEGER	Event number				INTEGER	
+					untested	No change		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index				STRING	
+					untested	No change		resource_amount_hc	INTEGER	Number of HC offered in popup				INTEGER	
+					untested	No change		resource_amount_smiley	INTEGER	Number of smileys offered in promotion				INTEGER	
+					untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units in popup				INTEGER	
+					untested	No change		resource_amount_event_xp	INTEGER	Number of event xp units in popup				INTEGER	
+					untested	No change		resource_amount_energy	INTEGER	Number of energy units offered in popup				INTEGER	
+					untested	No change		transaction_item_*	STRING	One parameter for each item granted as a reward in the popup (tool, toolbox, crate, joker, etc.)				STRING	
+					untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER	
+					untested	No change		reward_items	STRING	JSON listing of all items and resources (same content as transaction_item)				STRING	
+	boss_items_granted_client	When a user completes a milestone, and the boss spawns items on the board.	Client	No	untested	needs_qa_test		reason	STRING	boss				STRING	
+					untested	needs_qa_test		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index				STRING	
+					untested	needs_qa_test		current_mission_index	INTEGER	Which milestone completed to granted this reward				INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	The current level of the user				INTEGER	
+					untested	needs_qa_test		request_id	STRING	Common ID for all items received under the same reward. (same request_id item_added_to_queue and reomoce_from_queue)				STRING	
+					untested	needs_qa_test		reward_items	STRING	Json with item name,value				STRING	
+					untested	needs_qa_test		event_index	INTEGER	Event number				INTEGER	
+	board_event_loading_started	reports when the user presses on the liveop badge and the event's loading starts	Client	Yes	untested	needs_qa_test		type	STR	Type of board_liveop (future use)				STRING	
+					untested	needs_qa_test		name	STR	Event name as specified in the admin (nickname in admin - event id)				STRING	
+					untested	needs_qa_test		category	STR	"board_liveop"					
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp				TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp				TIMESTAMP	
+					untested	needs_qa_test		request_id	STR	unique id connecting the loading start and complete				STRING	
+					untested	needs_qa_test		event_index	FLOAT	Event number				INTEGER	
+					untested	needs_qa_test		event_id	STR	event name (from Admin) segment || 'T' || start_date || index || index				STRING	
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index				STRING	
+					untested	needs_qa_test		live_ops_event_level	INT	The current level of the user				INTEGER	
+	board_event_loading_completed	reports when event's loading completed	Client	Yes	untested	needs_qa_test		type	STR	Type of board_liveop				STRING	
+					untested	needs_qa_test		name	STR	Event name as specified in the admin (nickname in admin - event id)				STRING	
+					untested	needs_qa_test		category	STR	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp				TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp				TIMESTAMP	
+					untested	needs_qa_test		request_id	STR	unique id connecting the loading start and complete				STRING	
+					untested	needs_qa_test		event_index	FLOAT	Event number				INTEGER	
+					untested	needs_qa_test		event_id	STR	event name (from Admin) segment || 'T' || start_date || index || index				STRING	
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index				STRING	
+					untested	needs_qa_test		live_ops_event_level	INT	The current level of the user				INTEGER	
+	board_event_popup_opened	will be triggered when the user opened the popup, or when a popup was triggered and opened for the user	Client	Yes	untested	needs_qa_test		type	STR	the type of information displayed in popup	teaser / start_event / end_event / end_event_compensation / rewards_tracking / level_up				
+					untested	needs_qa_test		view_id	STR	when popup appears - which location is it in	core / meta / liveop				
+					untested	needs_qa_test		theme_id	STRING	Popup art theme					
+					untested	needs_qa_test		reason	STR	what triggered the popup	board_event_activation / liveop / icon_clicked/generic_popup				
+					untested	needs_qa_test		start_date	TIMESTAMP	Start time of event					
+					untested	needs_qa_test		end_date	TIMESTAMP	End time of event					
+					untested	needs_qa_test		length	INT	Total duration of the event in minutes (end_date - start_date)					
+					untested	needs_qa_test		extra_ind	INT	indicated whether an event rush is live	1 / 0				
+					untested	needs_qa_test		current_mission_index	INT	The current mission of the user	1				
+					untested	needs_qa_test		live_ops_event_level	INT	the live ops event level of the user					
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date					
+					untested	needs_qa_test		resource_amount_hc	INT	Number of HC offered in popup					
+					untested	needs_qa_test		resource_amount_smiley	INT	Number of smileys offered in popup					
+					untested	needs_qa_test		resource_amount_event_energy	INT	Number of event energy units in popup					
+					untested	needs_qa_test		resource_amount_event_xp	INT	Number of event xp units in popup					
+					untested	needs_qa_test		resource_amount_energy	INT	Number of energy units offered in popup					
+					untested	needs_qa_test		transaction_item_{{1-5}}	INT	One parameter for each item granted as a reward in the popup (tool, toolbox, crate, joker, etc.)					
+					untested	needs_qa_test		transaction_item_amount_{{1-5}}	INT	Corresponding amount of each item					
+					untested	needs_qa_test		reward_items	STR	JSON listing of all items and resources (same content as transaction_item)	JSON listing of all items and resources (same content as transaction_item)				
+					untested	needs_qa_test		configuration_name	STR	Event configuration name	board_newyear_low_base_v1				
+					untested	needs_qa_test		event_index	FLOAT	the last event that the user reached in the combo	1 / 2 / 3 ...				
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00				
+					untested	needs_qa_test		parent_event_id	STR	Board Liveop name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STR	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+	board_event_popup_closed	will be triggered when the user closed the popup	Client	Yes	untested	needs_qa_test		type	STR	the type of information displayed in popup	teaser / start_event / end_event / end_event_compensation / rewards_tracking / level_up			STRING	
+					untested	needs_qa_test		view_id	STR	when popup appears - which location is it in	core / meta / liveop			STRING	
+					untested	needs_qa_test		theme_id	STRING	Popup art theme				STRING	
+					untested	needs_qa_test		reason	STR	what triggered the popup	board_event_activation / liveop / icon_clicked			STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	Start time of event				TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	End time of event				TIMESTAMP	
+					untested	needs_qa_test		length	INT	Total duration of the event in minutes (end_date - start_date)				FLOAT	
+					untested	needs_qa_test		extra_ind	INT	indicated whether an event rush is live	1 / 0			INTEGER	
+					untested	needs_qa_test		current_mission_index	INT	The current mission of the user	1			INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INT	the live ops event level of the user				INTEGER	
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date				STRING	
+					untested	needs_qa_test		resource_amount_hc	INT	Number of HC offered in popup				INTEGER	
+					untested	needs_qa_test		resource_amount_smiley	INT	Number of smileys offered in promotion				INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INT	Number of event energy units in popup				INTEGER	
+					untested	needs_qa_test		resource_amount_event_xp	INT	Number of event xp units in popup				INTEGER	
+					untested	needs_qa_test		resource_amount_energy	INT	Number of energy units offered in popup				INTEGER	
+					untested	needs_qa_test		transaction_item_{{1-5}}	INT	One parameter for each item granted as a reward in the popup (tool, toolbox, crate, joker, etc.)					
+					untested	needs_qa_test		transaction_item_amount_{{1-5}}	INT	Corresponding amount of each item					
+					untested	needs_qa_test		reward_items	STR	JSON listing of all items and resources (same content as transaction_item)	JSON listing of all items and resources (same content as transaction_item)			STRING	
+					untested	needs_qa_test		configuration_name	STR	Event configuration name	board_newyear_low_base_v1			STRING	
+					untested	needs_qa_test		event_index	FLOAT	the last event that the user reached in the combo	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		parent_event_id	STR	Board Liveop name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STR	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+	board_event_badge_displayed	will be triggered when the event's badge is displayed - core/meta	Client	Yes	untested	needs_qa_test		type	STR	the type of badge	board_event, teaser			STRING	
+					untested	needs_qa_test		name	STR	Event name as specified in the admin (nickname in admin - event id)	BoardEventCombo_newyear24sanity2nd_2812_09_sanity			STRING	
+					untested	needs_qa_test		time_left	STR	The time left in timer in seconds until the end of the liveop	124456				
+					untested	needs_qa_test		configuration_name	STR	Event name as specified in the admin (nickname in admin - event id)				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	Start time of event				TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	End time of event				TIMESTAMP	
+					untested	needs_qa_test		user_event_xp	INT	xp amount in the event				INTEGER	
+					untested	needs_qa_test		extra_ind	INT	indicated whether an event rush is live				INTEGER	
+					untested	needs_qa_test		event_index	FLOAT	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		event_id	STR	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		theme_id	STR	Popup art theme	board_xmas23_vanity_v1			STRING	
+					untested	needs_qa_test		view_id	STR	The location of the badge	meta/core			STRING	
+					untested	needs_qa_test		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index				STRING	

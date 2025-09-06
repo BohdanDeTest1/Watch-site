@@ -76,8 +76,58 @@
         <main class="container grid">
             <section class="card">
                 <h2>1. Analytics table input</h2>
-                <label class="label">Data from the Google Sheets with analytics requirements</label>
-                <textarea id="pasteArea" placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
+
+                <label class="label step-label">1.1 Select a type of input</label>
+                <!---------New field start---------->
+
+                <!-- ▼ Выбор режима ввода -->
+                <div class="input-modes">
+                    <label class="mode-item">
+                        <input type="radio" name="inputMode" id="modeSeparate" checked>
+                        <span>Paste columns: Event + Property</span>
+                    </label>
+                    <label class="mode-item">
+                        <input type="radio" name="inputMode" id="modeFile">
+                        <span>Upload TSV/TLS file</span>
+                    </label>
+                    <label class="mode-item">
+                        <input type="radio" name="inputMode" id="modePaste">
+                        <span>Paste spreadsheet (TSV from clipboard)</span>
+                    </label>
+                </div>
+
+                <!-- ▼ Режим 1: отдельные столбцы -->
+                <div id="mode-separate" class="input-mode active">
+                    <div class="input-section">
+                        <label for="eventsInput">Events (paste the "Event" column)</label>
+                        <textarea id="eventsInput" class="no-scroll" placeholder="Paste Event column here"></textarea>
+                    </div>
+
+                    <div class="input-section">
+                        <label for="propertiesInput">Properties (paste the "Property" column)</label>
+                        <textarea id="propertiesInput" class="no-scroll"
+                            placeholder="Paste Property column here"></textarea>
+                    </div>
+                </div>
+
+                <!-- ▼ Режим 2: загрузка файла -->
+                <div id="mode-file" class="input-mode">
+                    <div class="input-section">
+                        <label class="label">Upload TSV/TLS file</label>
+                        <input type="file" id="tlsFile" accept=".tsv,.txt,.csv" />
+                    </div>
+                </div>
+
+                <!-- ▼ Режим 3: вставка полной таблицы -->
+                <div id="mode-paste" class="input-mode">
+                    <label class="label">Data from the Google Sheets with analytics requirements</label>
+                    <textarea id="pasteArea"
+                        placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
+                </div>
+
+
+                <!---------New field end---------->
+                <label class="label step-label">1.2 Select a BQ Table and Generation mode</label>
 
                 <div class="row">
                     <div class="field">
@@ -97,6 +147,8 @@
                         </select>
                     </div>
                 </div>
+
+                <label class="label step-label">1.3 Select a date (optional, default is today)</label>
 
                 <!-- ↓↓↓ Новый блок Дата ↓↓↓ -->
                 <div class="row" id="dateRow">
@@ -213,7 +265,7 @@
 
 
     <!-- FOOTER -->
-    <footer class="container muted small">v.1.10 - 2025</footer>
+    <footer class="container muted small">v.1.11 - 2025</footer>
     <script src="QueryCreator.js"></script>
 </body>
 

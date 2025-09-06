@@ -1,0 +1,6 @@
+Screens	Event	Event description	App version	Written by	Exists	Status	Is new property	Area	Property	Type		Example / Complete output list	Approval query	User_id	Type (hide this column)
+	calendar_reward_popup_opened	Popup opened		Client	No	untested	New in event		index						
+						untested	New in event		current_mission_index						
+	calendar_reward_tap_to_claim	Tap to claim		Client	No	untested	New in event		index						
+						untested	New in event		current_mission_index						
+						untested	New in event		reward_items						

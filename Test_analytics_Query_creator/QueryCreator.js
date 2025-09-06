@@ -35,6 +35,14 @@ const els = {
     errorBox: document.getElementById('errorBox'),
     infoBox: document.getElementById('infoBox'),
     clearBtn: document.getElementById('clearBtn'),
+    eventsInput: document.getElementById('eventsInput'),
+    propertiesInput: document.getElementById('propertiesInput'),
+    tlsFile: document.getElementById('tlsFile'),
+    // режимы ввода
+    modeSeparate: document.getElementById('modeSeparate'),
+    modeFile: document.getElementById('modeFile'),
+    modePaste: document.getElementById('modePaste'),
+
 
     // --- Дата ---
     dateModeToday: document.getElementById('dateModeToday'),
@@ -43,6 +51,80 @@ const els = {
     dateEnd: document.getElementById('dateEnd'),
     todayText: document.getElementById('todayText'),
 };
+
+function getInputMode() {
+    if (els.modeSeparate?.checked) return 'separate';
+    if (els.modeFile?.checked) return 'file';
+    return 'paste';
+}
+function setInputMode(mode) {
+    const blocks = {
+        separate: document.getElementById('mode-separate'),
+        file: document.getElementById('mode-file'),
+        paste: document.getElementById('mode-paste'),
+    };
+    // активируем только нужный блок
+    Object.values(blocks).forEach(b => b?.classList.remove('active'));
+    if (blocks[mode]) blocks[mode].classList.add('active');
+
+    if (mode === 'separate') {
+        els.eventsInput?.scrollTo(0, 0);
+        els.propertiesInput?.scrollTo(0, 0);
+    }
+
+    // скрыть инфо/ошибки при переключении
+    els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = '';
+    els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = '';
+}
+// навешиваем переключатели
+els.modeSeparate?.addEventListener('change', () => setInputMode('separate'));
+els.modeFile?.addEventListener('change', () => setInputMode('file'));
+els.modePaste?.addEventListener('change', () => setInputMode('paste'));
+
+// дефолт — «separate»
+setInputMode('separate');
+
+// --- Keep top for long pastes in separate mode ---
+function keepTop(el) {
+    if (!el) return;
+    const pin = () => { el.scrollTop = 0; };
+
+    // после вставки переносим курсор и скролл в начало
+    el.addEventListener('paste', () => {
+        setTimeout(() => {
+            try { el.selectionStart = el.selectionEnd = 0; } catch (_) { }
+            el.scrollTop = 0;
+        }, 0);
+    });
+
+    // держим верх на любых изменениях/фокусе
+    el.addEventListener('input', pin);
+    el.addEventListener('focus', pin);
+    el.addEventListener('keyup', pin);
+}
+
+keepTop(els.eventsInput);
+keepTop(els.propertiesInput);
+
+
+// --- Auto-resize for Event/Property textareas ---
+function autoResizeTA(ta) {
+    if (!ta) return;
+    ta.style.height = 'auto';
+    ta.style.height = (ta.scrollHeight + 2) + 'px'; // +2px на границы
+    ta.scrollTop = 0; // всегда «сверху»
+}
+
+[els.eventsInput, els.propertiesInput].forEach((ta) => {
+    if (!ta) return;
+    // первичная подгонка (если что-то уже вставлено)
+    autoResizeTA(ta);
+    // при вводе/вставке — пересчитать
+    ta.addEventListener('input', () => autoResizeTA(ta));
+    ta.addEventListener('paste', () => setTimeout(() => autoResizeTA(ta), 0));
+});
+
+
 
 // ---- Clean pasted TSV: drop empty lines ----
 function cleanPastedTSV(text) {
@@ -70,6 +152,43 @@ els.pasteArea?.addEventListener('drop', (e) => {
     const raw = e.dataTransfer?.getData('text/plain') || '';
     els.pasteArea.value = cleanPastedTSV(raw);
 });
+
+function resetTlsInput() {
+    // 1) Сбросим взвод каждого file-инпута на странице (если вдруг их больше одного)
+    const fileInputs = Array.from(document.querySelectorAll('input[type="file"]'));
+    for (const input of fileInputs) {
+        // прямой сброс
+        try { input.value = ''; } catch (_) { }
+
+        const form = input.closest('form');
+        if (form) {
+            // form.reset очистит value file-инпута «официально»
+            form.reset();
+        } else {
+            // клон с заменой — самый надёжный способ для одиночных инпутов
+            const fresh = input.cloneNode(true);
+            input.parentNode.replaceChild(fresh, input);
+        }
+    }
+
+    // 2) Обновим ссылку els.tlsFile на актуальный узел и повесим обработчик change
+    els.tlsFile = document.getElementById('tlsFile');
+    if (els.tlsFile) {
+        els.tlsFile.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                els.infoBox.classList.add('hidden'); els.infoBox.innerHTML = '';
+                els.errorBox.classList.add('hidden'); els.errorBox.innerHTML = '';
+                parseFromFile(e.target.files[0]);
+            }
+        });
+    }
+
+    // 3) Если есть кастомный лейбл с именем файла — очистим
+    const nameEl = document.getElementById('tlsFileName');
+    if (nameEl) nameEl.textContent = '';
+}
+
+
 
 
 // ---- Инициализация даты и переключение Today/Range ----
@@ -261,23 +380,221 @@ els.dateModeRange?.addEventListener('change', toggleDateInputs);
     });
 })();
 
+// function parseFromSeparateInputs() {
+//     const events = els.eventsInput?.value.split('\n').map(x => x.trim()).filter(Boolean) || [];
+//     const props = els.propertiesInput?.value.split('\n').map(x => x.trim()) || [];
+
+//     state.byEvent = new Map();
+//     state.eventOrder = [];
+
+//     let currentEvent = null;
+//     for (let i = 0; i < Math.max(events.length, props.length); i++) {
+//         if (events[i]) {
+//             currentEvent = events[i];
+//             if (!state.byEvent.has(currentEvent)) {
+//                 state.byEvent.set(currentEvent, []);
+//                 state.eventOrder.push(currentEvent);
+//             }
+//         }
+//         const p = props[i];
+//         if (currentEvent && p) {
+//             const arr = state.byEvent.get(currentEvent);
+//             if (!arr.includes(p)) arr.push(p);
+//         }
+//     }
+//     renderEvents();
+// }
+
+function parseFromSeparateInputs() {
+    // не удаляем пустые строки — они важны для выравнивания!
+    const evLines = (els.eventsInput?.value || '').replace(/\r/g, '').split('\n');
+    const prLines = (els.propertiesInput?.value || '').replace(/\r/g, '').split('\n');
+
+    // убираем заголовки, если скопировали их вместе с колонками
+    if (evLines.length && evLines[0].trim().toLowerCase() === 'event') evLines.shift();
+    if (prLines.length && prLines[0].trim().toLowerCase() === 'property') prLines.shift();
+
+    state.byEvent = new Map();
+    state.eventOrder = [];
+
+    let currentEvent = null;
+    const maxLen = Math.max(evLines.length, prLines.length);
+
+    for (let i = 0; i < maxLen; i++) {
+        const ev = (evLines[i] ?? '').trim();
+        const pr = (prLines[i] ?? '').trim();
+
+        // forward-fill события — как при merged-ячейках в Google Sheets
+        if (ev) {
+            currentEvent = ev;
+            if (!state.byEvent.has(currentEvent)) {
+                state.byEvent.set(currentEvent, []);
+                state.eventOrder.push(currentEvent);
+            }
+        }
+        // добавляем property к текущему событию, если оно есть
+        if (currentEvent && pr) {
+            const arr = state.byEvent.get(currentEvent);
+            if (!arr.includes(pr)) arr.push(pr);
+        }
+    }
+
+    renderEvents();
+}
 
 
+function parseFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const text = e.target.result;
+        const rows = text.split(/\r?\n/).map(r => r.split('\t'));
+
+        const headers = rows[0].map(h => (h ?? '').toLowerCase().trim());
+        const eventIdx = headers.indexOf('event');
+        const propIdx = headers.indexOf('property');
+        if (eventIdx === -1 || propIdx === -1) {
+            alert("В файле не найдены колонки 'Event' и 'Property'");
+            return;
+        }
+
+        state.byEvent = new Map();
+        state.eventOrder = [];
+
+        let lastEvent = '';
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row.length) continue;
+            const ev = (row[eventIdx] ?? '').trim();
+            const pr = (row[propIdx] ?? '').trim();
+
+            if (ev) {
+                lastEvent = ev;
+                if (!state.byEvent.has(ev)) {
+                    state.byEvent.set(ev, []);
+                    state.eventOrder.push(ev);
+                }
+            }
+            if (lastEvent && pr) {
+                const arr = state.byEvent.get(lastEvent);
+                if (!arr.includes(pr)) arr.push(pr);
+            }
+        }
+        renderEvents();
+    };
+    reader.readAsText(file);
+}
+
+// отдельная функция для отрисовки событий (переиспользуем)
+function renderEvents() {
+    els.eventSelect.innerHTML = '';
+    const events = state.eventOrder.slice();
+    for (const ev of events) {
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = opt.title = ev;
+        els.eventSelect.appendChild(opt);
+    }
+    els.eventPicker.style.display = events.length ? 'flex' : 'none';
+}
+
+
+// els.parseBtn.addEventListener('click', () => {
+//     // очищаем сообщения
+//     els.errorBox.innerHTML = '';
+//     els.errorBox.classList.add('hidden');
+//     els.infoBox.innerHTML = '';
+//     els.infoBox.classList.add('hidden');
+
+//     // 👉 1) если выбран файл TSV/TLS — парсим его и выходим
+//     if (els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0) {
+//         parseFromFile(els.tlsFile.files[0]);  // эта функция уже есть из наших правок
+//         return;
+//     }
+
+//     // 👉 2) старый режим: парсинг из textarea
+//     const text = els.pasteArea.value;
+//     if (!text.trim()) {
+//         els.infoBox.classList.remove('hidden');
+//         els.infoBox.style.display = 'flex';
+//         els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please enter data before parsing.`;
+//         return;
+//     }
+
+// els.parseBtn.addEventListener('click', () => {
+//     // очищаем сообщения
+//     els.errorBox.innerHTML = '';
+//     els.errorBox.classList.add('hidden');
+//     els.infoBox.innerHTML = '';
+//     els.infoBox.classList.add('hidden');
+
+//     // 👉 0) если заполнены отдельные поля Events/Properties — парсим их и выходим
+//     const hasEventsInput = !!(els.eventsInput && els.eventsInput.value.trim());
+//     const hasPropsInput = !!(els.propertiesInput && els.propertiesInput.value.trim());
+//     if (hasEventsInput || hasPropsInput) {
+//         parseFromSeparateInputs();   // эта функция уже есть ниже
+//         return;
+//     }
+
+//     // 👉 1) если выбран файл TSV/TLS — парсим его и выходим
+//     if (els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0) {
+//         parseFromFile(els.tlsFile.files[0]);
+//         return;
+//     }
+
+//     // 👉 2) старый режим: парсинг из textarea
+//     const text = els.pasteArea.value;
+//     if (!text.trim()) {
+//         els.infoBox.classList.remove('hidden');
+//         els.infoBox.style.display = 'flex';
+//         els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please enter data before parsing.`;
+//         return;
+//     }
+
+// --- начало обработчика Decompose ---
 els.parseBtn.addEventListener('click', () => {
-    // очищаем ошибку при каждом новом парсинге
+    // очищаем сообщения
     els.errorBox.innerHTML = '';
     els.errorBox.classList.add('hidden');
-
     els.infoBox.innerHTML = '';
     els.infoBox.classList.add('hidden');
 
-    const text = els.pasteArea.value;
+    // ► Режимы ввода
+    const mode = getInputMode();
+
+    if (mode === 'separate') {
+        const hasEvents = !!(els.eventsInput && els.eventsInput.value.trim());
+        const hasProps = !!(els.propertiesInput && els.propertiesInput.value.trim());
+        if (!hasEvents && !hasProps) {
+            els.infoBox.classList.remove('hidden');
+            els.infoBox.style.display = 'flex';
+            els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please paste Events and/or Properties.`;
+            return;
+        }
+        parseFromSeparateInputs();
+        return;
+    }
+
+    if (mode === 'file') {
+        if (!(els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0)) {
+            els.infoBox.classList.remove('hidden');
+            els.infoBox.style.display = 'flex';
+            els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please choose a TSV/TLS file.`;
+            return;
+        }
+        parseFromFile(els.tlsFile.files[0]);
+        return;
+    }
+
+    // mode === 'paste'
+    const text = els.pasteArea?.value || '';
     if (!text.trim()) {
         els.infoBox.classList.remove('hidden');
         els.infoBox.style.display = 'flex';
-        els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please enter data before parsing.`;
+        els.infoBox.innerHTML = `<span class="icon info-icon">i</span> Please paste the full table (TSV).`;
         return;
     }
+
+    // далее оставляем твой существующий код для «паста-режима» (парсинг pasteArea) без изменений
+
 
     let rows = parseTSV(text);
 
@@ -303,18 +620,25 @@ els.parseBtn.addEventListener('click', () => {
     const eventIndex = headerRow.indexOf('event');
     const propIndex = headerRow.indexOf('property');
 
-    // если event и property не в первых колонках — сдвигаем все строки влево
-    if (eventIndex > 0 && propIndex > 0) {
-        const shift = Math.min(eventIndex, propIndex);
-        rows = rows.map(r => r.slice(shift));
-    }
+    // // если event и property не в первых колонках — сдвигаем все строки влево
+    // if (eventIndex > 0 && propIndex > 0) {
+    //     const shift = Math.min(eventIndex, propIndex);
+    //     rows = rows.map(r => r.slice(shift));
+    // }
 
 
 
     // Определяем заголовки
-    const headers = rows[0].map(h => h.trim());
-    const eventIdx = headers.findIndex(h => ['event'].includes(norm(h)));
-    const propIdx = headers.findIndex(h => ['property'].includes(norm(h)));
+    // const headers = rows[0].map(h => h.trim());
+    // const eventIdx = headers.findIndex(h => ['event'].includes(norm(h)));
+    // const propIdx = headers.findIndex(h => ['property'].includes(norm(h)));
+
+    // нормализуем заголовки: трим + в нижний регистр + схлопываем пробелы
+    const headers = rows[0].map(h => (h ?? '').toLowerCase().trim().replace(/\s+/g, ' '));
+
+    const eventIdx = headers.findIndex(h => h === 'event');
+    const propIdx = headers.findIndex(h => h === 'property');
+
 
     if (eventIdx === -1 || propIdx === -1) {
         els.errorBox.classList.remove('hidden'); // показать
@@ -332,44 +656,81 @@ els.parseBtn.addEventListener('click', () => {
     }
 
 
+    // state.rows = rows.slice(1);
+    // state.headers = headers;
+    // state.colIdx = { event: eventIdx, property: propIdx };
+    // state.byEvent = new Map();
+    // let lastEvent = ''; // «протягиваем» последнее значение Event
+
     state.rows = rows.slice(1);
     state.headers = headers;
     state.colIdx = { event: eventIdx, property: propIdx };
     state.byEvent = new Map();
-    let lastEvent = ''; // «протягиваем» последнее значение Event
+    state.eventOrder = [];       // порядок первого появления Event
+    let lastEvent = '';          // «протягиваем» последнее значение Event
+
 
     for (const r of state.rows) {
         const evRaw = r[eventIdx];
         const prRaw = r[propIdx];
 
+        // const evCell = (evRaw ?? '').trim();
+        // const pr = (prRaw ?? '').trim();
+
+        // // если в строке есть Event, запоминаем
+        // if (evCell) lastEvent = evCell;
+
+        // // если у нас нет актуального события или проперти — пропускаем
+        // if (!lastEvent || !pr) continue;
+
+        // // сохраняем
+        // if (!state.byEvent.has(lastEvent)) {
+        //     state.byEvent.set(lastEvent, []);
+        // }
+
+        // const arr = state.byEvent.get(lastEvent);
+        // if (!arr.includes(pr)) arr.push(pr);
+
         const evCell = (evRaw ?? '').trim();
         const pr = (prRaw ?? '').trim();
 
-        // если в строке есть Event, запоминаем
-        if (evCell) lastEvent = evCell;
-
-        // если у нас нет актуального события или проперти — пропускаем
-        if (!lastEvent || !pr) continue;
-
-        // сохраняем
-        if (!state.byEvent.has(lastEvent)) {
-            state.byEvent.set(lastEvent, []);
+        // если в строке появился новый Event — запоминаем и регистрируем его порядок
+        if (evCell) {
+            lastEvent = evCell;
+            if (!state.byEvent.has(lastEvent)) {
+                state.byEvent.set(lastEvent, []);
+                state.eventOrder.push(lastEvent);  // порядок первого появления
+            }
         }
 
-        const arr = state.byEvent.get(lastEvent);
+        // если Event ещё не встречался или Property пуст — пропускаем строку
+        if (!lastEvent || !pr) continue;
+
+        // добавляем Property в порядке первого появления (без сортировки)
+        const arr = state.byEvent.get(lastEvent) || [];
         if (!arr.includes(pr)) arr.push(pr);
+        state.byEvent.set(lastEvent, arr);
+
     }
 
 
 
-    // Заполним селект Event
+    // // Заполним селект Event
+    // els.eventSelect.innerHTML = '';
+    // const events = Array.from(state.byEvent.keys()).sort((a, b) => a.localeCompare(b));
+    // for (const ev of events) {
+    //     const opt = document.createElement('option');
+    //     opt.value = ev;
+    //     opt.textContent = ev;
+    //     opt.title = ev;                 // подсказка с полным именем при наведении
+    //     els.eventSelect.appendChild(opt);
+    // }
+
     els.eventSelect.innerHTML = '';
-    const events = Array.from(state.byEvent.keys()).sort((a, b) => a.localeCompare(b));
+    const events = state.eventOrder.slice(); // как в исходной таблице
     for (const ev of events) {
         const opt = document.createElement('option');
-        opt.value = ev;
-        opt.textContent = ev;
-        opt.title = ev;                 // подсказка с полным именем при наведении
+        opt.value = opt.textContent = opt.title = ev;
         els.eventSelect.appendChild(opt);
     }
 
@@ -554,12 +915,73 @@ els.clearBtn?.addEventListener('click', () => {
 });
 
 
+
+// При выборе файла сразу парсим его
+els.tlsFile?.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+        // скрываем инфо-плашки
+        els.infoBox.classList.add('hidden');
+        els.infoBox.innerHTML = '';
+        els.errorBox.classList.add('hidden');
+        els.errorBox.innerHTML = '';
+
+        parseFromFile(e.target.files[0]);
+    }
+});
+
+
+
+// els.refreshBtn.addEventListener('click', () => {
+//     // очищаем все поля и статусы
+//     els.pasteArea.value = '';
+//     els.sqlOutput.value = '';
+//     if (els.parseStatus) els.parseStatus.textContent = '';
+
+//     els.copyStatus.textContent = '';
+//     els.errorBox.innerHTML = '';
+//     els.errorBox.classList.add('hidden');
+//     els.infoBox.innerHTML = '';
+//     els.infoBox.classList.add('hidden');
+//     els.eventSelect.innerHTML = '';
+//     els.eventPicker.style.display = 'none';
+//     // Сброс режима даты и значений
+//     if (els.dateModeToday) els.dateModeToday.checked = true;
+//     if (els.dateModeRange) els.dateModeRange.checked = false;
+//     if (els.dateStart) els.dateStart.value = todayISO;
+//     if (els.dateEnd) els.dateEnd.value = todayISO;
+//     toggleDateInputs?.();
+//     if (els.selectAllEvents) els.selectAllEvents.checked = false;
+
+//     // очистить выбранный файл и заново повесить listener
+//     if (els.tlsFile) {
+//         const old = els.tlsFile;
+//         const fresh = old.cloneNode(true);         // полноценная замена
+//         old.parentNode.replaceChild(fresh, old);
+//         els.tlsFile = fresh;                       // обновить ссылку в els
+
+//         // снова навешиваем change
+//         els.tlsFile.addEventListener('change', (e) => {
+//             if (e.target.files && e.target.files.length > 0) {
+//                 els.infoBox.classList.add('hidden');
+//                 els.infoBox.innerHTML = '';
+//                 els.errorBox.classList.add('hidden');
+//                 els.errorBox.innerHTML = '';
+//                 parseFromFile(e.target.files[0]);
+//             }
+//         });
+//     }
+//  //сброс state
+// state.rows = [];
+// state.headers = [];
+// state.colIdx = { event: -1, property: -1 };
+// state.byEvent = new Map();
+// });
+
 els.refreshBtn.addEventListener('click', () => {
     // очищаем все поля и статусы
     els.pasteArea.value = '';
     els.sqlOutput.value = '';
     if (els.parseStatus) els.parseStatus.textContent = '';
-
     els.copyStatus.textContent = '';
     els.errorBox.innerHTML = '';
     els.errorBox.classList.add('hidden');
@@ -567,13 +989,36 @@ els.refreshBtn.addEventListener('click', () => {
     els.infoBox.classList.add('hidden');
     els.eventSelect.innerHTML = '';
     els.eventPicker.style.display = 'none';
+
+    // очищаем отдельные поля Event/Property
+    if (els.eventsInput) els.eventsInput.value = '';
+    if (els.propertiesInput) els.propertiesInput.value = '';
+
     // Сброс режима даты и значений
     if (els.dateModeToday) els.dateModeToday.checked = true;
     if (els.dateModeRange) els.dateModeRange.checked = false;
-    if (els.dateStart) els.dateStart.value = todayISO;
-    if (els.dateEnd) els.dateEnd.value = todayISO;
+    if (els.dateStart) { els.dateStart.value = todayDMY; els.dateStart.dataset.iso = todayISO; }
+    if (els.dateEnd) { els.dateEnd.value = todayDMY; els.dateEnd.dataset.iso = todayISO; }
     toggleDateInputs?.();
     if (els.selectAllEvents) els.selectAllEvents.checked = false;
+
+    // очистить выбранный файл и заново повесить listener
+    // if (els.tlsFile) {
+    //     const old = els.tlsFile;
+    //     const fresh = old.cloneNode(true);
+    //     old.parentNode.replaceChild(fresh, old);
+    //     els.tlsFile = fresh;
+    //     els.tlsFile.addEventListener('change', (e) => {
+    //         if (e.target.files && e.target.files.length > 0) {
+    //             els.infoBox.classList.add('hidden');
+    //             els.infoBox.innerHTML = '';
+    //             els.errorBox.classList.add('hidden');
+    //             els.errorBox.innerHTML = '';
+    //             parseFromFile(e.target.files[0]);
+    //         }
+    //     });
+    // }
+    resetTlsInput();
 
     // сброс state
     state.rows = [];
@@ -582,13 +1027,17 @@ els.refreshBtn.addEventListener('click', () => {
     state.byEvent = new Map();
 });
 
+
+
+
+
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
     sb.classList.toggle('collapsed');
     document.body.classList.toggle('sb-collapsed');
 }
 
-
+// 3333
 function switchTab(tabId) {
     // Скрываем все табы
     for (let i = 1; i <= 4; i++) {

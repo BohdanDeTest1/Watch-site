@@ -1,0 +1,71 @@
+Story	Event	Event description	Written by	Exists?	Status	Property Status	Area	Property	Type		Example / Complete output list	Approval query -QA	QA User id	Type (hide this column)
+Daily Streak	calendar_daily_reward_granted	Daily Calendarreward granted to user	Server	No	untested	New in event	Configuration	segment						
+					untested	New in event		name						
+					untested	New in event		configuration_name						
+					untested	New in event		max_amount						
+					untested	New in event	Daily Calendar State	current_cycle						
+					untested	New in event		index						
+					untested	New in event	Reward ID	request_id						
+					untested	New in event		match_id						
+					untested	New in event	Daily Reward	resource_amount_Smiley						
+					untested	New in event		resource_amount_HC						
+					untested	New in event		resource_amount_Energy						
+					untested	New in event		transaction_item_*						
+					untested	New in event		transaction_item_amount_*						
+	calendar_daily_streak_reset	Daily Steak reset after completion or broken streak	Server	No	untested	New in event	Configuration	segment						
+					untested	New in event		name						
+					untested	New in event		configuration_name						
+					untested	New in event		max_amount						
+					untested	New in event	Daily Calendar State	current_cycle						
+					untested	New in event		reason			completion / broken_streak			
+Accumulative Bar	calendar_bar_reward_granted	Accumulative Barreward granted to user	Server	No	untested	New in event	Configuration	segment						
+					untested	New in event		name						
+					untested	New in event		configuration_name						
+					untested	New in event		max_amount						
+					untested	New in event	Accumulative Bar State	current_cycle						
+					untested	New in event		current_mission_index						
+					untested	New in event	Reward ID	request_id						
+					untested	New in event		match_id						
+					untested	New in event	Accumulative Bar Milestone Reward	resource_amount_Smiley						
+					untested	New in event		resource_amount_HC						
+					untested	New in event		resource_amount_Energy						
+					untested	New in event		transaction_item_*						
+					untested	New in event		transaction_item_amount_*						
+	calendar_bar_point_granted	Accumulative Barpoint granted to user for an eligable login in a 24h period	Server	No	untested	New in event	Configuration	segment						
+					untested	New in event		name						
+					untested	New in event		configuration_name						
+					untested	New in event		max_amount						
+					untested	New in event	Accumulative Bar State	current_cycle						
+					untested	New in event		current_mission_index						
+	calendar_bar_reset	Accumulative Barreset after completion or inactivity	Server	No	untested	New in event	Configuration	segment						
+					untested	New in event		name						
+					untested	New in event		configuration_name						
+					untested	New in event		max_amount						
+					untested	New in event	Accumulative Bar State	current_cycle						
+					untested	New in event		reason			completion / inactivity			
+Rewards	reward_created		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		request_id						
+					untested	No change, requires QA review		match_id						
+	reward_collected		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		request_id						
+					untested	No change, requires QA review		match_id						
+	resource_gained_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	item_added_to_queue_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	reward_activated		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	reward_updated		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	chest_granted_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	chest_opening_flow_ended_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	wheel_granted_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	wheel_reward_collected_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	pack_granted_server		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						
+	card_collected		Server	Yes	untested	Need to add values		reason			reward_calendar			
+					untested	No change, requires QA review		match_id						

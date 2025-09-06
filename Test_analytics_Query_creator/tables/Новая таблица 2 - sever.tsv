@@ -1,0 +1,366 @@
+	Event	Event description	Written by	Exists?	Status	property status?	Area	Property	Type	Property description	Complete output list	Approval query -QA	QA User id	Type (hide this column)	New fileds
+	special_event_activated	The event's server activation	Server	Yes	untested	needs_qa_test	Eventidentification	live_ops_event_id	STRING		merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test	User state	user_event_energy	INTEGER	User energy of the live ops event				INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	the level of the user in the event (default should be 1 when starting)				INTEGER	
+					untested	needs_qa_test		user_vanity_island_token	INTEGER	vanity island tokens inventory				INTEGER	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test	Segmentation	segment	STRING	which LiveOp configuration is running to the user (decided at this moment due to user's segment) ,User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the STR with under score, and only when it's not configured as 'default'.	payer			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test	Configuration	type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo / boardeventcombo			STRING	
+					untested	Need to add values		sub_type	STRING	Sub type of board_liveop	boss			STRING	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp (NOT THE TEASET START TIME)	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		duration	FLOAT	Total duration of the teaser in minutes (start_date - teaser_start_date)				FLOAT	
+					untested	needs_qa_test		amount	INTEGER	number of levels in the board event				INTEGER	
+					untested	needs_qa_test		step	INTEGER	number of events in the combo	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin (shared conig name)	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	points amount to complete the level (bar size) -xp to complete level	1900-01-19 0:00:00			INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+					untested	needs_qa_test	Rewards	resource_amount_smiley	INTEGER	Smileys reward for completing the first mission	1902-09-26 0:00:00			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the first mission	1900-01-01 0:00:00			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the first mission	1900-02-18 0:00:00			INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	tokens reward for completing the first mission				INTEGER	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+If the configuration in the admin is milestone X, the total milestones reported will be X+1. For example, in the screenshot, there are 3 milestones configured, but we treat it as 4.	board_event_milestone_started	.Once user start a new milestoneThe first event for milstone started will send with 'level started'	Server	No	untested	No change	Configuration	type	STRING	boardeventcombo				STRING	
+					untested	No change		sub_type	STRING	boss				STRING	
+					untested	No change		service_name	STRING	tournament-service / liveops-service / board_event ....				STRING	
+					untested	No change		event_id	STRING					STRING	
+					untested	No change		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index					
+					untested	No change		name	STRING					STRING	
+					untested	No change		start_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		end_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		segment	STRING					STRING	
+					untested	No change		event_index	INTEGER	Event number (sub event )	1 / 2/ /3			INTEGER	
+					untested	No change		live_ops_event_level	INTEGER	The current level of the user				INTEGER	
+					untested	No change	Progress Bar	current_mission_index	INTEGER	Current milestone in bar				INTEGER	
+					untested	No change		level_target_points	INTEGER	Points required to complete current milestone	xp required to complete the level			INTEGER	
+					untested	No change		task_index	INTEGER	Number of milestones in bar (configured)				INTEGER	
+					untested	No change		points_balance	INTEGER	Points acuumulated in current milestone / relevant in case of overflow	points = xp			INTEGER	
+					untested	No change	Rewards	reward_items	STRING	Json with item name,value	name, value			STRING	
+					untested	No change		resource_amount_smiley	INTEGER	Reward for completing milestone	This is currently not relevant for the boss feature. The boss only grants items on the board			INTEGER	
+					untested	No change		resource_amount_hc	INTEGER					INTEGER	
+					untested	No change		resource_amount_energy	INTEGER					INTEGER	
+					untested	No change		transaction_item_*	STRING					STRING	
+					untested	No change		transaction_item_amount_*	INTEGER					INTEGER	
+	board_event_milestone_completed	Once user complete a new milestone- last milstone will sent with'level_completed_event	Server	No	untested	No change	Configuration	type	STRING	boardeventcombo				STRING	
+					untested	No change		sub_type	STRING	boss				STRING	
+					untested	No change		service_name	STRING	tournament-service / liveops-service / board_event ....				STRING	
+					untested	No change		event_id	STRING					STRING	
+					untested	No change		live_ops_event_id	STR	event name (from Admin) segment || 'T' || start_date || index					
+					untested	No change		name	STRING					STRING	
+					untested	No change		start_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		end_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		segment	STRING					STRING	
+					untested	No change		event_index	INTEGER	Event number	1 / 2/ /3			INTEGER	
+					untested	No change		live_ops_event_level	INTEGER	The current level of the user				INTEGER	
+					untested	No change	Progress Bar	current_mission_index	INTEGER	Current milestone in bar				INTEGER	
+					untested	No change		level_target_points	INTEGER	Points required to complete current milestone				INTEGER	
+					untested	No change		task_index	INTEGER	Number of milestones in bar (configured)				INTEGER	
+					untested	No change		points_balance	INTEGER	Points acuumulated in current milestone (=0 for this event)				INTEGER	
+					untested	No change	Rewards	reward_items	STRING	Json with item name,value				STRING	
+					untested	No change		resource_amount_smiley	INTEGER	Reward for completing milestone	This is currently not relevant for the boss feature. The boss only grants items on the board			INTEGER	
+					untested	No change		resource_amount_hc	INTEGER					INTEGER	
+					untested	No change		resource_amount_energy	INTEGER					INTEGER	
+					untested	No change		transaction_item_*	STRING					STRING	
+					untested	No change		transaction_item_amount_*	INTEGER					INTEGER	
+	board_event_bar_points_granted	boss progress bar points granted to user, (xp collected)	Server	No	untested	No change	Configuration	type	STRING	boardeventcombo				STRING	
+					untested	No change		sub_type	STRING	boss				STRING	
+					untested	No change		service_name	STRING	tournament-service / liveops-service / board_event ....				STRING	
+					untested	No change		event_id	STRING					STRING	
+					untested	No change		live_ops_event_id	STRING					STRING	
+					untested	No change		name	STRING					STRING	
+					untested	No change		start_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		end_date	TIMESTAMP					TIMESTAMP	
+					untested	No change		segment	STRING					STRING	
+					untested	No change		amount	INTEGER	number of points granted				INTEGER	
+					untested	No change		event_index	INTEGER	Event number	1 / 2/ /3			INTEGER	
+					untested	No change		live_ops_event_level	INTEGER	The current level of the user				INTEGER	
+					untested	No change	Progress Bar	current_mission_index	INTEGER	Current milestone in bar				INTEGER	
+					untested	No change		level_target_points	INTEGER	Points required to complete current milestone				INTEGER	
+					untested	No change		task_index	INTEGER	Number of milestones in bar (configured)				INTEGER	
+					untested	No change		points_balance	INTEGER	Points acuumulated in current milestone - after points granted				INTEGER	
+	item_added_to_queue_server	when an item was added to the queue	Server	Yes	untested	Need to add values		reason	STRING	The source of the reward (where does it come from)	boss			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	The current live_ops_event_id				STRING	
+					untested	needs_qa_test		request_id	STRING	Common ID for all items received under the same reward. (same request_id item_added_to_queue and reomoce_from_queue)				STRING	
+					untested	needs_qa_test		merge_item_type	STRING	The item id of the reward (in case of item was added to queue)				STRING	
+	item_removed_from_queue_server	When the player tap and item out of the queue and sends it to the board			untested	Need to add values		reason	STRING	The source of the reward (where does it come from)	boss			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	The current live_ops_event_id				STRING	
+					untested	needs_qa_test		request_id	STRING	Common ID for all items received under the same reward. (same request_id item_added_to_queue and reomoce_from_queue)				STRING	
+					untested	needs_qa_test		merge_item_type	STRING	The item id of the reward (in case of item was added to queue)				STRING	
+	board_event_activated		Server	Yes	untested	needs_qa_test	Eventidentification	live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test	User state	user_event_energy	INTEGER	User energy of the live ops event				INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	the level of the user in the event (default should be 1 when starting)				INTEGER	
+					untested	needs_qa_test		user_vanity_island_token	INTEGER	vanity island tokens inventory				INTEGER	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test	Segmentation	segment	STRING	which LiveOp configuration is running to the user (decided at this moment due to user's segment) ,User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the STR with under score, and only when it's not configured as 'default'.	payer			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test	Configuration	type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo / boardeventcombo			STRING	
+					untested	Need to add values		sub_type	STRING	Sub type of board_liveop	boss			STRING	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp (NOT THE TEASET START TIME)	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		duration	FLOAT	Total duration of the teaser in minutes (start_date - teaser_start_date)				FLOAT	
+					untested	needs_qa_test		amount	INTEGER	number of levels in the board event				INTEGER	
+					untested	needs_qa_test		step	INTEGER	number of events in the combo	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin (shared conig name)	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	points amount to complete the level (bar size) -xp to complete level	20			INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+					untested	needs_qa_test	Rewards	resource_amount_smiley	INTEGER	Smileys reward for completing the first mission	1000			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the first mission	2			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the first mission	50			INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	tokens reward for completing the first mission				INTEGER	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+	board_event_unlocked		Server	Yes	untested	needs_qa_test	Eventidentification	live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test	User state	live_ops_event_level	INTEGER	the level of the user in the event (default should be 1 when starting)				INTEGER	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test	Segmentation	segment	STRING	which LiveOp configuration is running to the user (decided at this moment due to user's segment) ,User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the STR with under score, and only when it's not configured as 'default'.	payer			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test	Configuration	type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo / boardeventcombo			STRING	
+					untested	needs_qa_test		sub_type	STRING	Sub type of board_liveop	Board2_0/Farm/RoomRush/KitchenCatch			STRING	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp (NOT THE TEASET START TIME)	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		action_index	INTEGER	Indicator if ability to transfer items is configured in the sub_event	1/0			INTEGER	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		duration	FLOAT	Total duration of the teaser in minutes (start_date - teaser_start_date)				FLOAT	
+					untested	needs_qa_test		amount	INTEGER	number of levels in the board event				INTEGER	
+					untested	needs_qa_test		step	INTEGER	number of events in the combo	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin (shared conig name)	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	points amount to complete the level (bar size) -xp to complete level	20			INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+					untested	needs_qa_test	Rewards	resource_amount_smiley	INTEGER	Smileys reward for completing the first mission	1000			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the first mission	2			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the first mission	50			INTEGER	
+					untested	needs_qa_test		reward_items	STRING	json for items and amount of each item added from previous sub event				STRING	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+	board_event_level_started	Reports when the users starts a new level in the event	Server	Yes	untested	needs_qa_test		segment	STRING	which LiveOp configuration is running to the user (decided at this moment due to user's segment)	payer			STRING	
+					untested	needs_qa_test		type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo			STRING	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp (NOT THE TEASET START TIME)	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	xp amount to complete the level (bar size)	20			INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	The current level of the user	1			INTEGER	
+					untested	needs_qa_test		user_event_xp	INTEGER	Points amount after granting with points	5			INTEGER	
+					untested	needs_qa_test		resource_amount_smiley	INTEGER	Smileys reward for completing the level	1000			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the level	2			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the level	50			INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	tokens reward for completing the level				INTEGER	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER					INTEGER	
+					untested	needs_qa_test		user_vanity_island_token	INTEGER	vanity island tokens inventory				INTEGER	
+					untested	New in event		task_index	INTEGER	Number of milestones in bar in the level that started (configured)				INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+	board_event_level_completed	Reports when the users ends a level in the event	Server	Yes	untested	needs_qa_test		segment	STRING	which LiveOp configuration is running to the user, User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the STR with under score, and only when it's not configured as 'default'.	payer			STRING	
+					untested	needs_qa_test		type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo			STRING	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	xp amount to complete the level (bar size)	20			INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	The current level of the user	1			INTEGER	
+					untested	needs_qa_test		user_event_xp	INTEGER	Points amount after granting with points	5			INTEGER	
+					untested	needs_qa_test		resource_amount_smiley	INTEGER	Smileys reward for completing the level	1000			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the level	2			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the level	50			INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	tokens reward for completing the level				INTEGER	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+					untested	needs_qa_test		user_vanity_island_token	INTEGER	vanity island tokens inventory				INTEGER	
+					untested	New in event		task_index	INTEGER	Number of milestones in bar in the level that completed (configured)				INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+	resource_gained_server	Reported when reward granted (resource) to the user, will be reported whenever a prize is granted	Server	Yes	untested	needs_qa_test		reason	STRING	Source of resource				STRING	
+					untested	needs_qa_test		event_id	STRING	race event_id				STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING					STRING	
+					untested	New in event		group_type	STRING	in case the resource gained from collectable items, the collectable item name				STRING	
+					untested	needs_qa_test		resource_amount_event_xp	INTEGER	event xp collected				INTEGER	
+	reward_collected	Reported when reward collected for user by reward system	Server	Yes	untested	needs_qa_test		request_id	STRING	unique id that will be identical for all chest reward flow				STRING	
+					untested	needs_qa_test		reward_name	STRING	Unique reward ID linking between reward granted, created and collected				STRING	
+					untested	needs_qa_test		event_id	STRING	[name]_[segment index]_[start date=local time (UTC)]				STRING	
+					untested	needs_qa_test		reason	STRING	Source of reward created	end_event_compensation / milestone_completed / board_event_level_reward / board_sub_event			STRING	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	Number of diamonds granted				INTEGER	
+					untested	needs_qa_test		resource_amount_smiley	INTEGER	Number of smileys granted				INTEGER	
+					untested	needs_qa_test		resource_amount_energy	INTEGER	Number of energy units granted				INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Number of event energy units granted				INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	vanity tokens value				INTEGER	
+					untested	needs_qa_test		transaction_item_*		One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING	
+					untested	needs_qa_test		transaction_item_amount_*		Corresponding amount of each item				INTEGER	
+					untested	needs_qa_test		reward_items	STRING	JSON listing of all items and resources rewarded				STRING	
+					untested	needs_qa_test		product_amount	INTEGER	The number of distinct rewards collected				INTEGER	
+	board_event_completed	Reports when a user completes an event before its calendric ending	Server	Yes	untested	needs_qa_test		segment	STRING	which LiveOp configuration is running to the user, User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the STR with under score, and only when it's not configured as 'default'.	payer			STRING	
+					untested	needs_qa_test		type	STRING	Type of board_liveop	board / Secondboard / boardeventcombo			STRING	
+					untested	needs_qa_test		name	STRING	Event name as specified in the admin (nickname in admin - event id)	merge_48_v4			STRING	
+					untested	needs_qa_test		category	STRING	"board_liveop"				STRING	
+					untested	needs_qa_test		start_date	TIMESTAMP	board_liveop event start timestamp	2020-05-08 21:00:00			TIMESTAMP	
+					untested	needs_qa_test		end_date	TIMESTAMP	board_liveop event end timestamp	2020-05-08 23:00:00			TIMESTAMP	
+					untested	needs_qa_test		duration	FLOAT	Total duration of the teaser in minutes (start_date - teaser_start_date)				FLOAT	
+					untested	needs_qa_test		amount	INTEGER	number of levels in the board event				INTEGER	
+					untested	needs_qa_test		configuration_name	STRING	board_liveop configuration name from admin	board_liveop_merge_48_v2			STRING	
+					untested	needs_qa_test		live_ops_event_id	STRING	event name (from Admin) segment || 'T' || start_date || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		step	INTEGER	number of events in the combo	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		event_index	INTEGER	Event number	1 / 2 / 3 ...			INTEGER	
+					untested	needs_qa_test		event_id	STRING	event name (from Admin) segment || 'T' || start_date || index || index	merge_48_v4T2020-05-0821:00:00			STRING	
+					untested	needs_qa_test		bucket	STRING	The sub segment used for the multipliers	must_complete			STRING	
+					untested	needs_qa_test		level_target_points	INTEGER	xp amount to complete the level (bar size)	20			INTEGER	
+					untested	needs_qa_test		live_ops_event_level	INTEGER	The current level of the user	1			INTEGER	
+					untested	needs_qa_test		user_event_xp	INTEGER	Points amount after granting with points	5			INTEGER	
+					untested	needs_qa_test		resource_amount_smiley	INTEGER	Smileys reward for completing the event	1000			INTEGER	
+					untested	needs_qa_test		resource_amount_hc	INTEGER	HC reward for completing the event	2			INTEGER	
+					untested	needs_qa_test		resource_amount_event_energy	INTEGER	Energy reward for completing the event	50			INTEGER	
+					untested	needs_qa_test		resource_amount_vanity_island_tokens	INTEGER	tokens reward for completing the event				INTEGER	
+					untested	needs_qa_test		transaction_item_*	STRING	One parameter for each item involved in the transaction - 1 to 5	small_toolbox			STRING	
+					untested	needs_qa_test		transaction_item_amount_*	INTEGER	Corresponding amount of each item - 1 to 5	1			INTEGER	
+					untested	needs_qa_test		user_vanity_island_token	INTEGER	vanity island tokens inventory				INTEGER	
+					untested	needs_qa_test		theme_id	STRING	theme_id of the genric box	green			STRING	
+															
+	support on transfer items between board														
+															
+															
+															
+Immdeiate pack					untested	No change									
+					untested	No change									
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+Cards boom															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+															
+Rewards															
