@@ -8,8 +8,20 @@ function parseTSV(text) {
     return rows;
 }
 
-// Нормализация имени столбца
-const norm = s => (s || '').toString().trim().toLowerCase();
+// === Заголовки столбцов: нормализация + варианты названий ===
+const normalizeHeader = (s) =>
+    (s ?? '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+
+/** допустимые заголовки для колонки событий */
+const EVENT_HEADERS = ['event', 'events'];
+
+/** допустимые заголовки для колонки свойств */
+const PROP_HEADERS = ['property', 'properties', 'field', 'fields'];
+
+/** находит индекс первого заголовка из candidates */
+const findHeaderIndex = (headersNormalized, candidates) =>
+    headersNormalized.findIndex(h => candidates.includes(h));
+
 
 const state = {
     rows: [],
@@ -519,8 +531,13 @@ function parseFromSeparateInputs() {
     const prLines = (els.propertiesInput?.value || '').replace(/\r/g, '').split('\n');
 
     // убираем заголовки, если скопировали их вместе с колонками
-    if (evLines.length && evLines[0].trim().toLowerCase() === 'event') evLines.shift();
-    if (prLines.length && prLines[0].trim().toLowerCase() === 'property') prLines.shift();
+    // если в первой строке лежит заголовок — убираем его (с вариативностью)
+    if (evLines.length && EVENT_HEADERS.includes(evLines[0].trim().toLowerCase())) {
+        evLines.shift();
+    }
+    if (prLines.length && PROP_HEADERS.includes(prLines[0].trim().toLowerCase())) {
+        prLines.shift();
+    }
 
     state.byEvent = new Map();
     state.eventOrder = [];
@@ -557,13 +574,18 @@ function parseFromFile(file) {
         const text = e.target.result;
         const rows = text.split(/\r?\n/).map(r => r.split('\t'));
 
-        const headers = rows[0].map(h => (h ?? '').toLowerCase().trim());
-        const eventIdx = headers.indexOf('event');
-        const propIdx = headers.indexOf('property');
+        // нормализованные заголовки
+        const headers = rows[0].map(h => normalizeHeader(h));
+
+        // индексы с поддержкой вариантов
+        const eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
+        const propIdx = findHeaderIndex(headers, PROP_HEADERS);
+
         if (eventIdx === -1 || propIdx === -1) {
-            alert("В файле не найдены колонки 'Event' и 'Property'");
+            alert("Could not find 'Event(s)' and/or 'Property/Properties/Field(s)' columns in the file");
             return;
         }
+
 
         state.byEvent = new Map();
         state.eventOrder = [];
@@ -681,34 +703,27 @@ els.parseBtn.addEventListener('click', () => {
     }
 
 
-
-    const norm = s => (s || '').toString().trim().toLowerCase();
-    let headerRow = rows[0].map(h => norm(h));
-
-    const eventIndex = headerRow.indexOf('event');
-    const propIndex = headerRow.indexOf('property');
-
-
-    const headers = rows[0].map(h => (h ?? '').toLowerCase().trim().replace(/\s+/g, ' '));
-
-    const eventIdx = headers.findIndex(h => h === 'event');
-    const propIdx = headers.findIndex(h => h === 'property');
-
+    // нормализуем заголовки и находим индексы через варианты
+    const headers = rows[0].map(h => normalizeHeader(h));
+    const eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
+    const propIdx = findHeaderIndex(headers, PROP_HEADERS);
 
     if (eventIdx === -1 || propIdx === -1) {
-        els.errorBox.classList.remove('hidden'); // показать
-        els.errorBox.style.display = 'flex';     // явный показ
+        els.errorBox.classList.remove('hidden');
+        els.errorBox.style.display = 'flex';
         els.errorBox.innerHTML = `
-        <span class="icon">⚠️</span>
-        <div style="font-size: 14px; line-height: 1.4;">
-            <div><strong>Warning!</strong></div>
-            <div style="font-size: 14px; line-height: 1.2;">Could not find the columns <strong>Event</strong> and/or <strong>Property</strong> </div> 
-            <div style="font-size: 14px; line-height: 1.2;">Please check the headers.</div>
-        </div>
-    `;
+    <span class="icon">⚠️</span>
+    <div style="font-size: 14px; line-height: 1.4;">
+      <div><strong>Warning!</strong></div>
+      <div style="font-size: 14px; line-height: 1.2;">
+        Could not find the columns <strong>Event/Events</strong> and/or <strong>Property/Properties/Field(s)</strong>.
+      </div>
+      <div style="font-size: 14px; line-height: 1.2;">Please check the headers.</div>
+    </div>`;
         els.eventPicker.style.display = 'none';
         return;
     }
+
 
 
     state.rows = rows.slice(1);

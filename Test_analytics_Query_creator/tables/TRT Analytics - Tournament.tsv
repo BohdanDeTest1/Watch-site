@@ -1,0 +1,256 @@
+Screens	Event	Event description	Written by	Exists?	Status	Area	Field	type	field description	example/output				Type (hide this column)
+	special_event_activated	Liveop event activated for user	Server	untested	Need to add values	Configuration	type	STRING	Name of feature	tournament				STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id	payer				STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4				STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)	board_liveop_merge_48_v2				TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)	merge_48_v4T2020-05-0821:00:00				TIMESTAMP
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points	green				STRING
+				untested	No change		configuration_name	STRING	Configuration name	2020-05-08 21:00:00				STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)	2020-05-08 23:00:00				INTEGER
+				untested	New in event		max_size	INTEGER	Configured leaderboard size	1				INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	User segment					STRING
+				untested	New in event		bucket	STRING	User bucket					STRING
+	round_activated	Tournament round activated for user	Server	untested	Need to add values	Configuration	type	STRING	Name of feature	tournament				STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id	payer				STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4				STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)	board_liveop_merge_48_v2				TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)	merge_48_v4T2020-05-0821:00:00				TIMESTAMP
+				untested	No change		bucket	STRING	User bucket	green				STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points	2020-05-08 21:00:00				STRING
+				untested	No change		configuration_name	STRING	Configuration name	2020-05-08 23:00:00				STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)	1				INTEGER
+				untested	No change		max_size	INTEGER	Configured leaderboard size					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	User segment					STRING
+				untested	New in event	Rewards	reward_items	STRING	JSON including rewards per rank	[(rank:1),(item_toolbox-large_00:2,energy:30,HC:20)],[(rank:2),(item_toolbox-large_00:2,energy:30,HC:20)],...				STRING
+	entered_leaderboard	User entered Tournament leaderboard	Server	untested	Need to add values	Configuration	type	STRING	Name of feature					STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id					STRING
+				untested	No change		name	STRING	Event name in Game Control					STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)					TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)					TIMESTAMP
+				untested	No change		bucket	STRING	User bucket					STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points					STRING
+				untested	No change		configuration_name	STRING	Configuration name					STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)					INTEGER
+				untested	No change		max_size	INTEGER	Configured leaderboard size					INTEGER
+							current_size	INTEGER	Current number of users in leaderboard after event concluded					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	No change	Segmantation	segment	STRING	the segment in which the user entered the event					STRING
+				untested	No change	Leaderboard	leaderboard_id	STRING	ID of tournament leaderboard					STRING
+				untested	No change		current_size	INTEGER	Current amount of users in leaderboard after user joined					INTEGER
+				untested	No change	User Progression	points_balance	INTEGER	Current score after entering leaderboard (if no points accumulated - return 0)					INTEGER
+				untested	No change		rank	INTEGER	Rank when entering the leaderboard					INTEGER
+	event_started	Tournament started	Server	untested	Need to add values	Configuration	type	STRING	Name of feature					STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id					STRING
+				untested	No change		name	STRING	Event name in Game Control					STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)					TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)					TIMESTAMP
+				untested	No change		bucket	STRING	User bucket					STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points					STRING
+				untested	No change		configuration_name	STRING	Configuration name					STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)					INTEGER
+				untested	No change		max_size	INTEGER	Configured leaderboard size					INTEGER
+				untested	No change		current_size	INTEGER	Current number of users in leaderboard after event concluded					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	the segment in which the user entered the event					STRING
+				untested	No change	leaderboard	leaderboard_id	STRING	ID of tournament leaderboard					STRING
+				untested	No change		current_size	INTEGER	Current amount of users in leaderboard after user joined					INTEGER
+				untested	No change	User Progression	points_balance	INTEGER	Current score after entering leaderboard (if no points accumulated - return 0)					INTEGER
+				untested	No change		rank	INTEGER	Rank when entering the leaderboard					INTEGER
+	action_progress	Points granted by completing a configured action	Server	untested	Need to add values	Configuration	type	STRING	Name of feature					STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id					STRING
+				untested	No change		name	STRING	Event name in Game Control					STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)					TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)					TIMESTAMP
+				untested	No change		bucket	STRING	User bucket					STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points					STRING
+				untested	No change		configuration_name	STRING	Configuration name					STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)					INTEGER
+				untested	New in event		max_size	INTEGER	Configured leaderboard size					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	the segment in which the user entered the event					STRING
+				untested	No change	leaderboard	leaderboard_id	STRING	ID of tournament leaderboard					STRING
+				untested	No change		current_size	INTEGER	Current amount of users in leaderboard after user joined					INTEGER
+				untested	No change	User Progression	rank	INTEGER	Rank after points granted					INTEGER
+				untested	No change		previous_rank	INTEGER	Rank before points granted					INTEGER
+				untested	No change	Points	points_balance	INTEGER	Score (accumulated points) after points granted					INTEGER
+				untested	No change		amount	INTEGER	Points earned for completing action (after multiplier) 					INTEGER
+				untested	No change	Points Source	reason	STRING	Action for which points were granted					STRING
+				untested	No change		source_item_1	STRING	If action=items merged: item ID of the first item involved in the merge					STRING
+				untested	No change		source_item_2	STRING	If action=items merged: item ID of the second item involved in the merge (potentially different from first item, if a joker item was used in merge), else null					STRING
+				untested	No change		merge_item_type	STRING	When item purchased or bubble burst: item id, when portal item: name of portal item					STRING
+				untested	No change		order_id	STRING	If action=order completed: return order order_id, else null					STRING
+				untested	No change		resource_amount_energy	INTEGER	If action=energy consumed: number of energy units consumed, else null					INTEGER
+	round_ended	Round ended	Server	untested	Need to add values	Configuration	type	STRING	Name of feature					STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id					STRING
+				untested	No change		name	STRING	Event name in Game Control					STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)					TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)					TIMESTAMP
+				untested	No change		bucket	STRING	User bucket					STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points					STRING
+				untested	No change		configuration_name	STRING	Configuration name					STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)					INTEGER
+				untested	New in event		max_size	INTEGER	Configured leaderboard size					INTEGER
+					No change		current_size	INTEGER	Current number of users in leaderboard after event concluded					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	the segment in which the user entered the event					STRING
+				untested	No change	Leaderboard	leaderboard_id	STRING	ID of tournament leaderboard					STRING
+				untested	No change		current_size	INTEGER	Current amount of users in leaderboard after user joined					INTEGER
+				untested	No change	Final State	rank	INTEGER	Final rank of user					INTEGER
+				untested	Need to update		reason	STRING	Round ended reason (tier user belonged to at end of tournament)	tier_1 / tier_2 / tier_3				STRING
+				untested	No change		status	STRING	user_id, rank, and points balance of first 5 ranks in leaderboard	{"clipkkxhc044r3zys9finf55rErhm":{"points_balance":50,"rank":1},"cm1migpg0005g28w23xa96x8e2SGwb":{"points_balance":35,"rank":2},"cm5jqvm7b03aj28z767sk6y133sFK4":{"points_balance":32,"rank":3}}				STRING
+	event_ended	Event ended	Server	untested	Need to add values	Configuration	type	STRING	Name of feature					STRING
+				untested	No change		service_name	STRING	Name of service					STRING
+				untested	No change		event_id	STRING	Event id					STRING
+				untested	No change		name	STRING	Event name in Game Control					STRING
+				untested	No change		start_date	TIMESTAMP	Event start time (from configuration)					TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Event end time (from configuration)					TIMESTAMP
+				untested	No change		bucket	STRING	User bucket					STRING
+				untested	No change		pay_table	STRING	Enabled actions and items table, including points					STRING
+				untested	No change		configuration_name	STRING	Configuration name					STRING
+				untested	No change	Configuration - Tournament	action_index	INTEGER	Forced enrollment indicator (1=enforced, 0=voluntary)					INTEGER
+				untested	No change		max_size	INTEGER	Configured leaderboard size					INTEGER
+				untested	New in event		min	INTEGER	Minimum participants required in leaderboard before users can accumulate points (minLeaderboardParticipantsTournament)					INTEGER
+				untested	New in event		time_left	FLOAT	Time to close leaderboard (seconds)					FLOAT
+				untested	New in event		item_amount	FLOAT	Configured number of tier 1 reward users					FLOAT
+				untested	Need to update		max_amount	INTEGER	Configured number of tier 2 reward users					INTEGER
+				untested	No change	Segmantation	segment	STRING	User Segment					STRING
+				untested	No change		reason	STRING	Reason for tournament ended	liveop_timeout				STRING
+	tournament_intro_popup_opened		Client	untested	No change		event_id							STRING
+				untested	No change		name							STRING
+				untested	No change		configuration_name							STRING
+				untested	No change		theme_id							STRING
+				untested	No change		start_date							TIMESTAMP
+				untested	No change		end_date							TIMESTAMP
+				untested	No change		action_index		Forced enrollment indicator (1=x button exists;0=x does not exist)					INTEGER
+				untested	No change		reason		Trigger for opening popup	tournament_activation / app_loaded 				STRING
+	tournament_intro_popup_closed		Client	untested	No change		event_id							STRING
+				untested	No change		name							STRING
+				untested	No change		configuration_name							STRING
+				untested	No change		theme_id							STRING
+				untested	No change		start_date							TIMESTAMP
+				untested	No change		end_date							TIMESTAMP
+				untested	No change		action_index		Forced enrollment indicator (1=x button exists;0=x does not exist)					INTEGER
+				untested	No change		reason		Trigger for closing popup	x / later / play				STRING
+	tournament_screen_opened		Client	untested	No change		event_id							STRING
+				untested	No change		name							STRING
+				untested	No change		configuration_name							STRING
+				untested	No change		theme_id							STRING
+				untested	No change		start_date							TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		reason	STRING	Trigger for opening screen	intro_popup / widget_clicked / event_ended / app_loaded				STRING
+				untested	No change		rank	INTEGER	Rank displayed in leaderboard					INTEGER
+				untested	No change		points_balance	INTEGER	Points displayed in leaderboard					INTEGER
+				untested	No change		current_size	INTEGER	Number of users in leaderboard					INTEGER
+				untested	No change		item_amount	FLOAT	Number of users marked as tier 1					FLOAT
+				untested	No change		max_amount	INTEGER	Number of users marked as tier 2					INTEGER
+	tournament_screen_floating_rank_clicked		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		rank	INTEGER	Rank displayed in leaderboard					INTEGER
+				untested	No change		points_balance	INTEGER	Points displayed in leaderboard					INTEGER
+				untested	No change		current_size	INTEGER	Number of users in leaderboard					INTEGER
+				untested	No change		item_amount	FLOAT	Number of users marked as tier 1					FLOAT
+				untested	No change		max_amount	INTEGER	Number of users marked as tier 2					INTEGER
+	tournament_screen_closed		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		reason	STRING	Trigger for closing screen	x / continue (event ended flow)				STRING
+				untested	No change		rank	INTEGER	Rank displayed in leaderboard					INTEGER
+				untested	No change		points_balance	INTEGER	Points displayed in leaderboard					INTEGER
+				untested	No change		current_size	INTEGER	Number of users in leaderboard					INTEGER
+				untested	No change		item_amount	FLOAT	Number of users marked as tier 1					FLOAT
+				untested	No change		max_amount	INTEGER	Number of users marked as tier 2					INTEGER
+	tournament_info_popup_opened		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		pay_table	STRING	Enabled actions table	{action_name: completeOrders, action_name: merge}				STRING
+	tournament_info_popup_closed		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		pay_table	STRING	Enabled actions table	{action_name: completeOrders, action_name: merge}				STRING
+	tournament_ended_popup_opened		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		type	STRING	Type of event ended popup (tier flow)	tier_1 / tier_2 / tier_3				STRING
+				untested	No change		rank	INTEGER	Rank displayed in popup (if applicable, else null)					INTEGER
+				untested	No change		message	STRING	CTA button text	"CLAIM" / "GOT IT!"				STRING
+				untested	No change		reward_items	STRING	Rewards displayed in popup (if applicable, else null)					STRING
+	tournament_ended_popup_closed		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		type	STRING	Type of event ended popup (tier flow)					STRING
+				untested	No change		rank	INTEGER	Rank displayed in popup (if applicable, else null)					INTEGER
+				untested	No change		message	STRING	CTA button text					STRING
+				untested	No change		reward_items	STRING	Rewards displayed in popup (if applicable, else null)					STRING
+				untested	No change		reason	STRING	Trigger for closing popup	got_it / claim				STRING
+	tournament_widget_clicked		Client	untested	No change		event_id	STRING						STRING
+				untested	No change		name	STRING						STRING
+				untested	No change		configuration_name	STRING						STRING
+				untested	No change		theme_id	STRING						STRING
+				untested	No change		start_date	TIMESTAMP						TIMESTAMP
+				untested	No change		end_date	TIMESTAMP						TIMESTAMP
+				untested	No change		rank	INTEGER	Rank displayed on widget when clicked					INTEGER
+								STRING						STRING
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
+								#REF!						#REF!
