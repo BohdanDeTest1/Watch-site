@@ -19,6 +19,8 @@ const state = {
 };
 
 const els = {
+
+
     pasteArea: document.getElementById('pasteArea'),
     parseBtn: document.getElementById('parseBtn'),
     parseStatus: document.getElementById('parseStatus'),
@@ -63,6 +65,10 @@ const els = {
     dateStart: document.getElementById('dateStart'),
     dateEnd: document.getElementById('dateEnd'),
     todayText: document.getElementById('todayText'),
+    // +++ HowTo +++
+    howtoBtn: document.getElementById('howtoBtn'),
+    howtoTooltip: document.getElementById('howtoTooltip'),
+
 };
 
 const WARN_SIGN = '<span class="warn-emoji" aria-hidden="true">⚠️</span>';
@@ -76,6 +82,80 @@ els.selectAllBtn?.addEventListener('click', () => {
 els.clearAllBtn?.addEventListener('click', () => {
     els.eventList?.querySelectorAll('input[type="checkbox"]')
         .forEach(cb => cb.checked = false);
+});
+
+// --- HowTo tooltip open/close ---
+els.howtoBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    els.howtoTooltip?.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+    // Если открыт оверлей с картинкой — игнорим этот клик, чтобы не закрывать тултип
+    if (document.getElementById('howtoImgOverlay')) return;
+
+    if (!els.howtoTooltip || !els.howtoTooltip.classList.contains('open')) return;
+    const insideTip = e.target.closest('#howtoTooltip');
+    const onBtn = e.target.closest('#howtoBtn');
+    if (insideTip || onBtn) return;
+    els.howtoTooltip.classList.remove('open');
+});
+
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') els.howtoTooltip?.classList.remove('open');
+});
+
+// --- HowTo image zoom (overlay) ---
+function openHowtoImageOverlay(src, alt = '') {
+    // если уже открыт — сначала удалим
+    closeHowtoImageOverlay();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'howtoImgOverlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+
+    // внутренняя обёртка нужна, чтобы клик по IMG не закрывал модалку
+    overlay.innerHTML = `
+    <div class="howto-img-modal">
+      <img src="${src}" alt="${alt}">
+    </div>
+  `;
+
+    overlay.addEventListener('click', (e) => {
+        e.stopPropagation();  // <- не даём событию уйти на document и закрыть тултип
+        const imgBox = e.target.closest('.howto-img-modal');
+        if (!imgBox) closeHowtoImageOverlay();   // кликнули по фону — закрываем только картинку
+    });
+
+    // ESC — закрыть
+    window.addEventListener('keydown', onEscCloseOverlay);
+
+    document.body.appendChild(overlay);
+}
+
+function closeHowtoImageOverlay() {
+    const overlay = document.getElementById('howtoImgOverlay');
+    if (overlay) overlay.remove();
+    window.removeEventListener('keydown', onEscCloseOverlay);
+}
+
+function onEscCloseOverlay(e) {
+    if (e.key === 'Escape') closeHowtoImageOverlay();
+}
+
+// делегирование клика по картинке в тултипе
+els.howtoTooltip?.addEventListener('click', (e) => {
+    const wrap = e.target.closest('.howto-img-wrap');
+    if (!wrap) return;
+
+    const img = wrap.querySelector('img.howto-img');
+    if (!img) return;
+
+    // открыть оверлей поверх тултипа
+    openHowtoImageOverlay(img.src, img.alt);
+    // важно: тултип остаётся открытым (мы не трогаем его класс .open)
 });
 
 

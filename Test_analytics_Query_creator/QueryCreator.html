@@ -62,16 +62,68 @@
 
     </div>
 
-    <header class="container">
-        <h1>Query Creator</h1>
-        <p class="muted">
-            Paste (Cmd+V) the copied table from Google Sheets.
-            Columns <strong>Event</strong> and <strong>Property</strong> will be detected automatically.
-        </p>
-    </header>
+
 
     <!-- TAB 1 -->
     <div id="tab1View">
+
+        <!-- НОВАЯ шапка — теперь видна только в tab1 -->
+        <header class="container qc-header">
+            <h1 class="qc-title">Query Creator</h1>
+            <p class="muted qc-subtitle">
+                A focused tool that converts analytics requirement spreadsheets into ready-to-use SQL queries </p>
+        </header>
+
+        <!-- Кнопка HowTo и тултип (вне секций, сразу под шапкой) -->
+        <div class="container howto-wrap">
+            <button id="howtoBtn" class="btn-refresh" type="button">How it works?</button>
+
+            <!-- Пустой тултип 400×400 с закруглениями -->
+            <div id="howtoTooltip" class="howto-tooltip card" role="dialog" aria-modal="false"
+                aria-labelledby="howtoBtn">
+                <div class="howto-tooltip__body">
+                    <h3>How it works:</h3>
+                    <ol>
+                        <li><strong>Choose one of the data sources</strong>:
+                            <ol class="howto-sublist" type="A">
+                                <li><em>Paste columns: Event + Property</em> — paste the two columns separately</li>
+                                <li class="with-img">
+                                    <em>Upload TSV/TLS file</em> — in Google Sheets: <em>File → Download → Tab-separated
+                                        values (.tsv)</em>, then upload the file:<br>
+
+                                    <div class="howto-img-wrap">
+                                        <img src="tsv_tab.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                        <span class="zoom-badge" aria-hidden="true"></span>
+                                    </div>
+                                </li>
+                                <li><em>Paste spreadsheet (clipboard)</em> — copy the whole table and paste it into the
+                                    input</li>
+                            </ol>
+                        </li>
+
+                        <li><strong>Pick a table</strong> in the <em>Table</em> field:
+                            <code>Stage/RC</code> or <code>Production</code>.
+                            <em>Optional:</em> set a date or a date range in the <strong>Date</strong> field
+                        </li>
+
+                        <li><strong>Table decompose</strong> — parse the data and tick the events you need</li>
+
+                        <li><strong>SQL generating</strong> — get the combined query</li>
+
+                        <li><strong>Export</strong>:
+                            use <em>Copy to clipboard</em> or <em>Download .txt</em>.
+                            If you selected multiple events, click <em>Generate per-event queries</em> —
+                            each event will get its own query.
+                            You can also download all of them at once with
+                            <em>Download all .txt</em>
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+
+        </div>
+
         <!---------my code---------->
         <main class="container grid">
             <section class="card">
@@ -240,16 +292,6 @@
                     <button id="downloadAllPerBtn" class="btn-refresh" type="button">Download all .txt</button>
                 </div>
 
-
-                <details class="help">
-                    <summary>How it works?</summary>
-                    <ol>
-                        <li>Copy the rows from Google Sheets (they come in as TSV - tab-separated)</li>
-                        <li>Click “Parse table” - the script will find the <em>Event</em> and <em>Property</em> columns
-                            (case insensitive)</li>
-                        <li>Select the desired Event and click “Generate SQL”</li>
-                    </ol>
-                </details>
             </section>
         </main>
     </div>
@@ -289,7 +331,7 @@
 
 
     <!-- FOOTER -->
-    <footer class="container muted small">v.1.14 - 2025</footer>
+    <footer class="container muted small">v.1.15 - 2025</footer>
     <script src="QueryCreator.js"></script>
 </body>
 

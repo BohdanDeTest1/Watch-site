@@ -7,8 +7,10 @@
     --muted: #aab3d2;
     /* вторичный текст */
 
+    --qc-header-offset: 68px;
+
     /* карточки/бордеры #232a464f*/
-    --card: #29314687;
+    --card: #12151e;
     --border: #213243b5;
     --card-bg: #232a464f;
 
@@ -38,6 +40,11 @@
     --dp-border: #000000;
     --validation-succes: #6bdc61c7;
     --validation-warn: #ff9800;
+
+    /* отдельные переменные под тултип (непрозрачные) */
+    --howto-bg: #0f1c2a;
+    /* фон тултипа (тёмный, без прозрачности) */
+    --howto-fg: #e7eef7;
 
 
 }
@@ -75,6 +82,23 @@ body.sb-collapsed {
     max-width: 1100px;
     margin: 0 auto;
     padding: 20px
+}
+
+.qc-header {
+    padding-top: var(--qc-header-offset);
+}
+
+.qc-title {
+    margin-top: 0;
+    /* чтобы сверху у h1 не было доп. зазора */
+    margin-bottom: 6px;
+    /* лёгкий зазор до подзаголовка */
+}
+
+.qc-subtitle {
+    margin-top: 0;
+    margin-bottom: 12px;
+    /* зазор до кнопки */
 }
 
 .grid {
@@ -1670,4 +1694,186 @@ textarea.no-scroll {
     flex: 0 0 auto;
     /* не растягивать */
     width: auto;
+}
+
+/* Сжать расстояние между текстом под заголовком и кнопкой How it works? */
+#tab1View>header.container {
+    margin-bottom: 0 !important;
+    /* убираем внешний отступ снизу у шапки */
+    padding-bottom: 0 !important;
+    /* и внутренний, если есть у .container */
+}
+
+#tab1View>header.container.qc-header {
+    padding-top: var(--qc-header-offset) !important;
+}
+
+/* у заголовка оставим небольшой отступ до текста */
+#tab1View>header.container h1 {
+    margin: 0 0 6px !important;
+}
+
+/* у абзаца под заголовком убираем нижний отступ (он обычно большой по умолчанию) */
+#tab1View>header.container p {
+    margin: 0 !important;
+}
+
+/* --- HowTo button + tooltip --- */
+.howto-wrap {
+    position: relative;
+    margin-top: 4px !important;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+
+
+/* 1) Кнопка HowTo — узкая, не на всю ширину */
+#howtoBtn {
+    width: auto !important;
+    /* перебиваем базовое 100% */
+    flex: 0 0 auto;
+    align-self: flex-start;
+    padding: 10px 16px;
+    /* компактные отступы */
+    min-width: 180px;
+    /* «сильно уже», чем была панель */
+    margin-top: 0 !important;
+}
+
+/* 2) Тултип – привязан к кнопке и опущен на 6px */
+.howto-tooltip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    /* сразу под кнопкой + небольшой зазор */
+    width: 400px;
+    height: 400px;
+    border-radius: 8px;
+    display: none;
+    /* скрыт по умолчанию */
+    z-index: 1100;
+    overflow: auto;
+
+    /* свой фон/цвет — непрозрачные, через отдельные переменные */
+    background: var(--howto-bg);
+    color: var(--howto-fg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+
+.howto-tooltip.open {
+    display: block;
+}
+
+/* чуть приятнее тело тултипа */
+.howto-tooltip__body {
+    padding: 16px 18px;
+    line-height: 1.45;
+}
+
+.howto-tooltip__body h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.howto-tooltip__body ol {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+/* HowTo: картинка и вложенный список */
+.howto-tooltip .howto-img {
+    display: block;
+    width: 200px;
+    /* маленькая иллюстрация */
+    max-width: 100%;
+    margin-top: 8px;
+    border-radius: 6px;
+    opacity: .98;
+}
+
+.howto-tooltip .howto-sublist {
+    margin-top: 6px;
+    padding-left: 18px;
+    display: grid;
+    gap: 6px;
+}
+
+/* ====== HowTo image zoom ====== */
+
+/* обёртка картинки: показываем «лупу» при наведении */
+.howto-img-wrap {
+    position: relative;
+    display: inline-block;
+    /* ширина = ширине изображения */
+    margin-top: 12px;
+    /* разрыв строки после "the file:" */
+    cursor: zoom-in;
+    /* курсор-лупа */
+}
+
+.howto-img {
+    display: block;
+    border-radius: 8px;
+}
+
+/* Бейдж-лупа: всегда внутри изображения, в правом нижнем углу,
+   размер увеличен в 2 раза (с ~22px до 44px) */
+.howto-img-wrap .zoom-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .55);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    /* клики проходят на картинку */
+}
+
+/* Рисуем серую лупу с плюсиком (монохромная, повёрнута на 45°) */
+/* Рисуем серую лупу с плюсиком (монохромная, повернута на 45°) */
+.howto-img-wrap .zoom-badge::before {
+    content: "";
+    width: 24px;
+    height: 24px;
+    background: #d0d3d9;
+    /* цвет иконки */
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
+    transform: rotate(-45deg);
+}
+
+
+/* Оверлей полноразмерной картинки (оставляем как было, на всякий случай) */
+#howtoImgOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    z-index: 2000;
+    /* выше тултипа */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+
+#howtoImgOverlay .howto-img-modal {
+    max-width: calc(100vw - 64px);
+    max-height: calc(100vh - 64px);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
+}
+
+#howtoImgOverlay .howto-img-modal img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
 }
