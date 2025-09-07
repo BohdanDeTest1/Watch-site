@@ -32,6 +32,8 @@
     --dp-bg: #12111b;
     /* фон панели календаря */
     --dp-border: #000000;
+    --validation-succes: #6bdc61c7;
+    --validation-warn: #ff9800;
 }
 
 
@@ -172,7 +174,7 @@ button.btn-refresh:hover {
 #errorBox {
     margin-top: 10px;
     font-weight: 600;
-    color: #ff9800;
+    color: var(--validation-warn);
     /* ярко-оранжевый */
     display: flex;
     align-items: center;
@@ -202,7 +204,7 @@ button.btn-refresh:hover {
 #infoBox {
     margin-top: 10px;
     font-weight: 600;
-    color: #ff9800;
+    color: var(--validation-warn);
     /* голубой */
     display: flex;
     align-items: center;
@@ -227,7 +229,7 @@ button.btn-refresh:hover {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #ff9800;
+    background-color: var(--validation-warn);
     /* ярко-оранжевый */
     color: #ffffff;
     font-size: 14px;
@@ -1504,18 +1506,41 @@ textarea.no-scroll {
     /* две кнопки занимают строку поровну */
 }
 
+#downloadBtn {
+    flex: 0 0 auto;
+}
+
 /* Статус копирования под кнопками Copy / Clear */
 .copy-status {
     order: 3;
     /* после кнопок */
     flex-basis: 100%;
-    /* своя строка */
+    /* своя строка под ними */
     margin-top: 6px;
     font-weight: 600;
-    color: #8FE388;
-    /* мягкий зелёный */
     white-space: nowrap;
     /* всегда в одну строку */
+}
+
+/* успех (зелёный) */
+.copy-status.ok {
+    color: var(--validation-succes);
+}
+
+/* предупреждение (ярко-оранжевый) */
+.copy-status.warn {
+    color: var(--validation-warn);
+}
+
+
+
+/* эмоджи-треугольник рядом с текстом предупреждения */
+.copy-status .warn-emoji {
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: -2px;
 }
 
 /* Когда текста нет — статус не занимает места */

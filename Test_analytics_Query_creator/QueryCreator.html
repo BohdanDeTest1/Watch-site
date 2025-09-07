@@ -216,8 +216,12 @@
                 <textarea id="sqlOutput" readonly placeholder="SQL will appear here"></textarea>
                 <div class="row row-copy">
                     <button id="copyBtn" class="btn-primary">Copy to clipboard</button>
+                    <button id="downloadBtn" class="btn-refresh hidden" type="button">
+                        Download .txt
+                    </button>
                     <button id="clearBtn" class="btn-refresh">Clear SQL query field
                     </button>
+
                     <span id="copyStatus" class="copy-status" aria-live="polite" role="status"></span>
                 </div>
 

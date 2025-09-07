@@ -46,6 +46,7 @@ const els = {
     eventList: document.getElementById('eventList'),
     selectAllBtn: document.getElementById('selectAllBtn'),
     clearAllBtn: document.getElementById('clearAllBtn'),
+    downloadBtn: document.getElementById('downloadBtn'),
 
 
 
@@ -56,6 +57,8 @@ const els = {
     dateEnd: document.getElementById('dateEnd'),
     todayText: document.getElementById('todayText'),
 };
+
+const WARN_SIGN = '<span class="warn-emoji" aria-hidden="true">⚠️</span>';
 
 // --- Select all / Clear all (навешиваем один раз при загрузке) ---
 els.selectAllBtn?.addEventListener('click', () => {
@@ -661,6 +664,8 @@ els.parseBtn.addEventListener('click', () => {
     els.infoBox.classList.add('hidden');
     els.sqlOutput.value = '';
     els.copyStatus.textContent = '';
+    els.downloadBtn?.classList.add('hidden');
+
 });
 
 els.genBtn.addEventListener('click', () => {
@@ -684,6 +689,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
 
     if (selectedEvents.length === 0) {
         els.sqlOutput.value = 'First select at least one Event';
+        els.downloadBtn?.classList.add('hidden'); // ← ДОБАВИТЬ
         return;
     }
 
@@ -705,6 +711,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
 
     if (uniqueProps.length === 0) {
         els.sqlOutput.value = 'For the selected events, no properties were found';
+        els.downloadBtn?.classList.add('hidden');
         return;
     }
 
@@ -776,30 +783,64 @@ ORDER BY client_time DESC limit 1000;`;
     }
     els.sqlOutput.value = sql;
     els.copyStatus.textContent = '';
+    els.copyStatus.classList.remove('ok', 'warn');
+    els.downloadBtn?.classList.remove('hidden');
+
 });
+
+// els.copyBtn.addEventListener('click', async () => {
+//     const txt = els.sqlOutput.value;
+//     if (!txt.trim()) {
+//         els.copyStatus.textContent = 'nothing to copy';
+//         return;
+//     }
+//     try {
+//         await navigator.clipboard.writeText(txt);
+//         els.copyStatus.textContent = 'Copied to clipboard';
+//     } catch {
+//         // Фолбэк
+//         els.sqlOutput.select();
+//         document.execCommand('copy');
+//         els.copyStatus.textContent = 'Copied (fallback)';
+//     }
+
+// });
 
 els.copyBtn.addEventListener('click', async () => {
     const txt = els.sqlOutput.value;
+
+    // Пусто → показываем оранжевую валидацию
     if (!txt.trim()) {
-        els.copyStatus.textContent = 'nothing to copy';
+        els.copyStatus.classList.remove('ok');
+        els.copyStatus.classList.add('warn');
+        els.copyStatus.innerHTML = `${WARN_SIGN}Nothing to copy`;
         return;
     }
+
+    // Есть текст → копируем и показываем зелёный успех
     try {
         await navigator.clipboard.writeText(txt);
+        els.copyStatus.classList.remove('warn');
+        els.copyStatus.classList.add('ok');
         els.copyStatus.textContent = 'Copied to clipboard';
     } catch {
         // Фолбэк
         els.sqlOutput.select();
         document.execCommand('copy');
+        els.copyStatus.classList.remove('warn');
+        els.copyStatus.classList.add('ok');
         els.copyStatus.textContent = 'Copied (fallback)';
     }
-
 });
 
 els.clearBtn?.addEventListener('click', () => {
     els.sqlOutput.value = '';
     els.copyStatus.textContent = '';
+    els.copyStatus.classList.remove('ok', 'warn');
+    els.downloadBtn?.classList.add('hidden');
     els.sqlOutput.focus(); // опционально: ставим фокус в поле
+
+
 });
 
 
@@ -809,6 +850,8 @@ els.refreshBtn.addEventListener('click', () => {
     els.sqlOutput.value = '';
     if (els.parseStatus) els.parseStatus.textContent = '';
     els.copyStatus.textContent = '';
+    els.downloadBtn?.classList.add('hidden');
+    els.copyStatus.classList.remove('ok', 'warn');
     els.errorBox.innerHTML = '';
     els.errorBox.classList.add('hidden');
     els.infoBox.innerHTML = '';
@@ -849,6 +892,33 @@ els.refreshBtn.addEventListener('click', () => {
     state.eventOrder = [];
 });
 
+// --- Download .txt with generated SQL (timestamp in local time) ---
+els.downloadBtn?.addEventListener('click', () => {
+    const sql = (els.sqlOutput.value || '').trim();
+    if (!sql) return;
+
+    // имя файла: Query_YYYY-MM-DD_HH-MM-SS.txt (локальное время)
+    const d = new Date();
+    const pad2 = n => String(n).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const mm = pad2(d.getMonth() + 1);
+    const dd = pad2(d.getDate());
+    const HH = pad2(d.getHours());
+    const MM = pad2(d.getMinutes());
+    const SS = pad2(d.getSeconds());
+    const filename = `Query_${yyyy}-${mm}-${dd}_${HH}-${MM}-${SS}.txt`;
+
+    const blob = new Blob([sql + '\n'], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+});
 
 
 function toggleSidebar() {
