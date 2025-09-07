@@ -48,6 +48,13 @@ const els = {
     clearAllBtn: document.getElementById('clearAllBtn'),
     downloadBtn: document.getElementById('downloadBtn'),
 
+    perEventBtn: document.getElementById('perEventBtn'),
+    perEventControls: document.getElementById('perEventControls'),
+    perEventContainer: document.getElementById('perEventContainer'),
+    perEventAllWrap: document.getElementById('perEventAllWrap'),
+    downloadAllPerBtn: document.getElementById('downloadAllPerBtn'),
+
+
 
 
     // --- Дата ---
@@ -690,8 +697,11 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     if (selectedEvents.length === 0) {
         els.sqlOutput.value = 'First select at least one Event';
         els.downloadBtn?.classList.add('hidden'); // ← ДОБАВИТЬ
+        if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
         return;
     }
+    if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
 
     // экранирование одинарных кавычек
     const esc = s => s.replace(/'/g, "''");
@@ -712,8 +722,11 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
     if (uniqueProps.length === 0) {
         els.sqlOutput.value = 'For the selected events, no properties were found';
         els.downloadBtn?.classList.add('hidden');
+        if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
         return;
     }
+    if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
 
     const selectFields = `event, client_time, server_time, written_by, ${uniqueProps.join(', ')}`;
 
@@ -786,27 +799,32 @@ ORDER BY client_time DESC limit 1000;`;
     els.copyStatus.classList.remove('ok', 'warn');
     els.downloadBtn?.classList.remove('hidden');
 
+    // Показать кнопку «per-event», только если выбрано ≥2 событий
+    if (els.perEventControls) {
+        const many = selectedEvents.length > 1;
+        els.perEventControls.style.display = many ? 'block' : 'none';
+        if (!many && els.perEventContainer) {
+            els.perEventContainer.innerHTML = '';
+            els.perEventContainer.style.display = 'none';
+        }
+    }
+
+    // на этапе основного Generate кнопку "Download all" всегда скрываем,
+    // появится только после нажатия "Generate per-event queries"
+    if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
+
 });
 
-// els.copyBtn.addEventListener('click', async () => {
-//     const txt = els.sqlOutput.value;
-//     if (!txt.trim()) {
-//         els.copyStatus.textContent = 'nothing to copy';
-//         return;
-//     }
-//     try {
-//         await navigator.clipboard.writeText(txt);
-//         els.copyStatus.textContent = 'Copied to clipboard';
-//     } catch {
-//         // Фолбэк
-//         els.sqlOutput.select();
-//         document.execCommand('copy');
-//         els.copyStatus.textContent = 'Copied (fallback)';
-//     }
-
-// });
 
 els.copyBtn.addEventListener('click', async () => {
+
+    // сбрасываем статусы у всех пер-ивентных карточек
+    els.perEventContainer?.querySelectorAll('.per-status').forEach(s => {
+        s.textContent = '';
+        s.classList.remove('ok', 'warn');
+    });
+
     const txt = els.sqlOutput.value;
 
     // Пусто → показываем оранжевую валидацию
@@ -838,6 +856,11 @@ els.clearBtn?.addEventListener('click', () => {
     els.copyStatus.textContent = '';
     els.copyStatus.classList.remove('ok', 'warn');
     els.downloadBtn?.classList.add('hidden');
+    if (els.perEventControls) els.perEventControls.style.display = 'none';
+    if (els.perEventContainer) { els.perEventContainer.innerHTML = ''; els.perEventContainer.style.display = 'none'; }
+    if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
+
     els.sqlOutput.focus(); // опционально: ставим фокус в поле
 
 
@@ -856,6 +879,25 @@ els.refreshBtn.addEventListener('click', () => {
     els.errorBox.classList.add('hidden');
     els.infoBox.innerHTML = '';
     els.infoBox.classList.add('hidden');
+
+    // --- NEW: очистка per-event результатов ---
+    // скрыть саму кнопку "Generate per-event queries"
+    if (els.perEventControls) els.perEventControls.style.display = 'none';
+
+    // очистить и спрятать контейнер карточек
+    if (els.perEventContainer) {
+        // уберёт все карточки .per-item, статусы, кнопки
+        if (els.perEventContainer.replaceChildren) {
+            els.perEventContainer.replaceChildren();   // быстрый способ
+        } else {
+            els.perEventContainer.innerHTML = '';
+        }
+        els.perEventContainer.style.display = 'none';
+    }
+
+    // спрятать кнопку "Download all .txt"
+    if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
 
     // УДАЛИТЬ строки со старым select:
     // els.eventSelect.innerHTML = '';   // ← ЭТОГО БОЛЬШЕ НЕТ
@@ -919,6 +961,215 @@ els.downloadBtn?.addEventListener('click', () => {
     a.remove();
     URL.revokeObjectURL(url);
 });
+
+
+// --- Generate per-event queries (отдельный SQL на каждый выбранный Event) ---
+els.perEventBtn?.addEventListener('click', () => {
+    // 1) актуальный список выбранных событий
+    const selectedEvents = Array
+        .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
+        .map(cb => cb.value)
+        .filter(Boolean);
+
+    if (!selectedEvents || selectedEvents.length < 2) {
+        // Нечего генерировать
+        if (els.perEventControls) els.perEventControls.style.display = 'none';
+        return;
+    }
+
+    // 2) общие параметры окружения/диапазона дат (как в основном генераторе)
+    const esc = s => s.replace(/'/g, "''");
+
+    let fromClause = '';
+    if (els.tableEnv.value === 'stage') {
+        fromClause =
+            `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+--FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+    } else {
+        fromClause =
+            `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+    }
+
+    let start = todayISO;
+    let end = todayISO;
+    const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
+    if (isRange) {
+        const sISO = els.dateStart?.dataset.iso || (() => {
+            const d = parseDMYtoDate(els.dateStart?.value); return d ? toISO(d) : todayISO;
+        })();
+        const eISO = els.dateEnd?.dataset.iso || (() => {
+            const d = parseDMYtoDate(els.dateEnd?.value); return d ? toISO(d) : sISO;
+        })();
+        start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
+    }
+
+    const buildWhere = (ev) => {
+        const parts = [];
+        if (!isRange) {
+            parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            parts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
+        } else {
+            parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            parts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
+        }
+        parts.push(`AND event = '${esc(ev)}'`);
+        parts.push(`AND user_id = 'test_user_ID'`);
+        parts.push(`AND twelve_traits_enabled IS NULL`);
+        return parts.join('\n');
+    };
+
+    // 3) Рендерим блоки
+    if (els.perEventContainer) {
+        els.perEventContainer.innerHTML = ''; // очистить перед новым выводом
+        for (const ev of selectedEvents) {
+            const props = (state.byEvent.get(ev) || []).filter(Boolean);
+            const fields = (props.length > 0)
+                ? `event, client_time, server_time, written_by, ${props.join(', ')}`
+                : `event, client_time, server_time, written_by`;
+
+            const sql =
+                `SELECT ${fields}
+${fromClause}
+${buildWhere(ev)}
+ORDER BY client_time DESC limit 1000;`;
+
+            // Карточка для одного события
+            const wrap = document.createElement('div');
+            wrap.className = 'per-item';
+            wrap.innerHTML = `
+  <div class="title">Event: <code>${ev}</code></div>
+  <textarea class="per-sql" readonly>${sql.replace(/</g, '&lt;')}</textarea>
+
+  <!-- статус слева, кнопки справа -->
+  <div class="row per-actions">
+    <span class="copy-status per-status" aria-live="polite" role="status"></span>
+    <div class="btns">
+      <button class="btn-primary per-copy"  data-ev="${ev}">Copy to clipboard</button>
+      <button class="btn-refresh per-download" data-ev="${ev}">Download .txt</button>
+    </div>
+  </div>`;
+            els.perEventContainer.appendChild(wrap);
+        }
+        els.perEventContainer.style.display = 'block';
+
+        // показать кнопку "Download all" только если карточек >= 2
+        if (els.perEventAllWrap) {
+            const cnt = els.perEventContainer?.querySelectorAll('.per-item').length || 0;
+            els.perEventAllWrap.style.display = (cnt > 1) ? 'flex' : 'none';
+        }
+
+    }
+});
+
+// Делегирование кликов для Copy / Download в пер-ивентных блоках
+els.perEventContainer?.addEventListener('click', async (e) => {
+    const item = e.target.closest('.per-item');
+    if (!item) return;
+    const ta = item.querySelector('textarea.per-sql');
+    if (!ta) return;
+
+    if (e.target.classList.contains('per-copy')) {
+        // 0) НОВОЕ: перед показом локального статуса — погасить основной
+        els.copyStatus.textContent = '';
+        els.copyStatus.classList.remove('ok', 'warn');
+
+        // 1) Сбросить статусы у всех пер-ивентных карточек
+        els.perEventContainer?.querySelectorAll('.per-status').forEach(s => {
+            s.textContent = '';
+            s.classList.remove('ok', 'warn');
+        });
+
+        // 2) Пишем статус только в текущую карточку
+        const status = item.querySelector('.per-status') || item.querySelector('.copy-status');
+        const text = (ta.value || '').trim();
+
+        if (!text) {
+            if (status) {
+                status.classList.remove('ok');
+                status.classList.add('warn');
+                status.innerHTML = `${WARN_SIGN}Nothing to copy`;
+            }
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+            if (status) {
+                status.classList.remove('warn');
+                status.classList.add('ok');
+                status.textContent = 'Copied to clipboard';
+            }
+        } catch {
+            ta.select();
+            document.execCommand('copy');
+            if (status) {
+                status.classList.remove('warn');
+                status.classList.add('ok');
+                status.textContent = 'Copied (fallback)';
+            }
+        }
+    }
+
+
+
+
+    if (e.target.classList.contains('per-download')) {
+        const sql = (ta.value || '').trim();
+        if (!sql) return;
+
+        // имя: Query_<event>_YYYY-MM-DD_HH-MM-SS.txt
+        const ev = e.target.getAttribute('data-ev') || 'Event';
+        const d = new Date(), pad = n => String(n).padStart(2, '0');
+        const file = `EVENT_${ev}_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.txt`;
+
+        const blob = new Blob([sql + '\n'], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = file;
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+});
+
+// --- Download all per-event queries (.txt) с шапкой "-- FOR EVENT: <name>" ---
+els.downloadAllPerBtn?.addEventListener('click', () => {
+    // идём по карточкам, чтобы взять и SQL, и имя ивента
+    const items = Array.from(els.perEventContainer?.querySelectorAll('.per-item') || []);
+
+    const blocks = items.map(item => {
+        // имя ивента берём из заголовка "Event: <code>name</code>"
+        const ev =
+            (item.querySelector('.title code')?.textContent ||
+                item.querySelector('.per-download')?.getAttribute('data-ev') ||
+                'event').trim();
+
+        const sql = (item.querySelector('textarea.per-sql')?.value || '').trim();
+        if (!sql) return ''; // пропускаем пустые
+
+        // формируем блок: шапка-комментарий + SQL
+        return `-- FOR EVENT: ${ev}\n${sql}`;
+    }).filter(Boolean);
+
+    if (blocks.length === 0) return;
+
+    // между блоками — ДВЕ пустые строки (т.е. три \n)
+    const fileText = blocks.join('\n\n\n') + '\n';
+
+    // имя файла: Queries_per_event_YYYY-MM-DD_HH-MM-SS.txt
+    const d = new Date(), pad = n => String(n).padStart(2, '0');
+    const name = `Queries_per_event_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.txt`;
+
+    const blob = new Blob([fileText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+});
+
 
 
 function toggleSidebar() {

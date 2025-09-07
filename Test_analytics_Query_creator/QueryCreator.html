@@ -225,6 +225,21 @@
                     <span id="copyStatus" class="copy-status" aria-live="polite" role="status"></span>
                 </div>
 
+                <!-- Кнопка «пер-ивентной» генерации (показываем только когда выбрано ≥2 событий) -->
+                <div id="perEventControls" class="row" style="margin-top:10px; display:none;">
+                    <button id="perEventBtn" class="btn-refresh" type="button">
+                        Generate per-event queries
+                    </button>
+                </div>
+
+                <!-- Контейнер, куда будут рендериться пер-ивентные SQL -->
+                <div id="perEventContainer" style="display:none;"></div>
+
+                <!-- Download all per-event queries -->
+                <div id="perEventAllWrap" class="row" style="display:none;">
+                    <button id="downloadAllPerBtn" class="btn-refresh" type="button">Download all .txt</button>
+                </div>
+
 
                 <details class="help">
                     <summary>How it works?</summary>
@@ -274,7 +289,7 @@
 
 
     <!-- FOOTER -->
-    <footer class="container muted small">v.1.12 - 2025</footer>
+    <footer class="container muted small">v.1.14 - 2025</footer>
     <script src="QueryCreator.js"></script>
 </body>
 

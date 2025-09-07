@@ -14,7 +14,7 @@
 
     /* акцент (кнопки) */
     --accent: #79a8ff;
-
+    --accent-hover: #7fa6ff;
     /* левая панель */
     --sidebar: #1c2235;
     /* фон панели (слегка светлее) */
@@ -29,11 +29,17 @@
     /* фон активной пилюли */
     --sidebar-active-fg: #eef3ff;
     /* текст на активной пилюле */
-    --dp-bg: #12111b;
+    --dl-bg: #7b73dcf5;
+    /* зелёный */
+    --dl-bg-hover: #9785c3;
+    /* темнее на hover */
+    --dl-fg: #04160c;
     /* фон панели календаря */
     --dp-border: #000000;
     --validation-succes: #6bdc61c7;
     --validation-warn: #ff9800;
+
+
 }
 
 
@@ -96,7 +102,7 @@ h2 {
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
 }
@@ -324,7 +330,7 @@ input:not([type="radio"]):not([type="checkbox"]),
 select,
 button {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: #0e1015;
     color: var(--text);
@@ -665,7 +671,7 @@ button.btn-primary {
 }
 
 button.btn-primary:hover {
-    opacity: .95;
+    opacity: .75;
 }
 
 button.btn-primary:focus-visible {
@@ -1546,4 +1552,122 @@ textarea.no-scroll {
 /* Когда текста нет — статус не занимает места */
 .copy-status:empty {
     display: none;
+}
+
+/* Пер-ивентные выдачи */
+#perEventContainer {
+    margin-top: 12px;
+}
+
+.per-item {
+    margin-top: 16px;
+}
+
+.per-item .title {
+    font-weight: 600;
+    margin: 0 0 6px;
+}
+
+/* === Fix: per-event buttons always on the right === */
+.per-item .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+/* статус — слева; занимает строку даже когда пустой (толкает кнопки вправо) */
+.per-item .row .per-status {
+    order: 0 !important;
+    /* перебиваем .copy-status { order:3 } */
+    flex-basis: auto !important;
+    /* вместо 100% */
+    margin-top: 0 !important;
+    white-space: nowrap;
+    margin-right: auto;
+    /* ← выталкиваем кнопки вправо */
+}
+
+.per-item .row .per-status:empty {
+    display: block;
+    /* перебиваем .copy-status:empty { display:none } */
+    visibility: hidden;
+    /* текста не видно, но место сохраняется */
+}
+
+/* сами кнопки — справа и не тянем их по ширине */
+.per-item .row button {
+    order: 1 !important;
+    /* после статуса */
+    flex: 0 0 auto !important;
+    width: auto !important;
+}
+
+/* пер-ивентная textarea — ниже примерно в 1.5 раза МЕНЬШЕ основной */
+.per-item textarea.per-sql {
+    min-height: 120px;
+    /* базовая ~180px → стало ~120px */
+}
+
+/* БОЛЬШИЙ ОТСТУП между карточками пер-ивентов */
+.per-item {
+    margin-top: 22px;
+    /* увеличить/уменьшить по вкусу */
+}
+
+.per-item .title {
+    margin-bottom: 8px;
+    /* аккуратный отступ под заголовком */
+}
+
+/* ОСНОВНАЯ textarea — ВЫШЕ ×1.5 (если базовая ~180px → 270px) */
+#sqlOutput {
+    min-height: 270px;
+}
+
+/* Download all per-event — справа + больший отступ сверху */
+#perEventAllWrap {
+    display: flex;
+    /* на всякий случай, если .row где-то переопределят */
+    justify-content: flex-end;
+    /* прижать содержимое к правому краю */
+    margin-top: 24px;
+    /* больше отступ от контента сверху */
+}
+
+#downloadAllPerBtn {
+    flex: 0 0 auto;
+    width: auto;
+    /* запасной план: даже если justify-content собьют, кнопка уйдет вправо */
+    margin-left: auto;
+}
+
+/* цвет для ВСЕХ download-кнопок: основная, per-event, Download all */
+#downloadBtn,
+.per-download,
+#downloadAllPerBtn {
+    background: var(--dl-bg) !important;
+    color: var(--dl-fg) !important;
+}
+
+/* hover */
+#downloadBtn:hover,
+.per-download:hover,
+#downloadAllPerBtn:hover {
+    background: var(--dl-bg-hover) !important;
+    opacity: 1;
+}
+
+.per-download,
+#downloadAllPerBtn {
+    height: 37px;
+    /* одинаковая высота */
+    padding: 0 18px;
+    /* и горизонтальные отступы */
+    min-width: 150px;
+    /* одинаковая «ширина» кнопки */
+    font-weight: 700;
+    flex: 0 0 auto;
+    /* не растягивать */
+    width: auto;
 }
