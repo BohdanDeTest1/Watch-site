@@ -1,69 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TT tool</title>
-    <link rel="stylesheet" href="QueryCreator.css">
-</head>
-
-<body>
-    <div id="sidebar" class="collapsed">
-        <div id="sidebarTop" onclick="toggleSidebar()">
-            <span class="brand">
-                <span id="sidebarInitial">M</span>
-                <!-- Иконка для ховера по M в свернутом состоянии -->
-                <img id="menuIconHover" src="menu_icon.png" alt="menu" />
-            </span>
-
-            <span id="sidebarTitle">Moon Active</span>
-            <!-- Иконка справа в открытом состоянии -->
-            <img id="sidebarMenuRight" src="menu_icon.png" alt="menu" />
-        </div>
-
-        <nav class="tabs">
-            <div class="tab active" onclick="switchTab('tab1')">
-                <img class="icon" src="icon_1.png" alt="">
-                <span class="label">Query Creator</span>
-            </div>
-            <div class="tab" onclick="switchTab('tab2')">
-                <img class="icon" src="icon_2.png" alt="">
-                <span class="label">Tab 2</span>
-            </div>
-            <div class="tab" onclick="switchTab('tab3')">
-                <img class="icon" src="icon_3.png" alt="">
-                <span class="label">Tab 3</span>
-            </div>
-            <div class="tab" onclick="switchTab('tab4')">
-                <img class="icon" src="icon_4.png" alt="">
-                <span class="label">Tab 4</span>
-            </div>
-        </nav>
-        <!-- ▼ Заменить весь старый блок футера на этот -->
-        <div id="sidebarFooter">
-            <button id="themeSlider" class="is-night" aria-label="Theme toggle">
-                <span class="knob" aria-hidden="true"></span>
-
-                <!-- Иконки внутри слайдера -->
-                <img src="day.png" class="ico day" alt="">
-                <img src="night.png" class="ico night" alt="">
-
-                <!-- «Хит-зоны» для ховеров подсказок -->
-                <span class="hit hit-left" aria-hidden="true"></span>
-                <span class="hit hit-right" aria-hidden="true"></span>
-
-                <!-- Тултипы -->
-                <span class="tip tip-left">Light Mode</span>
-                <span class="tip tip-right">Night Mode</span>
-            </button>
-        </div>
-
-
-    </div>
-
-
-
+<section id="qc-root">
     <!-- TAB 1 -->
     <div id="tab1View">
 
@@ -88,7 +23,8 @@
                             <ol class="howto-sublist" type="A">
                                 <li><em>Paste columns: Event + Property</em> - paste the two columns separately</li>
                                 <li class="with-img">
-                                    <em>Upload TSV/TLS file</em> - in Google Sheets: <em>File → Download → Tab-separated
+                                    <em>Upload TSV/TLS file</em> - in Google Sheets: <em>File → Download →
+                                        Tab-separated
                                         values (.tsv)</em>, then upload the file:<br>
 
                                     <div class="howto-img-wrap">
@@ -96,7 +32,8 @@
                                         <span class="zoom-badge" aria-hidden="true"></span>
                                     </div>
                                 </li>
-                                <li><em>Paste spreadsheet (clipboard)</em> - copy the whole table and paste it into the
+                                <li><em>Paste spreadsheet (clipboard)</em> - copy the whole table and paste it into
+                                    the
                                     input</li>
                             </ol>
                         </li>
@@ -297,42 +234,4 @@
     </div>
     <!---------my code---------->
     </div>
-
-
-    <!-- TAB 2 -->
-    <div id="tab2View" class="hidden">
-        <main class="container grid">
-            <section class="card">
-                <h2>Second Tab Content</h2>
-                <p>Another interface will go here.</p>
-            </section>
-        </main>
-    </div>
-
-    <!-- TAB 3 -->
-    <div id="tab3View" class="hidden">
-        <main class="container grid">
-            <section class="card">
-                <h2>Third Tab Content</h2>
-                <p>Something else here.</p>
-            </section>
-        </main>
-    </div>
-
-    <!-- TAB 4 -->
-    <div id="tab4View" class="hidden">
-        <main class="container grid">
-            <section class="card">
-                <h2>Fourth Tab Content</h2>
-                <p>More functionality here.</p>
-            </section>
-        </main>
-    </div>
-
-
-    <!-- FOOTER -->
-    <footer class="container muted small">v.1.16 - 2025</footer>
-    <script src="QueryCreator.js"></script>
-</body>
-
-</html>
+</section>
