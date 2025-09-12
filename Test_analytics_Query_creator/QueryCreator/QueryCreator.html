@@ -174,7 +174,7 @@
 
                 <div class="row">
                     <button id="parseBtn" class="btn-primary">Table decompose</button>
-                    <button id="refreshBtn" class="btn-refresh">Refresh</button>
+                    <button id="refreshPageBtn" class="btn-refresh">Refresh</button>
                 </div>
                 <div id="errorBox" class="hidden"></div>
                 <div id="infoBox" class="hidden"></div>
@@ -203,16 +203,46 @@
                 <h2>2. Generated query</h2>
                 <label class="label">SQL query</label>
                 <textarea id="sqlOutput" readonly placeholder="SQL will appear here"></textarea>
-                <div class="row row-copy">
-                    <button id="copyBtn" class="btn-primary">Copy to clipboard</button>
-                    <button id="downloadBtn" class="btn-refresh hidden" type="button">
-                        Download .txt
-                    </button>
-                    <button id="clearBtn" class="btn-refresh">Clear SQL query field
-                    </button>
+                <!-- TOP grid (верхний ряд 2×1) -->
 
-                    <span id="copyStatus" class="copy-status" aria-live="polite" role="status"></span>
+
+                <div id="topBtnGrid" class="btn-grid-2">
+                    <button id="copyBtn" class="btn-primary">Copy to clipboard</button>
+
+                    <!-- NEW: комбинированная кнопка Download -->
+                    <div id="downloadCombo" class="dropdown hidden">
+                        <button id="downloadComboBtn" class="btn-primary">Download ▾</button>
+                        <div id="downloadMenu" class="dropdown-menu" aria-hidden="true">
+                            <button id="downloadTxtTop" class="menu-btn txt">.txt</button>
+                            <button id="downloadCsvTop" class="menu-btn csv">.csv (Testomat)</button>
+                        </div>
+                    </div>
+                    <!--  <button id="clearBtn" class="btn-muted">Clear query</button> -->
+
                 </div>
+
+                <div id="perEventControls" class="row" style="margin-top:10px; display:none;">
+                    <button id="perEventBtn" class="btn-refresh" type="button">
+                        Generate per-event queries
+                    </button>
+                </div>
+
+                <!-- слот для верхней кнопки Clear -->
+                <div id="clearTopSlot">
+                    <button id="clearBtn" class="btn-refresh clear-top">Clear query</button>
+                </div>
+
+
+                <!-- UNDER-TOP grid (нижний ряд 2×1) — скрыт по умолчанию; включаем в S1/S2 -->
+                <div id="underTopGrid" class="btn-grid-2 hidden">
+                    <div><!-- пусто, CSV больше нет --></div>
+                    <div id="refreshSlot"></div>
+                </div>
+
+
+                <!-- статус копирования оставляем под всей зоной -->
+                <span id="copyStatus" class="copy-status" aria-live="polite" role="status"></span>
+
 
                 <!-- Кнопка «пер-ивентной» генерации (показываем только когда выбрано ≥2 событий) -->
                 <div id="perEventControls" class="row" style="margin-top:10px; display:none;">
@@ -220,18 +250,64 @@
                         Generate per-event queries
                     </button>
                 </div>
-
+                <div id="clearBottom" class="row" style="display:none;"></div>
+                <div id="clearUnderPer" class="row" style="display:none;"></div>
                 <!-- Контейнер, куда будут рендериться пер-ивентные SQL -->
                 <div id="perEventContainer" style="display:none;"></div>
 
                 <!-- Download all per-event queries -->
-                <div id="perEventAllWrap" class="row" style="display:none;">
-                    <button id="downloadAllPerBtn" class="btn-refresh" type="button">Download all .txt</button>
-                </div>
+                <div id="perEventAllWrap" class="btn-grid-2 hidden">
+                    <!-- NEW: Download All на всю ширину -->
+                    <div id="downloadAllWrap" class="grid-span-2">
+                        <div id="downloadAllCombo" class="dropdown">
+                            <button id="downloadAllComboBtn" class="btn-primary">Download All ▾</button>
+                            <div id="downloadAllMenu" class="dropdown-menu" aria-hidden="true">
+                                <button id="downloadAllTxt" class="menu-btn txt">.txt</button>
+                                <button id="downloadAllCsv" class="menu-btn csv">.csv (Testomat)</button>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- нижняя строка: Copy | Refresh остаются как есть -->
+                    <button id="copyBtnPer" class="btn-primary">Copy to clipboard</button>
+                    <button id="refreshBtnPer" class="btn-muted">Refresh</button>
+                </div>
             </section>
         </main>
-    </div>
-    <!---------my code---------->
+        <!-- CSV Testomat modal -->
+        <div id="csvModal" class="qc-modal hidden" role="dialog" aria-modal="true" aria-labelledby="csvModalTitle">
+            <div class="qc-modal__backdrop"></div>
+            <div class="qc-modal__card card">
+                <h3 id="csvModalTitle" style="margin:0 0 10px;">Download CSV (for Testomat)</h3>
+                <form id="csvForm">
+                    <label for="csvSquad" class="label">Squad:</label>
+                    <select id="csvSquad" required>
+                        <option value="">Select a Squad</option>
+                        <option value="SQ1">SQ1</option>
+                        <option value="SQ2">SQ2</option>
+                        <option value="SQ3">SQ3</option>
+                        <option value="SQ4">SQ4</option>
+                        <option value="SQ5">SQ5</option>
+                        <option value="SQ6">SQ6</option>
+                        <option value="SQ7">SQ7</option>
+                        <option value="SQ8">SQ8</option>
+                        <option value="SQ9">SQ9</option>
+                        <option value="SQ10">SQ10</option>
+                        <option value="SQ Core">SQ Core</option>
+                    </select>
+                    <div id="csvSquadError" class="field-error" aria-live="polite"></div>
+
+                    <label for="csvFolder" class="label">Testomat folder (optional)</label>
+                    <input id="csvFolder" type="text" placeholder="e.g., Board">
+
+                    <div class="row" style="margin-top:14px; justify-content:flex-end;">
+                        <button type="button" id="csvCancel" class="btn-muted" style="width:auto;">Cancel</button>
+                        <button type="submit" id="csvSubmit" class="btn-primary" style="width:auto;">
+                            Download CSV
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </section>

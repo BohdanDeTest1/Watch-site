@@ -61,8 +61,6 @@
         };
 
         const els = {
-
-
             pasteArea: document.getElementById('pasteArea'),
             parseBtn: document.getElementById('parseBtn'),
             parseStatus: document.getElementById('parseStatus'),
@@ -97,9 +95,17 @@
             perEventContainer: document.getElementById('perEventContainer'),
             perEventAllWrap: document.getElementById('perEventAllWrap'),
             downloadAllPerBtn: document.getElementById('downloadAllPerBtn'),
+            // --- Download All (bottom) split button ---
+            downloadAllSplit: document.getElementById('downloadAllSplit'),
+            downloadAllMenu: document.getElementById('downloadAllMenu'),
+            downloadAllOptTxt: document.getElementById('downloadAllOptTxt'),
+            downloadAllOptCsv: document.getElementById('downloadAllOptCsv'),
 
-
-
+            downloadCsvBtn: document.getElementById('downloadCsvBtn'),
+            csvInfo: document.getElementById('csvInfo'),
+            csvInfoTip: document.getElementById('csvInfoTip'),
+            clearBottom: document.getElementById('clearBottom'),
+            clearBottomRight: document.getElementById('clearBottomRight'),
 
             // --- Дата ---
             dateModeToday: document.getElementById('dateModeToday'),
@@ -107,11 +113,194 @@
             dateStart: document.getElementById('dateStart'),
             dateEnd: document.getElementById('dateEnd'),
             todayText: document.getElementById('todayText'),
+
             // +++ HowTo +++
             howtoBtn: document.getElementById('howtoBtn'),
             howtoTooltip: document.getElementById('howtoTooltip'),
 
+            topBtnGrid: document.getElementById('topBtnGrid'),
+            underTopGrid: document.getElementById('underTopGrid'),
+            clearTopSlot: document.getElementById('clearTopSlot'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            refreshSlot: document.getElementById('refreshSlot'),
+
+            copyBtnPer: document.getElementById('copyBtnPer'),
+            refreshBtnPer: document.getElementById('refreshBtnPer'),
+            refreshPageBtn: document.getElementById('refreshPageBtn'),
+
+            // --- NEW: комбинированные Download-кнопки ---
+            downloadCombo: document.getElementById('downloadCombo'),
+            downloadComboBtn: document.getElementById('downloadComboBtn'),
+            downloadTxtTop: document.getElementById('downloadTxtTop'),
+            downloadCsvTop: document.getElementById('downloadCsvTop'),
+
+            downloadAllCombo: document.getElementById('downloadAllCombo'),
+            downloadAllComboBtn: document.getElementById('downloadAllComboBtn'),
+            downloadAllMenu: document.getElementById('downloadAllMenu'),
+            downloadAllTxt: document.getElementById('downloadAllTxt'),
+            downloadAllCsv: document.getElementById('downloadAllCsv'),
+            // --- Download (TOP) split button ---
+            downloadSplit: document.getElementById('downloadSplit'),
+            downloadMenu: document.getElementById('downloadMenu'),
+            downloadOptTxt: document.getElementById('downloadOptTxt'),
+            downloadOptCsv: document.getElementById('downloadOptCsv'),
+
         };
+
+        // --- ID-алиасы: если разметка ещё со старыми ID ---
+        els.downloadSplit = els.downloadSplit || els.downloadComboBtn;
+        els.downloadOptTxt = els.downloadOptTxt || els.downloadTxtTop;
+        els.downloadOptCsv = els.downloadOptCsv || els.downloadCsvTop;
+
+        els.downloadAllSplit = els.downloadAllSplit || els.downloadAllComboBtn;
+        els.downloadAllOptTxt = els.downloadAllOptTxt || els.downloadAllTxt;
+        els.downloadAllOptCsv = els.downloadAllOptCsv || els.downloadAllCsv;
+
+        ////////////////////////  Modal start  /////////////////////////////
+
+        // --- CSV modal state/handlers ---
+        let csvCtx = null; // { getRows: ()=>[{title,sql},...], fileNamePrefix: 'Query' }
+
+        function openCsvModal(ctx) {
+            csvCtx = ctx || {};
+            const m = document.getElementById('csvModal'); if (!m) return;
+            document.getElementById('csvSquad').value = '';
+            document.getElementById('csvFolder').value = '';
+            document.getElementById('csvSquadError').textContent = '';
+            m.classList.remove('hidden');
+        }
+        function closeCsvModal() {
+            const m = document.getElementById('csvModal'); if (m) m.classList.add('hidden');
+            csvCtx = null;
+        }
+        document.getElementById('csvCancel')?.addEventListener('click', closeCsvModal);
+        document.getElementById('csvModal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('qc-modal__backdrop')) closeCsvModal();
+        });
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCsvModal(); });
+
+        document.getElementById('csvForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const squad = document.getElementById('csvSquad').value.trim();
+            const folderExtra = document.getElementById('csvFolder').value.trim();
+            const err = document.getElementById('csvSquadError');
+            if (!squad) { err.textContent = 'Please select a Squad.'; return; }
+            err.textContent = '';
+            const folder = `/${squad}${folderExtra ? `/${folderExtra}` : ''}`;
+
+            const rows = (csvCtx && typeof csvCtx.getRows === 'function') ? csvCtx.getRows() : [];
+            if (!rows.length) { closeCsvModal(); return; }
+
+            const csv = buildCsv(rows, { folder, squad });
+            saveBlob(csv, tsName(csvCtx?.fileNamePrefix || 'Query', 'csv'), 'text/csv;charset=utf-8');
+            closeCsvModal();
+        });
+
+
+        ////////////////////////  Modal end  /////////////////////////////
+
+        function moveRefreshToTop() {
+            if (!els.refreshBtn || !els.topBtnGrid) return;
+            // поставить Refresh ВМЕСТО .txt (в правую ячейку TOP)
+            if (!els.topBtnGrid.contains(els.refreshBtn)) els.topBtnGrid.appendChild(els.refreshBtn);
+        }
+        function moveRefreshUnderTop() {
+            if (!els.refreshBtn || !els.refreshSlot) return;
+            if (!els.refreshSlot.contains(els.refreshBtn)) els.refreshSlot.appendChild(els.refreshBtn);
+        }
+
+        function setStateS0() {
+            // TOP: Copy | Clear
+            els.downloadCombo?.classList.add('hidden');
+
+            // Clear наверх и «верхний» вид
+            moveClearBackToTopRow();
+            els.clearBtn?.classList.remove('hidden');
+            els.clearBtn?.classList.add('clear-top');
+
+            // нижний ряд и общий 2×2 прячем
+            els.underTopGrid?.classList.add('hidden');
+            els.perEventAllWrap?.classList.add('hidden');
+            if (els.underTopGrid) els.underTopGrid.style.display = 'none';
+
+            // закрыть возможные выпадашки
+            closeAllDownloadMenus?.();
+
+            // спрятать всё per-event
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            if (els.perEventContainer) { els.perEventContainer.style.display = 'none'; els.perEventContainer.innerHTML = ''; }
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+        }
+
+
+
+        function setStateS1() {
+            // TOP: Copy | Download (dropdown)
+            els.downloadCombo?.classList.remove('hidden');
+
+            // Clear сверху скрываем — место занял Download
+            els.clearBtn?.classList.add('hidden');
+
+            // UNDER-TOP нам не нужен в этой версии
+            els.underTopGrid?.classList.add('hidden');
+            if (els.downloadCsvBtn) els.downloadCsvBtn.classList.add('hidden');
+
+            // пер-ивент скрыт
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
+            closeAllDownloadMenus?.();
+        }
+
+
+
+        function setStateS2() {
+            setStateS1();
+            if (els.perEventControls) els.perEventControls.style.display = 'flex';
+            closeAllDownloadMenus?.();
+        }
+
+        function setStateS3() {
+            // в режиме per-event: Download (TOP) прячем, нижний ряд скрыт,
+            // показываем 2×2 с Download All
+            els.downloadCombo?.classList.add('hidden');
+            els.underTopGrid?.classList.add('hidden');
+            els.perEventAllWrap?.classList.remove('hidden');
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = ''; // снять inline 'none'
+
+
+            moveRefreshUnderTop();
+            closeAllDownloadMenus?.();
+        }
+
+
+
+        function setStateS3() {
+            // в режиме per-event: Download (TOP) и Clear скрываем
+            els.downloadCombo?.classList.add('hidden');
+            els.clearBtn?.classList.add('hidden');
+
+            // верхний UNDER-TOP прячем, общий низ показываем
+            els.underTopGrid?.classList.add('hidden');
+            els.perEventAllWrap?.classList.remove('hidden');
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = ''; // снять возможный inline 'none'
+
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            closeAllDownloadMenus?.();
+        }
+
+
+
+        // --- UI memory for right panel ---
+        const ui = {
+            lastGeneratedEvents: [],   // массив имён ивентов на момент последней генерации
+            perEventShown: false       // true, когда открыт режим per-event
+        };
+
+
+
 
         const WARN_SIGN = '<span class="warn-emoji" aria-hidden="true">⚠️</span>';
 
@@ -125,6 +314,18 @@
             els.eventList?.querySelectorAll('input[type="checkbox"]')
                 .forEach(cb => cb.checked = false);
         });
+
+        // els.eventList?.addEventListener('change', recalcState);
+        // els.selectAllBtn?.addEventListener('click', recalcState);
+        // els.clearAllBtn?.addEventListener('click', recalcState);
+
+        const recalcOnlyIfNoSql = () => {
+            if (!els.sqlOutput?.value || !els.sqlOutput.value.trim()) recalcState();
+        };
+        els.eventList?.addEventListener('change', recalcOnlyIfNoSql);
+        els.selectAllBtn?.addEventListener('click', recalcOnlyIfNoSql);
+        els.clearAllBtn?.addEventListener('click', recalcOnlyIfNoSql);
+
 
         // --- HowTo tooltip open/close ---
         els.howtoBtn?.addEventListener('click', (e) => {
@@ -364,9 +565,279 @@
 
         if (els.todayText) els.todayText.textContent = todayDMY;
 
+        // ==== Testomat CSV config ====
+        const TESTOMAT = {
+            owner: 'it_testomat',
+            priority: 'normal',
+            status: 'manual',
+            folder: '/SQ3/Sandbox - Derba/test #3',
+            labels: 'TT Feature tag: , Squad: , TC Owner: ',
+            url: ''
+        };
+
+        // Порядок колонок как в примере
+        const CSV_HEADERS = [
+            'ID', 'Title', 'Status', 'Folder', 'Emoji', 'Priority', 'Tags', 'Owner', 'Description', 'Examples', 'Labels', 'Url'
+        ];
+
+        // human-readable для столбца Labels
+        function squadPretty(s) {
+            if (!s) return '';
+            if (s === 'SQ Core') return 'Squad Core';
+            const m = /^SQ\s*([0-9]{1,2})$/.exec(s);
+            return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
+        }
+
+        // Шаблон для колонки Examples
+        const EXAMPLES_TEMPLATE =
+            `## Preconditions:
+—
+
+### Steps
+1. Step #1
+ *Expected:*
+
+
+2. Step #2
+ *Expected:*`;
+
+
+
+        // CSV-экранирование
+        const csvEscape = (v = '') => {
+            const s = String(v ?? '');
+            return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        };
+
+        // Построить SQL для одного события (пер-ивент)
+        function buildPerEventSQL(ev, props, env, dateStartISO, dateEndISO, isRange) {
+            const esc = s => s.replace(/'/g, "''");
+            const fromClause = (env === 'stage')
+                ? `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+--FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`
+                : `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+
+            const parts = [];
+            if (!isRange) {
+                parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+                parts.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
+            } else {
+                parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+                parts.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
+            }
+            parts.push(`AND event = '${esc(ev)}'`);
+            parts.push(`AND user_id = 'test_user_ID'`);
+            parts.push(`AND twelve_traits_enabled IS NULL`);
+
+            const fields = (props && props.length)
+                ? `event, client_time, server_time, written_by, ${props.join(', ')}`
+                : `event, client_time, server_time, written_by`;
+
+            return `SELECT ${fields}
+${fromClause}
+${parts.join('\n')}
+ORDER BY client_time DESC limit 1000;`;
+        }
+
+
+        function makeCsvRow({ title, sql }, opts = {}) {
+            const prettySquad = squadPretty(opts.squad || '');
+
+            // Всё содержимое (и шапка, и хвост) — в Description
+            const description =
+                `## Useful query:
+\`\`\`
+-- CASE #1
+${sql}
+\`\`\`
+
+${EXAMPLES_TEMPLATE}
+`;
+
+            const row = {
+                ID: '',
+                Title: title,
+                Status: TESTOMAT.status,
+                Folder: opts.folder ?? TESTOMAT.folder,
+                Emoji: '',
+                Priority: TESTOMAT.priority,
+                Tags: '',
+                Owner: TESTOMAT.owner,
+                Description: description,   // ← здесь и SQL, и «Preconditions/Steps»
+                Examples: '',               // ← ПУСТО
+                Labels: prettySquad ? `Squad: ${prettySquad}` : '',
+                Url: TESTOMAT.url
+            };
+            return CSV_HEADERS.map(h => csvEscape(row[h])).join(',');
+        }
+
+
+        function buildCsv(rows, opts = {}) {
+            const header = CSV_HEADERS.join(',');
+            const body = rows.map(r => makeCsvRow(r, opts)).join('\n');
+            return header + '\n' + body + '\n';
+        }
+
+        function buildCsv(rows, opts = {}) {
+            const header = CSV_HEADERS.join(',');
+            const body = rows.map(r => makeCsvRow(r, opts)).join('\n');
+            return header + '\n' + body + '\n';
+        }
+
+
+        // === [Download helpers] ============================================
+        function saveBlob(text, name, mime) {
+            const blob = new Blob([text], { type: mime || 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = name;
+            document.body.appendChild(a); a.click(); a.remove();
+            URL.revokeObjectURL(url);
+        }
+        function tsName(prefix, ext) {
+            const d = new Date(), pad = n => String(n).padStart(2, '0');
+            return `${prefix}_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.${ext}`;
+        }
+
+        // Сбор «одного кейса» (верхний Download → .txt/.csv)
+        // Сбор «одного кейса» (верхний Download → .txt/.csv)
+        function collectCombinedRow() {
+            const sql = (els.sqlOutput?.value || '').trim();
+            if (!sql) return null;
+
+            // Берём те ивенты, которые были на последнем Generate
+            const events = (ui?.lastGeneratedEvents || []).slice();
+
+            let title = 'Combined query';               // дефолт
+            if (events.length > 1) {
+                // запрос: "Events: e1, e2, e3"
+                title = `Events: ${events.join(', ')}`;
+            } else if (events.length === 1) {
+                // для одного — красиво: "Event: e1"
+                title = `Event: ${events[0]}`;
+            }
+
+            return { title, sql };
+        }
+
+
+        // Сбор всех карточек per-event (нижний Download All → .txt/.csv)
+        function collectPerEventRows() {
+            const items = Array.from(els.perEventContainer?.querySelectorAll('.per-item') || []);
+            return items.map(item => {
+                const ev = (item.querySelector('.title code')?.textContent ||
+                    item.querySelector('.per-download')?.getAttribute('data-ev') ||
+                    'event').trim();
+                const sql = (item.querySelector('textarea.per-sql')?.value || '').trim();
+                return sql ? { title: `Event: ${ev}`, sql } : null;
+            }).filter(Boolean);
+        }
+        // ==================================================================
+        // === [Dropdown open/close] ========================================
+        function openMenu(containerEl) {
+            if (!containerEl) return;
+            containerEl.classList.add('open');                            // класс на .dropdown
+            const menu = containerEl.querySelector('.dropdown-menu');
+            menu?.setAttribute('aria-hidden', 'false');
+        }
+        function closeMenu(containerEl) {
+            if (!containerEl) return;
+            containerEl.classList.remove('open');                         // снимаем с .dropdown
+            const menu = containerEl.querySelector('.dropdown-menu');
+            menu?.setAttribute('aria-hidden', 'true');
+        }
+        function closeAllDownloadMenus() {
+            closeMenu(els.downloadCombo);                                 // TOP
+            closeMenu(els.downloadAllCombo);                              // BOTTOM (All)
+            document.querySelectorAll('#perEventContainer .dropdown')
+                .forEach(el => closeMenu(el));                              // per-event карточки
+        }
+
+        // клик снаружи — закрываем оба меню
+        document.addEventListener('click', (e) => {
+            // если кликнули внутри ЛЮБОГО dropdown — не закрываем
+            if (e.target.closest('.dropdown')) return;
+            closeAllDownloadMenus();
+        });
+        // ==================================================================
+
+
+        function moveClearToBottom() {
+            if (!els.clearBtn) return;
+            if (els.clearBottomRight) {
+                els.clearBottomRight.appendChild(els.clearBtn);
+            } else if (els.clearBottom) {
+                els.clearBottom.style.display = 'flex';
+                els.clearBottom.appendChild(els.clearBtn);
+            }
+        }
+
+        function moveClearToDefaultPlace() {
+            if (!els.clearBtn) return;
+            const mainBtns = els.clearBtn.closest('.row.btns') || document.querySelector('.row.btns');
+            if (mainBtns) mainBtns.appendChild(els.clearBtn);
+            if (els.clearBottom) els.clearBottom.style.display = 'none';
+        }
+
+        // Показать Clear под per-event кнопкой (ширина как у perEventBtn)
+        function moveClearUnderPerEvent() {
+            if (!els.clearBtn) return;
+            const park = document.getElementById('clearUnderPer');
+            if (park) {
+                park.style.display = 'flex';
+                park.appendChild(els.clearBtn);
+                els.clearBtn.classList.remove('clear-top'); // внизу — не "верхний" стиль
+            }
+        }
+
+        // Вернуть Clear в верхнюю строку (под Copy) — для не-per-event сценариев
+        function moveClearBackToTopRow() {
+            if (!els.clearBtn) return;
+            const slot = els.clearTopSlot || document.getElementById('clearTopSlot');
+            if (slot && els.clearBtn.parentElement !== slot) slot.appendChild(els.clearBtn);
+            els.clearBtn.classList.add('clear-top'); // внешний вид «верхней» кнопки
+        }
+
+
+
+        // Когда SQL пустой и нет per-event: Clear под Copy, темно-серая и того же размера.
+        // Когда есть per-event: Clear внизу (это уже делает moveClearToBottom()).
+        function syncClearButtonTopState() {
+            if (!els.clearBtn) return;
+
+            const hasPerEvent = !!(els.perEventContainer && els.perEventContainer.offsetParent !== null);
+            const sqlIsEmpty = !els.sqlOutput || !els.sqlOutput.value || !els.sqlOutput.value.trim();
+
+            if (!hasPerEvent && sqlIsEmpty) {
+                // держим Clear под Copy и оформляем как «верхнюю»
+                // (если кнопку переносили вниз — вернём её в верхний ряд под Copy)
+                const slot = els.clearTopSlot || document.getElementById('clearTopSlot');
+                if (slot && els.clearBtn.parentElement !== slot) slot.appendChild(els.clearBtn);
+                els.clearBtn.classList.add('clear-top');
+
+            } else {
+                // убираем «верхний» вид
+                els.clearBtn.classList.remove('clear-top');
+            }
+        }
+
+        function recalcState() {
+            // Сейчас достаточно синхронизировать расположение/видимость Clear
+            // Если дальше появятся ещё действия — добавишь сюда.
+            try {
+                syncClearButtonTopState();
+            } catch (_) { }
+        }
+
+
+
+
         // заполняем отображение инпутов диапазона в формате DD.MM.YYYY
         if (els.dateStart) { els.dateStart.value = todayDMY; els.dateStart.dataset.iso = todayISO; }
         if (els.dateEnd) { els.dateEnd.value = todayDMY; els.dateEnd.dataset.iso = todayISO; }
+
+        recalcState();
 
         // Переключатель диапазона — показать/скрыть блок
         function toggleDateInputs() {
@@ -462,11 +933,7 @@
                 const d = parseDMYtoDate(input.value) || new Date();
                 current = new Date(d.getFullYear(), d.getMonth(), d.getDate());
                 render();
-                // позиционирование
-                // const r = input.getBoundingClientRect();
-                // dpEl.style.left = `${window.scrollX + r.left}px`;
-                // dpEl.style.top = `${window.scrollY + r.bottom + 6}px`;
-                // dpEl.classList.remove('hidden');
+
                 // позиционирование — показываем ПО-НАД инпутом
                 const r = input.getBoundingClientRect();
                 const gap = 8; // отступ между инпутом и попапом
@@ -796,7 +1263,7 @@
             els.infoBox.classList.add('hidden');
             els.sqlOutput.value = '';
             els.copyStatus.textContent = '';
-            els.downloadBtn?.classList.add('hidden');
+            els.downloadCombo?.classList.add('hidden');
 
         });
 
@@ -821,7 +1288,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
 
             if (selectedEvents.length === 0) {
                 els.sqlOutput.value = 'First select at least one Event';
-                els.downloadBtn?.classList.add('hidden'); // ← ДОБАВИТЬ
+                els.downloadCombo?.classList.add('hidden'); // ← ДОБАВИТЬ
                 if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
                 return;
             }
@@ -846,7 +1313,7 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
 
             if (uniqueProps.length === 0) {
                 els.sqlOutput.value = 'For the selected events, no properties were found';
-                els.downloadBtn?.classList.add('hidden');
+                els.downloadCombo?.classList.add('hidden');
                 if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
                 return;
             }
@@ -922,7 +1389,8 @@ ORDER BY client_time DESC limit 1000;`;
             els.sqlOutput.value = sql;
             els.copyStatus.textContent = '';
             els.copyStatus.classList.remove('ok', 'warn');
-            els.downloadBtn?.classList.remove('hidden');
+            els.downloadCombo?.classList.remove('hidden');
+
 
             // Показать кнопку «per-event», только если выбрано ≥2 событий
             if (els.perEventControls) {
@@ -933,6 +1401,14 @@ ORDER BY client_time DESC limit 1000;`;
                     els.perEventContainer.style.display = 'none';
                 }
             }
+
+            // NEW: remember selection at the moment of generation
+            ui.lastGeneratedEvents = selectedEvents.slice();
+            // per-event ещё не открыт
+            ui.perEventShown = false;
+            // пересчитываем кнопки правой панели
+            recalcState();
+
 
             // на этапе основного Generate кнопку "Download all" всегда скрываем,
             // появится только после нажатия "Generate per-event queries"
@@ -976,29 +1452,55 @@ ORDER BY client_time DESC limit 1000;`;
             }
         });
 
+        // нижняя Copy (в блоке per-event all)
+        els.copyBtnPer?.addEventListener('click', async () => {
+            const txt = els.sqlOutput.value || '';
+            if (!txt.trim()) return;
+            try {
+                await navigator.clipboard.writeText(txt);
+            } catch {
+                els.sqlOutput.select();
+                document.execCommand('copy');
+            }
+        });
+
+        // нижняя Copy (в блоке per-event 2×2)
+        els.copyBtnPer?.addEventListener('click', async () => {
+            const txt = els.sqlOutput?.value || '';
+            if (!txt.trim()) return;
+            try { await navigator.clipboard.writeText(txt); } catch { }
+        });
+
+
+        // следим за пустотой SQL, чтобы выравнивать Clear под Copy
+        els.sqlOutput?.addEventListener('input', syncClearButtonTopState);
+
+
         els.clearBtn?.addEventListener('click', () => {
             els.sqlOutput.value = '';
             els.copyStatus.textContent = '';
             els.copyStatus.classList.remove('ok', 'warn');
-            els.downloadBtn?.classList.add('hidden');
+            els.downloadCombo?.classList.add('hidden');
             if (els.perEventControls) els.perEventControls.style.display = 'none';
             if (els.perEventContainer) { els.perEventContainer.innerHTML = ''; els.perEventContainer.style.display = 'none'; }
             if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
 
 
             els.sqlOutput.focus(); // опционально: ставим фокус в поле
-
+            syncClearButtonTopState();
+            moveClearBackToTopRow();
+            syncClearButtonTopState();
 
         });
 
 
-        els.refreshBtn.addEventListener('click', () => {
+        els.refreshPageBtn?.addEventListener('click', () => {
             // очищаем все поля и статусы
             els.pasteArea.value = '';
             els.sqlOutput.value = '';
             if (els.parseStatus) els.parseStatus.textContent = '';
             els.copyStatus.textContent = '';
-            els.downloadBtn?.classList.add('hidden');
+            els.downloadCombo?.classList.add('hidden');
             els.copyStatus.classList.remove('ok', 'warn');
             els.errorBox.innerHTML = '';
             els.errorBox.classList.add('hidden');
@@ -1021,8 +1523,7 @@ ORDER BY client_time DESC limit 1000;`;
             }
 
             // спрятать кнопку "Download all .txt"
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
-
+            els.perEventAllWrap?.classList.add('hidden');
 
             // УДАЛИТЬ строки со старым select:
             // els.eventSelect.innerHTML = '';   // ← ЭТОГО БОЛЬШЕ НЕТ
@@ -1057,35 +1558,134 @@ ORDER BY client_time DESC limit 1000;`;
             state.colIdx = { event: -1, property: -1 };
             state.byEvent = new Map();
             state.eventOrder = [];
+            moveClearBackToTopRow();
+            syncClearButtonTopState();
+            recalcState();
         });
 
-        // --- Download .txt with generated SQL (timestamp in local time) ---
-        els.downloadBtn?.addEventListener('click', () => {
-            const sql = (els.sqlOutput.value || '').trim();
+        els.refreshBtn?.addEventListener('click', () => {
+            // 1) очистить текст сгенерированного SQL
+            if (els.sqlOutput) els.sqlOutput.value = '';
+
+            // 2) статусы и сообщения
+            if (els.copyStatus) { els.copyStatus.textContent = ''; els.copyStatus.classList.remove('ok', 'warn'); }
+            if (els.errorBox) { els.errorBox.innerHTML = ''; els.errorBox.classList.add('hidden'); }
+            if (els.infoBox) { els.infoBox.innerHTML = ''; els.infoBox.classList.add('hidden'); }
+
+            // 3) скрыть Download в TOP и нижнюю 2×1 сетку
+            els.downloadCombo?.classList.add('hidden');
+            els.underTopGrid?.classList.add('hidden');
+            els.perEventAllWrap?.classList.add('hidden');
+
+            // 4) пер-ивент: спрятать кнопку генерации, очистить контейнер карточек, спрятать общий 2×2
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            if (els.perEventContainer) {
+                if (els.perEventContainer.replaceChildren) els.perEventContainer.replaceChildren();
+                else els.perEventContainer.innerHTML = '';
+                els.perEventContainer.style.display = 'none';
+            }
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+
+            // 5) вернуть раскладку панели к начальному виду (Copy | Refresh в TOP)
+            setStateS0();
+        });
+
+
+        els.refreshBtnPer?.addEventListener('click', () => {
+
+            ui.lastGeneratedEvents = [];
+            ui.perEventShown = false;
+
+            // твоя логика refresh/clear:
+            if (els.sqlOutput) els.sqlOutput.value = '';
+            if (els.perEventContainer) { els.perEventContainer.innerHTML = ''; els.perEventContainer.style.display = 'none'; }
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            recalcState();
+        });
+
+
+
+
+
+
+        // === Download CSV for Testomat (по выбранным событиям) ===
+
+        els.downloadCsvBtn?.addEventListener('click', () => {
+            const sql = (els.sqlOutput?.value || '').trim();
             if (!sql) return;
 
-            // имя файла: Query_YYYY-MM-DD_HH-MM-SS.txt (локальное время)
-            const d = new Date();
-            const pad2 = n => String(n).padStart(2, '0');
-            const yyyy = d.getFullYear();
-            const mm = pad2(d.getMonth() + 1);
-            const dd = pad2(d.getDate());
-            const HH = pad2(d.getHours());
-            const MM = pad2(d.getMinutes());
-            const SS = pad2(d.getSeconds());
-            const filename = `Query_${yyyy}-${mm}-${dd}_${HH}-${MM}-${SS}.txt`;
+            // используем именно то, что было на последней генерации
+            const events = ui.lastGeneratedEvents.slice();
+            if (!events.length) return;
 
-            const blob = new Blob([sql + '\n'], { type: 'text/plain;charset=utf-8' });
+            const title = (events.length === 1)
+                ? `Event: ${events[0]}`
+                : `Events: ${events.join(', ')}`;
+
+            const csv = buildCsv([{ title, sql }]);
+
+            const d = new Date(), pad = n => String(n).padStart(2, '0');
+            const name = `Testomat_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.csv`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
             const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
+            const a = document.createElement('a'); a.href = url; a.download = name;
+            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
         });
+
+        // === [TOP Download menu handlers] =================================
+        els.downloadSplit?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (els.downloadCombo?.classList.contains('open')) closeMenu(els.downloadCombo);
+            else { closeAllDownloadMenus(); openMenu(els.downloadCombo); }
+        });
+
+        els.downloadOptTxt?.addEventListener('click', () => {
+            const row = collectCombinedRow();
+            if (!row) return;
+            const name = tsName('Query', 'txt');
+            saveBlob(row.sql + '\n', name, 'text/plain;charset=utf-8');
+            closeAllDownloadMenus();
+        });
+
+
+
+        els.downloadOptCsv?.addEventListener('click', () => {
+            const row = collectCombinedRow(); if (!row) return;
+            openCsvModal({ getRows: () => [row], fileNamePrefix: 'Query' });
+            closeAllDownloadMenus?.();
+        });
+
+
+        // ==================================================================
+
+        // === [BOTTOM Download All menu handlers] ==========================
+
+        els.downloadAllSplit?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (els.downloadAllCombo?.classList.contains('open')) closeMenu(els.downloadAllCombo);
+            else { closeAllDownloadMenus(); openMenu(els.downloadAllCombo); }
+        });
+
+        els.downloadAllOptTxt?.addEventListener('click', () => {
+            const rows = collectPerEventRows();
+            if (!rows?.length) return;
+            // TXT: с шапкой между блоками, как в твоём текущем коде
+            const fileText = rows.map(r => `-- FOR EVENT: ${r.title.replace(/^Event:\s*/, '')}\n${r.sql}`).join('\n\n\n') + '\n';
+            saveBlob(fileText, tsName('Queries_per_event', 'txt'), 'text/plain;charset=utf-8');
+            closeAllDownloadMenus();
+        });
+
+
+        els.downloadAllOptCsv?.addEventListener('click', () => {
+            const rows = collectPerEventRows(); if (!rows?.length) return;
+            openCsvModal({ getRows: () => rows, fileNamePrefix: 'Queries_per_event' });
+            closeAllDownloadMenus?.();
+        });
+
+
+        // ==================================================================
 
 
         // --- Generate per-event queries (отдельный SQL на каждый выбранный Event) ---
@@ -1170,19 +1770,42 @@ ORDER BY client_time DESC limit 1000;`;
   <div class="row per-actions">
     <span class="copy-status per-status" aria-live="polite" role="status"></span>
     <div class="btns">
-      <button class="btn-primary per-copy"  data-ev="${ev}">Copy to clipboard</button>
-      <button class="btn-refresh per-download" data-ev="${ev}">Download .txt</button>
+      <button class="btn-primary per-copy" data-ev="${ev}">Copy to clipboard</button>
+
+      <div class="dropdown per-dd">
+        <button class="btn-primary per-split">Download ▾</button>
+        <div class="dropdown-menu" aria-hidden="true">
+          <button class="menu-btn txt per-download"       data-ev="${ev}">.txt</button>
+          <button class="menu-btn csv per-download-csv"   data-ev="${ev}">.csv (Testomat)</button>
+        </div>
+      </div>
     </div>
   </div>`;
+
                     els.perEventContainer.appendChild(wrap);
                 }
                 els.perEventContainer.style.display = 'block';
+                moveClearUnderPerEvent();
+                syncClearButtonTopState();
+
+                moveClearToBottom();
 
                 // показать кнопку "Download all" только если карточек >= 2
                 if (els.perEventAllWrap) {
                     const cnt = els.perEventContainer?.querySelectorAll('.per-item').length || 0;
-                    els.perEventAllWrap.style.display = (cnt > 1) ? 'flex' : 'none';
+                    if (cnt > 1) {
+                        els.perEventAllWrap.classList.remove('hidden');
+                        els.perEventAllWrap.style.display = '';      // показать (снять inline 'none')
+                    } else {
+                        els.perEventAllWrap.classList.add('hidden');
+                        els.perEventAllWrap.style.display = 'none';  // прятать явно
+                    }
                 }
+
+
+                ui.perEventShown = true;
+
+                recalcState();
 
             }
         });
@@ -1193,6 +1816,19 @@ ORDER BY client_time DESC limit 1000;`;
             if (!item) return;
             const ta = item.querySelector('textarea.per-sql');
             if (!ta) return;
+
+            // toggle per-event dropdown
+            const splitBtn = e.target.closest('.per-split');
+            if (splitBtn) {
+                e.stopPropagation();
+                const dd = splitBtn.closest('.dropdown');
+                const isOpen = dd?.classList.contains('open');
+                closeAllDownloadMenus();
+                if (!isOpen && dd) openMenu(dd);
+                return;
+            }
+
+
 
             if (e.target.classList.contains('per-copy')) {
                 // 0) НОВОЕ: перед показом локального статуса — погасить основной
@@ -1253,7 +1889,32 @@ ORDER BY client_time DESC limit 1000;`;
                 const a = document.createElement('a'); a.href = url; a.download = file;
                 document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
             }
+
+
+            if (e.target.classList.contains('per-download-csv')) {
+                const ev = e.target.getAttribute('data-ev') || 'Event';
+                const props = state.byEvent.get(ev) || [];
+                const env = els.tableEnv?.value || 'prod';
+
+                let start = todayISO, end = todayISO;
+                const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
+                if (isRange) {
+                    const sISO = els.dateStart?.dataset.iso || todayISO;
+                    const eISO = els.dateEnd?.dataset.iso || sISO;
+                    start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
+                }
+                const sql = buildPerEventSQL(ev, props, env, start, end, isRange);
+                openCsvModal({
+                    getRows: () => [{ title: `Event: ${ev}`, sql }],
+                    fileNamePrefix: `EVENT_${ev}`
+                });
+                return;
+            }
+
+
+
         });
+
 
         // --- Download all per-event queries (.txt) с шапкой "-- FOR EVENT: <name>" ---
         els.downloadAllPerBtn?.addEventListener('click', () => {
@@ -1294,11 +1955,46 @@ ORDER BY client_time DESC limit 1000;`;
             a.remove();
             URL.revokeObjectURL(url);
         });
+        syncClearButtonTopState();
+
+
+        // ALL events — CSV for Testomat (moved top button -> bottom)
+
+        // Download CSV (S1/S2): один кейс с объединённым SQL из sqlOutput
+        els.downloadCsvBtn?.addEventListener('click', () => {
+            const sql = (els.sqlOutput?.value || '').trim();
+            if (!sql) return; // нечего сохранять
+
+            // Заголовок строки CSV. Можно оставить универсальный.
+            const rows = [{ title: 'Combined query', sql }];
+            const csv = buildCsv(rows);
+
+            // имя файла: Query_YYYY-MM-DD_HH-MM-SS.csv (локальное время)
+            const d = new Date(), pad = n => String(n).padStart(2, '0');
+            const name = `Query_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.csv`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = name;
+            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        });
+
 
     }
 
     window.Tools = window.Tools || {};
     window.Tools.queryCreator = { init };
+
+    // --- Авто-инициализация ---
+    // Если внешняя обвязка не вызывает init(), сделаем это сами.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            try { init(); } catch (e) { console.error('QC init error', e); }
+        });
+    } else {
+        try { init(); } catch (e) { console.error('QC init error', e); }
+    }
 })();
+
 
 

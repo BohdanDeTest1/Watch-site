@@ -45,11 +45,15 @@
     --howto-bg: #0f1c2a;
     /* фон тултипа (тёмный, без прозрачности) */
     --howto-fg: #e7eef7;
-    --gen-btn: #f6ab19db;
+    --gen-btn: #f6ab19f2;
     /* основной (бирюзовый/teal) */
-    --gen-btn-hover: #f0a718bf;
+    --gen-btn-hover: #d49220d1;
+    --button-grey: #3b4654;
+    --card-bg-modal: #292b38;
+    --card-bg-modal-border: #39444a;
 
 }
+
 
 
 * {
@@ -231,6 +235,11 @@ button.btn-refresh:hover {
     /* жёлтый треугольник/иконка */
     font-size: 20px;
     color: #ffeb3b;
+}
+
+#perEventControls {
+    margin-bottom: 0px;
+    margin-top: 18px !important;
 }
 
 #infoBox {
@@ -847,22 +856,27 @@ textarea.no-scroll {
     /* визуально как у Refresh-строки */
 }
 
-/* Строка с Copy / Clear + статусом */
+/* Строка с Copy / Download / CSV / Clear -> сетка 2×2 */
 .row-copy {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    flex-wrap: wrap;
-    /* только статус уходит на вторую строку */
+    align-items: stretch;
 }
 
-/* КНОПКИ: держим в одной строке слева-направо */
+/* одинаковая высота и ширина кнопок сверху */
 .row-copy button {
-    width: auto;
-    /* переопределяем глобальное 100% */
-    flex: 1 1 0;
-    /* две кнопки занимают строку поровну */
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
 }
+
+/* статус на отдельной строке под сеткой */
+.row-copy .copy-status {
+    grid-column: 1 / -1;
+    margin-top: 2px;
+}
+
 
 #downloadBtn {
     flex: 0 0 auto;
@@ -926,6 +940,7 @@ textarea.no-scroll {
     align-items: center;
     gap: 12px;
     flex-wrap: nowrap;
+    margin-bottom: 35px;
 }
 
 /* статус — слева; занимает строку даже когда пустой (толкает кнопки вправо) */
@@ -952,7 +967,6 @@ textarea.no-scroll {
     order: 1 !important;
     /* после статуса */
     flex: 0 0 auto !important;
-    width: auto !important;
 }
 
 /* пер-ивентная textarea — ниже примерно в 1.5 раза МЕНЬШЕ основной */
@@ -979,12 +993,10 @@ textarea.no-scroll {
 
 /* Download all per-event — справа + больший отступ сверху */
 #perEventAllWrap {
-    display: flex;
-    /* на всякий случай, если .row где-то переопределят */
-    justify-content: flex-end;
-    /* прижать содержимое к правому краю */
-    margin-top: 24px;
-    /* больше отступ от контента сверху */
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: stretch;
+    margin-top: 12px;
 }
 
 #downloadAllPerBtn {
@@ -996,7 +1008,6 @@ textarea.no-scroll {
 
 /* цвет для ВСЕХ download-кнопок: основная, per-event, Download all */
 #downloadBtn,
-.per-download,
 #downloadAllPerBtn {
     background: var(--dl-bg) !important;
     color: var(--dl-fg) !important;
@@ -1004,7 +1015,6 @@ textarea.no-scroll {
 
 /* hover */
 #downloadBtn:hover,
-.per-download:hover,
 #downloadAllPerBtn:hover {
     background: var(--dl-bg-hover) !important;
     opacity: 1;
@@ -1016,7 +1026,7 @@ textarea.no-scroll {
     /* одинаковая высота */
     padding: 0 18px;
     /* и горизонтальные отступы */
-    min-width: 150px;
+    min-width: 137px;
     /* одинаковая «ширина» кнопки */
     font-weight: 700;
     flex: 0 0 auto;
@@ -1222,4 +1232,447 @@ textarea.no-scroll {
 #genBtn.btn-primary:focus-visible {
     outline: 2px solid var(--gen-btn);
     outline-offset: 2px;
+}
+
+/* небольшой зазор между кнопками в рядах */
+.row.btns>.btn-primary,
+.row.btns>.btn-refresh,
+.row.btns>.btn-muted,
+.row>.btn-primary {
+    margin-left: 8px;
+}
+
+/* info dot next to ALL CSV button */
+.info-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-left: 8px;
+    border-radius: 9999px;
+    border: 1px solid var(--c-border, #3a4556);
+    background: transparent;
+    color: var(--c-text-muted, #b7c3d0);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.info-dot:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tooltip {
+    position: absolute;
+    margin-left: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.3;
+    max-width: 280px;
+    transform: translateY(-4px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+
+.tooltip.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+
+/* Группа задаёт общую ширину двух верхних кнопок */
+#perEventAllWrap .all-actions {
+    display: flex;
+    flex-direction: column;
+    width: calc(260px * 2 + 12px);
+    /* 2 кнопки по 260px + 12px gap — при желании подправь */
+}
+
+#perEventAllWrap .all-actions .all-top {
+    display: flex;
+    gap: 12px;
+    /* отступ между TXT и CSV */
+}
+
+/* CSV-кнопки оранжевые (одинаково сверху и снизу) */
+#downloadCsvBtn,
+#downloadAllPerCsvBtn,
+.per-download-csv {
+    background: var(--button-grey) !important;
+    /* основной оранжевый */
+    color: #fff;
+}
+
+#downloadCsvBtn:hover,
+#downloadAllPerCsvBtn:hover {
+    background: var(--gen-btn-hover) !important;
+    /* hover оранжевого */
+}
+
+/* Две большие верхние кнопки — одинаковые */
+#downloadAllPerBtn,
+#downloadCsvBtn {
+    width: 260px;
+    height: 54px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.row-copy #clearBtn {
+    background: var(--button-grey);
+    color: #fff;
+}
+
+
+/* Снизу (в perEventAllWrap) Clear голубой как Copy */
+#perEventAllWrap #clearBtn {
+    background: var(--accent, #79a8ff);
+    color: #111;
+}
+
+
+/* Кнопка Clear — отступ вниз и полная ширина группы */
+/* Clear по умолчанию ведёт себя как обычная кнопка в сетке */
+#clearBtn {
+    margin-top: 18px;
+}
+
+/* В верхнем гриде размеры задаёт сама сетка; подстрахуем высоту/радиус */
+#topBtnGrid #clearBtn {
+    width: 100%;
+    height: 36px;
+    border-radius: 6px;
+}
+
+/* Сделать Clear голубой "как Copy" с тёмным текстом */
+#clearBtn {
+    background: var(--button-grey);
+    /* возьми тот же цвет, что у .btn-primary/Copy */
+    color: #fff;
+    height: 36px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+#clearBtn:hover {
+    filter: brightness(1.05);
+}
+
+/* i-кнопка и tooltip (увеличим шрифт, поведение — по hover) */
+.info-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    /* или 32px, если хочется чуть больше */
+    height: 28px;
+    /* одинаковое значение = идеальный круг */
+    border-radius: 50%;
+    border: 1px solid var(--c-border, #3a4556);
+    background: transparent;
+    color: var(--c-text-muted, #b7c3d0);
+    font-weight: 700;
+    font-size: 14px;
+    /* чуть крупнее "i" внутри */
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.info-dot:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+#csvInfo:hover+#csvInfoTip {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tooltip {
+    font-size: 13.5px;
+    line-height: 1.4;
+}
+
+/* было мелко — сделали чуть крупнее */
+
+/* Показывать тултип по hover, а не по клику */
+#csvInfo:hover+#csvInfoTip {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- CLEAR: dark gray variant --- */
+#clearBtn.clear-top {
+    background: var(--button-grey);
+    /* тёмно-серый */
+    color: #fff;
+    width: 100%;
+    height: 36px;
+    /* как у Copy */
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    margin-top: 12px;
+    /* отступ под Copy */
+}
+
+/* одинаковый размер и выравнивание с Copy */
+#copyBtn,
+#clearBtn.clear-top {
+    width: 100%;
+    height: 36px;
+    /* как у «больших» кнопок */
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+/* небольшой отступ между Copy и Clear сверху */
+#clearBtn.clear-top {
+    margin-top: 17px;
+    width: 48.5%;
+}
+
+/* hover для тёмно-серой */
+#clearBtn.clear-top:hover {
+    filter: brightness(1.05);
+}
+
+#clearUnderPer #clearBtn {
+    width: 100%;
+    /* занимает всю строку-контейнер */
+    height: 36px;
+    border-radius: 6px;
+}
+
+#perEventAllWrap button {
+    width: 100%;
+    border-radius: 6px;
+    background: var(--button-grey);
+    color: #fff;
+}
+
+/* контейнер, куда переносим #clearBtn */
+#clearBottomRight {
+    width: 100%;
+}
+
+#clearBottomRight #clearBtn {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+}
+
+/* Общая сетка 2×2 */
+.btn-grid-2 {
+    display: grid;
+    /* ← без !important */
+    grid-template-columns: 1fr 1fr;
+    gap: 17px;
+    align-items: stretch;
+    margin-top: 18px;
+}
+
+.btn-grid-2>* {
+    width: 100%;
+    height: 36px;
+    border-radius: 6px;
+}
+
+/* ===== Download dropdown ===== */
+
+/* Compact dropdown inside per-event cards */
+.per-item .dropdown {
+    width: auto;
+    min-width: 150px;
+    margin-top: 12px;
+}
+
+
+
+.per-item .dropdown>button {
+    width: 100% !important;
+    height: 37px;
+    border-radius: 6px;
+}
+
+.per-item .dropdown .dropdown-menu {
+    width: 150px;
+}
+
+.per-item .menu-btn {
+    height: 37px;
+    background: var(--button-grey);
+}
+
+.dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown>button {
+    width: 100%;
+    height: 36px;
+    border-radius: 8px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    width: 100%;
+    padding: 6px;
+    background: var(--panel, #1f2631);
+    border: 1px solid var(--c-border, #303a49);
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    display: none;
+    z-index: 50;
+}
+
+.dropdown.open .dropdown-menu {
+    display: block;
+}
+
+.menu-btn {
+    width: 100%;
+    height: 36px;
+    border-radius: 8px;
+    font-weight: 700;
+    background: var(--button-grey);
+}
+
+.menu-btn+.menu-btn {
+    margin-top: 6px;
+}
+
+/* цвета пунктов: отличаются от синей основной кнопки */
+.menu-btn.txt .per-download {
+    background: var(--button-grey) !important;
+    color: #fff !important;
+}
+
+.menu-btn.txt .per-download:hover {
+    background: #2d3641 !important;
+    color: #ffffffa6 !important;
+}
+
+.menu-btn.csv {
+    background: var(--button-grey);
+    color: #fff;
+}
+
+.menu-btn.csv:hover {
+    background: #2d3641;
+    color: #ffffffa6;
+}
+
+/* чтобы «Download All» занимал всю верхнюю строку в 2×2 сетке */
+.grid-span-2 {
+    grid-column: 1 / -1;
+}
+
+/* Подгон высоты/радиуса в .btn-grid-2 для единообразия кнопок */
+.btn-grid-2>* {
+    height: 36px;
+    border-radius: 6px;
+}
+
+
+/* Статус – отдельной полосой под блоками */
+#copyStatus {
+    display: block;
+    margin-top: 6px;
+}
+
+/* Когда Refresh переехал в нижний ряд (#underTopGrid → #refreshSlot),
+   сохраняем такую же ширину/высоту, как у прочих кнопок */
+#refreshSlot>button {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+}
+
+
+/* Цвета для CSV */
+#downloadCsvBtn,
+#downloadAllPerCsvBtn,
+.per-download-csv {
+    background: var(--gen-btn);
+    color: #111;
+}
+
+#downloadCsvBtn:hover,
+#downloadAllPerCsvBtn:hover {
+    background: var(--gen-btn-hover);
+}
+
+/* Верхний Refresh (когда он в TOP grid) – тёмно-серый */
+#topBtnGrid #refreshBtn {
+    background: var(--muted);
+    color: #fff;
+}
+
+/* Пер-ивент нижний блок – стили там свои (обе кнопки одинаковые) */
+#perEventAllWrap button {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+button.btn-muted {
+    background: var(--button-grey);
+    color: #fff;
+}
+
+#perEventBtn .btn-refresh {
+    height: 48px;
+}
+
+/* --- CSV modal --- */
+.qc-modal.hidden {
+    display: none;
+}
+
+.qc-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+}
+
+.qc-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+}
+
+.qc-modal__card {
+    position: relative;
+    width: 316px;
+    max-width: calc(100vw - 32px);
+    margin: 12vh auto 0;
+    padding: 16px;
+    border-radius: 6px;
+    background: var(--card-bg-modal);
+    border: 1px solid var(--card-bg-modal-border);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+}
+
+.qc-modal select,
+.qc-modal input {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.field-error {
+    color: var(--validation-warn);
+    font-weight: 600;
+    font-size: 12.5px;
+    margin: 4px 0 8px;
 }
