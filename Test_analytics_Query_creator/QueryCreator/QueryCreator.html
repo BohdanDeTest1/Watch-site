@@ -21,7 +21,6 @@
                     <ol>
                         <li><strong>Choose one of the data sources</strong>:
                             <ol class="howto-sublist" type="A">
-                                <li><em>Paste columns: Event + Property</em> - paste the two columns separately</li>
                                 <li class="with-img">
                                     <em>Upload TSV/TLS file</em> - in Google Sheets: <em>File → Download →
                                         Tab-separated
@@ -32,6 +31,7 @@
                                         <span class="zoom-badge" aria-hidden="true"></span>
                                     </div>
                                 </li>
+                                <li><em>Paste columns: Event + Property</em> - paste the two columns separately</li>
                                 <li><em>Paste spreadsheet (clipboard)</em> - copy the whole table and paste it into
                                     the
                                     input</li>
@@ -39,7 +39,8 @@
                         </li>
 
                         <li><strong>Pick a table</strong> in the <em>Table</em> field:
-                            <code>Stage/RC</code> or <code>Production</code>.
+                            <strong>'Stage/RC'</strong>, <strong>'Prod-cheats'</strong> or
+                            <strong>'Production'</strong>.
                             <em>Optional:</em> set a date or a date range in the <strong>Date</strong> field
                         </li>
 
@@ -48,16 +49,33 @@
                         <li><strong>SQL generating</strong> - get the combined query</li>
 
                         <li><strong>Export</strong>:
-                            use <em>Copy to clipboard</em> or <em>Download .txt</em>.
+                            use <em>Copy to clipboard</em> or <em>Download .txt/.csv (Testomat)</em>.
                             If you selected multiple events, click <em>Generate per-event queries</em> -
                             each event will get its own query.
                             You can also download all of them at once with
-                            <em>Download all .txt</em>
+                            <em>Download All</em>
+                        </li>
+
+                        <li class="with-img">
+                            <strong>.CSV (Testomat)</strong>:
+                            simply upload the exported .CSV file into Testomat — your queries will appear as test cases
+                            in the new
+                            Test Suite
+                            <div class="howto-img-wrap">
+                                <img src="Testomat.png" alt="Import CSV into Testomat"
+                                    class="howto-img howto-img--testomat" data-zoom="half">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+
+                        </li>
+
                         </li>
                     </ol>
                 </div>
 
             </div>
+
+            <div id="howtoBackdrop" class="howto-backdrop" hidden></div>
 
         </div>
 
@@ -72,12 +90,12 @@
                 <!-- ▼ Выбор режима ввода -->
                 <div class="input-modes">
                     <label class="mode-item">
-                        <input type="radio" name="inputMode" id="modeSeparate" checked>
-                        <span>Paste columns: Event + Property</span>
+                        <input type="radio" name="inputMode" id="modeFile" checked>
+                        <span>Upload TSV/TLS file</span>
                     </label>
                     <label class="mode-item">
-                        <input type="radio" name="inputMode" id="modeFile">
-                        <span>Upload TSV/TLS file</span>
+                        <input type="radio" name="inputMode" id="modeSeparate">
+                        <span>Paste columns: Event + Property</span>
                     </label>
                     <label class="mode-item">
                         <input type="radio" name="inputMode" id="modePaste">
@@ -85,8 +103,16 @@
                     </label>
                 </div>
 
-                <!-- ▼ Режим 1: отдельные столбцы -->
-                <div id="mode-separate" class="input-mode active">
+                <!-- ▼ Режим 1: загрузка файла -->
+                <div id="mode-file" class="input-mode active">
+                    <div class="input-section">
+                        <label class="label">Upload TSV/TLS file</label>
+                        <input type="file" id="tlsFile" accept=".tsv,.txt,.csv" />
+                    </div>
+                </div>
+
+                <!-- ▼ Режим 2: отдельные столбцы -->
+                <div id="mode-separate" class="input-mode ">
                     <div class="input-section">
                         <label for="eventsInput">Events (paste the "Event" column)</label>
                         <textarea id="eventsInput" class="no-scroll" placeholder="Paste Event column here"></textarea>
@@ -96,14 +122,6 @@
                         <label for="propertiesInput">Properties (paste the "Property" column)</label>
                         <textarea id="propertiesInput" class="no-scroll"
                             placeholder="Paste Property column here"></textarea>
-                    </div>
-                </div>
-
-                <!-- ▼ Режим 2: загрузка файла -->
-                <div id="mode-file" class="input-mode">
-                    <div class="input-section">
-                        <label class="label">Upload TSV/TLS file</label>
-                        <input type="file" id="tlsFile" accept=".tsv,.txt,.csv" />
                     </div>
                 </div>
 
@@ -124,8 +142,10 @@
                             <label class="label">Table</label>
                             <select id="tableEnv">
                                 <option value="stage">Stage / RC (od-rc)</option>
+                                <option value="prod-cheats">Prod-cheats</option>
                                 <option value="prod">Production</option>
                             </select>
+
                         </div>
                     </div>
                     <div class="field">
@@ -194,7 +214,15 @@
                         </div>
                     </div>
 
-                    <button id="genBtn" class="btn-primary btn-full">SQL generating</button>
+                    <!-- Кнопка + сообщение об ошибке под ней (в одной колонке) -->
+                    <div id="genCol" class="gen-col">
+                        <button id="genBtn" class="btn-primary btn-full">SQL generating</button>
+                        <div id="genError" class="field-error hidden" aria-live="polite">
+                            Please select at least one event
+                        </div>
+                    </div>
+
+
                 </div>
 
             </section>
@@ -274,15 +302,19 @@
                 </div>
             </section>
         </main>
+
         <!-- CSV Testomat modal -->
         <div id="csvModal" class="qc-modal hidden" role="dialog" aria-modal="true" aria-labelledby="csvModalTitle">
             <div class="qc-modal__backdrop"></div>
             <div class="qc-modal__card card">
                 <h3 id="csvModalTitle" style="margin:0 0 10px;">Download CSV (for Testomat)</h3>
-                <form id="csvForm">
+
+                <!-- отключаем нативные тултипы браузера -->
+                <form id="csvForm" novalidate>
                     <label for="csvSquad" class="label">Squad:</label>
                     <select id="csvSquad" required>
-                        <option value="">Select a Squad</option>
+                        <!-- placeholder виден в закрытом селекте, но скрыт в выпадающем списке -->
+                        <option value="" selected disabled hidden>Select a Squad</option>
                         <option value="SQ1">SQ1</option>
                         <option value="SQ2">SQ2</option>
                         <option value="SQ3">SQ3</option>
@@ -297,17 +329,16 @@
                     </select>
                     <div id="csvSquadError" class="field-error" aria-live="polite"></div>
 
-                    <label for="csvFolder" class="label">Testomat folder (optional)</label>
-                    <input id="csvFolder" type="text" placeholder="e.g., Board">
+                    <label for="csvFolder" class="label">Test suite name (optional)</label>
+                    <input id="csvFolder" type="text" placeholder="e.g., Feature name">
 
-                    <div class="row" style="margin-top:14px; justify-content:flex-end;">
-                        <button type="button" id="csvCancel" class="btn-muted" style="width:auto;">Cancel</button>
-                        <button type="submit" id="csvSubmit" class="btn-primary" style="width:auto;">
-                            Download CSV
-                        </button>
+                    <div class="row csv-actions">
+                        <button type="button" id="csvCancel" class="btn-muted">Cancel</button>
+                        <button type="submit" id="csvSubmit" class="btn-primary">Download CSV</button>
                     </div>
                 </form>
             </div>
         </div>
+
     </div>
 </section>

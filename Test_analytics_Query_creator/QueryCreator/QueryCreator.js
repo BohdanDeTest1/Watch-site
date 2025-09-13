@@ -3,23 +3,41 @@
 (function () {
     let _inited = false;
 
-    // Если #qc-root ещё не в DOM: подгружаем его из QueryCreator/QueryCreator.html и монтируем в #tool-root
+    // Если #qc-root ещё не в DOM: подгружаем его из файла и монтируем в #tool-root
     async function ensureMarkup(container) {
         let tpl = document.getElementById('qc-root');
         if (!tpl) {
-            const res = await fetch('QueryCreator/QueryCreator.html');
-            const html = await res.text();
-            const ghost = document.createElement('div');
-            ghost.innerHTML = html;
-            tpl = ghost.querySelector('#qc-root');
+            // 1) сначала пробуем ./QueryCreator.html (рядом со скриптом)
+            // 2) если не получилось — старый путь QueryCreator/QueryCreator.html
+            // 3) если и он не сработал (например, file://), просто не падаем
+            const tryPaths = ['QueryCreator.html', 'QueryCreator/QueryCreator.html'];
+            for (const p of tryPaths) {
+                try {
+                    const res = await fetch(p, { cache: 'no-store' });
+                    if (res.ok) {
+                        const html = await res.text();
+                        const ghost = document.createElement('div');
+                        ghost.innerHTML = html;
+                        tpl = ghost.querySelector('#qc-root');
+                        if (tpl) break;
+                    }
+                } catch (_) {
+                    // игнор — попробуем следующий путь
+                }
+            }
         }
-        if (!tpl) throw new Error('Query Creator template (#qc-root) not found');
+        if (!tpl) {
+            console.warn('[QC] #qc-root не найден и файл разметки не удалось загрузить. ' +
+                'Убедись, что QueryCreator.html лежит рядом со скриптом или добавь <section id="qc-root"> прямо в страницу.');
+            return; // НЕ кидаем исключение, чтобы не уронить инициализацию
+        }
 
         const mountPoint = container || document.getElementById('tool-root') || document.body;
         if (!mountPoint.querySelector('#qc-root')) {
             mountPoint.appendChild(tpl.cloneNode(true));
         }
     }
+
 
     // ДЕЛАЕМ init асинхронным и сначала гарантируем разметку
     async function init(container) {
@@ -37,6 +55,31 @@
                 .map(line => line.split('\t').map(c => c.trim()));
             return rows;
         }
+
+        // Разворачиваем спец-шаблоны свойств (* → 1..5) + убираем дубли с сохранением порядка
+        function expandProps(list) {
+            const out = [];
+            for (const name of (list || [])) {
+                if (name === 'transaction_item_*') {
+                    for (let i = 1; i <= 5; i++) out.push(`transaction_item_${i}`);
+                } else if (name === 'transaction_item_amount_*') {
+                    for (let i = 1; i <= 5; i++) out.push(`transaction_item_amount_${i}`);
+                } else {
+                    out.push(name);
+                }
+            }
+            const seen = new Set();
+            return out.filter(n => n && !seen.has(n) && (seen.add(n), true));
+        }
+
+        // Всегда добавляем 'c' в конец списка полей (без дубля)
+        function ensureTrailingC(arr) {
+            const list = (arr || []).filter(Boolean);
+            const withoutC = list.filter(n => n !== 'c');
+            return [...withoutC, 'c'];
+        }
+
+
 
         // === Заголовки столбцов: нормализация + варианты названий ===
         const normalizeHeader = (s) =>
@@ -145,6 +188,9 @@
             downloadOptTxt: document.getElementById('downloadOptTxt'),
             downloadOptCsv: document.getElementById('downloadOptCsv'),
 
+            genBtn: document.getElementById('genBtn'),
+            genError: document.getElementById('genError'),
+
         };
 
         // --- ID-алиасы: если разметка ещё со старыми ID ---
@@ -156,6 +202,8 @@
         els.downloadAllOptTxt = els.downloadAllOptTxt || els.downloadAllTxt;
         els.downloadAllOptCsv = els.downloadAllOptCsv || els.downloadAllCsv;
 
+
+
         ////////////////////////  Modal start  /////////////////////////////
 
         // --- CSV modal state/handlers ---
@@ -164,11 +212,77 @@
         function openCsvModal(ctx) {
             csvCtx = ctx || {};
             const m = document.getElementById('csvModal'); if (!m) return;
-            document.getElementById('csvSquad').value = '';
-            document.getElementById('csvFolder').value = '';
-            document.getElementById('csvSquadError').textContent = '';
+
+            // ← СБРОСИТЬ ВСЮ ФОРМУ К ДЕФОЛТАМ (placeholder для select и пустой input)
+            const form = document.getElementById('csvForm');
+            if (form) form.reset();
+
+            // очистить кастомную ошибку
+            const err = document.getElementById('csvSquadError');
+            if (err) err.textContent = '';
+
+            // при выборе значения — прятать ошибку
+            const sel = document.getElementById('csvSquad');
+            if (sel) {
+                sel.onchange = sel.oninput = () => {
+                    const e = document.getElementById('csvSquadError');
+                    if (e) e.textContent = '';
+                };
+            }
+
             m.classList.remove('hidden');
         }
+
+        function closeCsvModal() {
+            const form = document.getElementById('csvForm');
+            if (form) form.reset();
+            const m = document.getElementById('csvModal'); if (m) m.classList.add('hidden');
+            csvCtx = null;
+        }
+
+        document.getElementById('csvCancel')?.addEventListener('click', closeCsvModal);
+        document.getElementById('csvModal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('qc-modal__backdrop')) closeCsvModal();
+        });
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCsvModal(); });
+
+        document.getElementById('csvForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const sel = document.getElementById('csvSquad');
+            const folderExtra = (document.getElementById('csvFolder')?.value || '').trim();
+            const err = document.getElementById('csvSquadError');
+
+            const squad = sel?.value?.trim();
+            if (!squad) { if (err) err.textContent = 'Please select a Squad.'; return; }
+
+            // Folder: "/SQx" или "/SQ Core" + optional "/{suite}"
+            const folder = `/${squad}${folderExtra ? `/${folderExtra}` : ''}`;
+
+            const rows = (csvCtx && typeof csvCtx.getRows === 'function') ? csvCtx.getRows() : [];
+            if (!rows.length) { closeCsvModal(); return; }
+
+            const csv = buildCsv(rows, { folder, squad });
+
+            // Имя файла: <SQ>[_<feature>]_ <base> _YYYY-MM-DD_HH_MM_SS.csv
+            const base = csvCtx?.fileNamePrefix || 'Query';
+
+            // "SQ Core" -> "SQ_Core"
+            const safeSquad = (squad || '').replace(/\s+/g, '_');
+
+            // suite/feature из второго поля: пробелы/слэши -> "_", схлопываем "__", обрезаем края
+            const safeSuite = (folderExtra || '')
+                .replace(/[\\\/\s]+/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/^_|_$/g, '');
+
+            const finalPrefix = [safeSquad, safeSuite, base].filter(Boolean).join('_');
+
+            saveBlob(csv, tsName(finalPrefix, 'csv'), 'text/csv;charset=utf-8');
+            closeCsvModal();
+
+        });
+        ////////     NEW CODE ENDS     //////////
+
         function closeCsvModal() {
             const m = document.getElementById('csvModal'); if (m) m.classList.add('hidden');
             csvCtx = null;
@@ -184,7 +298,7 @@
             const squad = document.getElementById('csvSquad').value.trim();
             const folderExtra = document.getElementById('csvFolder').value.trim();
             const err = document.getElementById('csvSquadError');
-            if (!squad) { err.textContent = 'Please select a Squad.'; return; }
+            if (!squad) { err.textContent = 'Please select a Squad'; return; }
             err.textContent = '';
             const folder = `/${squad}${folderExtra ? `/${folderExtra}` : ''}`;
 
@@ -192,7 +306,21 @@
             if (!rows.length) { closeCsvModal(); return; }
 
             const csv = buildCsv(rows, { folder, squad });
-            saveBlob(csv, tsName(csvCtx?.fileNamePrefix || 'Query', 'csv'), 'text/csv;charset=utf-8');
+            // Имя файла: <SQ>[_<feature>]_ <base> _YYYY-MM-DD_HH_MM_SS.csv
+            const base = csvCtx?.fileNamePrefix || 'Query';
+
+            // нормализуем "SQ Core" -> "SQ_Core", пробелы -> "_"
+            const safeSquad = (squad || '').replace(/\s+/g, '_');
+
+            // нормализуем введённый suite/feature: пробелы/слэш -> "_", схлопываем "__"
+            const safeSuite = (folderExtra || '')
+                .replace(/[\\\/\s]+/g, '_')   // пробелы и слэши -> _
+                .replace(/_+/g, '_')          // схлопнуть несколько _
+                .replace(/^_|_$/g, '');       // убрать _ по краям
+
+            const finalPrefix = [safeSquad, safeSuite, base].filter(Boolean).join('_');
+
+            saveBlob(csv, tsName(finalPrefix, 'csv'), 'text/csv;charset=utf-8');
             closeCsvModal();
         });
 
@@ -308,50 +436,94 @@
         els.selectAllBtn?.addEventListener('click', () => {
             els.eventList?.querySelectorAll('input[type="checkbox"]')
                 .forEach(cb => cb.checked = true);
+            updateGenError();
         });
 
         els.clearAllBtn?.addEventListener('click', () => {
             els.eventList?.querySelectorAll('input[type="checkbox"]')
                 .forEach(cb => cb.checked = false);
+            updateGenError();
         });
-
-        // els.eventList?.addEventListener('change', recalcState);
-        // els.selectAllBtn?.addEventListener('click', recalcState);
-        // els.clearAllBtn?.addEventListener('click', recalcState);
 
         const recalcOnlyIfNoSql = () => {
             if (!els.sqlOutput?.value || !els.sqlOutput.value.trim()) recalcState();
         };
-        els.eventList?.addEventListener('change', recalcOnlyIfNoSql);
-        els.selectAllBtn?.addEventListener('click', recalcOnlyIfNoSql);
-        els.clearAllBtn?.addEventListener('click', recalcOnlyIfNoSql);
+
+        els.eventList?.addEventListener('change', () => { recalcOnlyIfNoSql(); updateGenError(); });
+        els.selectAllBtn?.addEventListener('click', () => { recalcOnlyIfNoSql(); updateGenError(); });
+        els.clearAllBtn?.addEventListener('click', () => { recalcOnlyIfNoSql(); updateGenError(); });
 
 
-        // --- HowTo tooltip open/close ---
+        // Флаг: начинать показывать ошибку только после первой неудачной попытки генерации
+        let genErrorArmed = false;
+
+        // Показ/скрытие сообщения под кнопкой в зависимости от выбранных ивентов
+        function updateGenError() {
+            if (!els.genError) return;
+            const selectedCount = Array
+                .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
+                .length;
+
+            if (genErrorArmed && selectedCount === 0) {
+                els.genError.textContent = 'Please select at least one event';
+                els.genError.classList.remove('hidden');
+            } else {
+                els.genError.textContent = '';
+                els.genError.classList.add('hidden');
+            }
+        }
+
+
+
+
+
+
+        // --- HowTo tooltip open/close + scroll-hint ---
+
+
+        const backdropEl = document.getElementById('howtoBackdrop');
+
+        function openHowto() {
+            els.howtoTooltip?.classList.add('open');
+            if (backdropEl) backdropEl.hidden = false;
+        }
+
+        function closeHowto() {
+            els.howtoTooltip?.classList.remove('open');
+            if (backdropEl) backdropEl.hidden = true;
+        }
+
         els.howtoBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
-            els.howtoTooltip?.classList.toggle('open');
+            if (!els.howtoTooltip) return;
+            if (els.howtoTooltip.classList.contains('open')) {
+                closeHowto();
+            } else {
+                openHowto();
+            }
         });
 
+        // Клик вне тултипа — закрыть (но игнорим клик по модальному zoom-изображению)
         document.addEventListener('click', (e) => {
-            // Если открыт оверлей с картинкой — игнорим этот клик, чтобы не закрывать тултип
-            if (document.getElementById('howtoImgOverlay')) return;
-
+            if (document.getElementById('howtoImgOverlay')) return; // не закрываем, если открыт zoom
             if (!els.howtoTooltip || !els.howtoTooltip.classList.contains('open')) return;
             const insideTip = e.target.closest('#howtoTooltip');
             const onBtn = e.target.closest('#howtoBtn');
             if (insideTip || onBtn) return;
-            els.howtoTooltip.classList.remove('open');
+            closeHowto();
         });
 
+        // Клик по бэкдропу — тоже закрыть
+        backdropEl?.addEventListener('click', closeHowto);
 
+        // ESC — закрыть
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') els.howtoTooltip?.classList.remove('open');
+            if (e.key === 'Escape') closeHowto();
         });
+
 
         // --- HowTo image zoom (overlay) ---
-        function openHowtoImageOverlay(src, alt = '') {
-            // если уже открыт — сначала удалим
+        function openHowtoImageOverlay(src, alt = '', zoomHalf = false) {
             closeHowtoImageOverlay();
 
             const overlay = document.createElement('div');
@@ -359,24 +531,44 @@
             overlay.setAttribute('role', 'dialog');
             overlay.setAttribute('aria-modal', 'true');
 
-            // внутренняя обёртка нужна, чтобы клик по IMG не закрывал модалку
             overlay.innerHTML = `
     <div class="howto-img-modal">
-      <img src="${src}" alt="${alt}">
+      <img src="${src}" alt="${alt}" class="${zoomHalf ? 'zoom-half' : ''}">
     </div>
   `;
 
+            // клик по фону — закрывает только картинку; событие не «пробрасываем»,
+            // чтобы не закрывать HowTo-подсказку
             overlay.addEventListener('click', (e) => {
-                e.stopPropagation();  // <- не даём событию уйти на document и закрыть тултип
-                const imgBox = e.target.closest('.howto-img-modal');
-                if (!imgBox) closeHowtoImageOverlay();   // кликнули по фону — закрываем только картинку
+                e.stopPropagation();
+                const box = e.target.closest('.howto-img-modal');
+                if (!box) closeHowtoImageOverlay();
             });
 
-            // ESC — закрыть
             window.addEventListener('keydown', onEscCloseOverlay);
-
             document.body.appendChild(overlay);
+
+            // === NEW: клик по самой картинке тоже закрывает оверлей (zoom-out)
+            const enlargedImg = overlay.querySelector('.howto-img-modal img');
+            if (enlargedImg) {
+                enlargedImg.addEventListener('click', (e) => {
+                    e.stopPropagation();        // не даём уйти клику на overlay
+                    closeHowtoImageOverlay();   // закрываем только картинку
+                });
+            }
+
         }
+
+        els.howtoTooltip?.addEventListener('click', (e) => {
+            const wrap = e.target.closest('.howto-img-wrap');
+            if (!wrap) return;
+            const img = wrap.querySelector('img.howto-img');
+            if (!img) return;
+
+            const zoomHalf = (img.dataset.zoom === 'half') || img.classList.contains('howto-img--testomat');
+            openHowtoImageOverlay(img.src, img.alt, zoomHalf); // ← передаём флаг уменьшения
+        });
+
 
         function closeHowtoImageOverlay() {
             const overlay = document.getElementById('howtoImgOverlay');
@@ -387,19 +579,6 @@
         function onEscCloseOverlay(e) {
             if (e.key === 'Escape') closeHowtoImageOverlay();
         }
-
-        // делегирование клика по картинке в тултипе
-        els.howtoTooltip?.addEventListener('click', (e) => {
-            const wrap = e.target.closest('.howto-img-wrap');
-            if (!wrap) return;
-
-            const img = wrap.querySelector('img.howto-img');
-            if (!img) return;
-
-            // открыть оверлей поверх тултипа
-            openHowtoImageOverlay(img.src, img.alt);
-            // важно: тултип остаётся открытым (мы не трогаем его класс .open)
-        });
 
 
         function getInputMode() {
@@ -432,7 +611,7 @@
         els.modePaste?.addEventListener('change', () => setInputMode('paste'));
 
         // дефолт — «separate»
-        setInputMode('separate');
+        setInputMode('file');
 
         // --- Keep top for long pastes in separate mode ---
         function keepTop(el) {
@@ -588,18 +767,18 @@
             return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
         }
 
-        // Шаблон для колонки Examples
-        const EXAMPLES_TEMPLATE =
-            `## Preconditions:
-—
+        //         // Шаблон для колонки Examples
+        //         const EXAMPLES_TEMPLATE =
+        //             `## Preconditions:
+        // —
 
-### Steps
-1. Step #1
- *Expected:*
+        // ### Steps
+        // 1. Step #1
+        //  *Expected:*
 
 
-2. Step #2
- *Expected:*`;
+        // 2. Step #2
+        //  *Expected:*`;
 
 
 
@@ -609,30 +788,74 @@
             return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
         };
 
+        // Возвращает 3 строки FROM: активная без комментария, остальные — закомментированы
+        function fromClauseFor(env) {
+            const LINES = {
+                'stage': "FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC",
+                'prod-cheats': "FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- prod_cheats",
+                'prod': "FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod",
+            };
+            const order = ['stage', 'prod-cheats', 'prod'];
+            const current = order.includes(env) ? env : 'prod';
+            return order.map(k => (k === current ? LINES[k] : `--${LINES[k]}`)).join('\n');
+        }
+
+
         // Построить SQL для одного события (пер-ивент)
         function buildPerEventSQL(ev, props, env, dateStartISO, dateEndISO, isRange) {
             const esc = s => s.replace(/'/g, "''");
-            const fromClause = (env === 'stage')
-                ? `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
---FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`
-                : `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
-FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+            const fromClause = fromClauseFor(env);
+
+            //             const fromClause = (env === 'stage')
+            //                 ? `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC
+            // --FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`
+            //                 : `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC
+            // FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+
+            // const parts = [];
+            // if (!isRange) {
+            //     parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+            //     parts.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
+            // } else {
+            //     parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+            //     parts.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
+            // }
+            // parts.push(`AND event = '${esc(ev)}'`);
+            // parts.push(`AND user_id = 'test_user_ID'`);
+            ///parts.push(`AND twelve_traits_enabled IS NULL`);
 
             const parts = [];
+
+            // 1) user_id первым
+            parts.push(`WHERE user_id = 'test_user_ID'`);
+
+            // 2) даты
             if (!isRange) {
-                parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+                parts.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
                 parts.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
             } else {
-                parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
+                parts.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
                 parts.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
             }
+
+            // 3) событие
             parts.push(`AND event = '${esc(ev)}'`);
-            parts.push(`AND user_id = 'test_user_ID'`);
+
+            // 4) тех.фильтр
             parts.push(`AND twelve_traits_enabled IS NULL`);
 
-            const fields = (props && props.length)
-                ? `event, client_time, server_time, written_by, ${props.join(', ')}`
-                : `event, client_time, server_time, written_by`;
+
+            // const expandedProps = expandProps(props || []);
+            // const dedupProps = Array.from(new Set(expandedProps));
+            // const fields = dedupProps.length
+            //     ? `event, client_time, server_time, written_by, ${dedupProps.join(', ')}`
+            //     : `event, client_time, server_time, written_by`;
+
+            const expandedProps = expandProps(props || []);
+            const dedupProps = Array.from(new Set(expandedProps));
+            const withC = ensureTrailingC(dedupProps); // ← прибьём 'c'
+            const fields = `event, client_time, server_time, written_by, ${withC.join(', ')}`;
+
 
             return `SELECT ${fields}
 ${fromClause}
@@ -641,20 +864,38 @@ ORDER BY client_time DESC limit 1000;`;
         }
 
 
+        function squadPretty(s) {
+            if (!s) return '';
+            if (s === 'SQ Core') return 'Squad Core';
+            const m = /^SQ\s*([0-9]{1,2})$/.exec(s);
+            return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
+        }
+
+        const EXAMPLES_TEMPLATE =
+            `## Preconditions:
+—
+
+### Steps
+1. Step #1
+ *Expected:*
+
+2. Step #2
+ *Expected:*`;
+
         function makeCsvRow({ title, sql }, opts = {}) {
             const prettySquad = squadPretty(opts.squad || '');
 
-            // Всё содержимое (и шапка, и хвост) — в Description
+
+            // Для CSV
+            const rawSql = sql;
             const description =
                 `## Useful query:
-\`\`\`
--- CASE #1
-${sql}
-\`\`\`
+
+${rawSql}
+
 
 ${EXAMPLES_TEMPLATE}
 `;
-
             const row = {
                 ID: '',
                 Title: title,
@@ -664,8 +905,8 @@ ${EXAMPLES_TEMPLATE}
                 Priority: TESTOMAT.priority,
                 Tags: '',
                 Owner: TESTOMAT.owner,
-                Description: description,   // ← здесь и SQL, и «Preconditions/Steps»
-                Examples: '',               // ← ПУСТО
+                Description: description,   // весь хвост в Description
+                Examples: '',               // пусто
                 Labels: prettySquad ? `Squad: ${prettySquad}` : '',
                 Url: TESTOMAT.url
             };
@@ -679,11 +920,12 @@ ${EXAMPLES_TEMPLATE}
             return header + '\n' + body + '\n';
         }
 
-        function buildCsv(rows, opts = {}) {
-            const header = CSV_HEADERS.join(',');
-            const body = rows.map(r => makeCsvRow(r, opts)).join('\n');
-            return header + '\n' + body + '\n';
-        }
+
+        //////   NEW CODE ENDS  ///////
+
+
+
+
 
 
         // === [Download helpers] ============================================
@@ -700,7 +942,6 @@ ${EXAMPLES_TEMPLATE}
             return `${prefix}_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.${ext}`;
         }
 
-        // Сбор «одного кейса» (верхний Download → .txt/.csv)
         // Сбор «одного кейса» (верхний Download → .txt/.csv)
         function collectCombinedRow() {
             const sql = (els.sqlOutput?.value || '').trim();
@@ -1137,6 +1378,12 @@ ${EXAMPLES_TEMPLATE}
             }
 
             els.eventPicker.style.display = events.length ? 'flex' : 'none';
+
+            genErrorArmed = false;
+            updateGenError();
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+
+
         }
 
 
@@ -1215,7 +1462,7 @@ ${EXAMPLES_TEMPLATE}
       <div style="font-size: 14px; line-height: 1.2;">
         Could not find the columns <strong>Event/Events</strong> and/or <strong>Property/Properties/Field(s)</strong>.
       </div>
-      <div style="font-size: 14px; line-height: 1.2;">Please check the headers.</div>
+      <div style="font-size: 14px; line-height: 1.2;">Please check the headers</div>
     </div>`;
                 els.eventPicker.style.display = 'none';
                 return;
@@ -1268,17 +1515,9 @@ ${EXAMPLES_TEMPLATE}
         });
 
         els.genBtn.addEventListener('click', () => {
-            const mode = els.mode.value; // можно оставить как было
-            let fromClause = '';
-            if (els.tableEnv.value === 'stage') {
-                fromClause =
-                    `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
---FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            } else {
-                fromClause =
-                    `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
-FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            }
+            const mode = els.mode.value; // оставить
+            const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
+
 
 
             const selectedEvents = Array
@@ -1286,14 +1525,32 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
                 .map(cb => cb.value)
                 .filter(Boolean);
 
+
+
+            // if (selectedEvents.length === 0) {
+            //     // раньше: писали текст в sqlOutput и прятали download
+            //     // теперь: показываем оранжевую ошибку под кнопкой
+            //     genErrorArmed = true;
+            //     updateGenError();
+
+            //     els.downloadCombo?.classList.add('hidden');
+            //     if (els.perEventControls) els.perEventControls.style.display = 'none';
+            //     return;
+            // }
+
             if (selectedEvents.length === 0) {
-                els.sqlOutput.value = 'First select at least one Event';
-                els.downloadCombo?.classList.add('hidden'); // ← ДОБАВИТЬ
-                if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
+                genErrorArmed = true;
+                updateGenError();                                   // показать плашку под кнопкой
+                els.downloadCombo?.classList.add('hidden');
+                if (els.perEventControls) els.perEventControls.style.display = 'none';
                 return;
             }
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
 
+            // есть выбранные ивенты — очищаем ошибку и сбрасываем флаг
+            genErrorArmed = false;
+            updateGenError();
+
+            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
 
             // экранирование одинарных кавычек
             const esc = s => s.replace(/'/g, "''");
@@ -1304,11 +1561,12 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
             for (const ev of selectedEvents) {
                 const props = state.byEvent.get(ev) || [];
                 for (const p of props) {
-                    if (p && !seen.has(p)) {
-                        seen.add(p);
-                        uniqueProps.push(p);
+                    const exp = expandProps([p]);          // ← разворачиваем p, если это шаблон
+                    for (const q of exp) {
+                        if (q && !seen.has(q)) { seen.add(q); uniqueProps.push(q); }
                     }
                 }
+
             }
 
             if (uniqueProps.length === 0) {
@@ -1319,8 +1577,18 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
             }
             if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
 
+            // гарантируем 'c' последним (и без дублей)
+            const withTrailingC = (list) => {
+                const arr = (list || []).slice();
+                const i = arr.indexOf('c');
+                if (i !== -1) arr.splice(i, 1); // убрать, если уже есть
+                arr.push('c');                  // добавить последним
+                return arr;
+            };
+            const propsWithC = withTrailingC(uniqueProps);
 
-            const selectFields = `event, client_time, server_time, written_by, ${uniqueProps.join(', ')}`;
+            const selectFields = `event, client_time, server_time, written_by, ${propsWithC.join(', ')}`;
+
 
 
             const whereEvent = (selectedEvents.length === 1)
@@ -1347,27 +1615,52 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
             }
 
 
+            // const whereParts = [];
+            // if (!isRange) {
+            //     // Сегодня
+            //     whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            //     whereParts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
+            // } else {
+            //     // Диапазон
+            //     whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            //     whereParts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
+            // }
+
+            // // событие(я)
+            // whereParts.push(whereEvent);
+
+            // // user_id всегда после даты/события
+            // whereParts.push(`AND user_id = 'test_user_ID'`);
+
+            // // twelve_traits_enabled всегда перед ORDER BY
+            // whereParts.push(`AND twelve_traits_enabled IS NULL`);
+
+            // const whereFinal = whereParts.join('\n');
+
             const whereParts = [];
+
+            // 1) user_id первым
+            whereParts.push(`WHERE user_id = 'test_user_ID'`);
+
+            // 2) даты
             if (!isRange) {
                 // Сегодня
-                whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+                whereParts.push(`AND DATE(insertion_date) >= '${start}'`);
                 whereParts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
             } else {
                 // Диапазон
-                whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+                whereParts.push(`AND DATE(insertion_date) >= '${start}'`);
                 whereParts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
             }
 
-            // событие(я)
+            // 3) событие(я)
             whereParts.push(whereEvent);
 
-            // user_id всегда после даты/события
-            whereParts.push(`AND user_id = 'test_user_ID'`);
-
-            // twelve_traits_enabled всегда перед ORDER BY
+            // 4) тех.фильтр
             whereParts.push(`AND twelve_traits_enabled IS NULL`);
 
             const whereFinal = whereParts.join('\n');
+
 
             // 5) Финальный SQL с ORDER BY и limit
             let sql = '';
@@ -1393,14 +1686,40 @@ ORDER BY client_time DESC limit 1000;`;
 
 
             // Показать кнопку «per-event», только если выбрано ≥2 событий
+            // if (els.perEventControls) {
+            //     const many = selectedEvents.length > 1;
+            //     els.perEventControls.style.display = many ? 'block' : 'none';
+            //     if (!many && els.perEventContainer) {
+            //         els.perEventContainer.innerHTML = '';
+            //         els.perEventContainer.style.display = 'none';
+            //     }
+            // }
+
+            // ПЕРЕГЕНЕРАЦИЯ: всегда очищаем старые per-event результаты
+            if (els.perEventContainer) {
+                if (els.perEventContainer.replaceChildren) {
+                    els.perEventContainer.replaceChildren();      // быстро убрать все карточки
+                } else {
+                    els.perEventContainer.innerHTML = '';
+                }
+                els.perEventContainer.style.display = 'none';
+            }
+            // спрятать нижний блок "Download All" (появится только после нового пер-ивент Generate)
+            if (els.perEventAllWrap) {
+                els.perEventAllWrap.classList.add('hidden');
+                els.perEventAllWrap.style.display = 'none';
+            }
+
+            // Кнопка «Generate per-event queries» видима ТОЛЬКО если выбрано ≥2 событий,
+            // но сами карточки мы сейчас всегда очистили — пользователь нажмёт кнопку заново.
             if (els.perEventControls) {
                 const many = selectedEvents.length > 1;
                 els.perEventControls.style.display = many ? 'block' : 'none';
-                if (!many && els.perEventContainer) {
-                    els.perEventContainer.innerHTML = '';
-                    els.perEventContainer.style.display = 'none';
-                }
             }
+
+            // Отмечаем, что per-event список скрыт/не сгенерирован после нового Generate
+            ui.perEventShown = false;
+
 
             // NEW: remember selection at the moment of generation
             ui.lastGeneratedEvents = selectedEvents.slice();
@@ -1491,6 +1810,11 @@ ORDER BY client_time DESC limit 1000;`;
             moveClearBackToTopRow();
             syncClearButtonTopState();
 
+            genErrorArmed = false;
+            updateGenError();
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+
+
         });
 
 
@@ -1561,6 +1885,12 @@ ORDER BY client_time DESC limit 1000;`;
             moveClearBackToTopRow();
             syncClearButtonTopState();
             recalcState();
+
+            genErrorArmed = false;
+            updateGenError();
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+
+
         });
 
         els.refreshBtn?.addEventListener('click', () => {
@@ -1588,6 +1918,12 @@ ORDER BY client_time DESC limit 1000;`;
 
             // 5) вернуть раскладку панели к начальному виду (Copy | Refresh в TOP)
             setStateS0();
+
+            genErrorArmed = false;
+            updateGenError();
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+
+
         });
 
 
@@ -1602,6 +1938,11 @@ ORDER BY client_time DESC limit 1000;`;
             if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
             if (els.perEventControls) els.perEventControls.style.display = 'none';
             recalcState();
+
+            genErrorArmed = false;
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+
+
         });
 
 
@@ -1704,17 +2045,19 @@ ORDER BY client_time DESC limit 1000;`;
 
             // 2) общие параметры окружения/диапазона дат (как в основном генераторе)
             const esc = s => s.replace(/'/g, "''");
+            const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
 
-            let fromClause = '';
-            if (els.tableEnv.value === 'stage') {
-                fromClause =
-                    `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
---FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            } else {
-                fromClause =
-                    `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
-FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            }
+
+            //             let fromClause = '';
+            //             if (els.tableEnv.value === 'stage') {
+            //                 fromClause =
+            //                     `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+            // --FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+            //             } else {
+            //                 fromClause =
+            //                     `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
+            // FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
+            //             }
 
             let start = todayISO;
             let end = todayISO;
@@ -1729,29 +2072,61 @@ FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
                 start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
             }
 
+            // const buildWhere = (ev) => {
+            //     const parts = [];
+            //     if (!isRange) {
+            //         parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            //         parts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
+            //     } else {
+            //         parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+            //         parts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
+            //     }
+            //     parts.push(`AND event = '${esc(ev)}'`);
+            //     parts.push(`AND user_id = 'test_user_ID'`);
+            //     parts.push(`AND twelve_traits_enabled IS NULL`);
+            //     return parts.join('\n');
+            // };
+
             const buildWhere = (ev) => {
                 const parts = [];
+
+                // 1) user_id первым
+                parts.push(`WHERE user_id = 'test_user_ID'`);
+
+                // 2) даты
                 if (!isRange) {
-                    parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+                    parts.push(`AND DATE(insertion_date) >= '${start}'`);
                     parts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
                 } else {
-                    parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
+                    parts.push(`AND DATE(insertion_date) >= '${start}'`);
                     parts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
                 }
+
+                // 3) событие
                 parts.push(`AND event = '${esc(ev)}'`);
-                parts.push(`AND user_id = 'test_user_ID'`);
+
+                // 4) тех.фильтр
                 parts.push(`AND twelve_traits_enabled IS NULL`);
+
                 return parts.join('\n');
             };
+
 
             // 3) Рендерим блоки
             if (els.perEventContainer) {
                 els.perEventContainer.innerHTML = ''; // очистить перед новым выводом
                 for (const ev of selectedEvents) {
-                    const props = (state.byEvent.get(ev) || []).filter(Boolean);
-                    const fields = (props.length > 0)
-                        ? `event, client_time, server_time, written_by, ${props.join(', ')}`
-                        : `event, client_time, server_time, written_by`;
+                    // const rawProps = (state.byEvent.get(ev) || []).filter(Boolean);
+                    // const props = Array.from(new Set(expandProps(rawProps))); // ← разворачиваем + дедуп
+                    // const fields = (props.length > 0)
+                    //     ? `event, client_time, server_time, written_by, ${props.join(', ')}`
+                    //     : `event, client_time, server_time, written_by`;
+
+                    const rawProps = (state.byEvent.get(ev) || []).filter(Boolean);
+                    const props = Array.from(new Set(expandProps(rawProps)));
+                    const propsWithC = ensureTrailingC(props); // ← 'c' последним всегда
+                    const fields = `event, client_time, server_time, written_by, ${propsWithC.join(', ')}`;
+
 
                     const sql =
                         `SELECT ${fields}
@@ -1987,13 +2362,15 @@ ORDER BY client_time DESC limit 1000;`;
 
     // --- Авто-инициализация ---
     // Если внешняя обвязка не вызывает init(), сделаем это сами.
+    // --- Авто-инициализация ---
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            try { init(); } catch (e) { console.error('QC init error', e); }
+            init().catch(e => console.error('QC init error', e));
         });
     } else {
-        try { init(); } catch (e) { console.error('QC init error', e); }
+        init().catch(e => console.error('QC init error', e));
     }
+
 })();
 
 
