@@ -191,6 +191,8 @@
             genBtn: document.getElementById('genBtn'),
             genError: document.getElementById('genError'),
 
+            eventSource: document.getElementById('eventSource'),
+
         };
 
         // --- ID-алиасы: если разметка ещё со старыми ID ---
@@ -472,11 +474,6 @@
                 els.genError.classList.add('hidden');
             }
         }
-
-
-
-
-
 
         // --- HowTo tooltip open/close + scroll-hint ---
 
@@ -767,19 +764,6 @@
             return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
         }
 
-        //         // Шаблон для колонки Examples
-        //         const EXAMPLES_TEMPLATE =
-        //             `## Preconditions:
-        // —
-
-        // ### Steps
-        // 1. Step #1
-        //  *Expected:*
-
-
-        // 2. Step #2
-        //  *Expected:*`;
-
 
 
         // CSV-экранирование
@@ -791,7 +775,7 @@
         // Возвращает 3 строки FROM: активная без комментария, остальные — закомментированы
         function fromClauseFor(env) {
             const LINES = {
-                'stage': "FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC",
+                'stage': "FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC (od-rc)",
                 'prod-cheats': "FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- prod_cheats",
                 'prod': "FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod",
             };
@@ -803,26 +787,9 @@
 
         // Построить SQL для одного события (пер-ивент)
         function buildPerEventSQL(ev, props, env, dateStartISO, dateEndISO, isRange) {
+            const source = els.eventSource?.value || 'none';   // NEW
             const esc = s => s.replace(/'/g, "''");
             const fromClause = fromClauseFor(env);
-
-            //             const fromClause = (env === 'stage')
-            //                 ? `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC
-            // --FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`
-            //                 : `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA -- Staging / RC
-            // FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-
-            // const parts = [];
-            // if (!isRange) {
-            //     parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
-            //     parts.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
-            // } else {
-            //     parts.push(`WHERE DATE(insertion_date) >= '${dateStartISO}'`);
-            //     parts.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
-            // }
-            // parts.push(`AND event = '${esc(ev)}'`);
-            // parts.push(`AND user_id = 'test_user_ID'`);
-            ///parts.push(`AND twelve_traits_enabled IS NULL`);
 
             const parts = [];
 
@@ -844,23 +811,25 @@
             // 4) тех.фильтр
             parts.push(`AND twelve_traits_enabled IS NULL`);
 
-
-            // const expandedProps = expandProps(props || []);
-            // const dedupProps = Array.from(new Set(expandedProps));
-            // const fields = dedupProps.length
-            //     ? `event, client_time, server_time, written_by, ${dedupProps.join(', ')}`
-            //     : `event, client_time, server_time, written_by`;
-
             const expandedProps = expandProps(props || []);
             const dedupProps = Array.from(new Set(expandedProps));
-            const withC = ensureTrailingC(dedupProps); // ← прибьём 'c'
-            const fields = `event, client_time, server_time, written_by, ${withC.join(', ')}`;
+            const withC = ensureTrailingC(dedupProps); // ← 'c' последним всегда
+
+            const timeSelect =
+                source === 'server' ? 'server_time' :
+                    source === 'client' ? 'client_time' :
+                        'client_time, server_time';
+
+            const fields = `event, ${timeSelect}, written_by, ${withC.map(p => p).join(', ')}`;
 
 
             return `SELECT ${fields}
 ${fromClause}
 ${parts.join('\n')}
-ORDER BY client_time DESC limit 1000;`;
+ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
+--limit 1000;
+`;
+
         }
 
 
@@ -942,6 +911,15 @@ ${EXAMPLES_TEMPLATE}
             return `${prefix}_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.${ext}`;
         }
 
+        // Добавить метку источника в Title (если есть селект eventSource)
+        function prependSourceTag(title) {
+            const v = (els.eventSource && els.eventSource.value || '').toLowerCase();
+            if (v === 'server') return `[server] ${title}`;
+            if (v === 'client') return `[client] ${title}`;
+            return title; // none или селекта нет
+        }
+
+
         // Сбор «одного кейса» (верхний Download → .txt/.csv)
         function collectCombinedRow() {
             const sql = (els.sqlOutput?.value || '').trim();
@@ -959,6 +937,7 @@ ${EXAMPLES_TEMPLATE}
                 title = `Event: ${events[0]}`;
             }
 
+            title = prependSourceTag(title);   // NEW
             return { title, sql };
         }
 
@@ -971,7 +950,8 @@ ${EXAMPLES_TEMPLATE}
                     item.querySelector('.per-download')?.getAttribute('data-ev') ||
                     'event').trim();
                 const sql = (item.querySelector('textarea.per-sql')?.value || '').trim();
-                return sql ? { title: `Event: ${ev}`, sql } : null;
+                return sql ? { title: prependSourceTag(`Event: ${ev}`), sql } : null; // NEW
+
             }).filter(Boolean);
         }
         // ==================================================================
@@ -1515,8 +1495,9 @@ ${EXAMPLES_TEMPLATE}
         });
 
         els.genBtn.addEventListener('click', () => {
-            const mode = els.mode.value; // оставить
+            const source = (els.eventSource?.value || 'none');           // none | server | client
             const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
+
 
 
 
@@ -1525,18 +1506,6 @@ ${EXAMPLES_TEMPLATE}
                 .map(cb => cb.value)
                 .filter(Boolean);
 
-
-
-            // if (selectedEvents.length === 0) {
-            //     // раньше: писали текст в sqlOutput и прятали download
-            //     // теперь: показываем оранжевую ошибку под кнопкой
-            //     genErrorArmed = true;
-            //     updateGenError();
-
-            //     els.downloadCombo?.classList.add('hidden');
-            //     if (els.perEventControls) els.perEventControls.style.display = 'none';
-            //     return;
-            // }
 
             if (selectedEvents.length === 0) {
                 genErrorArmed = true;
@@ -1586,8 +1555,12 @@ ${EXAMPLES_TEMPLATE}
                 return arr;
             };
             const propsWithC = withTrailingC(uniqueProps);
+            const timeSelect =
+                source === 'server' ? 'server_time' :
+                    source === 'client' ? 'client_time' :
+                        'client_time, server_time';
 
-            const selectFields = `event, client_time, server_time, written_by, ${propsWithC.join(', ')}`;
+            const selectFields = `event, ${timeSelect}, written_by, ${propsWithC.join(', ')}`;
 
 
 
@@ -1615,28 +1588,6 @@ ${EXAMPLES_TEMPLATE}
             }
 
 
-            // const whereParts = [];
-            // if (!isRange) {
-            //     // Сегодня
-            //     whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
-            //     whereParts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
-            // } else {
-            //     // Диапазон
-            //     whereParts.push(`WHERE DATE(insertion_date) >= '${start}'`);
-            //     whereParts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
-            // }
-
-            // // событие(я)
-            // whereParts.push(whereEvent);
-
-            // // user_id всегда после даты/события
-            // whereParts.push(`AND user_id = 'test_user_ID'`);
-
-            // // twelve_traits_enabled всегда перед ORDER BY
-            // whereParts.push(`AND twelve_traits_enabled IS NULL`);
-
-            // const whereFinal = whereParts.join('\n');
-
             const whereParts = [];
 
             // 1) user_id первым
@@ -1656,44 +1607,52 @@ ${EXAMPLES_TEMPLATE}
             // 3) событие(я)
             whereParts.push(whereEvent);
 
+            // 3.1) фильтр по источнику (опционально)
+            if (source === 'server') whereParts.push(`AND written_by = 'server'`);
+            else if (source === 'client') whereParts.push(`AND written_by = 'client'`);
+
             // 4) тех.фильтр
             whereParts.push(`AND twelve_traits_enabled IS NULL`);
+
 
             const whereFinal = whereParts.join('\n');
 
 
             // 5) Финальный SQL с ORDER BY и limit
-            let sql = '';
-            if (mode === 'property_in') {
-                sql =
-                    `SELECT ${selectFields}
+            //             let sql = '';
+            //             if (mode === 'property_in') {
+            //                 sql =
+            //                     `SELECT ${selectFields}
+            // ${fromClause}
+            // ${whereFinal}
+            // ORDER BY client_time DESC 
+            // --ORDER BY server_time DESC 
+            // --limit 1000;`;
+            //             } else {
+            //                 sql =
+            //                     `SELECT ${selectFields}
+            // ${fromClause}
+            // ${whereFinal}
+            // ORDER BY client_time DESC limit 1000;`;
+            //             }
+            //             els.sqlOutput.value = sql;
+
+            // 5) Финальный SQL с ORDER BY и limit
+            const orderField = (source === 'server') ? 'server_time' : 'client_time';
+
+            const sql =
+                `SELECT ${selectFields}
 ${fromClause}
 ${whereFinal}
-ORDER BY client_time DESC 
---ORDER BY server_time DESC 
+ORDER BY ${orderField} DESC
 --limit 1000;`;
-            } else {
-                sql =
-                    `SELECT ${selectFields}
-${fromClause}
-${whereFinal}
-ORDER BY client_time DESC limit 1000;`;
-            }
+
             els.sqlOutput.value = sql;
+
+
             els.copyStatus.textContent = '';
             els.copyStatus.classList.remove('ok', 'warn');
             els.downloadCombo?.classList.remove('hidden');
-
-
-            // Показать кнопку «per-event», только если выбрано ≥2 событий
-            // if (els.perEventControls) {
-            //     const many = selectedEvents.length > 1;
-            //     els.perEventControls.style.display = many ? 'block' : 'none';
-            //     if (!many && els.perEventContainer) {
-            //         els.perEventContainer.innerHTML = '';
-            //         els.perEventContainer.style.display = 'none';
-            //     }
-            // }
 
             // ПЕРЕГЕНЕРАЦИЯ: всегда очищаем старые per-event результаты
             if (els.perEventContainer) {
@@ -2037,6 +1996,9 @@ ORDER BY client_time DESC limit 1000;`;
                 .map(cb => cb.value)
                 .filter(Boolean);
 
+            const source = els.eventSource?.value || 'none'; // NEW
+
+
             if (!selectedEvents || selectedEvents.length < 2) {
                 // Нечего генерировать
                 if (els.perEventControls) els.perEventControls.style.display = 'none';
@@ -2047,17 +2009,6 @@ ORDER BY client_time DESC limit 1000;`;
             const esc = s => s.replace(/'/g, "''");
             const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
 
-
-            //             let fromClause = '';
-            //             if (els.tableEnv.value === 'stage') {
-            //                 fromClause =
-            //                     `FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
-            // --FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            //             } else {
-            //                 fromClause =
-            //                     `--FROM trtdpstaging.STG_TRT_STR_EVENT.TRT_EVENT_STREAM_QA --Staging / RC
-            // FROM trtstreamingdata.TRT_STR_EVENT.TRT_EVENT_STREAM -- Prod`;
-            //             }
 
             let start = todayISO;
             let end = todayISO;
@@ -2072,20 +2023,7 @@ ORDER BY client_time DESC limit 1000;`;
                 start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
             }
 
-            // const buildWhere = (ev) => {
-            //     const parts = [];
-            //     if (!isRange) {
-            //         parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
-            //         parts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
-            //     } else {
-            //         parts.push(`WHERE DATE(insertion_date) >= '${start}'`);
-            //         parts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
-            //     }
-            //     parts.push(`AND event = '${esc(ev)}'`);
-            //     parts.push(`AND user_id = 'test_user_ID'`);
-            //     parts.push(`AND twelve_traits_enabled IS NULL`);
-            //     return parts.join('\n');
-            // };
+
 
             const buildWhere = (ev) => {
                 const parts = [];
@@ -2104,6 +2042,11 @@ ORDER BY client_time DESC limit 1000;`;
 
                 // 3) событие
                 parts.push(`AND event = '${esc(ev)}'`);
+
+                // 3.1) фильтр по источнику (если выбран)
+                if (source === 'server') parts.push(`AND written_by = 'server'`);
+                else if (source === 'client') parts.push(`AND written_by = 'client'`);
+
 
                 // 4) тех.фильтр
                 parts.push(`AND twelve_traits_enabled IS NULL`);
@@ -2125,14 +2068,21 @@ ORDER BY client_time DESC limit 1000;`;
                     const rawProps = (state.byEvent.get(ev) || []).filter(Boolean);
                     const props = Array.from(new Set(expandProps(rawProps)));
                     const propsWithC = ensureTrailingC(props); // ← 'c' последним всегда
-                    const fields = `event, client_time, server_time, written_by, ${propsWithC.join(', ')}`;
+                    const timeSelect =
+                        source === 'server' ? 'server_time' :
+                            source === 'client' ? 'client_time' :
+                                'client_time, server_time';
+
+                    const fields = `event, ${timeSelect}, written_by, ${propsWithC.join(', ')}`;
 
 
                     const sql =
                         `SELECT ${fields}
 ${fromClause}
 ${buildWhere(ev)}
-ORDER BY client_time DESC limit 1000;`;
+ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
+--limit 1000;
+`;
 
                     // Карточка для одного события
                     const wrap = document.createElement('div');
@@ -2280,9 +2230,10 @@ ORDER BY client_time DESC limit 1000;`;
                 }
                 const sql = buildPerEventSQL(ev, props, env, start, end, isRange);
                 openCsvModal({
-                    getRows: () => [{ title: `Event: ${ev}`, sql }],
+                    getRows: () => [{ title: prependSourceTag(`Event: ${ev}`), sql }], // NEW
                     fileNamePrefix: `EVENT_${ev}`
                 });
+
                 return;
             }
 

@@ -66,9 +66,7 @@
                                     class="howto-img howto-img--testomat" data-zoom="half">
                                 <span class="zoom-badge" aria-hidden="true"></span>
                             </div>
-
                         </li>
-
                         </li>
                     </ol>
                 </div>
@@ -134,7 +132,7 @@
 
 
                 <!---------New field end---------->
-                <label class="label step-label">1.2 Select a BQ Table and Generation mode</label>
+                <label class="label step-label">1.2 Select a BQ Table and Event source</label>
 
                 <div class="row">
                     <div class="field">
@@ -145,17 +143,21 @@
                                 <option value="prod-cheats">Prod-cheats</option>
                                 <option value="prod">Production</option>
                             </select>
-
                         </div>
                     </div>
+
+                    <!-- Новый селект Event source -->
                     <div class="field">
-                        <label class="label">Generation mode</label>
-                        <select id="mode">
-                            <option value="property_in">SELECT event ...</option>
-                            <option value="distinct_props">SELECT DISTINCT event ...</option>
+                        <label class="label">Event source</label>
+                        <select id="eventSource">
+                            <option value="none" selected>None</option>
+                            <option value="server">Server</option>
+                            <option value="client">Client</option>
                         </select>
+
                     </div>
                 </div>
+
 
                 <label class="label step-label">1.3 Select a date (optional, default is today)</label>
 
