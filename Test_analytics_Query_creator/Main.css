@@ -41,7 +41,7 @@ body.sb-collapsed {
     color: var(--text);
     font-weight: 700;
     border-bottom: 1px solid var(--sidebar-edge);
-    background: var(--card);
+    background: var(--sidebar);
     line-height: 0;
 }
 
@@ -161,7 +161,7 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     margin: 6 px auto;
     width: 44px;
     height: 44px;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 /* 1) Вообще убираем подпись из разметки в узкой панели */
@@ -271,7 +271,7 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     width: 44px;
     height: 44px;
     border: none;
-    border-radius: 12px;
+    border-radius: 6px;
     background: transparent;
 }
 
@@ -293,6 +293,37 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     background-size: 22px 22px;
     opacity: .95;
 }
+
+/* Robust centering tied to sizes */
+:root {
+    --theme-knob: 30px;
+    /* #themeSlider .knob width/height */
+    --theme-pad: 4px;
+    /* отступ knob от края трека */
+    --theme-ico: 24px;
+    /* размер иконок day/night */
+}
+
+#themeSlider .ico.day {
+    left: calc(var(--theme-pad) + (var(--theme-knob) - var(--theme-ico))/2) !important;
+}
+
+#themeSlider .ico.night {
+    right: calc(var(--theme-pad) + (var(--theme-knob) - var(--theme-ico))/2) !important;
+}
+
+
+/* Align theme icons to knob center */
+#themeSlider .ico.day {
+    left: 7px !important;
+}
+
+/* 4px отступ + (30-24)/2 = 7 */
+#themeSlider .ico.night {
+    right: 7px !important;
+}
+
+/* симметрия справа */
 
 
 #sidebar.collapsed #themeSlider.is-light::before {
@@ -316,10 +347,10 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     padding: 10px 14px;
     font-size: 15px;
     line-height: 1.25;
-    color: var(--text);
-    background: #0e1015;
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    color: var(--tooltip-fg, var(--text));
+    background: var(--tooltip-bg, #0e1015);
+    border: 1px solid var(--tooltip-border, var(--border));
+    border-radius: 6px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
     white-space: nowrap;
     opacity: 0;
@@ -376,10 +407,10 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     font-size: 12px;
     font-weight: 500;
     line-height: 1.25;
-    color: var(--text);
-    background: #0e1015;
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    color: var(--tooltip-fg, var(--text));
+    background: var(--tooltip-bg, #0e1015);
+    border: 1px solid var(--tooltip-border, var(--border));
+    border-radius: 6px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
     white-space: nowrap;
     z-index: 1000;
@@ -392,9 +423,9 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     top: 50%;
     left: calc(100% + 4px);
     transform: translateY(-50%);
-    border: 8px solid transparent;
+    border: 6px solid transparent;
     border-right: none;
-    border-left-color: #0e1015;
+    border-left-color: var(--tooltip-bg, #0e1015);
     z-index: 1001;
 }
 
@@ -410,10 +441,10 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     font-size: 12px;
     font-weight: 500;
     line-height: 1.25;
-    color: var(--text);
-    background: #0e1015;
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    color: var(--tooltip-fg, var(--text));
+    background: var(--tooltip-bg, #0e1015);
+    border: 1px solid var(--tooltip-border, var(--border));
+    border-radius: 6px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
     white-space: nowrap;
     z-index: 1000;
@@ -425,11 +456,47 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     top: 50%;
     left: calc(100% + 4px);
     transform: translateY(-50%);
-    border: 8px solid transparent;
+    border: 6px solid transparent;
     border-right: none;
-    border-left-color: #0e1015;
+    border-left-color: var(--tooltip-bg, #0e1015);
     z-index: 1001;
 }
+
+/* === Collapsed sidebar: item hover tooltip === */
+.side-hover-tip {
+    position: fixed;
+    z-index: 1200;
+    pointer-events: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--tooltip-bg, #111827);
+    color: var(--tooltip-fg, #fff);
+    border: 1px solid var(--tooltip-border, rgba(17, 24, 39, .7));
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .25);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity .12s ease, transform .12s ease;
+}
+
+.side-hover-tip.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.side-hover-tip::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    margin-top: -6px;
+    border: 6px solid transparent;
+    border-right-color: var(--tooltip-bg, #111827);
+}
+
 
 
 /* курсор-стрелка как в ChatGPT: → когда панель закрыта, ← когда открыта */
@@ -484,7 +551,7 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     gap: 10px;
     padding: 10px 12px;
     margin: 0 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--text);
     cursor: pointer;
     transition: background .15s ease, color .1s ease, transform .1s ease;
@@ -497,15 +564,17 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
 
 .tab:active {
     transform: scale(.99);
+    /* тёплый «нажатый» фон в светлой теме */
+    background: var(--sidebar-pressed, var(--sidebar-hover));
 }
 
 
 /* Активная вкладка = «пилюля» с округлением */
 .tab.active {
-    background: var(--sidebar-active);
-    color: var(--sidebar-active-fg);
+    background: var(--sidebar-selected, var(--sidebar-active));
+    color: var(--sidebar-selected-fg, var(--sidebar-active-fg));
     font-weight: 700;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 
@@ -656,9 +725,9 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     font-size: 15px;
     /* ~1.5x от базового */
     line-height: 1.25;
-    color: var(--text);
-    background: #0e1015;
-    border: 1px solid var(--border);
+    color: var(--tooltip-fg, var(--text));
+    background: var(--tooltip-bg, #0e1015);
+    border: 1px solid var(--tooltip-border, var(--border));
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
     white-space: nowrap;
@@ -675,7 +744,7 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     left: 50%;
     transform: translateX(-50%);
     border: 8px solid transparent;
-    border-top-color: #0e1015;
+    border-top-color: var(--tooltip-bg, #0e1015);
     /* стрелка вниз */
 }
 
@@ -708,4 +777,15 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
 
 #themeSlider .hit-right:hover~.tip-right {
     opacity: 1;
+}
+
+/* Unify: отключаем «локальные» тултипы у переключателя темы,
+   используем общий .side-hover-tip с текстом из JS */
+#themeSlider .tip,
+#themeSlider .tip::after,
+#sidebar.collapsed #themeSlider.is-light:hover::after,
+#sidebar.collapsed #themeSlider.is-night:hover::after {
+    display: none !important;
+    opacity: 0 !important;
+    content: none !important;
 }
