@@ -104,8 +104,11 @@
                 <!-- ▼ Режим 1: загрузка файла -->
                 <div id="mode-file" class="input-mode active">
                     <div class="input-section">
-                        <label class="label">Upload TSV/TLS file</label>
-
+                        <div class="label-row">
+                            <label class="label">Upload TSV/TLS file</label>
+                            <button type="button" id="modeFileInfo" class="info-dot-upload"
+                                aria-label="How to: Upload TSV/TLS file" title="How to: Upload TSV/TLS file">i</button>
+                        </div>
                         <!-- переключатель: 1 table / 2 tables -->
                         <div class="row" style="margin-top:8px;">
                             <label class="mode-item">
@@ -159,7 +162,7 @@
                     </div>
 
                     <div class="input-section">
-                        <label class="label">Input source</label>
+                        <label class="label">Event source</label>
                         <select class="eventSource" id="eventSourceSeparate">
                             <option value="none" selected>None</option>
                             <option value="client">Client</option>
@@ -178,7 +181,7 @@
                         placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
                     <div class="row" style="margin:8px 0;">
                         <div class="field">
-                            <label class="label">Input source</label>
+                            <label class="label">Event source</label>
                             <select class="eventSource" id="eventSourcePaste">
                                 <option value="none" selected>None</option>
                                 <option value="client">Client</option>

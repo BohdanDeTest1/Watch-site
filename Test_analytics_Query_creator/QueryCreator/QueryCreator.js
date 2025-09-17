@@ -214,6 +214,7 @@
             eventsServerWrap: document.getElementById('eventsServerWrap'),
             eventsNoneWrap: document.getElementById('eventsNoneWrap'), // NEW
 
+
         };
 
         // --- ID-алиасы: если разметка ещё со старыми ID ---
@@ -475,15 +476,35 @@
             }
         });
 
+        // маленькая "i" рядом с "Upload TSV/TLS file"
+        document.getElementById('modeFileInfo')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // ← важно: не даём всплыть до document-клик-закрывалки
+            openHowto();
+            const firstStep = els.howtoTooltip?.querySelector('.howto-tooltip__body ol > li');
+            firstStep?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        });
+
+        // // Клик вне тултипа — закрыть (но игнорим клик по модальному zoom-изображению)
+        // document.addEventListener('click', (e) => {
+        //     if (document.getElementById('howtoImgOverlay')) return; // не закрываем, если открыт zoom
+        //     if (!els.howtoTooltip || !els.howtoTooltip.classList.contains('open')) return;
+        //     const insideTip = e.target.closest('#howtoTooltip');
+        //     const onBtn = e.target.closest('#howtoBtn');
+        //     if (insideTip || onBtn) return;
+        //     closeHowto();
+        // });
+
         // Клик вне тултипа — закрыть (но игнорим клик по модальному zoom-изображению)
         document.addEventListener('click', (e) => {
-            if (document.getElementById('howtoImgOverlay')) return; // не закрываем, если открыт zoom
+            if (document.getElementById('howtoImgOverlay')) return;
             if (!els.howtoTooltip || !els.howtoTooltip.classList.contains('open')) return;
             const insideTip = e.target.closest('#howtoTooltip');
-            const onBtn = e.target.closest('#howtoBtn');
+            const onBtn = e.target.closest('#howtoBtn, #modeFileInfo'); // ← добавили вашу кнопку
             if (insideTip || onBtn) return;
             closeHowto();
         });
+
 
         // Клик по бэкдропу — тоже закрыть
         backdropEl?.addEventListener('click', closeHowto);
