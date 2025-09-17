@@ -1,0 +1,301 @@
+Event	Event description	Written by	Exists?	Status	property status?	Area	Property	Type	Property description	Complete output list	Approval query -QA	QA User id	Type (hide this column)
+special_event_activated	Combo server activation	Server	Yes	untested	Need to add values		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.				STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING					STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub events configured in the puzzle paints	3			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	0,1			INTEGER
+				untested	No change		extra_ind	INTEGER	bar configuration indicator: 1 if bar configured, 0 if not configured				INTEGER
+puzzle_paints_game_activated	Puzzle paints server activation (idnetical to special_event_activated)	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change	Configuration	service_name	STRING	Name of service				STRING
+				untested	No change		segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		length	FLOAT	duration of event in minutes (end_date - start_date)				FLOAT
+				untested	No change		max_amount	INTEGER	Number of sub events configured in the puzzle paints	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	0,1			INTEGER
+				untested	No change		extra_ind	INTEGER	bar configuration indicator: 1 if bar configured, 0 if not configured				INTEGER
+puzzle_paints_sub_event_started	Puzzle paints sub event started	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub events configured in the puzzle paints	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+				untested	No change		extra_ind	INTEGER	bar configuration indicator: 1 if bar configured, 0 if not configured				INTEGER
+				untested	No change		event_index	INTEGER	Current sub event index, In case of repeating the last event configured this field could be the value of the last event				INTEGER
+puzzle_paints_sub_event_completed	Puzzle paints sub event completed	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub events configured in the puzzle paints	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+				untested	No change		event_index	INTEGER	Current sub event index, In case of repeating the last event configured this field could be the value of the last event				INTEGER
+				untested	No change	sub event reward	resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+				untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+				untested	No change		transaction_item_*	STRING	Item reward name [1-5]				STRING
+				untested	No change		transaction_item_amount_*	INTEGER	Item reward amount [1-5]				INTEGER
+				untested	No change		received_resource_name_1	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_2	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_2	INTEGER	Corresponding amount of each resource				INTEGER
+puzzle_paints_level_started	Puzzle paints new level started	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.				STRING
+				untested	No change		name	STRING	Event name in Game Control				STRING
+				untested	No change		configuration_name	STRING	Configuration name				STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index				STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box				STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp				TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp				TIMESTAMP
+				untested	No change		rank	INTEGER	Number of levels configured in the spesific sub_event				INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)				INTEGER
+				untested	No change		item_amount	FLOAT	Number of paints configured in level (number of guessing slots)	3-7			FLOAT
+				untested	No change		product_amount	INTEGER	the sum of the tokens the users needs to spend in order to pass the level (min of the batch, a batch can be 3 levels in a subevent)	5			INTEGER
+				untested	No change		event_level	INTEGER	Current level				INTEGER
+				untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded (number of guesses)				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded (number of guesses)	number of guesses			INTEGER
+				untested	No change	Level Rewards	reward_items	STRING	Rewards json				STRING
+				untested	No change		resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+				untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+				untested	No change		transaction_item_*	STRING	Item reward name [1-5]				STRING
+				untested	No change		transaction_item_amount_*	INTEGER	Item reward amount [1-5]				INTEGER
+				untested	No change		received_resource_name_1	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_2	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_2	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_3	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_3	INTEGER	Corresponding amount of each resource				INTEGER
+puzzle_paints_level_completed	Puzzle paints level completed, will only report when the user guess the right paints order	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.				STRING
+				untested	No change		name	STRING	Event name in Game Control				STRING
+				untested	No change		configuration_name	STRING	Configuration name				STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index				STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box				STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp				TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp				TIMESTAMP
+				untested	No change		rank	INTEGER	Number of levels configured in the spesific sub_event				INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	0,1			INTEGER
+				untested	No change		item_amount	FLOAT	Number of paints configured in level (number of guessing slots)	3-7			FLOAT
+				untested	No change		product_amount	INTEGER	the sum of the tokens the users needs to spend in order to pass the level (min of the batch, a batch can be 3 levels in a subevent)	5			INTEGER
+				untested	No change		event_level	INTEGER	Current level				INTEGER
+				untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded (number of guesses)				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded (number of guesses)				INTEGER
+				untested	No change	Level Rewards	reward_items	STRING	Rewards json				STRING
+				untested	No change		resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+				untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+				untested	No change		transaction_item_*	STRING	Item reward name [1-5]				STRING
+				untested	No change		transaction_item_amount_*	INTEGER	Item reward amount [1-5]				INTEGER
+				untested	No change		received_resource_name_1	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_2	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_2	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_3	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_3	INTEGER	Corresponding amount of each resource				INTEGER
+puzzle_paints_wrong_guess	reports after the user made a wrong guess	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.				STRING
+				untested	No change		name	STRING	Event name in Game Control				STRING
+				untested	No change		configuration_name	STRING	Configuration name				STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index				STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box				STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp				TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp				TIMESTAMP
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	0,1			INTEGER
+				untested	No change		event_level	INTEGER	Current level				INTEGER
+				untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+				untested	No change		item_amount	FLOAT	Number of paints configured in level (number of guessing slots)	1-to the max number of slots			FLOAT
+				untested	No change		amount	INTEGER	how many more slots the user should guess				INTEGER
+				untested	No change		item_name	STRING	String for the index of right or wrong guess (letter from a to f for each color and * for right/wrong guess)	a*f**			STRING
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after the guess (number of guesses)				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after the guess (number of guesses)				INTEGER
+puzzle_paints_completed	Puzzle paints completedwhen the user completed all sub events (if it's endless this event will not be reported)	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub events configured in the puzzle paints	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	0,1			INTEGER
+event_ended	Reports when the event ends calendric, or when the user completes the event	Server	Yes	untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		type	STRING	Name of feature	rng/rngpowerboost/rngboardevent/rngpowerboostboardevent/eventxprush/puzzle_paints			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), atrt time and segment index: event name || start_date || segment index				STRING
+				untested	No change		reason	STRING	Reason for event ended	completed_request, end_request, end_date, missing_event			STRING
+puzzle_paints_event_ended	Reports when the event ends calendric, or when the user completes the event	Server	No	untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		type	STRING	Name of feature	rng/rngpowerboost/rngboardevent/rngpowerboostboardevent/eventxprush/puzzle_paints			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), atrt time and segment index: event name || start_date || segment index				STRING
+				untested	No change		reason	STRING	Reason for event ended	completed_request, end_request, end_date, missing_event			STRING
+puzzle_paints_reward_granted	Reward Granted from puzzle paints(either from completing level or from completing bar)	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change	Reward Source	reason	STRING	Source of reward	puzzle_paints			STRING
+				untested	No change		sub_reason	STRING	from where in the puzzle paints the user received the rewrad	level_completed, sub_event_completed (grand prize)			STRING
+				untested	No change	Level	event_level	INTEGER	index for the specific level				INTEGER
+				untested	No change		event_index	INTEGER	index for the specific sub_event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+				untested	No change	Reward Details	reward_items	STRING	Rewards json				STRING
+				untested	No change		resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+				untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+				untested	No change		transaction_item_*	STRING	Item reward name [1-5]				STRING
+				untested	No change		transaction_item_amount_*	INTEGER	Item reward amount [1-5]				INTEGER
+				untested	No change		received_resource_name_1	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_2	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_2	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change		received_resource_name_3	STRING	One parameter for each generic token resource type updated				STRING
+				untested	No change		received_resource_amount_3	INTEGER	Corresponding amount of each resource				INTEGER
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status -- when guesses rewarded (number of guesses)				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded -- when guesses rewarded (number of guesses)				INTEGER
+resource_gained_server		Server	Yes	untested	No change	Reward Source	reason	STRING	Source of the reward	puzzle_paints - when receiving resource from the eventwhen receving the puzzle paints tokens - from where the user received it			STRING
+				untested	No change		event_id	STRING	Event_id of the reward source	puzzle_paints - when receiving resource from the eventwhen receving the puzzle paints tokens - from where the user received it			STRING
+				untested	No change		live_ops_event_id	STRING	live_ops_event_id of the board event that the generic tokens were received from				STRING
+				untested	No change	Reward Target	parent_event_id	STRING	event_id of the reward target (the liveop for which the Generic Token is used)	puzzle_paints			STRING
+				untested	No change		placement_name	STRING	Type of the target liveop (the liveop's type for which the Generic Token is used)	puzzle_paints			STRING
+				untested	No change	Token Details	merge_resource_type	STRING	Generic Token Type (name)				STRING
+				untested	No change		merge_resource_amount	INTEGER	Amount of the generic token				INTEGER
+				untested	No change	Reward Details	resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+				untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status -- when guesses rewarded				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded -- when guesses rewarded				INTEGER
+				untested	No change	Level	event_level	INTEGER	index for the specific level				INTEGER
+				untested	No change		event_index	INTEGER	index for the specific sub_event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+resource_consumed_server	resource_consumed_server will be reported 1 time for a level guess, when users guess it's only UI changes until the user click guess	Server	Yes	untested	No change	Reward Source	reason	STRING	the source of the resource	puzzle_paints			STRING
+				untested	No change		event_id	STRING	Event_id of the reward source				STRING
+				untested	No change	Token Details	merge_resource_type	STRING	Generic Token Type (name)				STRING
+				untested	No change		merge_resource_amount	INTEGER	Amount of the generic token				INTEGER
+				untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status -- when guesses rewarded (number of guesses)				STRING
+				untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded -- when guesses rewarded (number of guesses)				INTEGER
+				untested	No change	Level	event_level	INTEGER	Sub-source of reward				INTEGER
+				untested	No change		event_index	INTEGER	index for the specific sub_event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+reward_collected		Server	Yes	untested	No change	Configuration	request_id	STRING	unique id that will be identical for all chest reward flow				STRING
+				untested	No change		reward_name	STRING	Unique reward ID linking between reward granted, created and collected				STRING
+				untested	No change		event_id	STRING	[name]_[segment index]_[start date=local time (UTC)]				STRING
+				untested	No change		reason	STRING	Source of reward created				STRING
+				untested	No change	Reward Details	resource_amount_HC	INTEGER	Number of diamonds granted				INTEGER
+				untested	No change		resource_amount_Smiley	INTEGER	Number of smileys granted				INTEGER
+				untested	No change		resource_amount_Energy	INTEGER	Number of energy units granted				INTEGER
+				untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units granted				INTEGER
+				untested	No change		resource_amount_vanity_island_tokens	INTEGER	vanity tokens value				INTEGER
+				untested	No change		transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING
+				untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER
+				untested	No change		reward_items	STRING	JSON listing of all items and resources rewarded				STRING
+				untested	No change		product_amount	INTEGER	The number of distinct rewards collected				INTEGER
+puzzle_paints_bar_activated	puzzle_paints_bar_activated	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	2			INTEGER
+				untested	No change		extra_ind	INTEGER	bar configuration indicator: 1 if bar configured, 0 if not configured				INTEGER
+puzzle_paints_bar_points_granted	Points granted towards bar, as a result of completing a designated action	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Combo Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+				untested	No change	Bar Configuration	step_id	INTEGER	Value configured for RepeatLastMissions (null if no repeat configured)				INTEGER
+				untested	No change		step	INTEGER	Number of missions configured				INTEGER
+				untested	No change	Points Granted	amount	INTEGER	Number of points granted as a result of completing the action				INTEGER
+				untested	No change		reason	STRING	Action for which points were granted	items_merged, order_completed, item_purchased, bubble_burst, energy_consumed			STRING
+				untested	No change		source_item_1	STRING	If action=items merged: item ID of the first item involved in the merge				STRING
+				untested	No change		source_item_2	STRING	If action=items merged: item ID of the second item involved in the merge (potentially different from first item, if a joker item was used in merge), else null				STRING
+				untested	No change		merge_item_level	INTEGER	If action=items merged: item level of item merged				INTEGER
+				untested	No change		difficulty_score	FLOAT	Difficulty score of merged item/order completed/item purchased, null if not relevant				FLOAT
+				untested	No change		task_id	STRING	If action=order completed: return order task_id, else null				STRING
+				untested	No change		task_type	STRING	If action=order completed: return order task_type, else null				STRING
+				untested	No change		order_id	STRING	If action=order completed: return order order_id, else null				STRING
+				untested	No change		lane	STRING	If action=order completed: return order lane, else null				STRING
+				untested	No change		resource_amount_Energy	INTEGER	If action=energy consumed: number of energy units consumed, else null				INTEGER
+				untested	No change	Bar State	level_target_points	INTEGER	Configured point goal for Bar mission (original mission before points granted)				INTEGER
+				untested	No change		points_balance	INTEGER	Number of points accumulated in Bar mission (mission reached after points granted)				INTEGER
+				untested	No change		current_mission_index	INTEGER	Mission index (original mission before points granted)				INTEGER
+				untested	No change		final_mission_index	INTEGER	Mission index (mission reached after points granted)				INTEGER
+				untested	No change		final_mission_overflow	INTEGER	Number of points overflow carried over from original mission index				INTEGER
+puzzle_paints_bar_mission_started	bar (point accumulation bar on widget) started	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Combo Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+				untested	No change		pay_table	STRING	Pay table: [{actionType:x,field:y,operator:<>=,pointsMultiplier:z,value:0},...]	[{"actionType":"completeOrders","field":"difficultyScore","operator":">=","pointsMultiplier":7,"value":0},...]			STRING
+				untested	No change	Bar Configuration & State	extra_ind	INTEGER	Value configured for RepeatLastMissions (null if no repeat configured)				INTEGER
+				untested	No change		step	INTEGER	Number of missions configured				INTEGER
+				untested	No change		level_target_points	INTEGER	Configured point goal for started Bar mission				INTEGER
+				untested	No change		points_balance	INTEGER	Number of points accumulated in Bar mission				INTEGER
+				untested	No change		current_mission_index	INTEGER	Mission index				INTEGER
+				untested	No change	Mission Bar Reward	received_resource_name_1	STRING	Generic token resource type offered as reward for completing mission				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Number of generic token resourced offered as reward for completing mission				INTEGER
+puzzle_paints_bar_mission_completed	bar (point accumulation bar on widget) completed	Server	No	untested	No change		type	STRING	Name of feature	puzzle_paints			STRING
+				untested	No change		service_name	STRING	Name of service				STRING
+				untested	No change	Combo Configuration	segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	payer			STRING
+				untested	No change		name	STRING	Event name in Game Control	merge_48_v4			STRING
+				untested	No change		configuration_name	STRING	Shared config name	board_liveop_merge_48_v2			STRING
+				untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+				untested	No change		theme_id	STRING	theme_id of the genric box	green			STRING
+				untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+				untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+				untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+				untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+				untested	No change	Bar Configuration & State	extra_ind	INTEGER	Value configured for RepeatLastMissions (null if no repeat configured)				INTEGER
+				untested	No change		step	INTEGER	Number of missions configured				INTEGER
+				untested	No change		level_target_points	INTEGER	Configured point goal for completed				INTEGER
+				untested	No change		points_balance	INTEGER	Number of points accumulated in Bar mission				INTEGER
+				untested	No change		current_mission_index	INTEGER	Mission index of original completed mission				INTEGER
+				untested	No change	Overflow	final_mission_index	INTEGER	Mission index reached after overflow				INTEGER
+				untested	No change		final_mission_overflow	INTEGER	Number of points overflow carried over from original mission index				INTEGER
+				untested	No change	Mission Bar Reward	received_resource_name_1	STRING	Generic token resource type offered as reward for completing mission				STRING
+				untested	No change		received_resource_amount_1	INTEGER	Number of generic token resourced offered as reward for completing mission				INTEGER

@@ -7,9 +7,6 @@
     async function ensureMarkup(container) {
         let tpl = document.getElementById('qc-root');
         if (!tpl) {
-            // 1) сначала пробуем ./QueryCreator.html (рядом со скриптом)
-            // 2) если не получилось — старый путь QueryCreator/QueryCreator.html
-            // 3) если и он не сработал (например, file://), просто не падаем
             const tryPaths = ['QueryCreator.html', 'QueryCreator/QueryCreator.html'];
             for (const p of tryPaths) {
                 try {
@@ -37,7 +34,6 @@
             mountPoint.appendChild(tpl.cloneNode(true));
         }
     }
-
 
     // ДЕЛАЕМ init асинхронным и сначала гарантируем разметку
     async function init(container) {
@@ -79,8 +75,6 @@
             return [...withoutC, 'c'];
         }
 
-
-
         // === Заголовки столбцов: нормализация + варианты названий ===
         const normalizeHeader = (s) =>
             (s ?? '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
@@ -95,12 +89,16 @@
         const findHeaderIndex = (headersNormalized, candidates) =>
             headersNormalized.findIndex(h => candidates.includes(h));
 
-
         const state = {
             rows: [],
             headers: [],
             colIdx: { event: -1, property: -1 },
-            byEvent: new Map(), // event -> Set(properties)
+
+            // общий словарь event -> [properties] (как было)
+            byEvent: new Map(),
+
+            // источник для каждого event: 'client' | 'server' | 'none'
+            sourceOfEvent: new Map(),
         };
 
         const els = {
@@ -123,6 +121,9 @@
             eventsInput: document.getElementById('eventsInput'),
             propertiesInput: document.getElementById('propertiesInput'),
             tlsFile: document.getElementById('tlsFile'),
+            eventSourceSeparate: document.getElementById('eventSourceSeparate'),
+            eventSourcePaste: document.getElementById('eventSourcePaste'),
+
             // режимы ввода
             modeSeparate: document.getElementById('modeSeparate'),
             modeFile: document.getElementById('modeFile'),
@@ -191,7 +192,27 @@
             genBtn: document.getElementById('genBtn'),
             genError: document.getElementById('genError'),
 
-            eventSource: document.getElementById('eventSource'),
+            // dual-file
+            oneTable: document.getElementById('oneTable'),
+            twoTables: document.getElementById('twoTables'),
+            tlsFileA: document.getElementById('tlsFileA'),
+            tlsFileB: document.getElementById('tlsFileB'),
+            eventSourceA: document.getElementById('eventSourceA'),
+            eventSourceB: document.getElementById('eventSourceB'),
+
+            // grouped event lists
+            eventListClient: document.getElementById('eventListClient'),
+            eventListServer: document.getElementById('eventListServer'),
+            eventsClientWrap: document.getElementById('eventsClientWrap'),
+            eventsServerWrap: document.getElementById('eventsServerWrap'),
+
+            // grouped event lists
+            eventListClient: document.getElementById('eventListClient'),
+            eventListServer: document.getElementById('eventListServer'),
+            eventListNone: document.getElementById('eventListNone'),   // NEW
+            eventsClientWrap: document.getElementById('eventsClientWrap'),
+            eventsServerWrap: document.getElementById('eventsServerWrap'),
+            eventsNoneWrap: document.getElementById('eventsNoneWrap'), // NEW
 
         };
 
@@ -205,6 +226,31 @@
         els.downloadAllOptCsv = els.downloadAllOptCsv || els.downloadAllCsv;
 
 
+        // --- локальные Select all / Clear под каждым списком (делегирование на eventPicker) ---
+        els.eventPicker?.addEventListener('click', (e) => {
+            const btn = e.target.closest('button.select-clear');
+            if (!btn) return;
+
+            const wrap = btn.closest('#eventsClientWrap, #eventsServerWrap, #eventsNoneWrap');
+
+            if (!wrap) return;
+
+            const list = wrap.querySelector('.event-list');
+            if (!list) return;
+
+            const boxes = list.querySelectorAll('input[type="checkbox"]');
+            const action = btn.dataset.action;
+
+            if (action === 'select-all') {
+                boxes.forEach(cb => { cb.checked = true; });
+            } else if (action === 'clear') {
+                boxes.forEach(cb => { cb.checked = false; });
+            }
+
+            // обновить подсказку и внутреннее состояние, если функции есть
+            try { if (typeof updateGenError === 'function') updateGenError(); } catch (_) { }
+            try { if (typeof recalcState === 'function') recalcState(); } catch (_) { }
+        });
 
         ////////////////////////  Modal start  /////////////////////////////
 
@@ -283,49 +329,6 @@
             closeCsvModal();
 
         });
-        ////////     NEW CODE ENDS     //////////
-
-        function closeCsvModal() {
-            const m = document.getElementById('csvModal'); if (m) m.classList.add('hidden');
-            csvCtx = null;
-        }
-        document.getElementById('csvCancel')?.addEventListener('click', closeCsvModal);
-        document.getElementById('csvModal')?.addEventListener('click', (e) => {
-            if (e.target.classList.contains('qc-modal__backdrop')) closeCsvModal();
-        });
-        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCsvModal(); });
-
-        document.getElementById('csvForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const squad = document.getElementById('csvSquad').value.trim();
-            const folderExtra = document.getElementById('csvFolder').value.trim();
-            const err = document.getElementById('csvSquadError');
-            if (!squad) { err.textContent = 'Please select a Squad'; return; }
-            err.textContent = '';
-            const folder = `/${squad}${folderExtra ? `/${folderExtra}` : ''}`;
-
-            const rows = (csvCtx && typeof csvCtx.getRows === 'function') ? csvCtx.getRows() : [];
-            if (!rows.length) { closeCsvModal(); return; }
-
-            const csv = buildCsv(rows, { folder, squad });
-            // Имя файла: <SQ>[_<feature>]_ <base> _YYYY-MM-DD_HH_MM_SS.csv
-            const base = csvCtx?.fileNamePrefix || 'Query';
-
-            // нормализуем "SQ Core" -> "SQ_Core", пробелы -> "_"
-            const safeSquad = (squad || '').replace(/\s+/g, '_');
-
-            // нормализуем введённый suite/feature: пробелы/слэш -> "_", схлопываем "__"
-            const safeSuite = (folderExtra || '')
-                .replace(/[\\\/\s]+/g, '_')   // пробелы и слэши -> _
-                .replace(/_+/g, '_')          // схлопнуть несколько _
-                .replace(/^_|_$/g, '');       // убрать _ по краям
-
-            const finalPrefix = [safeSquad, safeSuite, base].filter(Boolean).join('_');
-
-            saveBlob(csv, tsName(finalPrefix, 'csv'), 'text/csv;charset=utf-8');
-            closeCsvModal();
-        });
-
 
         ////////////////////////  Modal end  /////////////////////////////
 
@@ -362,8 +365,6 @@
             if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
         }
 
-
-
         function setStateS1() {
             // TOP: Copy | Download (dropdown)
             els.downloadCombo?.classList.remove('hidden');
@@ -382,30 +383,11 @@
             closeAllDownloadMenus?.();
         }
 
-
-
         function setStateS2() {
             setStateS1();
             if (els.perEventControls) els.perEventControls.style.display = 'flex';
             closeAllDownloadMenus?.();
         }
-
-        function setStateS3() {
-            // в режиме per-event: Download (TOP) прячем, нижний ряд скрыт,
-            // показываем 2×2 с Download All
-            els.downloadCombo?.classList.add('hidden');
-            els.underTopGrid?.classList.add('hidden');
-            els.perEventAllWrap?.classList.remove('hidden');
-            if (els.perEventControls) els.perEventControls.style.display = 'none';
-
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = ''; // снять inline 'none'
-
-
-            moveRefreshUnderTop();
-            closeAllDownloadMenus?.();
-        }
-
-
 
         function setStateS3() {
             // в режиме per-event: Download (TOP) и Clear скрываем
@@ -421,15 +403,12 @@
             closeAllDownloadMenus?.();
         }
 
-
-
         // --- UI memory for right panel ---
         const ui = {
             lastGeneratedEvents: [],   // массив имён ивентов на момент последней генерации
-            perEventShown: false       // true, когда открыт режим per-event
+            perEventShown: false,       // true, когда открыт режим per-event
+            lastPrimarySource: 'none'
         };
-
-
 
 
         const WARN_SIGN = '<span class="warn-emoji" aria-hidden="true">⚠️</span>';
@@ -462,10 +441,7 @@
         // Показ/скрытие сообщения под кнопкой в зависимости от выбранных ивентов
         function updateGenError() {
             if (!els.genError) return;
-            const selectedCount = Array
-                .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
-                .length;
-
+            const selectedCount = document.querySelectorAll('#eventPicker input[type="checkbox"]:checked').length;
             if (genErrorArmed && selectedCount === 0) {
                 els.genError.textContent = 'Please select at least one event';
                 els.genError.classList.remove('hidden');
@@ -476,7 +452,6 @@
         }
 
         // --- HowTo tooltip open/close + scroll-hint ---
-
 
         const backdropEl = document.getElementById('howtoBackdrop');
 
@@ -566,7 +541,6 @@
             openHowtoImageOverlay(img.src, img.alt, zoomHalf); // ← передаём флаг уменьшения
         });
 
-
         function closeHowtoImageOverlay() {
             const overlay = document.getElementById('howtoImgOverlay');
             if (overlay) overlay.remove();
@@ -577,6 +551,62 @@
             if (e.key === 'Escape') closeHowtoImageOverlay();
         }
 
+        // === reset left-side input (files/paste/columns + lists), keep SQL on the right ===
+        function resetLeftInput() {
+            // 1) сброс внутреннего состояния разборки
+            state.byEvent = new Map();
+            state.eventOrder = [];
+            state.sourceOfEvent = new Map();
+
+            // 2) очистка списков событий и скрытие секции выбора
+            try {
+                els.eventListClient?.replaceChildren?.();
+                els.eventListServer?.replaceChildren?.();
+            } catch (_) { }
+            if (els.eventsClientWrap) els.eventsClientWrap.style.display = 'none';
+            if (els.eventsServerWrap) els.eventsServerWrap.style.display = 'none';
+            if (els.eventPicker) els.eventPicker.style.display = 'none';
+
+            // 3) очистить текстовые поля всех режимов
+            if (els.eventsInput) els.eventsInput.value = '';
+            if (els.propertiesInput) els.propertiesInput.value = '';
+            if (els.pasteArea) els.pasteArea.value = '';
+
+            // 4) сбросить ВСЕ file-инпуты (режим file): A/B (и одиночный tlsFile, если вдруг есть)
+            ['tlsFileA', 'tlsFileB', 'tlsFile'].forEach(id => {
+                const oldEl = document.getElementById(id);
+                if (!oldEl) return;
+                const clone = oldEl.cloneNode(true);
+                oldEl.replaceWith(clone);
+                // если этот инпут лежит в els — обновим ссылку
+                if (id in els) els[id] = clone;
+            });
+
+            // 5) вернуть селекты источника таблиц к None
+            if (els.eventSourceA) els.eventSourceA.value = 'none';
+            if (els.eventSourceB) els.eventSourceB.value = 'none';
+
+            // также сбрасываем источники для режимов 2/3
+            if (els.eventSourceSeparate) els.eventSourceSeparate.value = 'none';
+            if (els.eventSourcePaste) els.eventSourcePaste.value = 'none';
+
+            // также сбросить "Table" во всех режимах
+            if (els.tableEnv) {
+                els.tableEnv.selectedIndex = 0;
+                els.tableEnv.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+
+            // 6) спрятать подсказки/ошибки и per-event
+            if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
+            if (els.errorBox) { els.errorBox.innerHTML = ''; els.errorBox.classList.add('hidden'); }
+            if (els.infoBox) { els.infoBox.innerHTML = ''; els.infoBox.classList.add('hidden'); }
+            if (els.perEventContainer) { els.perEventContainer.replaceChildren?.(); els.perEventContainer.style.display = 'none'; }
+            if (els.perEventControls) els.perEventControls.style.display = 'none';
+            if (els.perEventAllWrap) { els.perEventAllWrap.classList.add('hidden'); els.perEventAllWrap.style.display = 'none'; }
+
+            // 7) ничего не трогаем справа: els.sqlOutput.value — остаётся как есть
+        }
 
         function getInputMode() {
             if (els.modeSeparate?.checked) return 'separate';
@@ -584,6 +614,13 @@
             return 'paste';
         }
         function setInputMode(mode) {
+
+            // при смене режима чистим левую панель (SQL справа не трогаем)
+            if (ui.inputMode && ui.inputMode !== mode) {
+                resetLeftInput();
+            }
+            ui.inputMode = mode;
+
             const blocks = {
                 separate: document.getElementById('mode-separate'),
                 file: document.getElementById('mode-file'),
@@ -601,11 +638,49 @@
             // скрыть инфо/ошибки при переключении
             els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = '';
             els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = '';
+
+            // --- show/hide second file block ---
+            function updateFileBlocks() {
+                const two = !!(els.twoTables && els.twoTables.checked);
+
+                // показываем/прячем второй блок файла
+                document.getElementById('fileBlockB')?.classList.toggle('hidden', !two);
+
+                // ВАЖНО: заголовки "Table №1/№2"
+                const labA = document.getElementById('tableLabelA');
+                const labB = document.getElementById('tableLabelB');
+
+                // при 1-й таблице оба заголовка скрыты; при 2-х — оба видны
+                labA?.classList.toggle('hidden', !two);
+                labB?.classList.toggle('hidden', !two);
+            }
+            els.oneTable?.addEventListener('change', updateFileBlocks);
+            els.twoTables?.addEventListener('change', updateFileBlocks);
+            updateFileBlocks();
+
+
         }
         // навешиваем переключатели
         els.modeSeparate?.addEventListener('change', () => setInputMode('separate'));
         els.modeFile?.addEventListener('change', () => setInputMode('file'));
         els.modePaste?.addEventListener('change', () => setInputMode('paste'));
+        // --- source change → re-tag current events and re-render ---
+        function reapplySourceForCurrentEvents(src) {
+            if (!state || !Array.isArray(state.eventOrder) || !state.eventOrder.length) return;
+            state.sourceOfEvent = state.sourceOfEvent || new Map();
+            for (const ev of state.eventOrder) state.sourceOfEvent.set(ev, src);
+            renderEvents();
+        }
+
+        els.eventSourceSeparate?.addEventListener('change', () => {
+            if (getInputMode() !== 'separate') return;
+            reapplySourceForCurrentEvents((els.eventSourceSeparate.value || 'none').toLowerCase());
+        });
+
+        els.eventSourcePaste?.addEventListener('change', () => {
+            if (getInputMode() !== 'paste') return;
+            reapplySourceForCurrentEvents((els.eventSourcePaste.value || 'none').toLowerCase());
+        });
 
         // дефолт — «separate»
         setInputMode('file');
@@ -632,7 +707,6 @@
         keepTop(els.eventsInput);
         keepTop(els.propertiesInput);
 
-
         // --- Auto-resize for Event/Property textareas ---
         function autoResizeTA(ta) {
             if (!ta) return;
@@ -649,8 +723,6 @@
             ta.addEventListener('input', () => autoResizeTA(ta));
             ta.addEventListener('paste', () => setTimeout(() => autoResizeTA(ta), 0));
         });
-
-
 
         // ---- Clean pasted TSV: drop empty lines ----
         function cleanPastedTSV(text) {
@@ -680,45 +752,30 @@
         });
 
         function resetTlsInput() {
-            // 1) Сбросим взвод каждого file-инпута на странице (если вдруг их больше одного)
+            // очистить все file-инпуты на странице (как и раньше)
             const fileInputs = Array.from(document.querySelectorAll('input[type="file"]'));
             for (const input of fileInputs) {
-                // прямой сброс
                 try { input.value = ''; } catch (_) { }
-
                 const form = input.closest('form');
-                if (form) {
-                    // form.reset очистит value file-инпута «официально»
-                    form.reset();
-                } else {
-                    // клон с заменой — самый надёжный способ для одиночных инпутов
+                if (form) form.reset();
+                else {
                     const fresh = input.cloneNode(true);
                     input.parentNode.replaceChild(fresh, input);
                 }
             }
 
+            // === ВАЖНО: пере-схватить новые DOM-элементы после клонирования ===
+            els.tlsFileA = document.getElementById('tlsFileA');
+            els.tlsFileB = document.getElementById('tlsFileB');
 
-            els.tlsFile = document.getElementById('tlsFile');
-            if (els.tlsFile) {
-                els.tlsFile.addEventListener('change', (e) => {
-                    // только почистим плашки и, при желании, отобразим имя файла.
-                    els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = '';
-                    els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = '';
-
-                    const nameEl = document.getElementById('tlsFileName');
-                    if (nameEl) nameEl.textContent = (e.target.files && e.target.files[0]) ? e.target.files[0].name : '';
-                    // НЕ парсим здесь — ждём кнопку Decompose
-                });
-            }
-
-
-            // 3) Если есть кастомный лейбл с именем файла — очистим
-            const nameEl = document.getElementById('tlsFileName');
-            if (nameEl) nameEl.textContent = '';
+            // опционально — почистить инфобоксы и реакцию на выбор файла
+            const onFileChange = () => {
+                els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = '';
+                els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = '';
+            };
+            els.tlsFileA?.addEventListener('change', onFileChange);
+            els.tlsFileB?.addEventListener('change', onFileChange);
         }
-
-
-
 
         // ---- Инициализация даты и переключение Today/Range ----
         const pad = n => String(n).padStart(2, "0");
@@ -764,8 +821,6 @@
             return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
         }
 
-
-
         // CSV-экранирование
         const csvEscape = (v = '') => {
             const s = String(v ?? '');
@@ -784,62 +839,47 @@
             return order.map(k => (k === current ? LINES[k] : `--${LINES[k]}`)).join('\n');
         }
 
+        // //////   NEW CODE ENDS  ///////
 
         // Построить SQL для одного события (пер-ивент)
-        function buildPerEventSQL(ev, props, env, dateStartISO, dateEndISO, isRange) {
-            const source = els.eventSource?.value || 'none';   // NEW
+        function buildPerEventSQL(ev, props, env, dateStartISO, dateEndISO, isRange, src = 'none') {
+            const source = (src || 'none').toLowerCase();
             const esc = s => s.replace(/'/g, "''");
             const fromClause = fromClauseFor(env);
 
-            const parts = [];
-
-            // 1) user_id первым
-            parts.push(`WHERE user_id = 'test_user_ID'`);
-
-            // 2) даты
+            const where = [];
+            where.push(`WHERE user_id = 'test_user_ID'`);
             if (!isRange) {
-                parts.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
-                parts.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
+                where.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
+                where.push(`AND client_time >= '${dateStartISO} 00:00:00 UTC'`);
             } else {
-                parts.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
-                parts.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
+                where.push(`AND DATE(insertion_date) >= '${dateStartISO}'`);
+                where.push(`AND client_time BETWEEN '${dateStartISO} 00:00:00 UTC' AND '${dateEndISO} 00:00:00 UTC'`);
             }
-
-            // 3) событие
-            parts.push(`AND event = '${esc(ev)}'`);
-
-            // 4) тех.фильтр
-            parts.push(`AND twelve_traits_enabled IS NULL`);
+            where.push(`AND event = '${esc(ev)}'`);
+            if (source === 'server') where.push(`AND written_by = 'server'`);
+            else if (source === 'client') where.push(`AND written_by = 'client'`);
+            where.push(`AND twelve_traits_enabled IS NULL`);
 
             const expandedProps = expandProps(props || []);
             const dedupProps = Array.from(new Set(expandedProps));
-            const withC = ensureTrailingC(dedupProps); // ← 'c' последним всегда
+            const withC = ensureTrailingC(dedupProps);
 
             const timeSelect =
                 source === 'server' ? 'server_time' :
                     source === 'client' ? 'client_time' :
                         'client_time, server_time';
 
-            const fields = `event, ${timeSelect}, written_by, ${withC.map(p => p).join(', ')}`;
-
+            const fields = `event, ${timeSelect}, written_by, ${withC.join(', ')}`;
 
             return `SELECT ${fields}
 ${fromClause}
-${parts.join('\n')}
-ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
---limit 1000;
-`;
-
+${where.join('\n')}
+ORDER BY ${source === 'server' ? 'server_time' : 'client_time'} DESC
+--limit 1000;`;
         }
 
-
-        function squadPretty(s) {
-            if (!s) return '';
-            if (s === 'SQ Core') return 'Squad Core';
-            const m = /^SQ\s*([0-9]{1,2})$/.exec(s);
-            return m ? `Squad ${m[1]}` : s.replace(/^SQ/i, 'Squad ');
-        }
-
+        // ==== CSV helpers ====
         const EXAMPLES_TEMPLATE =
             `## Preconditions:
 —
@@ -853,15 +893,9 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
 
         function makeCsvRow({ title, sql }, opts = {}) {
             const prettySquad = squadPretty(opts.squad || '');
+            const description = `## Useful query:
 
-
-            // Для CSV
-            const rawSql = sql;
-            const description =
-                `## Useful query:
-
-${rawSql}
-
+${sql}
 
 ${EXAMPLES_TEMPLATE}
 `;
@@ -874,28 +908,19 @@ ${EXAMPLES_TEMPLATE}
                 Priority: TESTOMAT.priority,
                 Tags: '',
                 Owner: TESTOMAT.owner,
-                Description: description,   // весь хвост в Description
-                Examples: '',               // пусто
+                Description: description,
+                Examples: '',
                 Labels: prettySquad ? `Squad: ${prettySquad}` : '',
                 Url: TESTOMAT.url
             };
             return CSV_HEADERS.map(h => csvEscape(row[h])).join(',');
         }
 
-
         function buildCsv(rows, opts = {}) {
             const header = CSV_HEADERS.join(',');
             const body = rows.map(r => makeCsvRow(r, opts)).join('\n');
             return header + '\n' + body + '\n';
         }
-
-
-        //////   NEW CODE ENDS  ///////
-
-
-
-
-
 
         // === [Download helpers] ============================================
         function saveBlob(text, name, mime) {
@@ -912,13 +937,12 @@ ${EXAMPLES_TEMPLATE}
         }
 
         // Добавить метку источника в Title (если есть селект eventSource)
-        function prependSourceTag(title) {
-            const v = (els.eventSource && els.eventSource.value || '').toLowerCase();
+        function withSourceTag(title, src) {
+            const v = (src || '').toLowerCase();
             if (v === 'server') return `[server] ${title}`;
             if (v === 'client') return `[client] ${title}`;
-            return title; // none или селекта нет
+            return title;
         }
-
 
         // Сбор «одного кейса» (верхний Download → .txt/.csv)
         function collectCombinedRow() {
@@ -937,24 +961,25 @@ ${EXAMPLES_TEMPLATE}
                 title = `Event: ${events[0]}`;
             }
 
-            title = prependSourceTag(title);   // NEW
+            const src = (ui?.lastPrimarySource || 'none').toLowerCase();
+            title = withSourceTag(title, src);
+
+
             return { title, sql };
         }
-
 
         // Сбор всех карточек per-event (нижний Download All → .txt/.csv)
         function collectPerEventRows() {
             const items = Array.from(els.perEventContainer?.querySelectorAll('.per-item') || []);
             return items.map(item => {
                 const ev = (item.querySelector('.title code')?.textContent ||
-                    item.querySelector('.per-download')?.getAttribute('data-ev') ||
-                    'event').trim();
+                    item.querySelector('.per-download')?.getAttribute('data-ev') || 'event').trim();
                 const sql = (item.querySelector('textarea.per-sql')?.value || '').trim();
-                return sql ? { title: prependSourceTag(`Event: ${ev}`), sql } : null; // NEW
-
+                const src = (item.querySelector('.title')?.dataset.source || 'none').toLowerCase();
+                return sql ? { title: withSourceTag(`Event: ${ev}`, src), sql } : null;
             }).filter(Boolean);
+
         }
-        // ==================================================================
         // === [Dropdown open/close] ========================================
         function openMenu(containerEl) {
             if (!containerEl) return;
@@ -982,7 +1007,6 @@ ${EXAMPLES_TEMPLATE}
             closeAllDownloadMenus();
         });
         // ==================================================================
-
 
         function moveClearToBottom() {
             if (!els.clearBtn) return;
@@ -1020,8 +1044,6 @@ ${EXAMPLES_TEMPLATE}
             els.clearBtn.classList.add('clear-top'); // внешний вид «верхней» кнопки
         }
 
-
-
         // Когда SQL пустой и нет per-event: Clear под Copy, темно-серая и того же размера.
         // Когда есть per-event: Clear внизу (это уже делает moveClearToBottom()).
         function syncClearButtonTopState() {
@@ -1050,9 +1072,6 @@ ${EXAMPLES_TEMPLATE}
                 syncClearButtonTopState();
             } catch (_) { }
         }
-
-
-
 
         // заполняем отображение инпутов диапазона в формате DD.MM.YYYY
         if (els.dateStart) { els.dateStart.value = todayDMY; els.dateStart.dataset.iso = todayISO; }
@@ -1242,7 +1261,6 @@ ${EXAMPLES_TEMPLATE}
             });
         })();
 
-
         function parseFromSeparateInputs() {
             // не удаляем пустые строки — они важны для выравнивания!
             const evLines = (els.eventsInput?.value || '').replace(/\r/g, '').split('\n');
@@ -1282,44 +1300,51 @@ ${EXAMPLES_TEMPLATE}
                 }
             }
 
+            // источник для всех событий из режима "separate"
+            state.sourceOfEvent = new Map();
+            {
+                const src = (els.eventSourceSeparate?.value || 'none').toLowerCase();
+                for (const ev of (state.eventOrder || [])) {
+                    state.sourceOfEvent.set(ev, src);
+                }
+            }
+
             renderEvents();
         }
 
-
-        function parseFromFile(file) {
+        function parseFromFile(file, sourceTag = 'none', done) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const text = e.target.result;
                 const rows = text.split(/\r?\n/).map(r => r.split('\t'));
 
-                // нормализованные заголовки
                 const headers = rows[0].map(h => normalizeHeader(h));
-
-                // индексы с поддержкой вариантов
                 const eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
                 const propIdx = findHeaderIndex(headers, PROP_HEADERS);
-
                 if (eventIdx === -1 || propIdx === -1) {
                     alert("Could not find 'Event(s)' and/or 'Property/Properties/Field(s)' columns in the file");
                     return;
                 }
 
-
-                state.byEvent = new Map();
-                state.eventOrder = [];
-
                 let lastEvent = '';
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
                     if (!row.length) continue;
+
                     const ev = (row[eventIdx] ?? '').trim();
                     const pr = (row[propIdx] ?? '').trim();
 
                     if (ev) {
                         lastEvent = ev;
+
+                        // регистрируем событие и его источник
                         if (!state.byEvent.has(ev)) {
                             state.byEvent.set(ev, []);
+                            state.eventOrder = state.eventOrder || [];
                             state.eventOrder.push(ev);
+                        }
+                        if (!state.sourceOfEvent.has(ev)) {
+                            state.sourceOfEvent.set(ev, sourceTag || 'none');
                         }
                     }
                     if (lastEvent && pr) {
@@ -1327,46 +1352,106 @@ ${EXAMPLES_TEMPLATE}
                         if (!arr.includes(pr)) arr.push(pr);
                     }
                 }
-                renderEvents();
+
+                renderEvents(); // отрисуем два списка
+                if (typeof done === 'function') done();   // ← сигнал о завершении
             };
             reader.readAsText(file);
         }
 
-
         function renderEvents() {
-            if (!els.eventList) return;
-            els.eventList.innerHTML = '';
-            const events = state.eventOrder.slice(); // порядок как в таблице
+            const order = state.eventOrder || [];
+            const byEv = state.byEvent || new Map();
 
-            for (const ev of events) {
-                const id = 'ev_' + ev.replace(/[^a-z0-9_]+/gi, '_');
-                const wrap = document.createElement('label');
-                wrap.className = 'event-item';
-                wrap.title = ev;
-
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.value = ev;
-                cb.id = id;
-
-                const text = document.createElement('span');
-                text.textContent = ev;
-
-                wrap.appendChild(cb);
-                wrap.appendChild(text);
-                els.eventList.appendChild(wrap);
+            const client = [];
+            const server = [];
+            const none = [];
+            for (const ev of order) {
+                const src = (state.sourceOfEvent.get(ev) || 'none').toLowerCase();
+                if (src === 'server') server.push(ev);
+                else if (src === 'client') client.push(ev);
+                else none.push(ev); // отдельная группа
             }
 
-            els.eventPicker.style.display = events.length ? 'flex' : 'none';
+            const paint = (wrapEl, listEl, items) => {
+                if (!listEl || !wrapEl) return;
+                listEl.innerHTML = '';
+                wrapEl.style.display = items.length ? '' : 'none';
+                for (const ev of items) {
+                    const id = 'ev_' + ev.replace(/[^a-z0-9_]+/gi, '_');
+                    const label = document.createElement('label');
+                    label.className = 'event-item';
+                    label.title = ev;
+
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.value = ev;
+                    cb.id = id;
+                    cb.dataset.source = (state.sourceOfEvent.get(ev) || 'none');
+
+                    const span = document.createElement('span');
+                    span.textContent = ev;
+
+                    label.appendChild(cb);
+                    label.appendChild(span);
+                    listEl.appendChild(label);
+                }
+            };
+
+            // --- SAFE: порядок групп в левой колонке = порядок загруженных таблиц ---
+            const listsCol = els.eventPicker?.querySelector('.field');
+            if (listsCol && els.eventsClientWrap && els.eventsServerWrap && els.eventsNoneWrap) {
+                // 1) желаемый порядок по селектам источников (A → B)
+                const two = !!(els.twoTables && els.twoTables.checked);
+                const srcA = (els.eventSourceA?.value || 'none').toLowerCase();
+                const srcB = (els.eventSourceB?.value || 'none').toLowerCase();
+                const desired = two ? [srcA, srcB] : [srcA];
+
+                // 2) уникализируем в порядке появления
+                const orderSrc = [];
+                desired.forEach(s => { if (!orderSrc.includes(s)) orderSrc.push(s); });
+
+                // 3) соответствие источник → DOM-обёртка
+                const wrapBySrc = {
+                    client: els.eventsClientWrap,
+                    server: els.eventsServerWrap,
+                    none: els.eventsNoneWrap
+                };
+
+                // 4) предварительно вытащим обёртки из колонки (если они уже там)
+                ['client', 'server', 'none'].forEach(s => {
+                    const w = wrapBySrc[s];
+                    if (w && listsCol.contains(w)) listsCol.removeChild(w);
+                });
+
+                // 5) ставим в нужном порядке…
+                orderSrc.forEach(s => {
+                    const w = wrapBySrc[s];
+                    if (w) listsCol.appendChild(w);
+                });
+
+                // …и добавляем те, которых не было в desired, в хвост
+                ['client', 'server', 'none'].forEach(s => {
+                    if (!orderSrc.includes(s)) {
+                        const w = wrapBySrc[s];
+                        if (w) listsCol.appendChild(w);
+                    }
+                });
+            }
+
+            paint(els.eventsClientWrap, els.eventListClient, client);
+            paint(els.eventsServerWrap, els.eventListServer, server);
+            paint(els.eventsNoneWrap, els.eventListNone, none);   // NEW
+
+
+            // показать/скрыть секцию целиком
+            const any = client.length + server.length + none.length > 0; // NEW
+            els.eventPicker.style.display = any ? 'flex' : 'none';
 
             genErrorArmed = false;
             updateGenError();
             if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
-
-
         }
-
-
 
         // --- начало обработчика Decompose ---
         els.parseBtn.addEventListener('click', () => {
@@ -1380,7 +1465,6 @@ ${EXAMPLES_TEMPLATE}
             const mode = getInputMode();
 
             const WARN = '<span class="icon warn-emoji" aria-hidden="true">⚠️</span>';
-
 
             if (mode === 'separate') {
                 const hasEvents = !!(els.eventsInput && els.eventsInput.value.trim());
@@ -1396,13 +1480,34 @@ ${EXAMPLES_TEMPLATE}
             }
 
             if (mode === 'file') {
-                if (!(els.tlsFile && els.tlsFile.files && els.tlsFile.files.length > 0)) {
+                // сбрасываем старые результаты
+                state.byEvent = new Map();
+                state.eventOrder = [];
+                state.sourceOfEvent = new Map();
+
+                const two = !!(els.twoTables && els.twoTables.checked);
+                const fA = els.tlsFileA?.files?.[0];
+                const fB = els.tlsFileB?.files?.[0];
+
+                if (!fA && (!two || !fB)) {
                     els.infoBox.classList.remove('hidden');
                     els.infoBox.style.display = 'flex';
-                    els.infoBox.innerHTML = `${WARN} Please upload a TSV/TLS file`;
+                    els.infoBox.innerHTML = `${WARN} Please upload ${two ? 'both files' : 'a file'}`;
                     return;
                 }
-                parseFromFile(els.tlsFile.files[0]);
+
+                const srcA = (els.eventSourceA?.value || 'none');
+                const srcB = (els.eventSourceB?.value || 'none');
+
+                if (two && fA && fB) {
+                    // строгий порядок: сначала таблица №1, затем таблица №2
+                    parseFromFile(fA, srcA, () => parseFromFile(fB, srcB));
+                } else if (fA) {
+                    parseFromFile(fA, srcA);
+                } else if (fB) {
+                    // на случай, если пользователь загрузил только вторую
+                    parseFromFile(fB, srcB);
+                }
                 return;
             }
 
@@ -1417,15 +1522,12 @@ ${EXAMPLES_TEMPLATE}
 
             let rows = parseTSV(text);
 
-
-
             if (rows.length === 0) {
                 els.infoBox.classList.remove('hidden');
                 els.infoBox.style.display = 'flex';
                 els.infoBox.innerHTML = `${WARN} Could not parse the data`;
                 return;
             }
-
 
             // нормализуем заголовки и находим индексы через варианты
             const headers = rows[0].map(h => normalizeHeader(h));
@@ -1447,8 +1549,6 @@ ${EXAMPLES_TEMPLATE}
                 els.eventPicker.style.display = 'none';
                 return;
             }
-
-
 
             state.rows = rows.slice(1);
             state.headers = headers;
@@ -1484,6 +1584,15 @@ ${EXAMPLES_TEMPLATE}
 
             }
 
+            // источник для всех событий из режима "paste"
+            state.sourceOfEvent = new Map();
+            {
+                const src = (els.eventSourcePaste?.value || 'none').toLowerCase();
+                for (const ev of (state.eventOrder || [])) {
+                    state.sourceOfEvent.set(ev, src);
+                }
+            }
+
             renderEvents();
 
             els.infoBox.innerHTML = '';
@@ -1494,207 +1603,257 @@ ${EXAMPLES_TEMPLATE}
 
         });
 
+        function collectSelectedBySource() {
+            const take = (root) =>
+                Array.from(root?.querySelectorAll('input[type="checkbox"]:checked') || [])
+                    .map(cb => ({ ev: cb.value, src: (cb.dataset.source || 'none').toLowerCase() }));
+
+            const pickedClient = take(els.eventListClient);
+            const pickedServer = take(els.eventListServer);
+            const pickedNone = take(els.eventListNone);
+
+            // порядок карточек берём из реального порядка групп в левой колонке
+            const listsCol = els.eventPicker?.querySelector('.field');
+            const ids = Array.from(listsCol?.children || [])
+                .map(el => el.id)
+                .filter(id => /events(Client|Server|None)Wrap/.test(id));
+
+            const bySrc = { client: pickedClient, server: pickedServer, none: pickedNone };
+            let picked = [];
+            ids.forEach(id => {
+                const key = id.includes('Client') ? 'client' : id.includes('Server') ? 'server' : 'none';
+                picked = picked.concat(bySrc[key]);
+            });
+
+            const client = picked.filter(x => x.src === 'client').map(x => x.ev);
+            const server = picked.filter(x => x.src === 'server').map(x => x.ev);
+            const none = picked.filter(x => x.src === 'none').map(x => x.ev);
+
+            return { client, server, none, all: picked.map(x => x.ev) };
+        }
+
+        ////  не удалять ////
         els.genBtn.addEventListener('click', () => {
-            const source = (els.eventSource?.value || 'none');           // none | server | client
             const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
 
+            // собираем выбранные события по группам
+            const picked = collectSelectedBySource();
+            // вариант 1
+            // const selectedCount = picked.client.length + picked.server.length + picked.none.length;
+            // вариант 2 (проще и надёжнее):
+            const selectedCount = picked.all.length;
 
-
-
-            const selectedEvents = Array
-                .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
-                .map(cb => cb.value)
-                .filter(Boolean);
-
-
-            if (selectedEvents.length === 0) {
+            if (selectedCount === 0) {
                 genErrorArmed = true;
-                updateGenError();                                   // показать плашку под кнопкой
+                updateGenError();
                 els.downloadCombo?.classList.add('hidden');
                 if (els.perEventControls) els.perEventControls.style.display = 'none';
                 return;
             }
 
-            // есть выбранные ивенты — очищаем ошибку и сбрасываем флаг
-            genErrorArmed = false;
-            updateGenError();
-
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
-
-            // экранирование одинарных кавычек
+            // экранирование
             const esc = s => s.replace(/'/g, "''");
 
-            // 2) собираем уникальные properties из всех выбранных ивентов (в порядке первого появления)
-            const uniqueProps = [];
-            const seen = new Set();
-            for (const ev of selectedEvents) {
-                const props = state.byEvent.get(ev) || [];
-                for (const p of props) {
-                    const exp = expandProps([p]);          // ← разворачиваем p, если это шаблон
-                    for (const q of exp) {
-                        if (q && !seen.has(q)) { seen.add(q); uniqueProps.push(q); }
+            // даты (как у тебя было)
+            let start = todayISO, end = todayISO;
+            const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
+            if (isRange) {
+                const sISO = els.dateStart?.dataset.iso || todayISO;
+                const eISO = els.dateEnd?.dataset.iso || sISO;
+                start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
+            }
+
+            const whereCommonLines = (isRange) ? [
+                `WHERE user_id = 'test_user_ID'`,
+                `AND DATE(insertion_date) >= '${start}'`,
+                `AND client_time ${isRange ? `BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'` : `>= '${start} 00:00:00 UTC'`}`,
+                `AND twelve_traits_enabled IS NULL`,
+            ] : [
+                `WHERE user_id = 'test_user_ID'`,
+                `AND DATE(insertion_date) >= '${start}'`,
+                `AND client_time >= '${start} 00:00:00 UTC'`,
+                `AND twelve_traits_enabled IS NULL`,
+            ];
+
+            // свойства для группы
+            const propsFor = (eventsArr) => {
+                const uniq = [];
+                const seen = new Set();
+                for (const ev of eventsArr) {
+                    const list = state.byEvent.get(ev) || [];
+                    const expanded = expandProps(list);
+                    for (const p of expanded) {
+                        if (p && !seen.has(p)) { seen.add(p); uniq.push(p); }
+                    }
+                }
+                return ensureTrailingC(uniq);
+            };
+
+            // WHERE для конкретной группы c учётом timeField ('client_time' | 'server_time')
+            const whereFor = (eventsArr, timeField) => {
+                const w = [
+                    `WHERE user_id = 'test_user_ID'`,
+                    `AND DATE(insertion_date) >= '${start}'`,
+                    isRange
+                        ? `AND ${timeField} BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`
+                        : `AND ${timeField} >= '${start} 00:00:00 UTC'`,
+                    `AND twelve_traits_enabled IS NULL`,
+                ];
+                // фильтр по событиям вставляем сразу после user_id
+                const evLine = (eventsArr.length === 1)
+                    ? `AND event = '${esc(eventsArr[0])}'`
+                    : `AND event IN (${eventsArr.map(e => `'${esc(e)}'`).join(', ')})`;
+                w.splice(1, 0, evLine);
+                return w.join('\n');
+            };
+
+            // вспомогательно: альтернативная (закомментированная) строка времени для симметрии
+            const altTimeLine = (altField) => {
+                if (!altField) return '';
+                return isRange
+                    ? `--AND ${altField} BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`
+                    : `--AND ${altField} >= '${start} 00:00:00 UTC'`;
+            };
+
+            // Определяем, какие источники реально выбраны
+            const present = [];
+            if (picked.client?.length) present.push('client');
+            if (picked.server?.length) present.push('server');
+            if (picked.none?.length) present.push('none');
+
+            // Порядок по таблицам (A → B), если выбраны 2 таблицы
+            const two = !!(els.twoTables && els.twoTables.checked);
+            const srcA = (els.eventSourceA?.value || 'none').toLowerCase();
+            const srcB = (els.eventSourceB?.value || 'none').toLowerCase();
+            const orderByTables = Array.from(new Set(two ? [srcA, srcB] : [srcA]));
+
+            // Кто "первый": берём первый из orderByTables, который реально присутствует
+            let primary = orderByTables.find(s => present.includes(s)) || present[0] || 'none';
+
+            // picked-объект только из реально присутствующих групп
+            const pickedForBuild = {};
+            present.forEach(s => { pickedForBuild[s] = picked[s].slice(); });
+
+            // Всегда строим единую кверю (если группа одна — будет один SELECT)
+            const sqlText = buildUnifiedSQL(pickedForBuild, primary, fromClause, start, end, isRange);
+            els.sqlOutput.value = sqlText;
+            ui.lastPrimarySource = primary;
+
+            // ЕДИНАЯ квери с двумя SELECT-заголовками (второй — комментом)
+            function buildUnifiedSQL(picked, primary, fromClause, start, end, isRange) {
+                const esc = s => s.replace(/'/g, "''");
+                const timeOf = (src) => src === 'server' ? 'server_time' : 'client_time';
+                const labelOf = (src) => src === 'server' ? 'server event' : (src === 'client' ? 'client event' : 'event');
+
+                const presentKeys = ['client', 'server', 'none'].filter(k => Array.isArray(picked[k]) && picked[k].length);
+                const second = presentKeys.find(k => k !== primary);
+                const havePair = !!second;
+
+                // SELECT строки
+                const fieldsPrimary =
+                    primary === 'none'
+                        ? `event, client_time, server_time, written_by, ${propsFor(picked.none).join(', ')}`
+                        : `event, ${timeOf(primary)}, written_by, ${propsFor(picked[primary]).join(', ')}`;
+
+                const topLines = [
+                    `SELECT ${fieldsPrimary} -- ${labelOf(primary)}`
+                ];
+
+                if (havePair) {
+                    const fieldsAlt = `event, ${timeOf(second)}, written_by, ${propsFor(picked[second]).join(', ')}`;
+                    topLines.push(`--SELECT ${fieldsAlt} -- ${labelOf(second)}`);
+                }
+
+                // WHERE (жёсткий порядок: user_id → DATE → активное время → события → twelve_traits → альтернативное время → written_by)
+                const W = [];
+                W.push(`WHERE user_id = 'test_user_ID'`);
+                W.push(`AND DATE(insertion_date) >= '${start}'`);
+
+                const activeTime = !isRange
+                    ? `AND ${timeOf(primary)} >= '${start} 00:00:00 UTC'`
+                    : `AND ${timeOf(primary)} BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`;
+                W.push(activeTime);
+
+                const evLine = (arr) => arr.length === 1
+                    ? `AND event = '${esc(arr[0])}'`
+                    : `AND event IN (${arr.map(e => `'${esc(e)}'`).join(', ')})`;
+
+                if (primary === 'none') {
+                    W.push(evLine(picked.none));
+                    if (havePair) W.push(`--${evLine(picked[second])}`); // коммент второй группы
+                } else {
+                    W.push(evLine(picked[primary]));
+                    if (havePair) W.push(`--${evLine(picked[second])}`);
+                }
+
+
+                W.push(`AND twelve_traits_enabled IS NULL`);
+
+                if (havePair) {
+                    if (primary === 'none') {
+                        // для None всегда добавляем коммент по server_time (как договаривались)
+                        const altTime = !isRange
+                            ? `--AND server_time >= '${start} 00:00:00 UTC'`
+                            : `--AND server_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`;
+                        W.push(altTime);
+                    } else {
+                        const altTime = !isRange
+                            ? `--AND ${timeOf(second)} >= '${start} 00:00:00 UTC'`
+                            : `--AND ${timeOf(second)} BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`;
+                        W.push(altTime);
                     }
                 }
 
+
+                if (primary === 'client') {
+                    W.push(`AND written_by = 'client'`);
+                    if (havePair) W.push(`--AND written_by = 'server'`);
+                } else if (primary === 'server') {
+                    W.push(`AND written_by = 'server'`);
+                    if (havePair) W.push(`--AND written_by = 'client'`);
+                }
+                // для 'none' — без written_by
+
+                const orderActive = `ORDER BY ${timeOf(primary)} DESC`;
+                const orderAlt = havePair ? `--ORDER BY ${timeOf(second)} DESC` : '';
+
+                // одна квери: два (верхних) SELECT-заголовка + общий FROM/WHERE/ORDER
+                return [
+                    topLines.join('\n'),
+                    fromClause,
+                    W.join('\n'),
+                    orderActive,
+                    orderAlt,
+                    `--limit 1000;`
+                ].filter(Boolean).join('\n');
             }
 
-            if (uniqueProps.length === 0) {
-                els.sqlOutput.value = 'For the selected events, no properties were found';
-                els.downloadCombo?.classList.add('hidden');
-                if (els.perEventControls) els.perEventControls.style.display = 'none'; // ← НОВОЕ
-                return;
-            }
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
-
-            // гарантируем 'c' последним (и без дублей)
-            const withTrailingC = (list) => {
-                const arr = (list || []).slice();
-                const i = arr.indexOf('c');
-                if (i !== -1) arr.splice(i, 1); // убрать, если уже есть
-                arr.push('c');                  // добавить последним
-                return arr;
-            };
-            const propsWithC = withTrailingC(uniqueProps);
-            const timeSelect =
-                source === 'server' ? 'server_time' :
-                    source === 'client' ? 'client_time' :
-                        'client_time, server_time';
-
-            const selectFields = `event, ${timeSelect}, written_by, ${propsWithC.join(', ')}`;
-
-
-
-            const whereEvent = (selectedEvents.length === 1)
-                ? `AND event = '${esc(selectedEvents[0])}'`
-                : `AND event IN (${selectedEvents.map(e => `'${esc(e)}'`).join(', ')})`;
-
-            let start = todayISO;
-            let end = todayISO;
-            const isRange = !!(els.dateModeRange && els.dateModeRange.checked);
-            if (isRange) {
-                // приоритет — ISO в data-атрибуте; иначе пробуем распарсить текст DD.MM.YYYY
-                const sISO = els.dateStart?.dataset.iso || (() => {
-                    const d = parseDMYtoDate(els.dateStart?.value);
-                    return d ? toISO(d) : todayISO;
-                })();
-                const eISO = els.dateEnd?.dataset.iso || (() => {
-                    const d = parseDMYtoDate(els.dateEnd?.value);
-                    return d ? toISO(d) : sISO;
-                })();
-
-                start = sISO;
-                end = eISO;
-                if (start > end) { const t = start; start = end; end = t; }
+            if (els.perEventControls) {
+                const many = picked.all.length > 1;   // считаем client + server + none
+                els.perEventControls.style.display = many ? 'flex' : 'none';
             }
 
 
-            const whereParts = [];
+            ui.lastGeneratedEvents = picked.all.slice();
+            ui.perEventShown = false;
+            recalcState();
 
-            // 1) user_id первым
-            whereParts.push(`WHERE user_id = 'test_user_ID'`);
-
-            // 2) даты
-            if (!isRange) {
-                // Сегодня
-                whereParts.push(`AND DATE(insertion_date) >= '${start}'`);
-                whereParts.push(`AND client_time >= '${start} 00:00:00 UTC'`);
-            } else {
-                // Диапазон
-                whereParts.push(`AND DATE(insertion_date) >= '${start}'`);
-                whereParts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
-            }
-
-            // 3) событие(я)
-            whereParts.push(whereEvent);
-
-            // 3.1) фильтр по источнику (опционально)
-            if (source === 'server') whereParts.push(`AND written_by = 'server'`);
-            else if (source === 'client') whereParts.push(`AND written_by = 'client'`);
-
-            // 4) тех.фильтр
-            whereParts.push(`AND twelve_traits_enabled IS NULL`);
-
-
-            const whereFinal = whereParts.join('\n');
-
-
-            // 5) Финальный SQL с ORDER BY и limit
-            //             let sql = '';
-            //             if (mode === 'property_in') {
-            //                 sql =
-            //                     `SELECT ${selectFields}
-            // ${fromClause}
-            // ${whereFinal}
-            // ORDER BY client_time DESC 
-            // --ORDER BY server_time DESC 
-            // --limit 1000;`;
-            //             } else {
-            //                 sql =
-            //                     `SELECT ${selectFields}
-            // ${fromClause}
-            // ${whereFinal}
-            // ORDER BY client_time DESC limit 1000;`;
-            //             }
-            //             els.sqlOutput.value = sql;
-
-            // 5) Финальный SQL с ORDER BY и limit
-            const orderField = (source === 'server') ? 'server_time' : 'client_time';
-
-            const sql =
-                `SELECT ${selectFields}
-${fromClause}
-${whereFinal}
-ORDER BY ${orderField} DESC
---limit 1000;`;
-
-            els.sqlOutput.value = sql;
-
-
+            // очистить старые per-event результаты и спрятать "Download all"
             els.copyStatus.textContent = '';
             els.copyStatus.classList.remove('ok', 'warn');
             els.downloadCombo?.classList.remove('hidden');
 
-            // ПЕРЕГЕНЕРАЦИЯ: всегда очищаем старые per-event результаты
             if (els.perEventContainer) {
-                if (els.perEventContainer.replaceChildren) {
-                    els.perEventContainer.replaceChildren();      // быстро убрать все карточки
-                } else {
-                    els.perEventContainer.innerHTML = '';
-                }
+                els.perEventContainer.replaceChildren?.();
+                els.perEventContainer.innerHTML = '';
                 els.perEventContainer.style.display = 'none';
             }
-            // спрятать нижний блок "Download All" (появится только после нового пер-ивент Generate)
             if (els.perEventAllWrap) {
                 els.perEventAllWrap.classList.add('hidden');
                 els.perEventAllWrap.style.display = 'none';
             }
 
-            // Кнопка «Generate per-event queries» видима ТОЛЬКО если выбрано ≥2 событий,
-            // но сами карточки мы сейчас всегда очистили — пользователь нажмёт кнопку заново.
-            if (els.perEventControls) {
-                const many = selectedEvents.length > 1;
-                els.perEventControls.style.display = many ? 'block' : 'none';
-            }
-
-            // Отмечаем, что per-event список скрыт/не сгенерирован после нового Generate
-            ui.perEventShown = false;
-
-
-            // NEW: remember selection at the moment of generation
-            ui.lastGeneratedEvents = selectedEvents.slice();
-            // per-event ещё не открыт
-            ui.perEventShown = false;
-            // пересчитываем кнопки правой панели
-            recalcState();
-
-
-            // на этапе основного Generate кнопку "Download all" всегда скрываем,
-            // появится только после нажатия "Generate per-event queries"
-            if (els.perEventAllWrap) els.perEventAllWrap.style.display = 'none';
-
-
         });
-
 
         els.copyBtn.addEventListener('click', async () => {
 
@@ -1742,17 +1901,8 @@ ORDER BY ${orderField} DESC
             }
         });
 
-        // нижняя Copy (в блоке per-event 2×2)
-        els.copyBtnPer?.addEventListener('click', async () => {
-            const txt = els.sqlOutput?.value || '';
-            if (!txt.trim()) return;
-            try { await navigator.clipboard.writeText(txt); } catch { }
-        });
-
-
         // следим за пустотой SQL, чтобы выравнивать Clear под Copy
         els.sqlOutput?.addEventListener('input', syncClearButtonTopState);
-
 
         els.clearBtn?.addEventListener('click', () => {
             els.sqlOutput.value = '';
@@ -1775,7 +1925,6 @@ ORDER BY ${orderField} DESC
 
 
         });
-
 
         els.refreshPageBtn?.addEventListener('click', () => {
             // очищаем все поля и статусы
@@ -1835,6 +1984,44 @@ ORDER BY ${orderField} DESC
             // Полностью сбросить file input (режим File)
             resetTlsInput();
 
+            // === сброс выбора "сколько таблиц" ===
+            if (els.oneTable) els.oneTable.checked = true;
+            if (els.twoTables) els.twoTables.checked = false;
+            document.getElementById('fileBlockB')?.classList.add('hidden'); // скрыть блок №2
+            document.getElementById('tableLabelA')?.classList.add('hidden');
+            document.getElementById('tableLabelB')?.classList.add('hidden');
+
+            document.querySelectorAll('.bq-table-select').forEach(sel => {
+                sel.selectedIndex = 0;
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+
+            // === NEW: сбросить все селекты источников к None ===
+            ['eventSourceA', 'eventSourceB', 'eventSourceSeparate', 'eventSourcePaste'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) sel.value = 'none';
+            });
+
+            // === NEW: сбросить выбор BQ-таблицы к первому пункту ===
+            const resetSelectToFirst = (sel) => {
+                if (!sel || !sel.options || !sel.options.length) return;
+                sel.selectedIndex = 0;
+                // если где-то есть onChange-логика, дёрнем её
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+
+            // === NEW: сбросить выбор BQ-таблицы к первому пункту ===
+            const tSel = els.tableEnv || document.getElementById('tableEnv');
+            if (tSel) {
+                tSel.selectedIndex = 0;
+                tSel.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+
+            // === сброс Event source к дефолту ===
+            if (els.eventSourceA) els.eventSourceA.value = 'none';
+            if (els.eventSourceB) els.eventSourceB.value = 'none';
+
             // Обнулить состояние
             state.rows = [];
             state.headers = [];
@@ -1878,13 +2065,18 @@ ORDER BY ${orderField} DESC
             // 5) вернуть раскладку панели к начальному виду (Copy | Refresh в TOP)
             setStateS0();
 
+            // сбросить выбор BQ-таблицы к первому пункту
+            if (els.tableEnv) {
+                els.tableEnv.selectedIndex = 0;
+                els.tableEnv.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+
             genErrorArmed = false;
             updateGenError();
             if (els.genError) { els.genError.textContent = ''; els.genError.classList.add('hidden'); }
 
-
         });
-
 
         els.refreshBtnPer?.addEventListener('click', () => {
 
@@ -1903,11 +2095,6 @@ ORDER BY ${orderField} DESC
 
 
         });
-
-
-
-
-
 
         // === Download CSV for Testomat (по выбранным событиям) ===
 
@@ -1949,14 +2136,11 @@ ORDER BY ${orderField} DESC
             closeAllDownloadMenus();
         });
 
-
-
         els.downloadOptCsv?.addEventListener('click', () => {
             const row = collectCombinedRow(); if (!row) return;
             openCsvModal({ getRows: () => [row], fileNamePrefix: 'Query' });
             closeAllDownloadMenus?.();
         });
-
 
         // ==================================================================
 
@@ -1977,30 +2161,46 @@ ORDER BY ${orderField} DESC
             closeAllDownloadMenus();
         });
 
-
         els.downloadAllOptCsv?.addEventListener('click', () => {
             const rows = collectPerEventRows(); if (!rows?.length) return;
             openCsvModal({ getRows: () => rows, fileNamePrefix: 'Queries_per_event' });
             closeAllDownloadMenus?.();
         });
 
-
         // ==================================================================
-
 
         // --- Generate per-event queries (отдельный SQL на каждый выбранный Event) ---
         els.perEventBtn?.addEventListener('click', () => {
-            // 1) актуальный список выбранных событий
-            const selectedEvents = Array
-                .from(els.eventList?.querySelectorAll('input[type="checkbox"]:checked') || [])
-                .map(cb => cb.value)
-                .filter(Boolean);
 
-            const source = els.eventSource?.value || 'none'; // NEW
+            const take = (root) =>
+                Array.from(root?.querySelectorAll('input[type="checkbox"]:checked') || [])
+                    .map(cb => ({ ev: cb.value, src: (cb.dataset.source || 'none').toLowerCase() }));
 
+            const pickedClient = take(els.eventListClient);
+            const pickedServer = take(els.eventListServer);
 
-            if (!selectedEvents || selectedEvents.length < 2) {
-                // Нечего генерировать
+            // Порядок карточек = порядок групп слева
+            // const picker = els.eventPicker || document.getElementById('eventPicker');
+            // const clientFirst = (picker?.firstElementChild?.id === 'eventsClientWrap');
+            // const picked = clientFirst
+            //     ? [...pickedClient, ...pickedServer]
+            //     : [...pickedServer, ...pickedClient];
+
+            const pickedNone = take(els.eventListNone);
+
+            const listsCol = els.eventPicker?.querySelector('.field');
+            const ids = Array.from(listsCol?.children || [])
+                .map(el => el.id)
+                .filter(id => /events(Client|Server|None)Wrap/.test(id));
+
+            const bySrc = { client: pickedClient, server: pickedServer, none: pickedNone };
+            let picked = [];
+            ids.forEach(id => {
+                const key = id.includes('Client') ? 'client' : id.includes('Server') ? 'server' : 'none';
+                picked = picked.concat(bySrc[key]);
+            });
+
+            if (picked.length < 2) {
                 if (els.perEventControls) els.perEventControls.style.display = 'none';
                 return;
             }
@@ -2008,7 +2208,6 @@ ORDER BY ${orderField} DESC
             // 2) общие параметры окружения/диапазона дат (как в основном генераторе)
             const esc = s => s.replace(/'/g, "''");
             const fromClause = fromClauseFor(els.tableEnv.value || 'prod');
-
 
             let start = todayISO;
             let end = todayISO;
@@ -2024,13 +2223,10 @@ ORDER BY ${orderField} DESC
             }
 
 
-
-            const buildWhere = (ev) => {
+            const buildWhere = (ev, src) => {
                 const parts = [];
-
-                // 1) user_id первым
+                // 1) user_id
                 parts.push(`WHERE user_id = 'test_user_ID'`);
-
                 // 2) даты
                 if (!isRange) {
                     parts.push(`AND DATE(insertion_date) >= '${start}'`);
@@ -2039,100 +2235,76 @@ ORDER BY ${orderField} DESC
                     parts.push(`AND DATE(insertion_date) >= '${start}'`);
                     parts.push(`AND client_time BETWEEN '${start} 00:00:00 UTC' AND '${end} 00:00:00 UTC'`);
                 }
-
                 // 3) событие
                 parts.push(`AND event = '${esc(ev)}'`);
-
-                // 3.1) фильтр по источнику (если выбран)
-                if (source === 'server') parts.push(`AND written_by = 'server'`);
-                else if (source === 'client') parts.push(`AND written_by = 'client'`);
-
-
-                // 4) тех.фильтр
+                // 4) источник
+                if (src === 'server') parts.push(`AND written_by = 'server'`);
+                else if (src === 'client') parts.push(`AND written_by = 'client'`);
+                // 5) тех.фильтр
                 parts.push(`AND twelve_traits_enabled IS NULL`);
-
                 return parts.join('\n');
             };
 
-
             // 3) Рендерим блоки
             if (els.perEventContainer) {
-                els.perEventContainer.innerHTML = ''; // очистить перед новым выводом
-                for (const ev of selectedEvents) {
-                    // const rawProps = (state.byEvent.get(ev) || []).filter(Boolean);
-                    // const props = Array.from(new Set(expandProps(rawProps))); // ← разворачиваем + дедуп
-                    // const fields = (props.length > 0)
-                    //     ? `event, client_time, server_time, written_by, ${props.join(', ')}`
-                    //     : `event, client_time, server_time, written_by`;
-
+                els.perEventContainer.innerHTML = '';
+                for (const { ev, src } of picked) {
                     const rawProps = (state.byEvent.get(ev) || []).filter(Boolean);
                     const props = Array.from(new Set(expandProps(rawProps)));
-                    const propsWithC = ensureTrailingC(props); // ← 'c' последним всегда
-                    const timeSelect =
-                        source === 'server' ? 'server_time' :
-                            source === 'client' ? 'client_time' :
-                                'client_time, server_time';
+                    const propsWithC = ensureTrailingC(props);
 
+                    const timeSelect = (src === 'server') ? 'server_time'
+                        : (src === 'client') ? 'client_time'
+                            : 'client_time, server_time';
                     const fields = `event, ${timeSelect}, written_by, ${propsWithC.join(', ')}`;
 
-
-                    const sql =
-                        `SELECT ${fields}
+                    const sql = `SELECT ${fields}
 ${fromClause}
-${buildWhere(ev)}
-ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
---limit 1000;
-`;
+${buildWhere(ev, src)}
+ORDER BY ${(src === 'server') ? 'server_time' : 'client_time'} DESC
+--limit 1000;`;
 
-                    // Карточка для одного события
                     const wrap = document.createElement('div');
                     wrap.className = 'per-item';
                     wrap.innerHTML = `
-  <div class="title">Event: <code>${ev}</code></div>
+ <div class="title" data-source="${src}">Event: <code>${ev}</code></div>
   <textarea class="per-sql" readonly>${sql.replace(/</g, '&lt;')}</textarea>
-
-  <!-- статус слева, кнопки справа -->
   <div class="row per-actions">
     <span class="copy-status per-status" aria-live="polite" role="status"></span>
     <div class="btns">
       <button class="btn-primary per-copy" data-ev="${ev}">Copy to clipboard</button>
-
       <div class="dropdown per-dd">
         <button class="btn-primary per-split">Download ▾</button>
         <div class="dropdown-menu" aria-hidden="true">
-          <button class="menu-btn txt per-download"       data-ev="${ev}">.txt</button>
-          <button class="menu-btn csv per-download-csv"   data-ev="${ev}">.csv (Testomat)</button>
+          <button class="menu-btn txt per-download"     data-ev="${ev}">.txt</button>
+          <button class="menu-btn csv per-download-csv" data-ev="${ev}">.csv (Testomat)</button>
         </div>
       </div>
     </div>
   </div>`;
-
                     els.perEventContainer.appendChild(wrap);
                 }
                 els.perEventContainer.style.display = 'block';
-                moveClearUnderPerEvent();
-                syncClearButtonTopState();
-
-                moveClearToBottom();
-
-                // показать кнопку "Download all" только если карточек >= 2
-                if (els.perEventAllWrap) {
-                    const cnt = els.perEventContainer?.querySelectorAll('.per-item').length || 0;
-                    if (cnt > 1) {
-                        els.perEventAllWrap.classList.remove('hidden');
-                        els.perEventAllWrap.style.display = '';      // показать (снять inline 'none')
-                    } else {
-                        els.perEventAllWrap.classList.add('hidden');
-                        els.perEventAllWrap.style.display = 'none';  // прятать явно
-                    }
-                }
-
-
-                ui.perEventShown = true;
-
-                recalcState();
-
             }
+
+            moveClearUnderPerEvent();
+            syncClearButtonTopState();
+            moveClearToBottom();
+
+            // показать кнопку "Download all" только если карточек >= 2
+            if (els.perEventAllWrap) {
+                const cnt = els.perEventContainer?.querySelectorAll('.per-item').length || 0;
+                if (cnt > 1) {
+                    els.perEventAllWrap.classList.remove('hidden');
+                    els.perEventAllWrap.style.display = '';
+                } else {
+                    els.perEventAllWrap.classList.add('hidden');
+                    els.perEventAllWrap.style.display = 'none';
+                }
+            }
+
+            ui.perEventShown = true;
+            recalcState();
         });
 
         // Делегирование кликов для Copy / Download в пер-ивентных блоках
@@ -2152,8 +2324,6 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
                 if (!isOpen && dd) openMenu(dd);
                 return;
             }
-
-
 
             if (e.target.classList.contains('per-copy')) {
                 // 0) НОВОЕ: перед показом локального статуса — погасить основной
@@ -2197,9 +2367,6 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
                 }
             }
 
-
-
-
             if (e.target.classList.contains('per-download')) {
                 const sql = (ta.value || '').trim();
                 if (!sql) return;
@@ -2218,6 +2385,7 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
 
             if (e.target.classList.contains('per-download-csv')) {
                 const ev = e.target.getAttribute('data-ev') || 'Event';
+                const src = (state.sourceOfEvent.get(ev) || 'none').toLowerCase();
                 const props = state.byEvent.get(ev) || [];
                 const env = els.tableEnv?.value || 'prod';
 
@@ -2228,19 +2396,16 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
                     const eISO = els.dateEnd?.dataset.iso || sISO;
                     start = sISO; end = eISO; if (start > end) { const t = start; start = end; end = t; }
                 }
-                const sql = buildPerEventSQL(ev, props, env, start, end, isRange);
+
+                const sql = buildPerEventSQL(ev, props, env, start, end, isRange, src);
                 openCsvModal({
-                    getRows: () => [{ title: prependSourceTag(`Event: ${ev}`), sql }], // NEW
+                    getRows: () => [{ title: withSourceTag(`Event: ${ev}`, src), sql }],
                     fileNamePrefix: `EVENT_${ev}`
                 });
-
                 return;
             }
 
-
-
         });
-
 
         // --- Download all per-event queries (.txt) с шапкой "-- FOR EVENT: <name>" ---
         els.downloadAllPerBtn?.addEventListener('click', () => {
@@ -2283,36 +2448,13 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
         });
         syncClearButtonTopState();
 
-
-        // ALL events — CSV for Testomat (moved top button -> bottom)
-
-        // Download CSV (S1/S2): один кейс с объединённым SQL из sqlOutput
-        els.downloadCsvBtn?.addEventListener('click', () => {
-            const sql = (els.sqlOutput?.value || '').trim();
-            if (!sql) return; // нечего сохранять
-
-            // Заголовок строки CSV. Можно оставить универсальный.
-            const rows = [{ title: 'Combined query', sql }];
-            const csv = buildCsv(rows);
-
-            // имя файла: Query_YYYY-MM-DD_HH-MM-SS.csv (локальное время)
-            const d = new Date(), pad = n => String(n).padStart(2, '0');
-            const name = `Query_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}.csv`;
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = name;
-            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        });
-
-
     }
+
+    // ALL events — CSV for Testomat (moved top button -> bottom)
 
     window.Tools = window.Tools || {};
     window.Tools.queryCreator = { init };
 
-    // --- Авто-инициализация ---
-    // Если внешняя обвязка не вызывает init(), сделаем это сами.
     // --- Авто-инициализация ---
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
@@ -2323,6 +2465,3 @@ ORDER BY ${(source === 'server') ? 'server_time' : 'client_time'} DESC
     }
 
 })();
-
-
-

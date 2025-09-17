@@ -13,6 +13,8 @@
     --card: #12151e;
     --border: #213243b5;
     --card-bg: #232a464f;
+    --selected-day: #06111f;
+    --label: #cfd3db;
 
     /* акцент (кнопки) */
     --accent: #79a8ff;
@@ -23,11 +25,13 @@
     --sidebar-edge: #151a2d;
     /* тонкая правая кромка */
     --sidebar-hover: rgba(121, 168, 255, .25);
-
+    --error-icon: #ffeb3b;
+    --scrollbar-event-list: #3a4452;
     /* hover строки */
 
     /* активная вкладка (пилюля) */
     --sidebar-active: #3b56d1;
+    --info-btn-blue: #2196f3;
     /* фон активной пилюли */
     --sidebar-active-fg: #eef3ff;
     /* текст на активной пилюле */
@@ -43,6 +47,7 @@
 
     /* отдельные переменные под тултип (непрозрачные) */
     --howto-bg: #21273b;
+    --how-to-back: #0e101580;
     /* фон тултипа (тёмный, без прозрачности) */
     --howto-fg: #e7eef7;
     --gen-btn: #f6ab19f2;
@@ -51,6 +56,9 @@
     --button-grey: #3b4654;
     --card-bg-modal: #292b38;
     --card-bg-modal-border: #39444a;
+    --btn-n-field-bg: #0e1015;
+    --menu-btn-darkblue: #2d3641;
+    --menu-btn-grey: #ffffffa6;
 
 }
 
@@ -148,7 +156,7 @@ h2 {
 .label {
     display: block;
     margin: 5px 0 6px;
-    color: #cfd3db;
+    color: var(--label);
     margin-left: 12px;
 }
 
@@ -163,7 +171,7 @@ textarea {
 
 button {
     background: var(--accent);
-    color: #06111f;
+    color: var(--btn-n-field-bg);
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -198,7 +206,7 @@ button:active {
 }
 
 button.btn-refresh {
-    background: #3a4452;
+    background: var(--scrollbar-event-list);
     /* не контрастный, приглушённый синий-серый */
     color: #e7e9ee;
 }
@@ -223,7 +231,7 @@ button.btn-refresh:hover {
 
 #errorBox .icon {
     font-size: 20px;
-    color: #ffeb3b;
+    color: var(--error-icon);
     /* жёлтый треугольник */
 }
 
@@ -234,7 +242,7 @@ button.btn-refresh:hover {
 #errorBox .icon {
     /* жёлтый треугольник/иконка */
     font-size: 20px;
-    color: #ffeb3b;
+    color: var(--error-icon);
 }
 
 #perEventControls {
@@ -258,7 +266,7 @@ button.btn-refresh:hover {
 
 #infoBox .icon {
     font-size: 20px;
-    color: #2196f3;
+    color: var(--info-btn-blue);
     /* ярко-синий кружок */
 }
 
@@ -272,7 +280,7 @@ button.btn-refresh:hover {
     border-radius: 50%;
     background-color: var(--validation-warn);
     /* ярко-оранжевый */
-    color: #ffffff;
+    color: var(--label);
     font-size: 14px;
     font-weight: bold;
 }
@@ -367,7 +375,7 @@ button {
     width: 100%;
     border-radius: 6px;
     border: 1px solid var(--border);
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     color: var(--text);
     padding: 10px 12px;
     outline: none;
@@ -379,13 +387,14 @@ select {
     appearance: none;
     padding-right: 40px;
     /* место под стрелку */
-    background-color: #0e1015;
+    background-color: var(--btn-n-field-bg);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%23aab3d2' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     /* ← сдвиг стрелки */
     background-size: 12px 12px;
 }
+
 
 /* 2) Радио и чекбоксы — компактные, не растягиваются */
 input[type="radio"],
@@ -412,7 +421,7 @@ input[type="checkbox"] {
 .chip-date {
     display: inline-block;
     padding: 10px 12px;
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
     line-height: 1;
@@ -435,7 +444,7 @@ input[type="date"] {
 .date-input {
     width: 100%;
     padding: 10px 12px;
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
     color: var(--text);
@@ -470,8 +479,8 @@ input[type="date"] {
 }
 
 .dp-btn {
-    background: #3a4452;
-    color: #e7e9ee;
+    background: var(--scrollbar-event-list);
+    color: var(--label);
     border: none;
     border-radius: 8px;
     padding: 6px 10px;
@@ -479,7 +488,7 @@ input[type="date"] {
 }
 
 .dp-select {
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -506,7 +515,7 @@ input[type="date"] {
 }
 
 .dp-day {
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border: 1px solid transparent;
     cursor: pointer;
 }
@@ -521,7 +530,7 @@ input[type="date"] {
 
 .dp-day.is-selected {
     background: var(--accent);
-    color: #06111f;
+    color: var(--selected-day);
     font-weight: 700;
 }
 
@@ -620,12 +629,12 @@ input[type="date"] {
 }
 
 #eventSelect::-webkit-scrollbar-track {
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border-radius: 10px;
 }
 
 #eventSelect::-webkit-scrollbar-thumb {
-    background: #3a4452;
+    background: var(--scrollbar-event-list);
     border-radius: 10px;
 }
 
@@ -644,7 +653,7 @@ input[type="date"] {
     height: 240px;
     overflow: auto;
     scrollbar-gutter: stable;
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px 12px;
@@ -684,12 +693,12 @@ input[type="date"] {
 }
 
 .event-list::-webkit-scrollbar-track {
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border-radius: 10px;
 }
 
 .event-list::-webkit-scrollbar-thumb {
-    background: #3a4452;
+    background: var(--scrollbar-event-list);
     border-radius: 10px;
 }
 
@@ -700,7 +709,7 @@ input[type="date"] {
 
 button.btn-primary {
     background: var(--accent);
-    color: #06111f;
+    color: var(--btn-n-field-bg);
     font-weight: 700;
     border: none;
 }
@@ -852,7 +861,7 @@ textarea.no-scroll {
 /* на всякий случай выравниваем с полями слева */
 #eventPicker .btn-full,
 #mode-separate .btn-full {
-    margin-top: 36px;
+    margin-top: 39px;
     /* визуально как у Refresh-строки */
 }
 
@@ -1123,27 +1132,27 @@ textarea.no-scroll {
 }
 
 .howto-tooltip::-webkit-scrollbar-track {
-    background: #0e1015;
+    background: var(--btn-n-field-bg);
     border-radius: 10px;
 }
 
 .howto-tooltip::-webkit-scrollbar-thumb {
-    background: #cfcfd6;
+    background: var(--label);
     /* светло-бежево-серый, как просили */
     border-radius: 10px;
-    border: 2px solid #0e1015;
+    border: 2px solid var(--btn-n-field-bg);
     /* чтобы выглядел «аккуратно» */
 }
 
 .howto-tooltip::-webkit-scrollbar-thumb:hover {
-    background: #e3e3ea;
+    background: var(--label);
 }
 
 /* Firefox: сделать скроллбар не тонким и задать цвета */
 .howto-tooltip {
     scrollbar-width: auto;
     /* не thin */
-    scrollbar-color: #cfcfd6 #0e1015;
+    scrollbar-color: var(--label) var(--btn-n-field-bg);
     /* thumb | track */
     padding: 0px !important;
 }
@@ -1254,7 +1263,7 @@ textarea.no-scroll {
     width: 35px;
     height: 35px;
     border-radius: 999px;
-    background: rgba(0, 0, 0, .55);
+    background: var(--how-to-back);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1268,7 +1277,7 @@ textarea.no-scroll {
     content: "";
     width: 24px;
     height: 24px;
-    background: #d0d3d9;
+    background: var(--label);
     /* цвет иконки */
     -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
     mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
@@ -1280,7 +1289,7 @@ textarea.no-scroll {
 #howtoImgOverlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .65);
+    background: var(--how-to-back);
     z-index: 2000;
     /* выше тултипа */
     display: flex;
@@ -1294,7 +1303,7 @@ textarea.no-scroll {
     max-height: calc(100vh - 64px);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
+    box-shadow: 0 16px 40px var(--how-to-back);
 }
 
 #howtoImgOverlay .howto-img-modal img {
@@ -1312,7 +1321,7 @@ textarea.no-scroll {
 
 #genBtn.btn-primary {
     background: var(--gen-btn) !important;
-    color: #06111f;
+    color: var(--btn-n-field-bg);
     /* контрастный текст */
     border: none;
 }
@@ -1321,7 +1330,7 @@ textarea.no-scroll {
 .howto-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .45);
+    background: var(--how-to-back);
     /* мягкое затемнение */
     z-index: 1000;
     /* ниже з-индекса тултипа (у тултипа 1100) */
@@ -1364,7 +1373,7 @@ textarea.no-scroll {
 }
 
 .info-dot:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--btn-n-field-bg);
 }
 
 .tooltip {
@@ -1410,7 +1419,7 @@ textarea.no-scroll {
 .per-download-csv {
     background: var(--button-grey) !important;
     /* основной оранжевый */
-    color: #fff;
+    color: var(--label);
 }
 
 #downloadCsvBtn:hover,
@@ -1431,7 +1440,7 @@ textarea.no-scroll {
 
 .row-copy #clearBtn {
     background: var(--button-grey);
-    color: #fff;
+    color: var(--label);
 }
 
 
@@ -1459,7 +1468,7 @@ textarea.no-scroll {
 #clearBtn {
     background: var(--button-grey);
     /* возьми тот же цвет, что у .btn-primary/Copy */
-    color: #fff;
+    color: var(--label);
     height: 36px;
     font-size: 13px;
     font-weight: 700;
@@ -1491,7 +1500,7 @@ textarea.no-scroll {
 }
 
 .info-dot:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--btn-n-field-bg);
 }
 
 #csvInfo:hover+#csvInfoTip {
@@ -1516,7 +1525,7 @@ textarea.no-scroll {
 #clearBtn.clear-top {
     background: var(--button-grey);
     /* тёмно-серый */
-    color: #fff;
+    color: var(--label);
     width: 100%;
     height: 36px;
     /* как у Copy */
@@ -1560,7 +1569,7 @@ textarea.no-scroll {
     width: 100%;
     border-radius: 6px;
     background: var(--button-grey);
-    color: #fff;
+    color: var(--label);
 }
 
 /* контейнер, куда переносим #clearBtn */
@@ -1636,7 +1645,7 @@ textarea.no-scroll {
     background: var(--panel, #1f2631);
     border: 1px solid var(--c-border, #303a49);
     border-radius: 8px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    box-shadow: 0 10px 24px var(--how-to-back);
     display: none;
     z-index: 50;
 }
@@ -1660,22 +1669,22 @@ textarea.no-scroll {
 /* цвета пунктов: отличаются от синей основной кнопки */
 .menu-btn.txt .per-download {
     background: var(--button-grey) !important;
-    color: #fff !important;
+    color: var(--label) !important;
 }
 
 .menu-btn.txt .per-download:hover {
-    background: #2d3641 !important;
-    color: #ffffffa6 !important;
+    background: var(--menu-btn-darkblue) !important;
+    color: var(--menu-btn-grey) !important;
 }
 
 .menu-btn.csv {
     background: var(--button-grey);
-    color: #fff;
+    color: var(--label);
 }
 
 .menu-btn.csv:hover {
-    background: #2d3641;
-    color: #ffffffa6;
+    background: var(--menu-btn-darkblue);
+    color: var(--menu-btn-grey);
 }
 
 /* чтобы «Download All» занимал всю верхнюю строку в 2×2 сетке */
@@ -1710,7 +1719,7 @@ textarea.no-scroll {
 #downloadAllPerCsvBtn,
 .per-download-csv {
     background: var(--gen-btn);
-    color: #111;
+    color: var(--btn-n-field-bg);
 }
 
 #downloadCsvBtn:hover,
@@ -1721,7 +1730,7 @@ textarea.no-scroll {
 /* Верхний Refresh (когда он в TOP grid) – тёмно-серый */
 #topBtnGrid #refreshBtn {
     background: var(--muted);
-    color: #fff;
+    color: var(--label);
 }
 
 /* Пер-ивент нижний блок – стили там свои (обе кнопки одинаковые) */
@@ -1732,7 +1741,7 @@ textarea.no-scroll {
 
 button.btn-muted {
     background: var(--button-grey);
-    color: #fff;
+    color: var(--label);
 }
 
 #perEventBtn .btn-refresh {
@@ -1753,7 +1762,7 @@ button.btn-muted {
 .qc-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, .55);
+    background: var(--btn-n-field-bg);
 }
 
 .qc-modal__card {
@@ -1765,7 +1774,7 @@ button.btn-muted {
     border-radius: 6px;
     background: var(--card-bg-modal);
     border: 1px solid var(--card-bg-modal-border);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+    box-shadow: 0 12px 30px var(--how-to-back);
 }
 
 
@@ -1783,7 +1792,7 @@ button.btn-muted {
 .qc-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, .55);
+    background: var(--btn-n-field-bg);
 }
 
 .qc-modal select,
@@ -1853,4 +1862,103 @@ button.btn-muted {
 #howtoImgOverlay .howto-img-modal img.zoom-half {
     max-width: 70vw;
     max-height: 70vh;
+}
+
+/* --- dual-file UI --- */
+.file-block select,
+.file-block input[type="file"] {
+    width: 100%;
+}
+
+#eventsClientWrap:empty,
+#eventsServerWrap:empty {
+    display: none;
+}
+
+#eventSourceA,
+#eventSourceB {
+    width: 120px !important;
+    min-width: 120px;
+    max-width: 120px;
+    margin-bottom: 20px;
+}
+
+/* Keep event groups stacked vertically inside the lists column */
+#eventPicker {
+    align-items: flex-start;
+}
+
+#eventPicker .field {
+    display: flex;
+    flex-direction: column;
+}
+
+#eventsServerWrap,
+#eventsNoneWrap {
+    margin-top: 10px;
+}
+
+.event-wrap {
+    margin-top: 10px;
+}
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1;
+    width: 110px;
+    height: 35px;
+}
+
+.btn-secondary {
+    opacity: .85;
+}
+
+/* === FINAL ALIGN FIX for macOS/WebKit: keep system font + native metrics === */
+:root {
+    --select-ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* сам селект и модальные селекты — единые метрики */
+select,
+.qc-modal select {
+    font-family: var(--select-ui-font) !important;
+    font-size: 13px !important;
+    /* именно 13px — как у системного меню */
+    line-height: normal !important;
+    /* пусть движок возьмёт нативную высоту строки */
+    letter-spacing: 0 !important;
+    /* страховка от унаследованных настроек */
+}
+
+/* многие сборки WebKit считают высоту пункта по option — дублируем туда же */
+select option,
+.qc-modal select option {
+    font-family: var(--select-ui-font) !important;
+    font-size: 13px !important;
+    line-height: normal !important;
+    letter-spacing: 0 !important;
+}
+
+/* Safari иногда «растягивает» меню из-за масштабирования текста */
+@supports (-webkit-overflow-scrolling: touch) {
+
+    select,
+    select option,
+    .qc-modal select,
+    .qc-modal select option {
+        -webkit-text-size-adjust: 100% !important;
+    }
+}
+
+.eventSource {
+    width: 120px !important;
+    min-width: 120px;
+    max-width: 120px;
 }

@@ -105,9 +105,45 @@
                 <div id="mode-file" class="input-mode active">
                     <div class="input-section">
                         <label class="label">Upload TSV/TLS file</label>
-                        <input type="file" id="tlsFile" accept=".tsv,.txt,.csv" />
+
+                        <!-- переключатель: 1 table / 2 tables -->
+                        <div class="row" style="margin-top:8px;">
+                            <label class="mode-item">
+                                <input type="radio" name="fileCount" id="oneTable" checked>
+                                <span>1 table</span>
+                            </label>
+                            <label class="mode-item" style="margin-left:14px;">
+                                <input type="radio" name="fileCount" id="twoTables">
+                                <span>2 tables</span>
+                            </label>
+                        </div>
+
+                        <!-- файл A + его Event source -->
+                        <div class="file-block" id="fileBlockA" style="margin-top:10px;">
+                            <h4 class="label table-label" id="tableLabelA" style="margin-bottom:6px;">Table №1</h4>
+                            <input type="file" id="tlsFileA" accept=".tsv,.txt,.csv" />
+                            <label class="label" style="margin-top:8px;">Event source</label>
+                            <select id="eventSourceA">
+                                <option value="none" selected>None</option>
+                                <option value="server">Server</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
+
+                        <!-- файл B + его Event source (по умолчанию скрыт) -->
+                        <div class="file-block hidden" id="fileBlockB" style="margin-top:14px;">
+                            <h4 class="label table-label" id="tableLabelB" style="margin-bottom:6px;">Table №2</h4>
+                            <input type="file" id="tlsFileB" accept=".tsv,.txt,.csv" />
+                            <label class="label" style="margin-top:8px;">Event source</label>
+                            <select id="eventSourceB">
+                                <option value="none" selected>None</option>
+                                <option value="server">Server</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+
 
                 <!-- ▼ Режим 2: отдельные столбцы -->
                 <div id="mode-separate" class="input-mode ">
@@ -121,42 +157,54 @@
                         <textarea id="propertiesInput" class="no-scroll"
                             placeholder="Paste Property column here"></textarea>
                     </div>
+
+                    <div class="input-section">
+                        <label class="label">Input source</label>
+                        <select class="eventSource" id="eventSourceSeparate">
+                            <option value="none" selected>None</option>
+                            <option value="client">Client</option>
+                            <option value="server">Server</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <!-- ▼ Режим 3: вставка полной таблицы -->
                 <div id="mode-paste" class="input-mode">
                     <label class="label">Data from the Google Sheets with analytics requirements</label>
+
+
                     <textarea id="pasteArea"
                         placeholder="Paste the rows here (usually TSV from Google Sheets)"></textarea>
+                    <div class="row" style="margin:8px 0;">
+                        <div class="field">
+                            <label class="label">Input source</label>
+                            <select class="eventSource" id="eventSourcePaste">
+                                <option value="none" selected>None</option>
+                                <option value="client">Client</option>
+                                <option value="server">Server</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
 
                 <!---------New field end---------->
-                <label class="label step-label">1.2 Select a BQ Table and Event source</label>
+                <label class="label step-label">1.2 Select a BQ Table</label>
 
                 <div class="row">
                     <div class="field">
                         <div class="field">
                             <label class="label">Table</label>
-                            <select id="tableEnv">
+                            <select id="tableEnv" class="bq-table-select">
                                 <option value="stage">Stage / RC (od-rc)</option>
                                 <option value="prod-cheats">Prod-cheats</option>
                                 <option value="prod">Production</option>
                             </select>
                         </div>
                     </div>
-
-                    <!-- Новый селект Event source -->
-                    <div class="field">
-                        <label class="label">Event source</label>
-                        <select id="eventSource">
-                            <option value="none" selected>None</option>
-                            <option value="server">Server</option>
-                            <option value="client">Client</option>
-                        </select>
-
-                    </div>
                 </div>
+
 
 
                 <label class="label step-label">1.3 Select a date (optional, default is today)</label>
@@ -204,15 +252,40 @@
 
                 <div id="eventPicker" class="row" style="display:none;">
                     <div class="field">
-                        <label class="label">Events</label>
 
-                        <!-- Новый список чекбоксов -->
-                        <div id="eventList" class="event-list" role="group" aria-label="Events list"></div>
 
-                        <!-- Кнопки выбора -->
-                        <div class="row" style="margin-top:8px;">
-                            <button id="selectAllBtn" class="btn-refresh" type="button">Select all</button>
-                            <button id="clearAllBtn" class="btn-refresh" type="button">Clear</button>
+                        <div id="eventsClientWrap">
+                            <h4 class="label" style="margin:8px 0 6px;">Client events</h4>
+                            <div id="eventListClient" class="event-list" role="group" aria-label="Client events"></div>
+                            <div class="row event-actions">
+                                <button type="button" class="btn btn-small select-clear" data-action="select-all">Select
+                                    all</button>
+                                <button type="button" class="btn btn-small btn-secondary select-clear"
+                                    data-action="clear">Clear</button>
+                            </div>
+                        </div>
+
+                        <div id="eventsServerWrap" style="margin-top:0px;">
+                            <h4 class="label" style="margin:8px 0 6px;">Server events</h4>
+                            <div id="eventListServer" class="event-list" role="group" aria-label="Server events"></div>
+                            <div class="row event-actions">
+                                <button type="button" class="btn btn-small select-clear" data-action="select-all">Select
+                                    all</button>
+                                <button type="button" class="btn btn-small btn-secondary select-clear"
+                                    data-action="clear">Clear</button>
+                            </div>
+                        </div>
+
+                        <!-- NEW: None/Unknown source events -->
+                        <div id="eventsNoneWrap" style="margin-top:0px; display:none;">
+                            <h4 class="label" style="margin:8px 0 6px;">Event source: None</h4>
+                            <div id="eventListNone" class="event-list" role="group" aria-label="None events"></div>
+                            <div class="row event-actions">
+                                <button type="button" class="btn btn-small select-clear" data-action="select-all">Select
+                                    all</button>
+                                <button type="button" class="btn btn-small btn-secondary select-clear"
+                                    data-action="clear">Clear</button>
+                            </div>
                         </div>
                     </div>
 
@@ -251,11 +324,11 @@
 
                 </div>
 
-                <div id="perEventControls" class="row" style="margin-top:10px; display:none;">
+                <!--    <div id="perEventControls" class="row" style="margin-top:10px; display:none;">
                     <button id="perEventBtn" class="btn-refresh" type="button">
                         Generate per-event queries
                     </button>
-                </div>
+                </div>-->
 
                 <!-- слот для верхней кнопки Clear -->
                 <div id="clearTopSlot">

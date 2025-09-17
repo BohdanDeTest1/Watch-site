@@ -1,0 +1,146 @@
+Screens	Event	Event description	App version	Written by	Exists	Status	Is new property	Area	Property	Type	Property description	Complete output list	Approval query	User_id	Type (hide this column)
+	puzzle_paints_info_popup_opened	when the info popup is opened in the screen to the user		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		reason	STRING	From where the user entered the info screen	Clicking the i button in the Puzzle Paints game screen, As part of the feature FTUE			STRING
+	puzzle_paints_info_popup_closed					untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+	puzzle_paints_intro_popup_opened	when the intro popup is opened in the screen to the user		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+						untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+						untested	No change	EventGrand Prize	reward_items	STRING	Rewards json				STRING
+						untested	No change		resource_amount_Smiley	INTEGER	Coin reward (if applicable)				INTEGER
+						untested	No change		resource_amount_HC	INTEGER	HC reward (if applicaple)				INTEGER
+						untested	No change		resource_amount_Energy	INTEGER	Energy reward (if applicaple)				INTEGER
+						untested	No change		resource_amount_event_energy	INTEGER	Event energy reward (if applicaple)				INTEGER
+						untested	No change		transaction_item_*	STRING	Item reward name [1-5]				STRING
+						untested	No change		transaction_item_amount_*	INTEGER	Item reward amount [1-5]				INTEGER
+						untested	No change		received_resource_name_1	STRING	One parameter for each generic token resource type updated				STRING
+						untested	No change		received_resource_amount_1	INTEGER	Corresponding amount of each resource				INTEGER
+						untested	No change		received_resource_name_2	STRING	One parameter for each generic token resource type updated				STRING
+						untested	No change		received_resource_amount_2	INTEGER	Corresponding amount of each resource				INTEGER
+						untested	No change		received_resource_name_3	STRING	One parameter for each generic token resource type updated				STRING
+						untested	No change		received_resource_amount_3	INTEGER	Corresponding amount of each resource				INTEGER
+	puzzle_paints_intro_popup_closed			Client	No	untested	No change	Configuration	event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		reason	STRING	Trigger for closing popup	close_button / enter_event (clickng let's play)			STRING
+	puzzle_paints_screen_opened	when the puzzle paints screen is opened		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+						untested	No change		rank	INTEGER	Number of levels configured in the spesific sub_event				INTEGER
+						untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change		event_level	INTEGER	Current level				INTEGER
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded				INTEGER
+						untested	No change	Navigation	reason	STRING	FROM which screen the user entered				STRING
+	puzzle_paints_screen_closed					untested	No change	Configuration	event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change		event_level	INTEGER	Current level				INTEGER
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - after event concluded				INTEGER
+	puzzle_paints_badge_clicked			Client	No	untested	No change	Configuration	event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change	Source	reason	STRING	Location of badge clicked	core_widget / meta_badge			STRING
+						untested	No change	Level	event_level	INTEGER	Current level				INTEGER
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - as indicated in badge red dot				INTEGER
+						untested	No change	Bar	level_target_points	INTEGER	Configured point goal for displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		points_balance	INTEGER	Number of points accumulated in displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		current_mission_index	INTEGER	Mission index of displayed Bar - null if not applicable				INTEGER
+	puzzle_paints_badge_displayed			Client	No	untested	No change	Configuration	event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		reason	STRING	Location of badge display				STRING
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - as indicated in badge red dot				INTEGER
+	puzzle_paints_event_completion_screen	reports when the completion screen is showing up		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change		max_amount	INTEGER	Number of sub_event configured	12			INTEGER
+						untested	No change		rank	INTEGER	Number of levels configured in the spesific sub_event				INTEGER
+						untested	No change		repeat_ind	INTEGER	Configuration for repeat last sub-event (1=yes, 0=no)	1			INTEGER
+						untested	No change	Level Configuration & State	event_level	INTEGER	Current level				INTEGER
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - as indicated in badge red dot				INTEGER
+						untested	No change	Bar	level_target_points	INTEGER	Configured point goal for displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		points_balance	INTEGER	Number of points accumulated in displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		current_mission_index	INTEGER	Mission index of displayed Bar - null if not applicable				INTEGER
+						untested	No change	Rewards	resource_amount_HC	INTEGER	Number of HC granted				INTEGER
+						untested	No change		resource_amount_Smiley	INTEGER	Number of smileys granted				INTEGER
+						untested	No change		resource_amount_Energy	INTEGER	Number of energy units granted				INTEGER
+						untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units granted				INTEGER
+						untested	No change		transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING
+						untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER
+						untested	No change		reward_items	STRING	JSON listing of all items and resources offered				STRING
+	puzzle_paints_reward_popup_opened	when the user received "claim reward" popup		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change	Bar	current_mission_index	INTEGER	Mission index of displayed Bar - null if not applicable				INTEGER
+						untested	No change	Level Configuration & State	event_level	INTEGER	Current level				INTEGER
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change	Rewards	resource_amount_HC	INTEGER	Number of HC granted				INTEGER
+						untested	No change		resource_amount_Smiley	INTEGER	Number of smileys granted				INTEGER
+						untested	No change		resource_amount_Energy	INTEGER	Number of energy units granted				INTEGER
+						untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units granted				INTEGER
+						untested	No change		transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING
+						untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER
+	puzzle_paints_reward_popup_clicked	Claim button clicked		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change	Bar	current_mission_index	INTEGER	Mission index of displayed Bar - null if not applicable				INTEGER
+						untested	No change	Level Configuration & State	event_level	INTEGER	Current level				INTEGER
+						untested	No change		event_index	INTEGER	Current sub event, In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change	Rewards	resource_amount_HC	INTEGER	Number of HC granted				INTEGER
+						untested	No change		resource_amount_Smiley	INTEGER	Number of smileys granted				INTEGER
+						untested	No change		resource_amount_Energy	INTEGER	Number of energy units granted				INTEGER
+						untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units granted				INTEGER
+						untested	No change		transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING
+						untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER
+	tutorial_started	Tutorial triggered and started		Client	Yes	untested	Need to add values		tutorial_id	STRING					STRING
+	tutorial_step					untested	Need to add values		tutorial_id	STRING					STRING
+						untested	Need to add values		step	INTEGER					INTEGER
+						untested	Need to add values		step_name	STRING					STRING
+	tutorial_completed	Tutorial completed				untested	Need to add values		tutorial_id	STRING	which kind of tutorial				STRING
+	tutorial_skip_button_shown	Skip button appears after user unresponsive for a period of time				untested	Need to add values		name	STRING					STRING
+						untested	Need to add values		tutorial_id	STRING	which kind of tutorial				STRING
+	tutorial_skip_button_pressed	Skip tutorial button is clicked (tutorial cancelled and skipped)				untested	Need to add values		name	STRING					STRING
+	puzzle_paints_event_ended_screen	Report when the event ended - (Event Compensation screen)		Client	No	untested	No change	Configuration	name	STRING	Event name in Game Control	merge_48_v4			STRING
+						untested	No change		event_id	STRING	Concatenation of event name (from Admin), start time and segment index: event name || start_date || segment index	merge_48_v4T2020-05-0821:00:00			STRING
+						untested	No change		start_date	TIMESTAMP	Liveop start timestamp	2020-05-08 21:00:00			TIMESTAMP
+						untested	No change		end_date	TIMESTAMP	Liveop end timestamp	2020-05-08 23:00:00			TIMESTAMP
+						untested	No change	Level Configuration & State	event_level	INTEGER	Current level				INTEGER
+						untested	No change		event_index	INTEGER	Current sub event , In case of repeating the last event configured this field could be 4,5,6,7				INTEGER
+						untested	No change	Token Inventory	user_generic_token_type_1	STRING	Generic Token type inventory current status - after event concluded				STRING
+						untested	No change		user_generic_token_amount_1	INTEGER	Generic Token amount inventory current status - as indicated in badge red dot				INTEGER
+						untested	No change	Bar	level_target_points	INTEGER	Configured point goal for displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		points_balance	INTEGER	Number of points accumulated in displayed Bar mission - null if not applicable				INTEGER
+						untested	No change		current_mission_index	INTEGER	Mission index of displayed Bar - null if not applicable				INTEGER
+						untested	No change	Rewards	resource_amount_HC	INTEGER	Number of HC granted from compensation				INTEGER
+						untested	No change		resource_amount_Smiley	INTEGER	Number of smileys granted from compensation				INTEGER
+						untested	No change		resource_amount_Energy	INTEGER	Number of energy units granted from compensation				INTEGER
+						untested	No change		resource_amount_event_energy	INTEGER	Number of event energy units granted from compensation				INTEGER
+						untested	No change		transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)				STRING
+						untested	No change		transaction_item_amount_*	INTEGER	Corresponding amount of each item				INTEGER
+						untested	No change		reason	STRING	Reason for event ended	liveop_completed / liveop_timeout			STRING
+	screen_entered			Client	Yes	untested	Need to add values		reason	STRING	FROM which screen the user entered	puzzle_paints			STRING
+						untested	Need to add values		view_id	STRING	TO what screen the user entered	puzzle_paints			STRING
+						untested	No change		live_ops_event_id	STRING	live ops event id user move from or to event board				STRING
+						untested	No change		sub_reason	STRING	In case of generic links, indication of what led to the screen entrence	generic_popup			STRING
+						untested	No change		building_id	STRING	The building id of the meta that opened as a result of a generic popup				STRING
