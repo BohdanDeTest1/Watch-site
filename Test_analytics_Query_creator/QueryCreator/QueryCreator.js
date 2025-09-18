@@ -391,9 +391,14 @@
         }
 
         function setStateS3() {
-            // в режиме per-event: Download (TOP) и Clear скрываем
+            // // в режиме per-event: Download (TOP) и Clear скрываем
+            // els.downloadCombo?.classList.add('hidden');
+            // els.clearBtn?.classList.add('hidden');
+
+            // В per-event: прячем только Download (TOP), Clear остаётся на месте в clearTopSlot
             els.downloadCombo?.classList.add('hidden');
-            els.clearBtn?.classList.add('hidden');
+            els.clearBtn?.classList.remove('hidden');
+            moveClearBackToTopRow();
 
             // верхний UNDER-TOP прячем, общий низ показываем
             els.underTopGrid?.classList.add('hidden');
@@ -485,15 +490,7 @@
             firstStep?.scrollIntoView({ block: 'start', behavior: 'smooth' });
         });
 
-        // // Клик вне тултипа — закрыть (но игнорим клик по модальному zoom-изображению)
-        // document.addEventListener('click', (e) => {
-        //     if (document.getElementById('howtoImgOverlay')) return; // не закрываем, если открыт zoom
-        //     if (!els.howtoTooltip || !els.howtoTooltip.classList.contains('open')) return;
-        //     const insideTip = e.target.closest('#howtoTooltip');
-        //     const onBtn = e.target.closest('#howtoBtn');
-        //     if (insideTip || onBtn) return;
-        //     closeHowto();
-        // });
+
 
         // Клик вне тултипа — закрыть (но игнорим клик по модальному zoom-изображению)
         document.addEventListener('click', (e) => {
@@ -1077,11 +1074,12 @@ ${EXAMPLES_TEMPLATE}
                 // держим Clear под Copy и оформляем как «верхнюю»
                 // (если кнопку переносили вниз — вернём её в верхний ряд под Copy)
                 const slot = els.clearTopSlot || document.getElementById('clearTopSlot');
-                if (slot && els.clearBtn.parentElement !== slot) slot.appendChild(els.clearBtn);
+                // if (slot && els.clearBtn.parentElement !== slot) slot.appendChild(els.clearBtn);
                 els.clearBtn.classList.add('clear-top');
 
             } else {
                 // убираем «верхний» вид
+                // els.clearBtn.classList.remove('clear-top');
                 els.clearBtn.classList.remove('clear-top');
             }
         }
@@ -2308,9 +2306,12 @@ ORDER BY ${(src === 'server') ? 'server_time' : 'client_time'} DESC
                 els.perEventContainer.style.display = 'block';
             }
 
-            moveClearUnderPerEvent();
-            syncClearButtonTopState();
-            moveClearToBottom();
+            // Всегда держим Clear в верхнем слоте — порядок кнопок не меняется
+            moveClearBackToTopRow();
+
+            // moveClearUnderPerEvent();
+            // syncClearButtonTopState();
+            // moveClearToBottom();
 
             // показать кнопку "Download all" только если карточек >= 2
             if (els.perEventAllWrap) {
