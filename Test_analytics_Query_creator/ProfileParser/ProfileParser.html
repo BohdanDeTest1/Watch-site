@@ -1,0 +1,59 @@
+<section id="pp-root">
+    <!-- TAB 2 -->
+    <div id="tab2View" class="hidden">
+        <!-- Шапка вкладки -->
+        <header class="container qc-header">
+            <h1 class="qc-title">Profile parser</h1>
+            <p class="muted qc-subtitle">Work-in-progress. Stay tuned</p>
+        </header>
+
+        <!-- Мини-замок (модальное окошко с паролем) -->
+        <div id="ppGateBackdrop" class="pp-gate__backdrop" hidden></div>
+        <div id="ppGate" class="pp-gate hidden" role="dialog" aria-modal="true" aria-labelledby="ppGateTitle">
+            <form id="ppGateForm" class="pp-gate__card">
+                <h3 id="ppGateTitle">Enter password</h3>
+                <p class="muted small" style="margin-top:-8px;">This tab is temporarily protected.</p>
+
+                <label class="label" for="ppPass">Password</label>
+                <input id="ppPass" type="password" inputmode="text" autocomplete="off" placeholder="••••" maxlength="4"
+                    required aria-required="true" />
+
+                <div class="row" style="margin-top:12px;">
+                    <button type="submit" id="ppUnlockBtn">Unlock</button>
+                    <button type="button" id="ppCancelBtn" class="btn-refresh">Cancel</button>
+                </div>
+
+                <p id="ppErr" class="small" style="color: var(--validation-warn); margin: 6px 0 0; display:none;">
+                    Wrong password
+                </p>
+            </form>
+        </div>
+
+        <!-- Контент самой тулзы (placeholder) -->
+        <main class="container" id="ppContent">
+            <!-- форма ввода -->
+            <section class="card" id="ppFormCard">
+                <form id="ppForm" class="pp-form">
+                    <label class="label" for="ppName">Profile name</label>
+                    <div class="row">
+                        <input id="ppName" type="text" placeholder="e.g. my_profile_name" required />
+                        <button id="ppSearch" type="submit" class="btn-primary">Search</button>
+                    </div>
+                    <p id="ppFormErr" class="small"
+                        style="display:none; color: var(--validation-warn); margin-top:6px;">
+                        Please enter a profile name.
+                    </p>
+                </form>
+            </section>
+
+            <!-- панель вывода -->
+            <section class="card" id="ppPanel">
+                <h2 style="margin-bottom:10px;">Results</h2>
+                <div id="ppResults" class="pp-results">
+                    <!-- сюда будут добавляться ответы 1 → 2 → 3 -->
+                </div>
+            </section>
+        </main>
+
+    </div>
+</section>

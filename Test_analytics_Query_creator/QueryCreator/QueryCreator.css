@@ -2064,6 +2064,7 @@ body.theme-light {
     --panel: #FFFFFF;
     /* фон самого меню */
     --c-border: #E5E7EB;
+    --muted-3: #7a8894;
 
     /* левый сайдбар */
     --sidebar: #F3F4F6;

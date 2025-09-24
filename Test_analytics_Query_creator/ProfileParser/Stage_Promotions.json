@@ -1,0 +1,2405 @@
+{
+    "promotions": [
+        {
+            "name": "DiscoPromo_derba_03",
+            "themeId": "OTPdisco",
+            "priority": 1,
+            "exposureCap": 500,
+            "displayProgressBar": true,
+            "startDate": 1758390840000,
+            "endDate": 1759427640000,
+            "unit": "DiscoPromo_derba_03_2025-09-20_17:54",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "OTPdisco",
+                "id": "OTPdisco",
+                "type": "disco_promotion",
+                "withProgressBar": "true",
+                "supportPurchasebyvanityToken": "true",
+                "numberOfTiles": 10,
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "random_reward_promotion",
+            "subType": "disco_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "DiscoPromo_derba_03_2025-09-20_17:54_1",
+            "displayLimit": false,
+            "offersConfigName": "OTPdisco",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "freeze",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                }
+            },
+            "offers": [
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ]
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "HC",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "vanityIslandToken",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "EventEnergy",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_7",
+                    "offerIndex": 7,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_8",
+                    "offerIndex": 8,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 50
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-20_17:54_1_9",
+                    "offerIndex": 9,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                }
+            ],
+            "tiles": [
+                {
+                    "tileIndex": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 100,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 1200,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 99999,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 2,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 400,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 3,
+                    "rewards": [
+                        {
+                            "name": "item_toolbox-large_00",
+                            "value": 4,
+                            "type": "mergeItem"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 4,
+                    "rewards": [
+                        {
+                            "name": "OTPCommonJoker",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 50,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 5,
+                    "rewards": [
+                        {
+                            "name": "OTP_Gacha_Chest",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 6,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 40,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 20,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 7,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 8,
+                    "rewards": [
+                        {
+                            "name": "EventEnergy",
+                            "value": 50,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "OTPSBPurple",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 9,
+                    "rewards": [
+                        {
+                            "name": "OTPTimeTwister3min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 10,
+                    "rewards": [
+                        {
+                            "name": "vanityIslandToken",
+                            "value": 60,
+                            "type": "vanityTokens"
+                        },
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "2",
+                    "logic": "BASIC"
+                },
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">",
+                    "value": "2.12.1000",
+                    "logic": "SEMVER"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "DiscoPromo_derba_03"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "DiscoPromo_derba_03_2025-09-20_17:54_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "DiscoPromo_derba_01",
+            "themeId": "OTPdisco",
+            "priority": 1,
+            "exposureCap": 500,
+            "displayProgressBar": true,
+            "startDate": 1758217860000,
+            "endDate": 1759254660000,
+            "unit": "DiscoPromo_derba_01_2025-09-18_17:51",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "OTPdisco",
+                "id": "OTPdisco",
+                "type": "disco_promotion",
+                "withProgressBar": "true",
+                "supportPurchasebyvanityToken": "true",
+                "numberOfTiles": 10,
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "random_reward_promotion",
+            "subType": "disco_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "DiscoPromo_derba_01_2025-09-18_17:51_1",
+            "displayLimit": false,
+            "offersConfigName": "OTPdisco",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                }
+            },
+            "offers": [
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ]
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "HC",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "vanityIslandToken",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "EventEnergy",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_7",
+                    "offerIndex": 7,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_8",
+                    "offerIndex": 8,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 50
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2025-09-18_17:51_1_9",
+                    "offerIndex": 9,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                }
+            ],
+            "tiles": [
+                {
+                    "tileIndex": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 100,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 1200,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 99999,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 2,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 400,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 3,
+                    "rewards": [
+                        {
+                            "name": "item_toolbox-large_00",
+                            "value": 4,
+                            "type": "mergeItem"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 4,
+                    "rewards": [
+                        {
+                            "name": "OTPCommonJoker",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 50,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 5,
+                    "rewards": [
+                        {
+                            "name": "OTP_Gacha_Chest",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 6,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 40,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 20,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 7,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 8,
+                    "rewards": [
+                        {
+                            "name": "EventEnergy",
+                            "value": 50,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "OTPSBPurple",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 9,
+                    "rewards": [
+                        {
+                            "name": "OTPTimeTwister3min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 10,
+                    "rewards": [
+                        {
+                            "name": "vanityIslandToken",
+                            "value": 60,
+                            "type": "vanityTokens"
+                        },
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "2",
+                    "logic": "BASIC"
+                },
+                {
+                    "pathToField": "town-service.xp",
+                    "operator": "<=",
+                    "value": "122",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "DiscoPromo_derba_01"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "DiscoPromo_derba_01_2025-09-18_17:51_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "DiscoPromoOTP",
+            "themeId": "OTPdisco",
+            "priority": 1,
+            "exposureCap": 500,
+            "displayProgressBar": true,
+            "startDate": 1731343260000,
+            "endDate": 1762015260000,
+            "unit": "DiscoPromoOTP_2024-11-11_16:41",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "OTPdisco",
+                "id": "OTPdisco",
+                "type": "disco_promotion",
+                "withProgressBar": "true",
+                "supportPurchasebyvanityToken": "true",
+                "numberOfTiles": 10,
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "random_reward_promotion",
+            "subType": "disco_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "DiscoPromoOTP_2024-11-11_16:41_1",
+            "displayLimit": false,
+            "offersConfigName": "OTPdisco",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 1,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 2,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 10,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 3,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                }
+            },
+            "offers": [
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ]
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "HC",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "vanityIslandToken",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "EventEnergy",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "sku": "traveltown.11.99.47",
+                    "virtualCurrency": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_7",
+                    "offerIndex": 7,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 1
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_8",
+                    "offerIndex": 8,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 50
+                        }
+                    ],
+                    "sku": null,
+                    "id": "OTPdisco_2024-11-11_16:41_1_9",
+                    "offerIndex": 9,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": null
+                }
+            ],
+            "tiles": [
+                {
+                    "tileIndex": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 100,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 1200,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 99999,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 2,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 400,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 3,
+                    "rewards": [
+                        {
+                            "name": "item_toolbox-large_00",
+                            "value": 4,
+                            "type": "mergeItem"
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 4,
+                    "rewards": [
+                        {
+                            "name": "OTPCommonJoker",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 50,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 5,
+                    "rewards": [
+                        {
+                            "name": "OTP_Gacha_Chest",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 6,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 40,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 20,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 7,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 1000,
+                            "type": "resource"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 8,
+                    "rewards": [
+                        {
+                            "name": "EventEnergy",
+                            "value": 50,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "OTPSBPurple",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 9,
+                    "rewards": [
+                        {
+                            "name": "OTPTimeTwister3min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                },
+                {
+                    "tileIndex": 10,
+                    "rewards": [
+                        {
+                            "name": "vanityIslandToken",
+                            "value": 60,
+                            "type": "vanityTokens"
+                        },
+                        {
+                            "name": "OTPPackPurple",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "weight": 1,
+                    "isScripted": false,
+                    "progressBarPoints": null
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "2",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "DiscoPromoOTP"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "DiscoPromoOTP_2024-11-11_16:41_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "OTP_puzzle_progress_bar",
+            "themeId": "OTPPuzzleTheme",
+            "displayProgressBar": true,
+            "startDate": 1722847440000,
+            "endDate": 1787301780000,
+            "unit": "OTP_puzzle_progress_bar_2024-08-05_08:44",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "OTPPuzzleTheme",
+                "id": "OTPPuzzleTheme",
+                "type": "puzzle_promotion",
+                "supportPurchasebyvanityToken": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_icon.ios"
+                    }
+                ],
+                "withProgressBar": "false",
+                "canDisplayOoeAd": null,
+                "supportTopup": ""
+            },
+            "type": "endless_promotion",
+            "subType": "puzzle",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1",
+            "displayLimit": true,
+            "offersConfigName": "OTP_puzzle_progress_bar",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "OTPChestJokerCommon",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "Picks",
+                                "value": 150,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "OTPTimeTwister3min",
+                                "value": 1,
+                                "type": "booster"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 3,
+                        "pointGoal": 15,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 100,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "OTPChestJokerCommon",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "Picks",
+                                "value": 150,
+                                "type": "resource"
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "OTPTimeTwister3min",
+                                "value": 1,
+                                "type": "booster"
+                            }
+                        ]
+                    },
+                    "3": {
+                        "index": 3,
+                        "pointGoal": 15,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 100,
+                                "type": "resource"
+                            }
+                        ]
+                    }
+                }
+            },
+            "isSingle": false,
+            "offers": [
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 5,
+                            "type": "resource"
+                        }
+                    ],
+                    "progressBarPoints": 50,
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "sku": "traveltown.24.99.350",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 200,
+                            "type": "resource"
+                        }
+                    ],
+                    "progressBarPoints": 50,
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": true
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 100,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "item_chocolate-candy_05",
+                            "value": 10
+                        }
+                    ],
+                    "progressBarPoints": 50,
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 50
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "vanityIslandToken",
+                            "value": 50,
+                            "type": "vanityTokens"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 100
+                        }
+                    ],
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_chocolate-candy_02",
+                            "value": 1
+                        },
+                        {
+                            "name": "Picks",
+                            "value": 20,
+                            "type": "resource"
+                        }
+                    ],
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Energy",
+                            "price": 20
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 111,
+                            "type": "resource"
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 100,
+                            "type": "resource"
+                        }
+                    ],
+                    "progressBarPoints": 15,
+                    "id": "OTP_puzzle_progress_bar_2024-08-05_08:44_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "10",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                },
+                "OutOfEnergy": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "OTP_puzzle_progress_bar"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "OTP_puzzle_progress_bar_2024-08-05_08:44_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "OTP_triggered_promotion",
+            "themeId": "sunDiana",
+            "timeDurationMinutes": 5,
+            "exposureCap": 33,
+            "triggersFrequency": 1,
+            "startDate": 1718724600000,
+            "endDate": 1782487800000,
+            "unit": "OTP_triggered_promotion_2024-06-18_15:30",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "sunDiana",
+                "id": "sunDiana",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "supportPurchasebyvanityToken": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "OTP_triggered_promotion_2024-06-18_15:30_1_1",
+            "displayLimit": true,
+            "offersConfigName": "OTPpromotionOffer",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "sku": "traveltown.1.99.41",
+                    "limit": 7,
+                    "rewards": [
+                        {
+                            "name": "item_sea-shell_01",
+                            "value": 3,
+                            "type": "mergeItem"
+                        }
+                    ],
+                    "id": "OTPpromotionOffer_2024-06-18_15:30_1_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                },
+                {
+                    "index": 2,
+                    "sku": "traveltown.1.99.41",
+                    "limit": 7,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 10,
+                            "type": "resource"
+                        }
+                    ],
+                    "id": "OTPpromotionOffer_2024-06-18_15:30_1_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                },
+                {
+                    "index": 3,
+                    "sku": "traveltown.1.99.41",
+                    "limit": 7,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 30,
+                            "type": "resource"
+                        }
+                    ],
+                    "id": "OTPpromotionOffer_2024-06-18_15:30_1_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "OTP_triggered_promotion"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "OTP_triggered_promotion_2024-06-18_15:30_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "OTP_triggered_promotion",
+            "themeId": "sunDiana",
+            "timeDurationMinutes": 5,
+            "exposureCap": 33,
+            "triggersFrequency": 1,
+            "startDate": 1718724600000,
+            "endDate": 1782487800000,
+            "unit": "OTP_triggered_promotion_2024-06-18_15:30",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "sunDiana",
+                "id": "sunDiana",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "supportPurchasebyvanityToken": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "AB_default",
+            "id": "OTP_triggered_promotion_2024-06-18_15:30_4_1",
+            "displayLimit": true,
+            "offersConfigName": "OTPpromotionOffer",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 4,
+                    "sku": "traveltown.1.99.41",
+                    "limit": 7,
+                    "rewards": [
+                        {
+                            "name": "EventEnergy",
+                            "value": 2,
+                            "type": "resource"
+                        }
+                    ],
+                    "id": "OTPpromotionOffer_2024-06-18_15:30_4_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                },
+                {
+                    "index": 5,
+                    "sku": "traveltown.1.99.41",
+                    "limit": 7,
+                    "rewards": [
+                        {
+                            "name": "item_sea-shell_01",
+                            "value": 1,
+                            "type": "mergeItem"
+                        }
+                    ],
+                    "id": "OTPpromotionOffer_2024-06-18_15:30_4_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "OTP_triggered_promotion"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "OTP_triggered_promotion_2024-06-18_15:30_4_1",
+                "segmentsForEvaluation": []
+            }
+        }
+    ],
+    "workflows": {
+        "DiscoPromo_derba_03": {
+            "startDate": "2025-09-20T17:54:00.000Z",
+            "endDate": "2025-10-02T17:54:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1,LevelUp<=2,OutOfPicks!=1,LavaEventCompleted<1"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "DiscoPromo_derba_03",
+                    "edgeIds": [
+                        "edge_0",
+                        "edge_1",
+                        "edge_2",
+                        "edge_3"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "DiscoPromo_derba_03",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    },
+                                    "edge_1": {
+                                        "serializedContent": "LevelUp<=2",
+                                        "triggerConfig": "LevelUp<=2"
+                                    },
+                                    "edge_2": {
+                                        "serializedContent": "OutOfPicks!=1",
+                                        "triggerConfig": "OutOfPicks!=1"
+                                    },
+                                    "edge_3": {
+                                        "serializedContent": "LavaEventCompleted<1",
+                                        "triggerConfig": "LavaEventCompleted<1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            },
+                            "edge_1": {
+                                "serializedContent": "LevelUp<=2",
+                                "triggerConfig": "LevelUp<=2"
+                            },
+                            "edge_2": {
+                                "serializedContent": "OutOfPicks!=1",
+                                "triggerConfig": "OutOfPicks!=1"
+                            },
+                            "edge_3": {
+                                "serializedContent": "LavaEventCompleted<1",
+                                "triggerConfig": "LavaEventCompleted<1"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "edge_0": {
+                    "flowId": "DiscoPromo_derba_03",
+                    "id": "edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                },
+                "edge_1": {
+                    "flowId": "DiscoPromo_derba_03",
+                    "id": "edge_1",
+                    "toNodeId": "notificationNode",
+                    "rule": "(event.event == 'level_up_server' and levelUpCounter <= 2)",
+                    "counters": [
+                        {
+                            "name": "levelUpCounter",
+                            "query": "if(event == 'level_up_server', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "level_up_server"
+                    ]
+                },
+                "edge_2": {
+                    "flowId": "DiscoPromo_derba_03",
+                    "id": "edge_2",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'picking_out_of_picks' and outOfPicksCounter != 1)",
+                    "counters": [
+                        {
+                            "name": "outOfPicksCounter",
+                            "query": "if(event == 'picking_out_of_picks', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "picking_out_of_picks"
+                    ]
+                },
+                "edge_3": {
+                    "flowId": "DiscoPromo_derba_03",
+                    "id": "edge_3",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'lava_event_completed_server' and lavaEventCompletedCounter < 1)",
+                    "counters": [
+                        {
+                            "name": "lavaEventCompletedCounter",
+                            "query": "if(event == 'lava_event_completed_server', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "lava_event_completed_server"
+                    ]
+                }
+            }
+        },
+        "DiscoPromo_derba_01": {
+            "startDate": "2025-09-18T17:51:00.000Z",
+            "endDate": "2025-09-30T17:51:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1,LevelUp<=2"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "DiscoPromo_derba_01",
+                    "edgeIds": [
+                        "edge_0",
+                        "edge_1"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "DiscoPromo_derba_01",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    },
+                                    "edge_1": {
+                                        "serializedContent": "LevelUp<=2",
+                                        "triggerConfig": "LevelUp<=2"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            },
+                            "edge_1": {
+                                "serializedContent": "LevelUp<=2",
+                                "triggerConfig": "LevelUp<=2"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "edge_0": {
+                    "flowId": "DiscoPromo_derba_01",
+                    "id": "edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                },
+                "edge_1": {
+                    "flowId": "DiscoPromo_derba_01",
+                    "id": "edge_1",
+                    "toNodeId": "notificationNode",
+                    "rule": "(event.event == 'level_up_server' and levelUpCounter <= 2)",
+                    "counters": [
+                        {
+                            "name": "levelUpCounter",
+                            "query": "if(event == 'level_up_server', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "level_up_server"
+                    ]
+                }
+            }
+        },
+        "DiscoPromoOTP": {
+            "startDate": "2024-11-11T16:41:00.000Z",
+            "endDate": "2025-11-01T16:41:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "DiscoPromoOTP",
+                    "edgeIds": [
+                        "edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "DiscoPromoOTP",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_popuplast.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730884500950_discopromotion_firsttheme_iconlast.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "edge_0": {
+                    "flowId": "DiscoPromoOTP",
+                    "id": "edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "OTP_puzzle_progress_bar": {
+            "startDate": "2024-08-05T08:44:00.000Z",
+            "endDate": "2026-08-21T08:43:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "OTP_puzzle_progress_bar",
+                    "edgeIds": [
+                        "OTP_puzzle_progress_bar_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "OTP_puzzle_progress_bar",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "OTP_puzzle_progress_bar_edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1695910958343_puzzlepromotion_endlesspartytreats_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "OTP_puzzle_progress_bar_edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "OTP_puzzle_progress_bar_edge_0": {
+                    "flowId": "OTP_puzzle_progress_bar",
+                    "id": "OTP_puzzle_progress_bar_edge_0",
+                    "toNodeId": "notificationNode",
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "OTP_triggered_promotion": {
+            "startDate": "2024-06-18T15:30:00.000Z",
+            "endDate": "2026-06-26T15:30:00.000Z",
+            "autoActivated": false,
+            "cycle": 33,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "OTP_triggered_promotion",
+                    "edgeIds": [
+                        "OTP_triggered_promotion_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "OTP_triggered_promotion",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "OTP_triggered_promotion_edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1658935737992_Dianasunsetharvestpromotion_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 33,
+                    "duration": 5,
+                    "frequency": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "OTP_triggered_promotion_edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            }
+                        }
+                    },
+                    "segments": [
+                        "AB_default"
+                    ],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "OTP_triggered_promotion_edge_0": {
+                    "flowId": "OTP_triggered_promotion",
+                    "id": "OTP_triggered_promotion_edge_0",
+                    "toNodeId": "notificationNode",
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        }
+    },
+    "externalLiveopsInstructions": []
+}

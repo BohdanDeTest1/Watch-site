@@ -1,0 +1,1892 @@
+:root {
+    --pp-table-fs: 13px;
+    --pp-row-h: 52px;
+    --pp-detail-w: 28%;
+    --pp-gap: 24px;
+    /* больше зазор → панель не наезжает на кнопки Info */
+    --pp-k-col: 140px;
+    --pp-k-gap: 10px;
+    --pp-admin-h: 44px;
+    --border-table: #53677ccc;
+    --card-bg-filter: #1c2136;
+    --table-pad-x: 12px;
+    --filter-pop-bg: #ffffff;
+}
+
+
+
+
+/* шире контейнеры именно в Profile Parser */
+#pp-root .container {
+    max-width: 1560px;
+}
+
+#pp-root .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.pp-gate.hidden,
+.pp-gate__backdrop[hidden] {
+    display: none;
+}
+
+.pp-gate__card {
+    width: 320px;
+    max-width: 90vw;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--card, #111827);
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+
+#ppGateForm input[type="password"] {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+}
+
+#ppUnlockBtn {
+    width: auto;
+}
+
+#ppCancelBtn {
+    width: auto;
+}
+
+/* tab2View станет позиционированным контейнером для своего бэкдропа */
+#tab2View {
+    position: relative;
+}
+
+/* Бэкдроп только в пределах вкладки (не перекрывает левую панель) */
+.pp-gate__backdrop {
+    position: absolute;
+    /* было fixed */
+    inset: 0;
+    background: var(--how-to-back, rgba(2, 6, 23, .24));
+    z-index: 1100;
+}
+
+/* Когда таб «заперт», размываем именно контент секции */
+#tab2View.pp-locked #ppContent {
+    filter: blur(10px);
+    opacity: .85;
+    pointer-events: none;
+    /* нельзя кликнуть сквозь размытие */
+    user-select: none;
+}
+
+/* сама карточка «замка» поверх контента */
+.pp-gate {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 1110;
+}
+
+/* форма */
+/* форма */
+#ppFormCard .row {
+    display: grid;
+    grid-template-columns: max-content auto;
+    gap: 100px;
+    align-items: center;
+    justify-content: start;
+}
+
+
+#ppForm input[type="text"] {
+    width: 150%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
+}
+
+/* панель результатов */
+.pp-results {
+    display: grid;
+    gap: 10px;
+}
+
+.pp-item {
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.pp-item .pp-title {
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.pp-item .pp-meta {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* состояние загрузки */
+.pp-loading {
+    opacity: .6;
+}
+
+.pp-kvs {
+    margin-top: 6px;
+    display: grid;
+    gap: 6px;
+}
+
+.pp-kv {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 10px;
+    align-items: baseline;
+}
+
+.pp-k {
+    color: var(--muted);
+}
+
+.pp-v {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* LiveOps 2-колоночный блок */
+.pp-liveops {
+    display: grid;
+    grid-template-columns: 1fr 0;
+    position: relative;
+    margin-top: 8px;
+    padding-right: 0;
+
+    align-items: start;
+    /* прибавляем при открытии Info */
+    transition: padding-right .22s ease;
+}
+
+.pp-liveops .pp-table {
+    width: 100%;
+}
+
+/* единый размер для таблицы */
+
+.pp-t-head,
+.pp-t-body,
+.pp-liveops-detail,
+.pp-t-row {
+    font-size: var(--pp-table-fs);
+}
+
+/* фиксируем унифицированную высоту строки */
+.pp-t-row {
+    min-height: var(--pp-row-h);
+    align-items: center;
+    /* вертикально центрируем содержимое */
+}
+
+
+.pp-kv .pp-k {
+    font-size: 14px;
+}
+
+.pp-kv .pp-v {
+    font-size: 14px;
+    color: var(--text);
+}
+
+
+.pp-liveops-list {
+    display: grid;
+    gap: 6px;
+    max-height: 420px;
+    /* ограничили высоту */
+    overflow: auto;
+    /* прокрутка */
+    padding-right: 4px;
+    /* чуть места под скроллбар */
+}
+
+.pp-item.info-open .pp-liveops {
+    padding-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* чуть больше ширины панели */
+.info-open .pp-liveops-detail {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* необязательная тонкая прокрутка (поддерживается в большинстве браузеров) */
+.pp-liveops-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pp-liveops-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .15);
+    border-radius: 8px;
+}
+
+
+.pp-lo-item {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--btn-n-field-bg);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pp-lo-item:hover {
+    filter: brightness(.96);
+}
+
+.pp-lo-item.active {
+    border-color: var(--button-grey, #d1d5db);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, .03) inset;
+}
+
+/* крестик */
+.pp-liveops-detail .pp-close {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    font: 600 22px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+    color: #111827;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-strong, #0f172a);
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.pp-liveops-detail .pp-close:hover {
+    background: rgba(17, 24, 39, .08);
+    transform: scale(1.04);
+}
+
+/* контент Info — ровные колонки без рамки */
+.pp-kvs {
+    padding: 6px 12px;
+}
+
+.pp-kv {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 12px;
+    padding: 6px 0;
+}
+
+.pp-v {
+    color: #111827;
+}
+
+/* выделение выбранной строки */
+.pp-t-row.selected {
+    background: rgba(59, 130, 246, .12);
+}
+
+/* лёгкий голубой */
+
+/* кнопка-дроппер для assets */
+.pp-link {
+    border: none;
+    background: transparent;
+    color: #0f172a;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 600;
+}
+
+.pp-link .chev {
+    margin-left: 4px;
+}
+
+/* блок assets и длинных строк */
+.pp-assets {
+    margin-top: 6px;
+}
+
+.pp-assets code,
+.pp-wrap code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+}
+
+.pp-assets .row {
+    margin: 4px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* переносы */
+.pp-wrap {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* таблица LiveOps */
+.pp-table {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--btn-n-field-bg);
+    /* мягкий серый */
+}
+
+.pp-t-head {
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    z-index: 1;
+}
+
+.pp-t-body {
+    overflow-y: hidden;
+    /* без вертикального скролла */
+    overflow-x: hidden;
+}
+
+.pp-t-row {
+    padding: 10px 10px;
+    border-bottom: 1px dashed var(--border-table);
+}
+
+.pp-t-row:last-child {
+    border-bottom: none;
+}
+
+/* статусные «точки» */
+.pp-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.pp-state .dot {
+    width: 17px;
+    height: 16px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .12) inset;
+}
+
+.pp-state .lbl {
+    opacity: .85;
+}
+
+.pp-state.on .dot {
+    background: #22c55e;
+}
+
+/* green */
+.pp-state.off .dot {
+    background: #ef4444;
+}
+
+/* red */
+.pp-state.pause .dot {
+    background: #f59e0b;
+}
+
+/* amber */
+.pp-state.freeze.dotless {
+    background: #60a5fa;
+}
+
+/* fallback */
+.pp-state.freeze .dot {
+    background: #60a5fa;
+}
+
+/* blue */
+.pp-state.on .dot::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+}
+
+
+/* сортировка */
+.pp-sort {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pp-sort::after {
+    content: '↕';
+    opacity: .4;
+    font-weight: 400;
+}
+
+.pp-sort.asc::after {
+    content: '↑';
+    opacity: .8;
+}
+
+.pp-sort.desc::after {
+    content: '↓';
+    opacity: .8;
+}
+
+/* кнопки в таблице */
+.pp-btn {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--btn-n-field-bg);
+    font-weight: 600;
+
+}
+
+.pp-btn:hover {
+    filter: brightness(.75);
+}
+
+
+
+
+/* верхняя строка: "правило" + "поле ввода" */
+#pp-root .pp-filter-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+#pp-root .pp-select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--btn-n-field-bg);
+    width: 100%;
+}
+
+#pp-root .pp-select .chev {
+    margin-left: 8px;
+    color: var(--muted);
+}
+
+/* поле ввода */
+#pp-root .pp-input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 4px !important;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
+}
+
+#pp-root .pp-select-menu {
+    position: absolute;
+    left: 14px;
+    top: 58px;
+    width: 200px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--filter-pop-bg) !important;
+    opacity: 1;
+    backdrop-filter: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    z-index: 1000;
+}
+
+#pp-root .pp-select-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    background: transparent;
+    color: var(--text);
+    border: 0;
+    cursor: pointer;
+}
+
+#pp-root .pp-select-menu button:hover {
+    background: var(--btn-n-field-bg);
+}
+
+/* футер попапа */
+#pp-root .pp-filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    margin-top: 14px;
+}
+
+#pp-root .pp-link-btn {
+    background: transparent;
+    border: 0;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#pp-root .pp-btn.primary {
+    padding: 8px 14px;
+    border-radius: 4px !important;
+    border: none;
+    background: var(--accent);
+    color: var(--btn-n-field-bg);
+}
+
+#pp-root .pp-btn.primary:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+.pp-type-pop .pp-inp {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+/* инпуты дат — как поля ввода */
+#pp-root .pp-date-pop .pp-inp {
+    width: 100%;
+    padding: 8px 10px;
+    /* высота как у .pp-input */
+    border: 1px solid var(--border);
+    border-radius: 4px !important;
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
+}
+
+/* кнопка правила в попапах дат — такой же паддинг, чтобы высота совпала */
+#pp-root .pp-date-pop .pp-select {
+    padding: 8px 10px;
+    /* было 6px 8px в общем .pp-select */
+}
+
+
+#pp-root .pp-type-list {
+    display: grid;
+    gap: 8px;
+    max-height: 180px;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+#pp-root .pp-type-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+}
+
+#pp-root .pp-type-opt input {
+    accent-color: var(--accent);
+}
+
+.pp-chip {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--btn-n-field-bg);
+    margin: 4px 4px 0 0;
+    cursor: pointer;
+}
+
+.pp-chip.active {
+    background: var(--button-grey, #e5e7eb);
+}
+
+/* Внутри детальной панели список условий выглядит аккуратно */
+.pp-conds>div {
+    margin: 2px 0;
+}
+
+.pp-pager .pp-sel:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+}
+
+.pp-pager .pp-sel-wrap {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2px 8px;
+    background: var(--card-bg);
+}
+
+.pp-pager .pp-sel-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #111827;
+    pointer-events: none;
+}
+
+
+/* справа: навигация */
+.pp-nav {
+    display: inline-flex;
+    gap: 8px;
+}
+
+
+.pp-nav .pp-icon {
+    border: none;
+    background: transparent;
+    width: 44px;
+    height: 36px;
+    /* крупнее */
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: #111827;
+    cursor: pointer;
+}
+
+.pp-nav .pp-icon:hover {
+    background: rgba(17, 24, 39, .08);
+}
+
+.pp-icon span {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* лёгкий hover-тон */
+.pp-nav .pp-icon:disabled {
+    opacity: .35;
+    cursor: default;
+    background: transparent;
+}
+
+/* разделители-скобки как в примере (узкий шрифт) */
+.pp-icon span {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;
+    font-weight: 700;
+}
+
+
+.pp-pager .pp-sel {
+    padding: 6px 8px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-weight: 600;
+    padding: 6px 0;
+}
+
+.pp-pager .pp-nav {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.pp-pager button {
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.pp-pager button:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+/* навигация — без бордеров, иконки крупнее */
+.pp-pager .pp-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.pp-pager .pp-icon span {
+    font: 400 20px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+.pp-pager .pp-label {
+    order: 1;
+    color: var(--muted-ink, #6f797d);
+    font-weight: 500;
+}
+
+.pp-pager .pp-sel-wrap {
+    order: 2;
+}
+
+.pp-pager .pp-nav {
+    order: 4;
+    display: inline-flex;
+    gap: 18px;
+}
+
+
+.pp-pager .pp-icon[disabled] {
+    opacity: .35;
+}
+
+/* Кнопка assets — серым, новой строкой и под заголовком темы */
+.pp-link.assets {
+    display: block;
+    margin: 4px 0 0;
+    /* сразу под строкой Theme */
+    color: #7a8894;
+    /* спокойный серый */
+    font-weight: 600;
+}
+
+
+.pp-assets .row strong {
+    white-space: nowrap;
+}
+
+/* "and:" и "ios:" всегда в одну строку */
+.pp-assets code {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.pp-liveops-detail .pp-kvs .pp-kv {
+    display: grid;
+    grid-template-columns: var(--pp-k-col) 1fr;
+    /* уже ключи => шире значения */
+    column-gap: var(--pp-k-gap);
+    row-gap: 6px;
+}
+
+
+/* Кнопка "assets" строго по левому краю, как заголовок "Theme" */
+.pp-liveops-detail .pp-assets-toggle {
+    display: block;
+    margin-top: 4px;
+    /* 160px — ширина левой колонки (.pp-k), 12px — gap между колонками */
+    margin-left: calc(-160px - 12px);
+}
+
+/* assets — обычный поток во второй колонке, под Theme */
+.pp-liveops-detail .pp-assets-toggle,
+.pp-liveops-detail .pp-link.assets {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: transparent;
+    /* никаких margin-left — остаётся внутри .pp-v */
+}
+
+
+.pp-pager .pp-nav {
+    order: 3;
+    display: inline-flex;
+    gap: 18px;
+}
+
+/* На всякий случай уберём любые автополосы слева */
+.pp-pager>* {
+    margin-left: 0 !important;
+}
+
+
+/* Тип не переносим, показываем троеточие, чтобы не тянул колонку */
+.pp-t-row .cell.type,
+.pp-t-head .cell.type {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Без скруглений именно у таблицы */
+.pp-table,
+.pp-table * {
+    border-radius: 0 !important;
+}
+
+/* контейнер таблицы + панель */
+.pp-liveops {
+    position: relative;
+}
+
+/* панель деталей: по умолчанию ширина 0, клики выключены */
+.pp-liveops-detail {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    padding: 0;
+    /* чтобы реально не занимала места */
+    overflow: hidden;
+    pointer-events: none;
+    /* <-- не перехватывает клики, пока закрыта */
+    opacity: 0;
+    transition: width .18s ease, opacity .18s ease;
+    z-index: 2;
+    /* поднимем только когда открыта */
+    background: var(--card-bg);
+    /* закрываем липкую шапку таблицы */
+    transform: none;
+}
+
+
+/* сужаем область таблицы, когда панель открыта */
+.pp-item.info-open .pp-table {
+    margin-right: 42%;
+}
+
+.pp-liveops-detail .pp-kv .pp-v {
+    display: block;
+    /* чтобы assets встал ПОД значением темы */
+}
+
+/* переключатель assets ниже темы */
+.pp-liveops-detail .pp-assets-toggle {
+    margin-top: 4px;
+}
+
+.pp-liveops-detail .pp-link.assets {
+    color: var(--muted-3);
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+
+
+/* реально спрятать последний столбец (кнопки и заголовок) */
+.pp-item.info-open .pp-t-row>.cell:last-child,
+.pp-item.info-open .pp-t-head>div:last-child {
+    display: none;
+}
+
+
+.pp-item.info-open .pp-td.state,
+.pp-item.info-open .pp-th.state {
+    padding-right: 6px;
+}
+
+.pp-item.info-open .pp-td.name,
+.pp-item.info-open .pp-th.name {
+    padding-left: 6px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* === LiveOps table: финальная сетка === */
+.pp-t-head,
+.pp-t-row {
+    display: grid;
+    /* <— ЭТО ГЛАВНОЕ: включаем грид для шапки и строк */
+    align-items: center;
+    column-gap: 14px;
+    grid-template-columns: 110px minmax(180px, 1fr) 200px 250px 250px 100px;
+    /* state | name | type | start | end | info */
+}
+
+/* при открытой панели — 5 колонок (без Info), правые — шире */
+.pp-item.info-open .pp-t-head,
+.pp-item.info-open .pp-t-row {
+    grid-template-columns: 80px minmax(200px, 1fr) 170px 200px 210px;
+    column-gap: 10px;
+}
+
+
+.pp-item.info-open .pp-td.state,
+.pp-item.info-open .pp-th.state {
+    padding-right: 6px;
+}
+
+.pp-item.info-open .pp-td.name,
+.pp-item.info-open .pp-th.name {
+    padding-left: 6px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* Таблица без скруглений */
+.pp-table,
+.pp-table * {
+    border-radius: 0 !important;
+}
+
+/* Панель деталей справа (анимация ширины) */
+.pp-liveops-detail {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: width .18s ease, opacity .18s ease;
+    z-index: 1200;
+    background: var(--card-bg);
+}
+
+.pp-item.info-open .pp-liveops-detail {
+    position: absolute;
+    right: 0;
+    top: 0;
+    /* верх панели = верх таблицы */
+    bottom: calc(var(--pp-admin-h) + 16px);
+    /* низ панели = выше кнопки */
+    width: var(--pp-detail-w);
+    padding: 0 16px 16px 9px;
+    pointer-events: auto;
+    opacity: 1;
+    overflow-y: auto;
+    /* скролл внутри */
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+
+
+
+.pp-item.info-open .pp-table {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* Assets: короткие метки слева (and/ios), пути переносятся */
+.pp-liveops-detail .pp-assets .row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* сужаем область таблицы, когда панель открыта */
+.pp-item.info-open .pp-table {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* >>> НОВОЕ: сдвигаем и пагинацию под ширину инфо-панели <<< */
+.pp-item.info-open .pp-pager {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* Assets: короткие метки слева (and/ios), пути переносятся */
+.pp-liveops-detail .pp-assets .row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+
+.pp-liveops-detail .pp-assets .row strong {
+    min-width: 28px;
+    text-transform: lowercase;
+}
+
+.pp-liveops-detail .pp-assets .row code {
+    white-space: normal;
+    word-break: break-all;
+}
+
+/* Пейджер как в референсе: справа в одну линию, без бордеров у стрелок */
+.pp-pager {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    /* <-- разделитель */
+    background: var(--card-bg);
+}
+
+.pp-pager .pp-perpage {
+    order: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pp-pager #ppRange {
+    order: 2;
+    min-width: 120px;
+    text-align: center;
+    color: var(--muted-ink, #546e7a);
+    font-weight: 400;
+}
+
+.pp-pager .pp-nav {
+    order: 3;
+    display: inline-flex;
+    gap: 18px;
+}
+
+.pp-pager .pp-icon {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    width: 40px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+.pp-pager .pp-icon:hover {
+    background: #f5f7fb;
+}
+
+.pp-pager .pp-icon:disabled {
+    opacity: .35;
+    cursor: default;
+}
+
+
+
+/* перенос длинных слов/путей в значениях справа */
+.pp-liveops-detail .pp-v,
+.pp-liveops-detail code {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* одинаковые тонкие скроллбары */
+.pp-t-body,
+.pp-liveops-detail {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(17, 24, 39, .28) transparent;
+}
+
+.pp-t-body::-webkit-scrollbar,
+.pp-liveops-detail::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-thumb,
+.pp-liveops-detail::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 39, .28);
+    border-radius: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-track,
+.pp-liveops-detail::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* где именно будет скролл */
+.pp-t-body {
+    max-height: 420px;
+    overflow-y: scroll;
+    /* всегда показываем полосу */
+    overflow-x: hidden;
+    scrollbar-gutter: stable both-edges;
+}
+
+.pp-liveops-detail {
+    overflow: auto;
+}
+
+/* одинаковые тонкие кастомные скроллбары */
+.pp-t-body,
+.pp-liveops-detail {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(17, 24, 39, .28) transparent;
+}
+
+.pp-t-body::-webkit-scrollbar,
+.pp-liveops-detail::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-thumb,
+.pp-liveops-detail::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 39, .28);
+    border-radius: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-track,
+.pp-liveops-detail::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* === КАСТОМНЫЕ СКРОЛЛБАРЫ (Chrome, Edge, Safari) === */
+.pp-t-body::-webkit-scrollbar,
+.pp-liveops-detail::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pp-t-body::-webkit-scrollbar-thumb,
+.pp-liveops-detail::-webkit-scrollbar-thumb {
+    background-color: rgba(17, 24, 39, .35);
+    border-radius: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-track,
+.pp-liveops-detail::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Firefox */
+.pp-t-body,
+.pp-liveops-detail {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(17, 24, 39, .35) transparent;
+}
+
+/* === custom scrollbars (WebKit) === */
+.pp-t-body::-webkit-scrollbar,
+.pp-liveops-detail::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pp-t-body::-webkit-scrollbar-thumb,
+.pp-liveops-detail::-webkit-scrollbar-thumb {
+    background-color: rgba(17, 24, 39, .35);
+    border-radius: 8px;
+}
+
+.pp-t-body::-webkit-scrollbar-track,
+.pp-liveops-detail::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Firefox */
+.pp-t-body,
+.pp-liveops-detail {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(17, 24, 39, .35) transparent;
+}
+
+/* переносы в значениях справа (включая assets) */
+.pp-liveops-detail .pp-v,
+.pp-liveops-detail code {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* строки внутри assets */
+.pp-liveops-detail .pp-assets .row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 4px 0;
+}
+
+.pp-liveops-detail .pp-assets .row strong {
+    min-width: 28px;
+    text-transform: lowercase;
+}
+
+.pp-detail-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* плавающий крестик вне панели */
+.pp-close-float {
+    position: absolute;
+    right: 0px;
+    top: -8px !important;
+    z-index: 1210;
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    display: none;
+    /* показываем только при info-open */
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-strong, #0f172a);
+    font: 600 22px/1 system-ui;
+}
+
+.pp-close-float:hover {
+    background: rgba(17, 24, 39, .08);
+    transform: scale(1.04);
+}
+
+.pp-item.info-open .pp-close-float {
+    display: inline-flex;
+    color: var(--text);
+}
+
+/* плавающая нижняя кнопка вне панели */
+.pp-admin-float {
+    position: absolute;
+    right: 11px;
+    bottom: -1px;
+    z-index: 1210;
+    display: none;
+    width: calc(var(--pp-detail-w) - 16px);
+    height: var(--pp-admin-h);
+    /* синхроним с "нижним зазором" панели */
+    align-items: center;
+    /* вертикальное выравнивание текста */
+    justify-content: center;
+}
+
+.pp-item.info-open .pp-admin-float {
+    display: inline-flex;
+}
+
+.pp-table .pp-t-head>div:last-child,
+.pp-table .pp-t-row>.cell:last-child {
+    padding-right: 20px;
+
+    /* подправь на 8–16px по вкусу */
+}
+
+.pp-table .pp-t-row>.cell:last-child .pp-info {
+    margin-right: 4px;
+    /* можно 0–8px; работает вместе с padding-right */
+}
+
+/* === Pause / Freeze: пиктограммы внутри цветного квадратика === */
+/* убедимся, что у .dot можно что-то положить сверху */
+.pp-state .dot {
+    position: relative;
+}
+
+/* PAUSE — две вертикальные полоски */
+.pp-state.pause .dot::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    /* подправь по вкусу */
+    left: 4px;
+    width: 3px;
+    height: 9px;
+    border-radius: 1px;
+    background: #fff;
+    /* полоска №1 */
+    box-shadow: 6px 0 0 0 #fff;
+    /* полоска №2 (сдвинута вправо) */
+    opacity: .95;
+}
+
+/* FREEZE — снежинка/звёздочка в центре квадрата */
+.pp-state.freeze .dot::after {
+    /* можно "❄" или "✻" — выбери что нравится больше */
+    content: "❄";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    /* подогнать под размер твоего .dot */
+    line-height: 1;
+    pointer-events: none;
+}
+
+
+
+
+:root.theme-dark,
+.theme-dark,
+[data-theme="dark"],
+.dark {
+    --pp-dark-border: var(--border, #26324a);
+    --pp-dark-text: var(--text-strong, #e5e7eb);
+    --pp-dark-muted: var(--text-muted, #a9b4c8);
+    --pp-dark-bg: var(--card-bg, #1c2136);
+    --pp-blue-600: #3b82f6;
+    --pp-blue-700: #2563eb;
+}
+
+/* 1) Белый квадратик селекта — красим именно ОБЁРТКУ .pp-sel-wrap */
+:root.theme-dark .pp-pager .pp-sel-wrap,
+.theme-dark .pp-pager .pp-sel-wrap,
+[data-theme="dark"] .pp-pager .pp-sel-wrap,
+.dark .pp-pager .pp-sel-wrap {
+    background: var(--pp-dark-bg);
+    border-color: var(--pp-dark-border);
+}
+
+/* сам <select> — текст/фокус */
+:root.theme-dark .pp-pager .pp-sel,
+.theme-dark .pp-pager .pp-sel,
+[data-theme="dark"] .pp-pager .pp-sel,
+.dark .pp-pager .pp-sel {
+    color: var(--pp-dark-text);
+    background: transparent;
+    border: 0;
+}
+
+:root.theme-dark .pp-pager .pp-sel:focus,
+.theme-dark .pp-pager .pp-sel:focus,
+[data-theme="dark"] .pp-pager .pp-sel:focus,
+.dark .pp-pager .pp-sel:focus {
+    outline: none;
+    box-shadow: none;
+    border: 0;
+}
+
+/* 2) Кнопки пагинации (.pp-icon) — светло-серые */
+:root.theme-dark .pp-pager .pp-icon,
+.theme-dark .pp-pager .pp-icon,
+[data-theme="dark"] .pp-pager .pp-icon,
+.dark .pp-pager .pp-icon {
+    color: #cbd5e1;
+    border: 1px solid var(--pp-dark-border);
+    background: transparent;
+}
+
+:root.theme-dark .pp-pager .pp-icon:hover,
+.theme-dark .pp-pager .pp-icon:hover,
+[data-theme="dark"] .pp-pager .pp-icon:hover,
+.dark .pp-pager .pp-icon:hover {
+    background: rgba(255, 255, 255, .06);
+}
+
+:root.theme-dark .pp-pager .pp-icon span,
+.theme-dark .pp-pager .pp-icon span,
+[data-theme="dark"] .pp-pager .pp-icon span,
+.dark .pp-pager .pp-icon span {
+    color: #cbd5e1;
+}
+
+/* 3) Текст инфо-панели — белый, ключи приглушённые */
+:root.theme-dark .pp-liveops-detail,
+.theme-dark .pp-liveops-detail,
+[data-theme="dark"] .pp-liveops-detail,
+.dark .pp-liveops-detail {
+    color: var(--pp-dark-text);
+}
+
+:root.theme-dark .pp-liveops-detail .pp-v,
+.theme-dark .pp-liveops-detail .pp-v,
+[data-theme="dark"] .pp-liveops-detail .pp-v,
+.dark .pp-liveops-detail .pp-v {
+    color: var(--pp-dark-text);
+    /* перебиваем ранний .pp-v { color:#111827 } */
+}
+
+:root.theme-dark .pp-liveops-detail .pp-k,
+.theme-dark .pp-liveops-detail .pp-k,
+[data-theme="dark"] .pp-liveops-detail .pp-k,
+.dark .pp-liveops-detail .pp-k {
+    color: var(--pp-dark-muted);
+}
+
+:root.theme-dark .pp-liveops-detail code,
+.theme-dark .pp-liveops-detail code,
+[data-theme="dark"] .pp-liveops-detail code,
+.dark .pp-liveops-detail code {
+    color: var(--pp-dark-text);
+}
+
+/* 4) Нижняя кнопка — светло-синяя */
+:root.theme-dark #ppAdminBtn,
+.theme-dark #ppAdminBtn,
+[data-theme="dark"] #ppAdminBtn,
+.dark #ppAdminBtn {
+    background: var(--pp-blue-600);
+    color: #fff;
+    border: 1px solid var(--pp-blue-700);
+}
+
+:root.theme-dark #ppAdminBtn:hover,
+.theme-dark #ppAdminBtn:hover,
+[data-theme="dark"] #ppAdminBtn:hover,
+.dark #ppAdminBtn:hover {
+    background: var(--pp-blue-700);
+}
+
+/* FINALS: кнопки пагинации под тему */
+#pp-root .pp-pager .pp-icon {
+    color: var(--text);
+    background: transparent;
+}
+
+#pp-root .pp-pager .pp-icon:hover:not(:disabled) {
+    background: var(--btn-n-field-bg);
+}
+
+#pp-root .pp-pager .pp-icon span {
+    color: var(--text);
+}
+
+/* FINALS: цвета текста в инфо-панели всегда из переменных темы */
+#pp-root .pp-liveops-detail .pp-k {
+    color: var(--muted);
+}
+
+#pp-root .pp-liveops-detail .pp-v,
+#pp-root .pp-liveops-detail code {
+    color: var(--text);
+}
+
+/* FINALS: нижняя кнопка — синий */
+#pp-root #ppAdminBtn {
+    background: var(--accent);
+    color: var(--btn-n-field-bg);
+    font-weight: 700;
+    border: none;
+}
+
+#pp-root #ppAdminBtn:hover {
+    opacity: 0.75;
+}
+
+:root.theme-dark .pp-t-row .pp-info,
+.theme-dark .pp-t-row .pp-info,
+[data-theme="dark"] .pp-t-row .pp-info,
+.dark .pp-t-row .pp-info {
+    background: var(--accent);
+    /* как в твоём сниппете для Admin */
+    color: var(--btn-n-field-bg);
+    font-weight: 700;
+    border: none;
+    /* снимаем светлую рамку */
+    box-shadow: none;
+}
+
+/* hover такое же, как у Admin */
+:root.theme-dark .pp-t-row .pp-info:hover,
+.theme-dark .pp-t-row .pp-info:hover,
+[data-theme="dark"] .pp-t-row .pp-info:hover,
+.dark .pp-t-row .pp-info:hover {
+    opacity: .75;
+}
+
+/* если есть disabled/неактивные — приглушим */
+:root.theme-dark .pp-t-row .pp-info:disabled,
+.theme-dark .pp-t-row .pp-info:disabled,
+[data-theme="dark"] .pp-t-row .pp-info:disabled,
+.dark .pp-t-row .pp-info:disabled {
+    opacity: .5;
+}
+
+/* кнопка-иконка фильтра */
+#pp-root #ppTypeBtn.pp-icon-btn {
+    all: unset;
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-radius: 6px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+}
+
+#pp-root #ppTypeBtn.pp-icon-btn::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    /* percent-encoded SVG, без переносов и типографских тире */
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+#pp-root #ppTypeBtn.pp-icon-btn:hover {
+    color: var(--text);
+    background: var(--btn-n-field-bg);
+}
+
+#pp-root #ppTypeBtn.pp-icon-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* группа "Name + иконка фильтра" */
+#pp-root .pp-name-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* иконка-воронка — такая же, как у Type */
+#pp-root #ppNameBtn.pp-icon-btn {
+    all: unset;
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-radius: 6px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+    /* мелкая юстировка, чтобы совпасть по базовой линии с "Name" */
+}
+
+#pp-root #ppNameBtn.pp-icon-btn::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* State: такая же кнопка-иконка фильтра, как у Name/Type */
+#pp-root #ppStateBtn.pp-icon-btn {
+    all: unset;
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-radius: 6px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+}
+
+#pp-root #ppStateBtn.pp-icon-btn::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    /* тот же SVG-маск, что у Name/Type */
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+#pp-root #ppStateBtn.pp-icon-btn:hover {
+    color: var(--text);
+    background: var(--btn-n-field-bg);
+}
+
+#pp-root #ppStateBtn.pp-icon-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+#pp-root #ppNameBtn.pp-icon-btn:hover {
+    color: var(--text);
+    background: var(--btn-n-field-bg);
+}
+
+#pp-root #ppNameBtn.pp-icon-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+#pp-root .pp-type-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* группа "State + иконка фильтра" */
+#pp-root .pp-state-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#pp-root .pp-type-filter .pp-icon-btn {
+    margin-left: 0;
+    /* на всякий случай: убираем любые внешние отступы */
+    vertical-align: middle;
+}
+
+#pp-root .pp-filter-pop {
+    position: absolute;
+    top: calc(100% + 6px);
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px !important;
+    top: 40px;
+    /* фон задаём ТОЛЬКО в LIGHT/DARK блоках ниже */
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+    opacity: 1;
+    backdrop-filter: none;
+    z-index: 4;
+}
+
+
+/* отличия по выравниванию и минимальным размерам */
+#pp-root .pp-name-pop {
+    left: 20px;
+    top: 51px;
+    min-width: 380px;
+    border-radius: 6px !important;
+}
+
+#pp-root .pp-type-pop {
+    right: 0;
+    top: 40px;
+    min-width: 350px;
+    border-radius: 6px !important;
+}
+
+#pp-root .pp-state-pop {
+    left: 0;
+    top: 40px;
+    min-width: 220px;
+    border-radius: 6px !important;
+}
+
+#pp-root #ppStartPop {
+    right: 0;
+    left: auto;
+    transform: translateX(100px);
+    /* тонкая юстировка влево */
+}
+
+#pp-root #ppEndPop {
+    right: 0;
+}
+
+/* вертикальный список чекбоксов State */
+#pp-root .pp-state-list {
+    display: grid;
+    gap: 10px;
+}
+
+#pp-root .pp-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* строка "правило + инпут" одинаково для Name/Type */
+#pp-root .pp-filter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* кнопки снизу */
+#pp-root .pp-filter-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+/* компактная "селект"-кнопка правила */
+#pp-root .pp-select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--btn-n-field-bg);
+    cursor: pointer;
+}
+
+#pp-root .pp-select .chev {
+    margin-left: 8px;
+    opacity: .7;
+}
+
+#pp-root .pp-select-menu[hidden] {
+    display: none;
+}
+
+#pp-root .pp-select-menu>button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+#pp-root .pp-select-menu>button:hover {
+    background: rgba(0, 0, 0, .06);
+}
+
+/* LIGHT THEME: белый фон попапов */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-filter-pop,
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-menu,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-filter-pop,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-menu,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-filter-pop,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-menu {
+    background: #ffffff !important;
+    background-image: none !important;
+}
+
+/* DARK: попапы фильтров тёмные — те же селекторы, что и для текста */
+:root.theme-dark #pp-root .pp-filter-pop,
+.theme-dark #pp-root .pp-filter-pop,
+[data-theme="dark"] #pp-root .pp-filter-pop,
+.dark #pp-root .pp-filter-pop,
+:root.theme-dark #pp-root .pp-select-menu,
+.theme-dark #pp-root .pp-select-menu,
+[data-theme="dark"] #pp-root .pp-select-menu,
+.dark #pp-root .pp-select-menu {
+    background: #1c2136 !important;
+    /* если нужно темнее — #0f172a */
+    background-image: none !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+}
+
+/* === Date filters (Start/End) === */
+#pp-root .pp-date-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+#pp-root .pp-date-pop input[type="date"] {
+    font-size: 12px;
+}
+
+#pp-root .pp-date-pop .pp-inp {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
+}
+
+
+/* такие же иконки-воронки для Start/End */
+#pp-root #ppStartBtn.pp-icon-btn,
+#pp-root #ppEndBtn.pp-icon-btn {
+    all: unset;
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-radius: 6px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+}
+
+#pp-root #ppStartBtn.pp-icon-btn::before,
+#pp-root #ppEndBtn.pp-icon-btn::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18l-7 8v6l-4 2v-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+#pp-root #ppStartBtn.pp-icon-btn:hover,
+#pp-root #ppEndBtn.pp-icon-btn:hover {
+    color: var(--text);
+    background: var(--btn-n-field-bg);
+}
+
+#pp-root #ppStartBtn.pp-icon-btn:focus-visible,
+#pp-root #ppEndBtn.pp-icon-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ширина поп-апа дат по умолчанию (Between = 2 поля) */
+#pp-root .pp-date-pop {
+    min-width: 520px;
+}
+
+/* узкий поп-ап, когда одно поле (Before/After) */
+#pp-root .pp-date-pop.single {
+    min-width: 360px;
+}
+
+/* --- collapsible sections for Profile Parser --- */
+.pp-item .pp-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pp-collapser {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+.pp-collapser .chev {
+    font-size: 12px;
+    opacity: .75;
+}
+
+.pp-item .pp-body {
+    margin-top: 10px;
+}
+
+.pp-item.collapsed .pp-body {
+    display: none;
+}

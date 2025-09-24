@@ -15,6 +15,9 @@ function switchTab(id) {
 
     const view = document.getElementById(id + 'View');
     if (view) view.classList.remove('hidden');
+    if (id === 'tab2') {
+        window.Tools.profileParser?.onActivate?.();
+    }
 }
 
 // Открывать панель кликом по пустому месту, когда она закрыта
@@ -152,28 +155,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Сейчас init() — тонкий (не монтирует DOM), но оставим вызов на будущее.
     const container = document.getElementById('tool-root') || document;
     window.Tools.queryCreator?.init?.(container);
+    window.Tools.profileParser?.init?.(container);
 
     // === Theme toggle ===
     (function () {
         const THEME_KEY = 'qc-theme';          // 'light' | 'night'
         const btn = document.getElementById('themeSlider');
 
+        // function applyTheme(mode) {
+        //     const isLight = mode === 'light';
+        //     document.body.classList.toggle('theme-light', isLight);
+        //     document.body.classList.toggle('theme-night', !isLight);
+
+        //     if (btn) {
+        //         btn.classList.toggle('is-light', isLight);
+        //         btn.classList.toggle('is-night', !isLight);
+
+        //         // локальные подсказки в кнопке (если нужны)
+        //         const tipL = btn.querySelector('.tip-left');
+        //         const tipR = btn.querySelector('.tip-right');
+        //         if (tipL) tipL.textContent = 'Light Mode';
+        //         if (tipR) tipR.textContent = 'Dark Mode';
+
+        //         // текст для общего hover-tooltip
+        //         btn.dataset.title = isLight ? 'Light Mode' : 'Dark Mode';
+        //         btn.setAttribute('aria-label', btn.dataset.title);
+        //     }
+        // }
+
         function applyTheme(mode) {
             const isLight = mode === 'light';
-            document.body.classList.toggle('theme-light', isLight);
-            document.body.classList.toggle('theme-night', !isLight);
+            const root = document.documentElement;
 
+            // 1) Сигнальные классы темы (как для текста, так и для попапов)
+            document.body.classList.toggle('theme-light', isLight);
+            document.body.classList.toggle('theme-night', !isLight); // оставим для совместимости
+            document.body.classList.toggle('theme-dark', !isLight);  // ← ВАЖНО
+
+            // дублируем на <html>, чтобы селекторы вида :root.theme-dark сработали гарантированно
+            root.classList.toggle('theme-light', isLight);
+            root.classList.toggle('theme-dark', !isLight);
+            root.setAttribute('data-theme', isLight ? 'light' : 'dark'); // поддержка [data-theme="dark"]
+
+            // 2) Внешний вид самого слайдера и aria-тексты остаются как были
             if (btn) {
                 btn.classList.toggle('is-light', isLight);
                 btn.classList.toggle('is-night', !isLight);
-
-                // локальные подсказки в кнопке (если нужны)
                 const tipL = btn.querySelector('.tip-left');
                 const tipR = btn.querySelector('.tip-right');
                 if (tipL) tipL.textContent = 'Light Mode';
                 if (tipR) tipR.textContent = 'Dark Mode';
-
-                // текст для общего hover-tooltip
                 btn.dataset.title = isLight ? 'Light Mode' : 'Dark Mode';
                 btn.setAttribute('aria-label', btn.dataset.title);
             }

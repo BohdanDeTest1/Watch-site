@@ -789,3 +789,22 @@ body:not(.sb-collapsed) #sidebar .brand .menu-icon {
     opacity: 0 !important;
     content: none !important;
 }
+
+/* Gate overlay layering — ниже инфо-панели, выше контента таба */
+#tab2View {
+    position: relative;
+}
+
+#tab2View .pp-gate__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 1100;
+    /* фон затемнения */
+}
+
+#tab2View .pp-gate {
+    position: absolute;
+    /* сама карточка пароля */
+    z-index: 1110;
+    /* поверх фона */
+}

@@ -3,9 +3,9 @@
     "data": {
         "profile": {
             "name": "2_12_master_QAFlameCardsE2E",
-            "change_purpose": "end date",
-            "change_timestamp": 1741799965257,
-            "updated_at": "2025-03-12T17:19:25.257Z"
+            "change_purpose": "test ",
+            "change_timestamp": 1758384369424,
+            "updated_at": "2025-09-20T16:06:09.424Z"
         },
         "data": {
             "abTestAssetOverrides": [
@@ -4616,7 +4616,7 @@
                 },
                 {
                     "name": "webSocketAnalyticsWhiteListKey",
-                    "value": "producer_tapped,items_merged,settings_button_clicked,item_removed_from_queue,clientAttribution,enter_merge_view,taskStarted,missionCompleted,resource_gained,outOfEnergy,power_boost_switch_pressed,bubble_burst,loading_completed,out_of_energy,out_of_hc,live_ops_event_board_opened,out_of_picks,screen_entered,bubble_burst,shop_flow,album_closed,album_opened,item_placed,tlo_order_expired_client,picking_out_of_picks,game_pause,return_from_background,out_of_energy_closed,duration_ended,duration_ended_client"
+                    "value": "producer_tapped,items_merged,settings_button_clicked,item_removed_from_queue,clientAttribution,enter_merge_view,taskStarted,missionCompleted,resource_gained,outOfEnergy,power_boost_switch_pressed,bubble_burst,loading_completed,out_of_energy,out_of_hc,live_ops_event_board_opened,out_of_picks,screen_entered,bubble_burst,shop_flow,album_closed,album_opened,item_placed,tlo_order_expired_client,picking_out_of_picks,game_pause,return_from_background,out_of_energy_closed,duration_ended,duration_ended_client,barter_order_expired_client"
                 }
             ],
             "coreCharacters": {
@@ -4626,7 +4626,7 @@
                         "uniqueId": "characters_mark",
                         "characterLocalizationKey": "Characters/1",
                         "unlockLevel": 0,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "mark_order",
                         "spriteCharacterChat": "mark_chat"
                     },
@@ -4634,7 +4634,7 @@
                         "uniqueId": "characters_summer",
                         "characterLocalizationKey": "Characters/2",
                         "unlockLevel": 2,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "summer_order",
                         "spriteCharacterChat": "summer_chat"
                     },
@@ -4642,14 +4642,14 @@
                         "uniqueId": "characters_hugo",
                         "characterLocalizationKey": "Characters/3",
                         "unlockLevel": 3,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "hugo_order",
                         "spriteCharacterChat": "hugo_chat"
                     },
                     {
                         "uniqueId": "characters_isidora",
                         "characterLocalizationKey": "Characters/4",
-                        "unlockLevel": 4,
+                        "unlockLevel": 12,
                         "cannotBeRandomlySelected": false,
                         "spriteCharacterOrder": "isidora_order",
                         "spriteCharacterChat": "isidora_chat"
@@ -4658,7 +4658,7 @@
                         "uniqueId": "characters_oscar",
                         "characterLocalizationKey": "Characters/5",
                         "unlockLevel": 5,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "oscar_order",
                         "spriteCharacterChat": "oscar_chat"
                     },
@@ -4666,14 +4666,14 @@
                         "uniqueId": "characters_terrell",
                         "characterLocalizationKey": "Characters/6",
                         "unlockLevel": 8,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "terrell_order",
                         "spriteCharacterChat": "terrell_chat"
                     },
                     {
                         "uniqueId": "characters_hector",
                         "characterLocalizationKey": "Characters/7",
-                        "unlockLevel": 10,
+                        "unlockLevel": 15,
                         "cannotBeRandomlySelected": false,
                         "spriteCharacterOrder": "hector_order",
                         "spriteCharacterChat": "hector_chat"
@@ -4682,7 +4682,7 @@
                         "uniqueId": "characters_julia",
                         "characterLocalizationKey": "Characters/8",
                         "unlockLevel": 12,
-                        "cannotBeRandomlySelected": false,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "julia_order",
                         "spriteCharacterChat": "julia_chat"
                     },
@@ -4697,8 +4697,8 @@
                     {
                         "uniqueId": "characters_sofia",
                         "characterLocalizationKey": "Characters/10",
-                        "unlockLevel": 20,
-                        "cannotBeRandomlySelected": false,
+                        "unlockLevel": 12,
+                        "cannotBeRandomlySelected": true,
                         "spriteCharacterOrder": "sofia_order",
                         "spriteCharacterChat": "sofia_chat"
                     },
@@ -4737,7 +4737,7 @@
                     {
                         "uniqueId": "characters_kira",
                         "characterLocalizationKey": "Characters/16",
-                        "unlockLevel": 27,
+                        "unlockLevel": 0,
                         "cannotBeRandomlySelected": false,
                         "spriteCharacterOrder": "kira_order",
                         "spriteCharacterChat": "kira_chat"
@@ -4753,7 +4753,7 @@
                     {
                         "uniqueId": "characters_vera",
                         "characterLocalizationKey": "Characters/19",
-                        "unlockLevel": 28,
+                        "unlockLevel": 0,
                         "cannotBeRandomlySelected": false,
                         "spriteCharacterOrder": "vera_order",
                         "spriteCharacterChat": "vera_chat"
@@ -5224,8 +5224,8 @@
                 {
                     "name": "de_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_de_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_de_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
@@ -5238,92 +5238,92 @@
                 {
                     "name": "es_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_es_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_es_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "fr_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_fr_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_fr_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "it_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_it_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_it_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "ja_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_ja_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_ja_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "ko_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_ko_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_ko_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "pl_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_pl_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_pl_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "pt-br_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_pt-br_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_pt-br_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "pt_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_pt_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_pt_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "ru_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_ru_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_ru_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "sv_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_sv_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_sv_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "tr_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_tr_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_tr_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "zh-hans_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_zh-hans_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_zh-hans_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 },
                 {
                     "name": "zh-hant_json.json",
                     "file": {
-                        "url": "/resources/traveltown/1.0_master/localizationAssets/1736159249056_zh-hant_json.json",
-                        "updated_timestamp": 1736159249056
+                        "url": "/resources/traveltown/1.0_master/localizationAssets/1758180942611_zh-hant_json.json",
+                        "updated_timestamp": 1758180942611
                     }
                 }
             ],
