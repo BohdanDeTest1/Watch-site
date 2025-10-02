@@ -6,7 +6,12 @@
     async function ensureMarkup(container) {
         let tpl = document.getElementById('pp-root');
         if (!tpl) {
-            const tryPaths = ['ProfileParser.html', 'ProfileParser/ProfileParser.html'];
+            const tryPaths = [
+                'ProfileParser.html',
+                './ProfileParser.html',
+                'ProfileParser/ProfileParser.html',
+                './ProfileParser/ProfileParser.html'
+            ];
             for (const p of tryPaths) {
                 try {
                     const res = await fetch(p, { cache: 'no-store' });
@@ -18,7 +23,27 @@
                     if (tpl) break;
                 } catch (_) { }
             }
+
         }
+
+        if (!tpl) {
+            // аварийная разметка, чтобы вкладка не была пустой
+            const ghost = document.createElement('div');
+            ghost.innerHTML = `
+    <div id="pp-root">
+      <div class="pp-wrap">
+        <form id="ppForm" class="pp-form">
+          <label class="pp-label" for="ppName">Profile name</label>
+          <input id="ppName" class="pp-input" placeholder="Pool"/>
+          <button id="ppSearch" class="pp-btn" type="submit">Search</button>
+          <div id="ppFormErr" class="pp-err" style="display:none">Enter a profile name</div>
+        </form>
+        <div id="ppResults"></div>
+      </div>
+    </div>`;
+            tpl = ghost.querySelector('#pp-root');
+        }
+
         const mountPoint = container || document.getElementById('tool-root') || document.body;
         if (tpl && !mountPoint.querySelector('#pp-root')) {
             mountPoint.appendChild(tpl.cloneNode(true));
@@ -146,8 +171,6 @@
         el('#ppResults')?.appendChild(wrap);
     }
 
-
-
     // Делает секцию сворачиваемой (по умолчанию — свернута)
     function wireCollapser(wrap) {
         const btn = wrap.querySelector('.pp-collapser');
@@ -166,7 +189,6 @@
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
         });
     }
-
 
     // --- LiveOps helpers ---
     // seconds/ms → "YYYY-MM-DD HH:mm:ss UTC"
@@ -217,7 +239,6 @@
         }
         return true;
     }
-
 
     // приводим коллекцию liveops к массиву объектов
     function extractLiveOps(json) {
@@ -309,6 +330,16 @@
                 }));
             }
 
+            // [SEGMENTS] нормализуем поле сегмента и внешний сегмент
+            const segVal = it.segment ?? it.internalSegment ?? null;
+
+            // external может прийти строкой или массивом
+            let externalSegments = [];
+            const extRaw = it.externalSegment ?? it.externalSegments ?? null;
+            if (Array.isArray(extRaw)) externalSegments = extRaw.filter(Boolean);
+            else if (extRaw != null && extRaw !== '') externalSegments = [String(extRaw)];
+
+
             return {
                 id, name, type,
                 startPretty: formatUnix(start),
@@ -318,13 +349,45 @@
                 conditions: condLines,
                 themeId, themeAssets,
                 displayState, freezeEvent,
-                prereq
+                prereq,
+                segment: segVal ?? null,
+                externalSegments
             };
 
         });
-
-
     }
+
+    // [GROUP] объединяем ивенты с одинаковым name и одинаковым временным окном
+    function aggregateByNameWithSegments(list) {
+        const map = new Map(); // key = name|startTS|endTS|type
+        for (const it of list) {
+            const key = `${it.name}@@${it.startTS}@@${it.endTS}@@${it.type}`;
+            let g = map.get(key);
+            if (!g) {
+                g = { ...it, segments: [], externalsBySegment: {} };
+                map.set(key, g);
+            }
+            const seg = (it.segment || '').trim();
+            const exts = Array.isArray(it.externalSegments) ? it.externalSegments : [];
+            if (seg) {
+                if (!g.segments.includes(seg)) g.segments.push(seg);
+                if (!g.externalsBySegment[seg]) g.externalsBySegment[seg] = [];
+                for (const e of exts) {
+                    if (e && !g.externalsBySegment[seg].includes(e)) g.externalsBySegment[seg].push(e);
+                }
+            } else if (exts.length) {
+                // редкий случай: внешние есть, сегмент пуст — складываем под меткой «(no segment)»
+                const k = '(no segment)';
+                if (!g.segments.includes(k)) g.segments.push(k);
+                if (!g.externalsBySegment[k]) g.externalsBySegment[k] = [];
+                for (const e of exts) {
+                    if (e && !g.externalsBySegment[k].includes(e)) g.externalsBySegment[k].push(e);
+                }
+            }
+        }
+        return [...map.values()];
+    }
+
 
     // Таблица LiveOps + слева панель деталей
     function appendLiveOpsTable(items) {
@@ -338,6 +401,37 @@
   </div>
 
   <div class="pp-body">
+ <!-- [CAL] Timeline (pure JS/CSS) -->
+<section class="pp-cal" id="ppCal">
+  <div class="tl-toolbar" id="tlToolbar">
+    <div class="tl-left">
+      <button class="tl-btn" data-nav="prev"  aria-label="Previous">&#x276E;</button>
+      <button class="tl-btn" data-nav="next"  aria-label="Next">&#x276F;</button>
+      <button class="tl-btn" data-nav="today">today</button>
+    </div>
+    <div class="tl-title" id="tlTitle"></div>
+    <div class="tl-right">
+      <button class="tl-btn" data-view="day">day</button>
+      <button class="tl-btn" data-view="week">week</button>
+      <button class="tl-btn" data-view="month">month</button>
+    </div>
+  </div>
+
+  <div class="tl-wrap">
+    <div class="tl-rescol">
+      <div class="tl-res-header">Events</div>
+      <div class="tl-res-list" id="tlResList"></div>
+    </div>
+
+    <div class="tl-grid" id="tlGrid">
+      <div class="tl-grid-header" id="tlHeader"></div>
+      <div class="tl-grid-body" id="tlBody"></div>
+    </div>
+  </div>
+</section>
+<!-- [/CAL] -->
+
+
     <div class="pp-liveops">
 
 <div class="pp-table" id="ppLoTable">
@@ -490,8 +584,866 @@
   </div> <!-- /.pp-body -->
 `;
 
-        wireCollapser(wrap);
+        function stripUTC(s) { return (s || '').replace(/\s*UTC$/, ''); }
+        function colorForType(type) {
+            const palette = ['#6B4EFF', '#1EA7FD', '#8BC34A', '#FF9F1A', '#E14D9C', '#7E57C2', '#26A69A', '#F06292'];
+            let h = 0; for (let i = 0; i < type.length; i++) h = (h * 31 + type.charCodeAt(i)) >>> 0;
+            return palette[h % palette.length];
+        }
+        function groupByType(rows) {
+            const map = new Map();
+            rows.forEach(r => { const k = r.type || '—'; (map.get(k) || map.set(k, []).get(k)).push(r); });
+            return [...map.entries()].map(([type, items]) => ({ type, items }));
+        }
 
+        // применяем действующие фильтры таблицы (используем твои переменные фильтров и хелперы)
+        function filterForCalendar(src) {
+            let rows = src.slice();
+
+            // state
+            if (stateFilter && stateFilter.size) rows = rows.filter(r => stateFilter.has(r.displayState));
+
+            // type (чекбоксы)
+            if (typeFilter && typeFilter.size) rows = rows.filter(r => typeFilter.has(r.type));
+
+            // type (текстовое правило)
+            if (typeTextFilter) {
+                const q = (typeTextFilter.query || '').toLowerCase();
+                rows = rows.filter(r => {
+                    const s = (r.type || '').toLowerCase();
+                    switch (typeTextFilter.rule) {
+                        case 'contains': return s.includes(q);
+                        case 'notcontains': return q ? !s.includes(q) : true;
+                        case 'starts': return s.startsWith(q);
+                        case 'equals': return s === q;
+                        case 'blank': return !s.trim();
+                        default: return true;
+                    }
+                });
+            }
+
+            // name
+            if (nameFilter) {
+                const q = (nameFilter.query || '').toLowerCase();
+                rows = rows.filter(r => {
+                    const s = (r.name || '').toLowerCase();
+                    switch (nameFilter.rule) {
+                        case 'contains': return s.includes(q);
+                        case 'notcontains': return q ? !s.includes(q) : true;
+                        case 'starts': return s.startsWith(q);
+                        case 'equals': return s === q;
+                        case 'blank': return !s.trim();
+                        default: return true;
+                    }
+                });
+            }
+
+            // dates
+            rows = rows.filter(r => passDateRule(r.startPretty, startFilter) &&
+                passDateRule(r.endPretty, endFilter));
+            return rows;
+        }
+
+        // === [CAL] масштаб (единица клетки) и хелперы ===
+        let calState = {
+            unit: 'd',            // 'h' | 'd' | 'w' | 'm'
+            keepCenterTs: null,   // «сидим» на времени при смене масштаба
+            msPerPx: null,        // миллисекунд на 1px (масштаб)
+            canvasStartMs: null,  // задаются в renderCalendar
+            canvasEndMs: null,
+            gridMs: null,   // ← добавь
+            view: 'month',        // 'month' | 'week' | 'day'
+            anchorMs: Date.now(),
+            ticks: 0
+        };
+
+        function pickGridMs(msPerPx) {
+            // шаги: 30с → 1м → 5м → 10м → 15м → 30м → 1–12ч → 1–3д → неделя
+            const c = [
+                30e3, 60e3, 5 * 60e3, 10 * 60e3, 15 * 60e3, 30 * 60e3,
+                3600e3, 2 * 3600e3, 3 * 3600e3, 6 * 3600e3, 12 * 3600e3,
+                24 * 3600e3, 2 * 24 * 3600e3, 3 * 24 * 3600e3, 7 * 24 * 3600e3
+            ];
+            let best = c[0], bestErr = Math.abs(best / msPerPx - 80);
+            for (const v of c) {
+                const err = Math.abs(v / msPerPx - 80);
+                if (err < bestErr) { best = v; bestErr = err; }
+            }
+            return best;
+        }
+
+        function fmtTickMsByGrid(t, gMs) {
+            const d = new Date(t);
+            const pad = n => String(n).padStart(2, '0');
+            const yyyy = d.getUTCFullYear();
+            const MM = pad(d.getUTCMonth() + 1);
+            const DD = pad(d.getUTCDate());
+            const hh = pad(d.getUTCHours());
+            const mm = pad(d.getUTCMinutes());
+            const ss = pad(d.getUTCSeconds());
+
+            // На мелких шагах — два ряда: дата \n время
+            if (gMs <= 30e3) return `${DD}.${MM}.${yyyy}\n${hh}:${mm}:${ss}`;
+            if (gMs < 3600e3) return `${DD}.${MM}.${yyyy}\n${hh}:${mm}`;
+            if (gMs < 24 * 3600e3) return `${DD}.${MM}.${yyyy}\n${hh}:00`;
+            return `${DD}.${MM}.${yyyy}\n00:00`; // или \n${hh}:${mm} если хочешь реальное время тика
+
+        }
+
+        function startOfDayUTC(ms) {
+            const d = new Date(ms); d.setUTCHours(0, 0, 0, 0); return d.getTime();
+        }
+        function startOfWeekUTC(ms) { // неделя с понедельника
+            const d = new Date(startOfDayUTC(ms));
+            const wd = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - wd);
+            return d.getTime();
+        }
+        function startOfMonthUTC(ms) {
+            const d = new Date(ms); d.setUTCDate(1); d.setUTCHours(0, 0, 0, 0); return d.getTime();
+        }
+
+        // диапазон [A,B) под выбранный режим
+        function computeRange(view, anchorMs) {
+            if (view === 'day') { const A = startOfDayUTC(anchorMs); return [A, A + 24 * 3600e3]; }
+            if (view === 'week') { const A = startOfWeekUTC(anchorMs); return [A, A + 7 * 24 * 3600e3]; }
+            const A = startOfMonthUTC(anchorMs); const d = new Date(A); d.setUTCMonth(d.getUTCMonth() + 1); return [A, d.getTime()];
+        }
+
+
+        const UNIT_MS = { h: 3600e3, d: 86400e3, w: 7 * 86400e3, m: 30 * 86400e3 }; // месяц ~30d ок
+        const PX_PER_UNIT = { h: 48, d: 60, w: 120, m: 160 };                   // комфортный масштаб
+
+        function getUnitMs(u) { return UNIT_MS[u] || UNIT_MS.d; }
+        function pxPerUnit(u) { return PX_PER_UNIT[u] || PX_PER_UNIT.d; }
+
+        function updateUnitChips() {
+            const box = wrap.querySelector('#ppCalRange');
+            box?.querySelectorAll('.pp-chip').forEach(b => {
+                b.classList.toggle('selected', b.dataset.unit === calState.unit);
+            });
+        }
+
+        // общий охват по отфильтрованным строкам + небольшой зазор по краям
+        function computeExtent(rows, unitMs) {
+            let min = Infinity, max = -Infinity;
+            rows.forEach(r => {
+                if (typeof r.startTS === 'number') min = Math.min(min, r.startTS);
+                if (typeof r.endTS === 'number') max = Math.max(max, r.endTS);
+            });
+            if (!isFinite(min) || !isFinite(max)) {
+                const now = Date.now();
+                min = now - 15 * UNIT_MS.d; max = now + 15 * UNIT_MS.d;
+            }
+            const padUnits = 8; // запас для скролла, чтобы «не упираться»
+            const snappedA = Math.floor(min / unitMs) * unitMs - padUnits * unitMs;
+            const snappedB = Math.ceil(max / unitMs) * unitMs + padUnits * unitMs;
+            return [snappedA, snappedB];
+        }
+
+        // формат подписи шкалы ( по выбранной единице )
+        function fmtTick(ts, unit) {
+            const d = new Date(ts);
+            switch (unit) {
+                case 'h': return d.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit' });
+                case 'w': { // неделя — показываем понедельник
+                    const dd = new Date(ts);
+                    return dd.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                }
+                case 'm': return d.toLocaleString('en-GB', { month: 'short', year: '2-digit' });
+                default: return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+            }
+        }
+
+        function renderCalendar() {
+            const wrapEl = wrap;
+            const rowsBox = wrapEl.querySelector('#ppCalRows');
+            const scale = wrapEl.querySelector('#ppCalScale');
+            const side = wrapEl.querySelector('#ppCalSide');
+
+            // 1) данные (с учётом действующих фильтров) и группировка
+            const rows = filterForCalendar(items);
+            const bands = groupByType(rows);
+
+            // шкала + строки
+            const mainEl = wrapEl.querySelector('.pp-cal-main'); // используем единое имя
+
+            // фиксированный диапазон по режиму (month/week/day)
+            const [A, B] = computeRange(calState.view, calState.anchorMs);
+            calState.canvasStartMs = A;
+            calState.canvasEndMs = B;
+
+            // [NOW-UTC] — ставим красную вертикальную линию "сейчас"
+            const mainHost = wrapEl.querySelector('.pp-cal-main');
+            let nowEl = mainHost.querySelector('.pp-cal-now');
+            if (!nowEl) {
+                nowEl = document.createElement('div');
+                nowEl.className = 'pp-cal-now';
+                mainHost.appendChild(nowEl);
+            }
+            const now = Date.now(); // UTC millis
+            if (now >= A && now <= B) {
+                const x = (now - A) / calState.msPerPx;   // пиксели от начала диапазона
+                nowEl.style.left = x + 'px';
+                nowEl.hidden = false;
+            } else {
+                nowEl.hidden = true;
+            }
+
+
+            // назначаем «шаг сетки» и базовый масштаб под режим
+            let gridMs, msPerPx;
+            if (calState.view === 'month') {              // деление = 1 день
+                gridMs = 24 * 3600e3; msPerPx = gridMs / 48;   // ≈48px на день
+            } else if (calState.view === 'week') {        // деление = 1 час
+                gridMs = 3600e3; msPerPx = gridMs / 20;   // ≈20px на час
+            } else {                                     // day — 15 минут
+                gridMs = 15 * 60e3; msPerPx = gridMs / 14;   // ≈14px на 15 минут
+            }
+            calState.gridMs = gridMs;
+            calState.msPerPx = msPerPx;
+
+            const cellW = gridMs / msPerPx;
+
+
+            updateUnitChips();
+
+
+
+            // [ЯКОРЬ JS-1] виртуальная отрисовка подписей шкалы
+            function buildScale(scaleEl, A, B, gMs, cellW, main, mode = 'minor') {
+                if (!scaleEl || !main) return 0;
+                const viewW = main.clientWidth || 0;
+                const scroll = main.scrollLeft || 0;
+                const startIx = Math.floor(scroll / cellW);
+                const offsetPx = startIx * cellW - scroll;
+                const visTicks = Math.max(1, Math.ceil(viewW / cellW) + 6);
+
+                scaleEl.style.display = 'grid';
+                scaleEl.style.gridTemplateColumns = `repeat(${visTicks}, ${cellW}px)`;
+                scaleEl.style.transform = `translateX(${offsetPx}px)`;
+                scaleEl.innerHTML = '';
+
+                let anyLabel = false; // ← ДОБАВЛЕНО
+                for (let i = 0; i < visTicks; i++) {
+                    const t = A + (startIx + i) * gMs;
+                    const div = document.createElement('div');
+                    div.className = 'pp-cal-tick';
+
+                    if (mode === 'major') {
+                        const d = new Date(t);
+                        const pad = n => String(n).padStart(2, '0');
+                        const fullDate = `${pad(d.getUTCDate())}.${pad(d.getUTCMonth() + 1)}.${d.getUTCFullYear()}`;
+                        if (gMs < 24 * 3600e3) {
+                            if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) div.textContent = fullDate;
+                            else div.textContent = '';
+                        } else {
+                            div.textContent = fullDate;
+                        }
+                        if (div.textContent) anyLabel = true; // ← ДОБАВЛЕНО
+                    } else {
+                        // нижняя строка — новый форматтер по gMs
+                        div.textContent = fmtTickMsByGrid(t, gMs);
+                    }
+
+                    scaleEl.appendChild(div);
+                }
+
+                // ← ДОБАВЛЕНО: если в видимом окне нет полуночи — покажем дату на первом тике
+                if (mode === 'major' && !anyLabel && scaleEl.firstChild) {
+                    const t0 = A + startIx * gMs;
+                    const d0 = new Date(t0);
+                    const pad = n => String(n).padStart(2, '0');
+                    const fullDate0 = `${pad(d0.getUTCDate())}.${pad(d0.getUTCMonth() + 1)}.${d0.getUTCFullYear()}`;
+                    scaleEl.firstChild.textContent = fullDate0;
+                }
+                return visTicks;
+            }
+
+
+            // сначала получаем ссылки на обе шкалы
+            const scaleTop = scale;
+            const scaleBottom = wrapEl.querySelector('#ppCalScaleBottom');
+
+            // // [НОВОЕ] ширина полотна строк — полная (для горизонтального скролла)
+            // // (используем уже объявленный выше mainEl)
+            // const vw = mainEl?.clientWidth || 0;
+            // const totalW = Math.ceil((B - A) / msPerPx) + vw; // +1 вьюпорт вправо — подписи не «кончаются»
+
+            // // ширина полотна строк — полная (для горизонтального скролла)
+            // rowsBox.style.width = totalW + 'px';
+
+            // ширина полотна = строго под диапазон [A,B)
+            const totalW = Math.ceil((B - A) / calState.msPerPx);
+            rowsBox.style.width = totalW + 'px';
+
+            // [ANCHOR: R1] ширина вьюпорта для шкал
+            const vw = mainEl?.clientWidth || 0;
+
+            scaleTop.style.width = vw + 'px';
+            if (scaleBottom) scaleBottom.style.width = vw + 'px';
+
+            // [НОВОЕ] первичная отрисовка (сверху — «крупные», снизу — «мелкие»)
+            const makeScales = () => {
+                const t = buildScale(scaleTop, A, B, gridMs, cellW, mainEl, 'major');
+                calState.ticks = t; // храним число «видимых» тиков, если вдруг где-то нужно
+                buildScale(scaleBottom, A, B, gridMs, cellW, mainEl, 'minor');
+            };
+            makeScales();
+
+            // сразу после makeScales();
+            if (calState._onScroll && mainEl) {
+                mainEl.removeEventListener('scroll', calState._onScroll);
+            }
+            let scaleRaf = 0;
+            calState._onScroll = function onScroll() {
+                if (scaleRaf) return;
+                scaleRaf = requestAnimationFrame(() => {
+                    // 1) подписи шкал только в видимой области
+                    makeScales();
+                    // 2) сдвиг фоновой сетки во вьюпорте
+                    const off = -(mainEl.scrollLeft % cellW);
+                    mainEl.style.setProperty('--pp-grid-off', off + 'px');
+                    scaleRaf = 0;
+                });
+            };
+            mainEl?.addEventListener('scroll', calState._onScroll);
+
+
+            mainEl.style.overflowX = 'auto';
+            rowsBox.style.setProperty('--pp-dayw', cellW + 'px');
+            wrapEl.querySelector('.pp-cal-main')?.style.setProperty('--pp-canvas-w', totalW + 'px');
+
+            // [PERF] сдвиг фона сетки во вьюпорте
+            // const mainEl = wrapEl.querySelector('.pp-cal-main');
+            const off = -((mainEl?.scrollLeft || 0) % cellW);
+            mainEl?.style.setProperty('--pp-grid-off', off + 'px');
+
+
+            // левая панель типов
+            side.innerHTML = '';
+            bands.forEach(b => {
+                const row = document.createElement('label');
+                row.className = 'pp-cal-side-row';
+                row.innerHTML = `
+      <input type="checkbox" class="pp-cal-toggle" data-type="${b.type}" checked>
+      <span class="dot" style="background:${colorForType(b.type)}"></span>
+      <span class="lbl" title="${b.type}">${b.type}</span>`;
+                side.appendChild(row);
+            });
+
+            // строки таймлайна (одна линия на тип, пересечения — штриховка)
+            rowsBox.innerHTML = '';
+
+            bands.forEach(band => {
+                const rowEl = document.createElement('div');
+                rowEl.className = 'pp-cal-row';
+                rowEl.dataset.type = band.type;
+                rowsBox.appendChild(rowEl);
+
+                // обрезаем события типa рамками полотна A..B (из шага 3)
+                const clipped = band.items
+                    .slice()
+                    .map(ev => {
+                        const a = Math.max(ev.startTS, A);
+                        const bEnd = Math.min(ev.endTS, B);
+                        return (bEnd > a) ? { a, bEnd, ev } : null;
+                    })
+                    .filter(Boolean)
+                    .sort((x, y) => x.a - y.a);
+
+                // БАЗОВЫЕ бары (одна линия)
+                clipped.forEach(({ a, bEnd, ev }) => {
+                    const leftPx = (a - A) / msPerPx;
+                    const widthPx = Math.max(2, (bEnd - a) / msPerPx);
+                    const bar = document.createElement('div');
+                    bar.dataset.a = String(a);        // ← добавить
+                    bar.dataset.b = String(bEnd);     // ← добавить
+                    bar.className = 'pp-cal-bar';
+                    bar.style.left = leftPx + 'px';
+                    bar.style.width = widthPx + 'px';
+
+                    bar.style.background = colorForType(band.type);
+                    // bar.title = `${ev.name}\n${stripUTC(ev.startPretty)} — ${stripUTC(ev.endPretty)} (UTC)`;
+                    // bar.innerHTML = `<span class="txt">${ev.name}</span>`;
+                    // rowEl.appendChild(bar);
+
+                    bar.title = `${ev.name}\n${stripUTC(ev.startPretty)} — ${stripUTC(ev.endPretty)} (UTC)`;
+
+                    // попап сегментов внутри бара
+                    const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
+                    const popHtml = hasSegs ? `
+  <button class="pp-seg-btn" type="button" aria-label="Segments">▾</button>
+  <div class="pp-seg-pop" hidden>
+    ${ev.segments.map(s => {
+                        const exts = (ev.externalsBySegment && ev.externalsBySegment[s]) ? ev.externalsBySegment[s] : [];
+                        return `<div class="seg"><code>${s}</code>
+          ${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''}</div>`;
+                    }).join('')}
+  </div>
+` : '';
+
+                    bar.innerHTML = `<span class="txt">${ev.name}</span>${popHtml}`;
+                    rowEl.appendChild(bar);
+
+                    // поведение ▾
+                    if (hasSegs) {
+                        const btn = bar.querySelector('.pp-seg-btn');
+                        const pop = bar.querySelector('.pp-seg-pop');
+                        btn?.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const hidden = pop.hasAttribute('hidden');
+                            if (hidden) pop.removeAttribute('hidden'); else pop.setAttribute('hidden', '');
+                        });
+                    }
+
+
+                });
+
+                // ПЕРЕСЕЧЕНИЯ (line-sweep) — тоже в px от A
+                const segments = [];
+                {
+                    const pts = [];
+                    clipped.forEach(({ a, bEnd }) => { pts.push([a, +1]); pts.push([bEnd, -1]); });
+                    pts.sort((p, q) => (p[0] - q[0]) || (q[1] - p[1]));
+                    let active = 0, prev = null;
+                    for (const [x, delta] of pts) {
+                        if (prev != null && active >= 2 && x > prev) segments.push([prev, x]);
+                        active += delta;
+                        prev = x;
+                    }
+                }
+                segments.forEach(([a, bEnd]) => {
+
+                    const leftPx = (a - A) / msPerPx;
+                    const widthPx = Math.max(1, (bEnd - a) / msPerPx);
+                    // const leftPx = ((a - A) / dayMS) * cellW;
+                    // const widthPx = Math.max(1, ((bEnd - a) / dayMS) * cellW);
+                    const ov = document.createElement('div');
+                    ov.className = 'pp-cal-overlap';
+                    ov.style.left = leftPx + 'px';
+                    ov.style.width = widthPx + 'px';
+                    ov.dataset.a = String(a);       // ← добавить
+                    ov.dataset.b = String(bEnd);    // ← добавить
+                    rowEl.appendChild(ov);
+                });
+            });
+
+            // переключатель видимости типа: делаем «приглушить»
+            side.addEventListener('change', (e) => {
+                const cb = e.target.closest('.pp-cal-toggle'); if (!cb) return;
+                rowsBox.querySelectorAll(`.pp-cal-row[data-type="${CSS.escape(cb.dataset.type)}"] .pp-cal-bar`)
+                    .forEach(b => b.classList.toggle('muted', !cb.checked));
+            });
+
+            // [NOW-TICK] — раз в минуту обновляем позицию "сейчас"
+            clearTimeout(calState._nowTick);
+            calState._nowTick = setTimeout(() => { renderCalendar(); }, 60 * 1000);
+
+
+        }
+
+        function rescaleTimeline() {
+            const main = wrap.querySelector('.pp-cal-main');
+            const scaleT = wrap.querySelector('#ppCalScale');
+            const scaleB = wrap.querySelector('#ppCalScaleBottom');
+            const rowsBox = wrap.querySelector('#ppCalRows');
+
+            let A = calState.canvasStartMs;
+            const msPerPx = calState.msPerPx;
+            if (!Number.isFinite(A) || !msPerPx) return;
+
+            const gridMs = calState.gridMs || pickGridMs(msPerPx);
+            const cellW = gridMs / msPerPx;
+
+            const totalW = Math.ceil((calState.canvasEndMs - A) / msPerPx);
+
+
+            // const gridMs = pickGridMs(msPerPx);
+            // const cellW = gridMs / msPerPx;
+
+            // const totalW = Math.ceil((calState.canvasEndMs - A) / msPerPx) + (main?.clientWidth || 0);
+
+            // const totalW = Math.max(main?.clientWidth || 0, Math.ceil((calState.canvasEndMs - A) / msPerPx));
+
+            // 1) Полотно рядов — широкое (для горизонтального скролла) + шаг фон-сетки
+            rowsBox.style.width = totalW + 'px';
+            rowsBox.style.setProperty('--pp-dayw', cellW + 'px');
+
+            // 2) Обе шкалы шириной вьюпорта; содержимое отрисовываем «по виду»
+            const vw = main?.clientWidth || 0;
+            if (scaleT) scaleT.style.width = vw + 'px';
+            if (scaleB) scaleB.style.width = vw + 'px';
+
+            calState.gridMs = gridMs;
+
+            // 3) Перестроить подписи только для видимой области
+
+            const makeScales = () => {
+
+                // [ЯКОРЬ JS-1] полная отрисовка подписей шкалы (без виртуализации)
+                function buildScale(scaleEl, A, B, gMs, cellW, main, mode = 'minor') {
+                    if (!scaleEl) return 0;
+                    scaleEl.textContent = '';
+                    const ticks = Math.ceil((B - A) / gMs) + 1;
+                    for (let i = 0; i < ticks; i++) {
+                        const t = A + i * gMs;
+                        const div = document.createElement('div');
+                        div.className = 'pp-cal-tick';
+                        div.style.width = cellW + 'px';
+                        div.style.minWidth = cellW + 'px';
+                        div.style.maxWidth = cellW + 'px';
+
+                        if (mode === 'major') {
+                            const d = new Date(t);
+                            const pad = n => String(n).padStart(2, '0');
+                            const fullDate = `${pad(d.getUTCDate())} ${d.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' })}\n${d.getUTCFullYear()}`;
+                            div.textContent = fullDate;
+                        } else {
+                            div.textContent = fmtTickMsByGrid(t, gMs); // как у тебя
+                        }
+                        scaleEl.appendChild(div);
+                    }
+                    return ticks;
+                }
+
+
+                const t = buildScale(scaleT, A, calState.canvasEndMs, gridMs, cellW, main, 'major');
+                calState.ticks = t;
+                buildScale(scaleB, A, calState.canvasEndMs, gridMs, cellW, main, 'minor');
+            };
+
+
+            if (calState._onScroll && mainEl) {
+                mainEl.removeEventListener('scroll', calState._onScroll);
+            }
+            let scaleRaf = 0;
+            calState._onScroll = function onScroll() {
+                if (scaleRaf) return;
+                scaleRaf = requestAnimationFrame(() => {
+                    const off = -(mainEl.scrollLeft % cellW);
+                    mainEl.style.setProperty('--pp-grid-off', off + 'px');
+                    scaleRaf = 0;
+                });
+            };
+            mainEl?.addEventListener('scroll', calState._onScroll);
+
+
+            // первичная отрисовка после пересчёта
+            makeScales();
+
+            // [C3 EXTRA] моментально выровнять фон-сетку (чтобы не ждать первого скролла)
+            const offNow = -(main.scrollLeft % cellW);
+            main.style.setProperty('--pp-grid-off', offNow + 'px');
+
+            // [C3 EXTRA] «ребейз» окна времени, если полотно слишком широкое
+            (function maybeRebase() {
+                const vw = main.clientWidth || 0;
+                const vwMs = vw * msPerPx;
+                const curW = calState.canvasEndMs - calState.canvasStartMs;
+                const desiredW = Math.max(1, vwMs * 6);        // держим ширину ~6 экранов
+
+                if (curW > desiredW * 1.25) {                  // гистерезис, чтобы не дёргалось
+                    // сохранить мировую позицию (левый край и центр)
+                    const worldLeftMs = calState.canvasStartMs + main.scrollLeft * msPerPx;
+                    const worldCenter = worldLeftMs + vwMs / 2;
+
+                    // новый диапазон вокруг центра
+                    const newA = worldCenter - desiredW / 2;
+                    const newB = worldCenter + desiredW / 2;
+
+                    // обновляем границы полотна и локальный A
+                    calState.canvasStartMs = A = newA;
+                    calState.canvasEndMs = newB;
+
+                    // пересчитать ширину полотна
+                    const totalW2 = Math.ceil((newB - newA) / msPerPx) + vw;
+                    rowsBox.style.width = totalW2 + 'px';
+
+                    // перерисовать подписи под новый A/B
+                    makeScales();
+
+                    // восстановить прежнюю мировую позицию экрана
+                    const newLeftPx = (worldLeftMs - newA) / msPerPx;
+                    const maxLeft = Math.max(0, main.scrollWidth - main.clientWidth);
+                    main.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
+                }
+            })();
+
+
+            // [PERF] обновляем только то, что попадает в окно видимости (+1 экран запаса)
+            const viewLeft = main.scrollLeft;
+            const viewRight = viewLeft + main.clientWidth;
+            const marginPx = main.clientWidth; // один экран запаса с каждой стороны
+
+            const minTs = A + Math.max(0, viewLeft - marginPx) * msPerPx;
+            const maxTs = A + (viewRight + marginPx) * msPerPx;
+
+            const updIfVisible = el => {
+                const a = +el.dataset.a, b = +el.dataset.b;
+                if (!Number.isFinite(a) || !Number.isFinite(b)) return;
+                if (b < minTs || a > maxTs) return; // далеко вне экрана — пропускаем
+                el.style.left = ((a - A) / msPerPx) + 'px';
+                el.style.width = Math.max(1, (b - a) / msPerPx) + 'px';
+            };
+
+            rowsBox.querySelectorAll('.pp-cal-bar, .pp-cal-overlap').forEach(updIfVisible);
+
+
+        }
+
+
+        function wireCalendarUI() {
+
+
+            wrap.querySelector('#ppCalRange')?.addEventListener('click', (e) => {
+                const b = e.target.closest('.pp-chip[data-unit]');
+                if (!b) return;
+
+                // запомним центр текущего окна как anchor
+                const main = wrap.querySelector('.pp-cal-main');
+                if (main && Number.isFinite(calState.canvasStartMs)) {
+                    const pxCenter = main.scrollLeft + main.clientWidth / 2;
+                    calState.anchorMs = calState.canvasStartMs + pxCenter * calState.msPerPx;
+                }
+
+                // map unit → view
+                const unit = b.dataset.unit; // 'h' | 'd' | 'w' | 'm'
+                calState.view = (unit === 'm') ? 'month' : (unit === 'w' ? 'week' : 'day');
+                calState.unit = unit;              // [ANCHOR: R2] держим подсветку в синхроне
+                updateUnitChips();
+
+                renderCalendar(); // пересобираем диапазон и сетку
+            });
+
+
+            const mainEl = () => wrap.querySelector('.pp-cal-main');
+
+
+            wrap.querySelector('#ppCalPrev')?.addEventListener('click', () => {
+                const [A, B] = computeRange(calState.view, calState.anchorMs);
+                calState.anchorMs = A - 1; // шаг на «один экран» назад
+                renderCalendar();
+            });
+            wrap.querySelector('#ppCalNext')?.addEventListener('click', () => {
+                const [A, B] = computeRange(calState.view, calState.anchorMs);
+                calState.anchorMs = B + 1; // шаг на «один экран» вперёд
+                renderCalendar();
+            });
+
+
+            wrap.querySelector('#ppCalToday')?.addEventListener('click', () => {
+                // остаёмся в текущем режиме и диапазоне, просто крутим scrollLeft
+                const main = wrap.querySelector('.pp-cal-main');
+                const xNow = (Date.now() - calState.canvasStartMs) / calState.msPerPx; // пиксели от начала диапазона
+                main.scrollLeft = Math.max(0, xNow - main.clientWidth / 2);
+            });
+
+
+
+            // drag-to-scroll по полотну
+            const main = wrap.querySelector('.pp-cal-main');
+            let isDown = false, startX = 0, startLeft = 0;
+
+            main?.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.clientX;
+                startLeft = main.scrollLeft;
+                main.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+            window.addEventListener('mouseup', () => { isDown = false; main && (main.style.cursor = 'default'); });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                const dx = e.clientX - startX;
+                main.scrollLeft = startLeft + dx;
+            });
+
+            // touch (мобильный свайп)
+            let tStartX = 0, tStartLeft = 0;
+            main?.addEventListener('touchstart', (e) => {
+                const t = e.touches[0];
+                tStartX = t.clientX;
+                tStartLeft = main.scrollLeft;
+            }, { passive: true });
+            main?.addEventListener('touchmove', (e) => {
+                const t = e.touches[0];
+                const dx = t.clientX - tStartX;
+                main.scrollLeft = tStartLeft - dx;
+            }, { passive: true });
+
+            // wheel (трекпад/мышь): горизонтальная прокрутка с плавностью
+            // — когда курсор над .pp-cal-main, вертикальные импульсы превращаем в горизонтальные
+            (function () {
+                const main = wrap.querySelector('.pp-cal-main');
+                if (!main) return;
+
+                // лёгкая инерция через requestAnimationFrame
+                let raf = 0, vx = 0;
+                let zoomRaf = 0;
+                const friction = 0.9;           // коэффициент затухания
+                const step = () => {
+                    main.scrollLeft += vx;
+                    vx *= friction;
+                    if (Math.abs(vx) > 0.5) raf = requestAnimationFrame(step);
+                    else { raf = 0; vx = 0; }
+                };
+
+                main.addEventListener('wheel', (e) => {
+
+                    if (e.ctrlKey) {
+
+
+                        e.preventDefault();
+                        const order = ['month', 'week', 'day'];
+                        let i = order.indexOf(calState.view);
+                        if (e.deltaY < 0 && i < order.length - 1) i++; // zoom in
+                        if (e.deltaY > 0 && i > 0) i--; // zoom out
+                        calState.view = order[i];
+
+                        // сохранить «середину» текущего окна в anchor
+                        if (Number.isFinite(calState.canvasStartMs)) {
+                            const rect = main.getBoundingClientRect();
+                            const x = e.clientX - rect.left + main.scrollLeft;
+                            calState.anchorMs = calState.canvasStartMs + x * calState.msPerPx;
+                        }
+                        renderCalendar();
+                        return;
+
+
+                    }
+
+                    // HORIZ SCROLL — как раньше: только явная горизонталь
+                    let horiz = e.deltaX;
+                    if (horiz === 0 && e.shiftKey) horiz = e.deltaY;
+                    const H = Math.abs(horiz), V = Math.abs(e.deltaY);
+                    if (Math.abs(horiz) < 6) return; // dead-zone: случайные касания игнорируем
+
+                    if (H === 0 || H <= V * 1.1) return;
+                    if (main.scrollWidth <= main.clientWidth) return;
+
+                    const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? main.clientWidth : 1);
+                    e.preventDefault();
+                    vx += horiz * unit;
+                    if (!raf) raf = requestAnimationFrame(step);
+                }, { passive: false });
+
+                // чтобы колесо не уводило страницу при достижении краёв
+                main.style.overscrollBehaviorX = 'contain'; // горизонталь не «прокидываем» наружу
+                main.style.overscrollBehaviorY = 'auto';
+            })();
+
+            // === Jump to… (UTC) ===
+            (function () {
+                const main = wrap.querySelector('.pp-cal-main');
+                const btn = wrap.querySelector('#ppJumpBtn');
+                const panel = wrap.querySelector('#ppJumpPanel');
+
+
+                const dtBtn = wrap.querySelector('#ppDtBtn');
+                const dtLabel = wrap.querySelector('#ppDtLabel');
+                const dtPop = wrap.querySelector('#ppDtPicker');
+                const inpD = wrap.querySelector('#ppJumpDate');
+                const inpT = wrap.querySelector('#ppJumpTime');
+
+                const unitSel = wrap.querySelector('#ppJumpUnit');
+                const go = wrap.querySelector('#ppJumpGo');
+                const close = wrap.querySelector('#ppJumpClose');
+                const acc = wrap.querySelector('#ppDtAccept');
+                const cancel = wrap.querySelector('#ppDtCancel');
+
+                // держим всё закрытым до явного клика
+                if (panel) panel.hidden = true;
+                if (dtPop) dtPop.hidden = true;
+
+                if (!btn || !panel) return;
+
+                function setDefaultsUTC() {
+                    const now = new Date();
+                    const yyyy = now.getUTCFullYear();
+                    const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+                    const dd = String(now.getUTCDate()).padStart(2, '0');
+                    const hh = String(now.getUTCHours()).padStart(2, '0');
+                    const mi = String(now.getUTCMinutes()).padStart(2, '0');
+
+                    if (inpD) inpD.value = `${yyyy}-${mm}-${dd}`;
+                    if (inpT) inpT.value = `${hh}:${mi}`;
+                    if (dtLabel) dtLabel.textContent = `${dd}.${mm}.${yyyy} ${hh}:${mi}`;
+                }
+
+                function openPanel() {
+                    setDefaultsUTC();
+                    panel.hidden = false;
+
+                    // клик вне панели — закрыть её
+                    const onDoc = (e) => {
+                        if (!panel.contains(e.target) && e.target !== btn) {
+                            panel.hidden = true;
+                            document.removeEventListener('mousedown', onDoc);
+                            dtPop && (dtPop.hidden = true);
+                        }
+                    };
+                    document.addEventListener('mousedown', onDoc);
+                }
+
+                // Тоггл панели
+                btn.addEventListener('click', () => {
+                    if (panel.hidden) openPanel(); else panel.hidden = true;
+                });
+                close?.addEventListener('click', () => { panel.hidden = true; dtPop && (dtPop.hidden = true); });
+
+                // Тоггл «Select date» попапа (дата+время)
+                dtBtn?.addEventListener('click', () => {
+                    if (!dtPop) return;
+                    if (dtPop.hidden) { setDefaultsUTC(); dtPop.hidden = false; }
+                    else dtPop.hidden = true;
+                });
+
+                // Accept/Cancel внутри попапа даты
+                acc?.addEventListener('click', () => {
+                    if (inpD && inpT && dtLabel) {
+                        const [y, m, d] = inpD.value.split('-');
+                        const [hh, mi] = inpT.value.split(':');
+                        dtLabel.textContent = `${d}.${m}.${y} ${hh}:${mi}`;
+                    }
+                    dtPop && (dtPop.hidden = true);
+                });
+                cancel?.addEventListener('click', () => { dtPop && (dtPop.hidden = true); });
+
+                // Перейти к выбранной дате
+                go?.addEventListener('click', () => {
+                    if (!main || !inpD || !inpT) return;
+
+                    // масштаб (если задан)
+                    const unit = unitSel?.value || '';
+                    if (unit) {
+                        const UNIT_MS = { h: 3600e3, d: 86400e3, w: 7 * 86400e3, m: 30 * 86400e3 };
+                        const PX_PER_UNIT = { h: 48, d: 60, w: 120, m: 160 };
+                        calState.unit = unit;
+                        calState.msPerPx = UNIT_MS[unit] / PX_PER_UNIT[unit];
+                        renderCalendar();
+                    }
+
+                    // парсим UTC: YYYY-MM-DD + HH:mm → ...Z
+                    const target = new Date(`${inpD.value}T${(inpT.value || '00:00')}:00Z`);
+                    if (!Number.isFinite(+target)) return;
+
+                    if (Number.isFinite(calState.canvasStartMs) && calState.msPerPx) {
+                        const left = Math.max(
+                            0,
+                            (target.getTime() - calState.canvasStartMs) / calState.msPerPx - (main.clientWidth / 2)
+                        );
+                        main.scrollTo({ left, behavior: 'smooth' });
+                    }
+                    panel.hidden = true;
+                    dtPop && (dtPop.hidden = true);
+                });
+            })();
+
+        }
+
+        // инициализация календаря один раз при создании карточки
+
+        wireCollapser(wrap);
 
         const closeBtn = wrap.querySelector('#ppLoClose');
         const tableBox = wrap.querySelector('#ppLoTable');
@@ -537,8 +1489,6 @@
             menuEl.hidden = false;
         }
 
-
-
         // ---------- состояние сортировки/фильтра ----------
         let sortKey = 'name';
         let sortDir = 'asc';
@@ -553,9 +1503,6 @@
         let pageSize = 10;
         let page = 1;
         let nameFilter = { rule: 'contains', query: '' }; // <— новое состояние
-
-
-
         const FIXED_ROWS = 10;
         let openRowH = null;
 
@@ -610,7 +1557,6 @@
             return 0;
         }
 
-
         // ---------- рендер строк ----------
         function renderRows() {
             let rows = items.slice();
@@ -656,13 +1602,11 @@
                 });
             }
 
-
             // --- Start / End date filters ---
             rows = rows.filter(r =>
                 passDateRule(r.startPretty, startFilter) &&
                 passDateRule(r.endPretty, endFilter)
             );
-
 
             // сортировка
             rows.sort((a, b) => (sortDir === 'asc' ? 1 : -1) * cmp(a, b, sortKey));
@@ -709,8 +1653,6 @@
             enforceFixedHeight();
         }
 
-
-
         // ---------- детальная панель ----------
         function showDetail(idx) {
             const lo = viewRows[idx];
@@ -747,9 +1689,6 @@
       <span class="pp-v">${assetsList}</span>
     </div>`;
             }
-
-
-
             const prereqHtml = (lo.prereq && lo.prereq.length)
                 ? `<div class="pp-wrap">` + lo.prereq.map(p => {
                     const lines = [];
@@ -778,6 +1717,68 @@
 </div>
 `;
 
+            // [SEGMENTS] вставляем KV-блок «Сегмент»
+            (function renderSegmentsKV() {
+                const kvs = detEl.querySelector('.pp-kvs');
+                if (!kvs || !lo.segments || !lo.segments.length) return;
+
+                // 1) контейнер строки KV
+                const segKV = document.createElement('div');
+                segKV.className = 'pp-kv';
+                const many = lo.segments.length > 1;
+
+                // 2) содержимое: заголовок + значение
+                const segListId = 'ppSegList';
+                const oneSeg = !many ? `<code>${lo.segments[0]}</code>` : `
+      <button id="ppSegShowBtn" class="pp-link" type="button">Show all</button>
+      <div id="${segListId}" class="pp-seg-list" hidden>
+        ${lo.segments.map((s, i) => {
+                    const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
+                    const extId = `ppExtList-${i}`;
+                    const extBtn = exts.length
+                        ? `<button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>`
+                        : '';
+                    const extList = exts.length
+                        ? `<div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`
+                        : '';
+                    return `<div class="seg-item"><code>${s}</code> ${extBtn}${extList}</div>`;
+                }).join('')}
+      </div>`;
+
+                segKV.innerHTML = `
+      <span class="pp-k muted">Сегмент</span>
+      <span class="pp-v">${many ? oneSeg : (() => {
+                        const s = lo.segments[0];
+                        const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
+                        if (!exts.length) return `<code>${s}</code>`;
+                        const extId = 'ppExtSingle';
+                        return `<code>${s}</code> <button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>
+                  <div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`;
+                    })()}</span>
+    `;
+                kvs.appendChild(segKV);
+
+                // 3) поведение: Show all / Show External Segment
+                const btnAll = detEl.querySelector('#ppSegShowBtn');
+                const listEl = detEl.querySelector('#' + segListId);
+                if (btnAll && listEl) {
+                    btnAll.addEventListener('click', () => {
+                        const hidden = listEl.hasAttribute('hidden');
+                        if (hidden) { listEl.removeAttribute('hidden'); btnAll.textContent = 'Hide'; }
+                        else { listEl.setAttribute('hidden', ''); btnAll.textContent = 'Show all'; }
+                    });
+                }
+                detEl.addEventListener('click', (e) => {
+                    const tgl = e.target.closest('.pp-ext-tgl');
+                    if (!tgl) return;
+                    const id = tgl.dataset.ext;
+                    const box = id && detEl.querySelector('#' + CSS.escape(id));
+                    if (!box) return;
+                    const hidden = box.hasAttribute('hidden');
+                    if (hidden) { box.removeAttribute('hidden'); tgl.textContent = 'Hide External Segment'; }
+                    else { box.setAttribute('hidden', ''); tgl.textContent = 'Show External Segment'; }
+                });
+            })();
 
 
             const tgl = detEl.querySelector('#ppAssetsTgl');
@@ -790,18 +1791,13 @@
                     else { box.setAttribute('hidden', ''); chev.textContent = '▾'; }
                 });
             }
-
             //удалили крестик
 
             // обработчик для кнопки "Event in the Admin"
             detEl.querySelector('#ppAdminBtn')?.addEventListener('click', () => {
                 window.open('https://www.google.com', '_blank', 'noopener');
             });
-
-
         }
-
-
 
         // ---------- события ----------
         // сортировка по клику на заголовки
@@ -934,45 +1930,6 @@
         const resetBtn = wrap.querySelector('#ppNameReset');
         const applyBtn = wrap.querySelector('#ppNameApply');
 
-        // function sync() {
-        //     const rule = ruleBtn?.dataset.val || 'between';
-
-        //     // 1) показать/спрятать ТОЛЬКО второй инпут
-        //     if (toInp) toInp.style.display = (rule === 'between') ? '' : 'none';
-
-        //     // 2) подогнать сетку под 2 поля (Between) или 1 поле (Before/After)
-        //     const row = ruleBtn ? ruleBtn.closest('.pp-filter-row') : null;
-        //     if (row) {
-        //         row.style.gridTemplateColumns = (rule === 'between')
-        //             ? '160px 1fr 1fr'   // правило + 2 поля
-        //             : '160px 1fr';      // правило + 1 поле
-        //     }
-
-        //     // 3) динамическая ширина поп-апа
-        //     // Between — шире, Before/After — уже
-        //     if (pop) {
-        //         pop.style.minWidth = (rule === 'between') ? '520px' : '360px';
-        //     }
-
-        //     // 4) доступность Apply
-        //     if (applyBtn) {
-        //         const hasA = !!(fromInp?.value);
-        //         const hasB = !!(toInp?.value);
-        //         applyBtn.disabled = (rule === 'between') ? (!hasA && !hasB) : !hasA;
-        //     }
-        // }
-
-        // function sync() {
-        //     const rule = ruleBtn?.dataset.val || 'between';
-        //     // при Before/After второй инпут скрываем
-        //     if (toInp) toInp.parentElement.style.display = (rule === 'between') ? '' : 'none';
-        //     if (applyBtn) {
-        //         const hasA = !!(fromInp?.value);
-        //         const hasB = !!(toInp?.value);
-        //         applyBtn.disabled = (rule === 'between') ? (!hasA && !hasB) : !hasA;
-        //     }
-        // }
-
         // ---------- фильтр по имени ----------
 
         function syncConfirmState() {
@@ -1050,12 +2007,6 @@
         // клик «вне» — закрыть попап/меню
         document.addEventListener('click', (e) => {
             if (!document.body.contains(namePop) || namePop.hidden) return;
-
-            // если открыт список правил — закрываем ТОЛЬКО его и не трогаем поп-ап
-            // if (!ruleMenu.hidden && !e.target.closest('#ppRuleMenu') && !e.target.closest('#ppRuleBtn')) {
-            //     ruleMenu.hidden = true;
-            //     return; // не закрывать namePop
-            // }
 
             if (!ruleMenu.hidden &&
                 !e.target.closest('#ppNameRuleMenu') &&
@@ -1163,27 +2114,6 @@
             const resetBtn = wrap.querySelector(resetSel);
             const applyBtn = wrap.querySelector(applySel);
             const labels = { between: 'Between', before: 'Before', after: 'After' };
-
-            // function sync() {
-            //     const rule = ruleBtn?.dataset.val || 'between';
-
-            //     // скрываем ТОЛЬКО второй инпут (а не всю строку)
-            //     if (toInp) toInp.style.display = (rule === 'between') ? '' : 'none';
-
-            //     // (косметика) плейсхолдер 1-го поля
-            //     if (fromInp) {
-            //         if (rule === 'before') fromInp.placeholder = 'Until date';
-            //         else if (rule === 'after') fromInp.placeholder = 'From date';
-            //         else fromInp.placeholder = 'Start Date';
-            //     }
-
-            //     // доступность кнопки Apply
-            //     if (applyBtn) {
-            //         const hasA = !!(fromInp?.value);
-            //         const hasB = !!(toInp?.value);
-            //         applyBtn.disabled = (rule === 'between') ? (!hasA && !hasB) : !hasA;
-            //     }
-            // }
 
             function sync() {
                 const rule = ruleBtn?.dataset.val || 'between';
@@ -1370,6 +2300,10 @@
         // стартовый рендер
         updateSortIndicators();
         renderRows();
+
+        // [TIMELINE] инициализация нового самописного календаря
+        initTimelineCalendar(items);
+
     }
 
 
@@ -1440,14 +2374,19 @@
             // 2. LiveOps — таблица + фильтр + панель деталей
             {
                 const t = await fetchJsonText(buildUrl('liveops', name));
+
+
                 const json = JSON.parse(t);
-                const items = extractLiveOps(json);
+                const rawItems = extractLiveOps(json);
+                const items = aggregateByNameWithSegments(rawItems); // ← ДЕДУП ПО NAME+ВРЕМЯ
 
                 if (!items.length) {
                     appendKVResult('LiveOps', [['Status', 'No items found']]);
                 } else {
                     appendLiveOpsTable(items);
                 }
+
+
             }
 
 
@@ -1467,6 +2406,472 @@
             btn.disabled = false; btn.classList.remove('pp-loading');
         }
     }
+
+    // ===================== [TIMELINE] Pure JS =====================
+    function initTimelineCalendar(items) {
+        const elTitle = document.getElementById('tlTitle');
+        const elHeader = document.getElementById('tlHeader');
+        const elBody = document.getElementById('tlBody');
+        const elRes = document.getElementById('tlResList');
+        const elGrid = document.getElementById('tlGrid');
+        if (!elTitle || !elHeader || !elBody || !elRes || !elGrid) return;
+
+        // [ANCHOR TL-WHEEL-SYNC] — колесо над левой колонкой двигает правое тело
+        elRes.addEventListener('wheel', (e) => {
+            // чтобы не прокручивалась страница и не было рассинхрона
+            e.preventDefault();
+            elBody.scrollTop += e.deltaY;
+        }, { passive: false });
+
+
+        // ---- state
+        const state = {
+            view: 'day',            // 'day' | 'week' | 'month'
+            anchor: startOfDayUTC(new Date()), // текущая дата-«якорь»
+            colMs: 3600_000,        // длительность колонки
+            rangeMs: 24 * 3600_000,   // длительность всей полосы
+            colCount: 24,           // количество колонок
+            rowH: 44,
+            colW: 80
+        };
+
+        function normType(s) {
+            // схлопываем пробелы и обрезаем
+            return String(s ?? '—').replace(/\s+/g, ' ').trim();
+        }
+        function humanTypeLabel(s) {
+            // превращаем MegaOrderExtraReward → "Mega Order Extra Reward"
+            return String(s ?? '')
+                .replace(/[_-]+/g, ' ')                      // подчёркивания/дефисы → пробел
+                .replace(/([a-z\d])([A-Z])/g, '$1 $2')       // aB → a B
+                .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')   // ABCd → AB Cd
+                .trim();
+        }
+
+        // [FIX TL-LIST] — функции для построения ресурсов и левой колонки синхронно с полотном
+        function buildResourcesFromEvents(eventsArr) {
+            return Array.from(new Set(eventsArr.map(e => e.type || '—')));
+        }
+        // function drawResList(resourcesArr) {
+        //     elRes.innerHTML = resourcesArr
+        //         .map(r => `<div class="tl-res-item" data-res="${escapeHtml(r)}">${escapeHtml(r)}</div>`)
+        //         .join('');
+        // }
+
+        function drawResList(resourcesArr) {
+            elRes.innerHTML = resourcesArr
+                .map(r => {
+                    const label = humanTypeLabel(r);
+                    return `<div class="tl-res-item" data-res="${escapeHtml(r)}">${escapeHtml(label)}</div>`;
+                })
+                .join('');
+        }
+
+
+        const events = items
+            .filter(x => Number.isFinite(x.startTS) && Number.isFinite(x.endTS))
+            .map(x => ({
+                title: x.name || '',
+                type: normType(x.type),
+                start: new Date(x.startTS),
+                end: new Date(x.endTS),
+                segments: Array.isArray(x.segments) ? x.segments : [],
+                externalsBySegment: x.externalsBySegment || {}
+            }));
+
+
+        // кнопки тулбара
+        const toolbar = document.getElementById('tlToolbar');
+        toolbar.addEventListener('click', (e) => {
+            const b = e.target.closest('button'); if (!b) return;
+            if (b.dataset.view) { setView(b.dataset.view); render(); }
+            if (b.dataset.nav === 'today') {
+                state.anchor = startOfDayUTC(new Date());
+                render();
+                // центрируем «сейчас»
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const xNow = ((new Date() - state.anchor) / state.colMs) * colW;
+                elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
+            }
+
+            if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
+            if (b.dataset.nav === 'next') { state.anchor = addMs(state.anchor, state.rangeMs); render(); }
+        });
+
+        function setView(v) {
+            state.view = v;
+            if (v === 'day') { state.colMs = 3600_000; state.colCount = 24; state.rangeMs = state.colMs * state.colCount; }
+            if (v === 'week') { state.colMs = 24 * 3600_000; state.colCount = 7; state.rangeMs = state.colMs * state.colCount; }
+            if (v === 'month') { state.colMs = 7 * 24 * 3600_000; state.colCount = 6; state.rangeMs = state.colMs * state.colCount; }
+        }
+
+        function render() {
+            // [ANCHOR TL-TRIPLE-RANGE] — 3-секционный холст для бесшовного day-скролла
+            const start = state.anchor;
+            const end = addMs(start, state.rangeMs);
+            const start3 = (state.view === 'day') ? addMs(start, -state.rangeMs) : start;
+            const end3 = (state.view === 'day') ? addMs(start, 2 * state.rangeMs) : end;
+
+
+            elTitle.textContent = (state.view === 'day') ? '' : formatTitle(start, state.view);
+
+
+            // [ANCHOR TL-RESOURCES:RENDER] — ВСЕ типы слева (фиксированный список)
+            // 1) полный список типов из исходного массива events (не зависит от окна)
+            const resources = buildResourcesFromEvents(events);
+            drawResList(resources);
+
+            // 2) а для отрисовки баров берём только события, попавшие в текущее окно
+            const windowEvents = events.filter(ev => ev.end > start3 && ev.start < end3);
+
+            // готовим быстрый доступ «тип → события» только по видимому окну,
+            // чтобы в строках без событий оставались пустые (но существующие) строки
+            const byType = new Map();
+            for (const ev of windowEvents) {
+                const k = ev.type;
+                if (!byType.has(k)) byType.set(k, []);
+                byType.get(k).push(ev);
+            }
+
+
+            // колонки заголовка
+            elHeader.innerHTML = '';
+            const visibleCols = (state.view === 'day') ? state.colCount * 3 : state.colCount;
+            for (let i = 0; i < visibleCols; i++) {
+                const t0 = addMs(start3, i * state.colMs);
+                const label = (state.view === 'day')
+                    ? t0.toLocaleTimeString([], { hour: 'numeric', hour12: false, timeZone: 'UTC' })
+                    : t0.toLocaleDateString([], { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+                const div = document.createElement('div');
+                div.className = 'tl-col';
+                div.style.width = `var(--tl-col-w)`;
+                div.textContent = label;
+                elHeader.appendChild(div);
+            }
+
+            elHeader.style.width = 'auto';
+
+
+
+
+            // [ANCHOR TL-DAYBAR] — строка дня (prev|current|next) поверх часов
+            let daybar = elHeader.querySelector('.tl-daybar');
+            if (!daybar) {
+                daybar = document.createElement('div');
+                daybar.className = 'tl-daybar';
+                elHeader.prepend(daybar); // кладём выше часов
+            }
+            daybar.innerHTML = '';
+
+            if (state.view === 'day') {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const dayW = state.colCount * colW;
+
+                // три дня: вчера | сегодня | завтра
+                const starts = [addMs(start, -state.rangeMs), start, addMs(start, state.rangeMs)];
+
+                // EN: "October 1, 2025"
+                const fmtEnLong = d =>
+                    d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+
+                // рамки суток (по ширине dayW)
+                starts.forEach(() => {
+                    const box = document.createElement('div');
+                    box.className = 'tl-daybox';
+                    box.style.width = `${dayW - 2}px`; // -2, чтобы бордер попадал в сетку
+                    daybar.appendChild(box);
+                });
+
+                // подписи (липнем в positionDayTags)
+                starts.forEach(d => {
+                    const t = document.createElement('div');
+                    t.className = 'tl-daytag';
+                    t.textContent = fmtEnLong(d);
+                    daybar.appendChild(t);
+                });
+
+                // сразу выставить позиции
+                positionDayTags();
+            } else {
+                daybar.innerHTML = '';
+            }
+
+            // строки сетки
+            elBody.innerHTML = '';
+            resources.forEach((r, ri) => {
+                const row = document.createElement('div');   // ← создать строку
+                row.className = 'tl-row';
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const colsForRow = (state.view === 'day') ? state.colCount * 3 : state.colCount;
+                for (let i = 0; i < colsForRow; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'tl-cell';
+                    row.appendChild(cell);
+                }
+
+                // события в этой строке — окно [start3, end3)
+                // const rowEvents = events.filter(ev => ev.type === r && ev.end > start3 && ev.start < end3);
+
+                // события в этой строке уже отобраны по окну и сгруппированы
+                const rowEvents = byType.get(r) || [];
+
+
+                rowEvents.forEach((ev) => {
+                    const a = clamp(ev.start, start3, end3);
+                    const b = clamp(ev.end, start3, end3);
+                    const leftPx = ((a - start3) / state.colMs) * colW;
+                    const width = Math.max(8, ((b - a) / state.colMs) * colW);
+
+                    const badge = document.createElement('div');
+                    badge.className = `tl-event type-${ri % 4}`;
+                    badge.style.left = `${leftPx}px`;
+                    badge.style.width = `${width}px`;
+
+                    // ↓ оставь твой текущий HTML с липким заголовком и попапом сегментов
+                    const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
+                    const segHtml = hasSegs ? `
+      <button class="pp-seg-btn" type="button" aria-label="Segments">▾</button>
+      <div class="pp-seg-pop" hidden>
+        ${ev.segments.map(s => {
+                        const exts = (ev.externalsBySegment && ev.externalsBySegment[s]) ? ev.externalsBySegment[s] : [];
+                        return `<div class="seg"><code>${s}</code>${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''}</div>`;
+                    }).join('')}
+      </div>` : '';
+
+                    badge.innerHTML = `<span class="txt">${escapeHtml(ev.title || '')}</span>${segHtml}`;
+                    row.appendChild(badge);
+
+                    if (hasSegs) {
+                        const btn = badge.querySelector('.pp-seg-btn');
+                        const pop = badge.querySelector('.pp-seg-pop');
+                        btn?.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const hidden = pop.hasAttribute('hidden');
+                            if (hidden) pop.removeAttribute('hidden'); else pop.setAttribute('hidden', '');
+                        });
+                    }
+                });
+
+
+                elBody.appendChild(row);
+            });
+
+            // индикатор «сейчас» (day/week) на тройном окне
+            const oldNow = elBody.querySelector('.tl-now');
+            if (oldNow) oldNow.remove();
+            const now = new Date();
+            if (state.view !== 'month' && now >= start3 && now <= end3) {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const x = ((now - start3) / state.colMs) * colW;
+                const nowEl = document.createElement('div');
+                nowEl.className = 'tl-now';
+                nowEl.style.left = `${x}px`;
+                elBody.appendChild(nowEl);
+            }
+
+            elRes.style.height = 'auto';
+            elRes.style.transform = '';
+
+            // [ANCHOR TL-HEADER-WIDTH:SYNC] — шапку делаем ровно ширине фактического полотна
+            elHeader.style.width = elBody.scrollWidth + 'px';
+
+            // окно слева той же высоты, что видимое полотно
+            elRes.style.height = `${elBody.clientHeight}px`;
+
+            // смещаем содержимое списка на тот же scrollTop полотна
+            //elRes.style.transform = `translateY(${-elBody.scrollTop}px)`;
+
+            const dpr = window.devicePixelRatio || 1;
+            const y0 = Math.round(elBody.scrollTop * dpr) / dpr;
+            elRes.style.transform = `translate3d(0, ${-y0}px, 0)`;
+
+            // [ANCHOR TL-GRID-OFFSET:RENDER]
+            updateGridOffset();
+        }
+
+        // первичная настройка
+        setView(state.view);
+        render();
+        positionDayTags(); // чтобы подпись встала корректно сразу после первого render()
+        updateGridOffset();
+
+
+        // [ANCHOR TL-CENTER-DAY] — стартуем из центральной трети, чтобы можно было крутить в обе стороны
+        if (!state._centeredOnce && state.view === 'day') {
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            elBody.scrollLeft = state.colCount * colW; // начало «средней» трети (сегодня)
+            state._centeredOnce = true;
+        }
+
+        // подстроить высоту левой колонки под высоту тела при ресайзе
+        window.addEventListener('resize', () => {
+            elRes.style.height = `${elBody.clientHeight}px`;
+        });
+
+        // [ANCHOR TL-NOW-TICK] — поддержка «сейчас» без полного ререндера
+        (function wireNowTick() {
+            let raf = 0;
+            function updateNow() {
+                const now = new Date();
+                const start = state.anchor;
+                const end = addMs(start, state.rangeMs);
+
+                // есть ли «now»-полоса?
+                let nowEl = elBody.querySelector('.tl-now');
+                if (!(now >= start && now <= end) || state.view === 'month') {
+                    if (nowEl) nowEl.remove();
+                    return;
+                }
+                if (!nowEl) {
+                    nowEl = document.createElement('div');
+                    nowEl.className = 'tl-now';
+                    elBody.appendChild(nowEl);
+                }
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const x = ((now - start) / state.colMs) * colW;
+                nowEl.style.left = `${x}px`;
+            }
+
+            // первичная установка и далее — раз в минуту
+            updateNow();
+            setInterval(() => {
+                if (raf) cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(updateNow);
+            }, 60 * 1000);
+        })();
+
+
+        function updateGridOffset() {
+            // Сетка привязана к контенту, смещений относительно вьюпорта больше нет
+            (elGrid || elBody).style.setProperty('--tl-grid-off', '0px');
+        }
+
+        // // [ANCHOR TL-HEADER-SYNC] — шапка двигается вместе с горизонтальным скроллом тела
+        // elBody.addEventListener('scroll', () => {
+        //     elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+        //     elRes.style.transform = `translateY(${-elBody.scrollTop}px)`;  // ← плавный сдвиг без «ступенек»
+        //     positionDayTags();
+        //     updateGridOffset();
+        // }, { passive: true });
+
+        // [ANCHOR TL-HEADER-SYNC]
+        elBody.addEventListener('scroll', () => {
+            elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+            const dpr = window.devicePixelRatio || 1;
+            const y = Math.round(elBody.scrollTop * dpr) / dpr;   // снап к физ. пикселям
+            elRes.style.transform = `translate3d(0, ${-y}px, 0)`; // GPU-композитинг
+            positionDayTags();
+            updateGridOffset();
+        }, { passive: true });
+
+        /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
+        elBody.addEventListener('scroll', () => {
+            // шапка и левая колонка уже синхронизируются выше ([ANCHOR TL-HEADER-SYNC])
+            if (state.view !== 'day') return; // «шов» требуется только в режиме суток
+
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            const rangeW = state.colCount * colW; // ширина одного дня, px
+            const x = elBody.scrollLeft;
+
+            // Ушли слишком влево: сдвигаем якорь на -1 день и переносим скролл вправо на ширину дня
+            if (x < rangeW * 0.25) {
+                const keepY = elBody.scrollTop;
+                state.anchor = addMs(state.anchor, -state.rangeMs);
+                render();
+                updateGridOffset();
+                elBody.scrollLeft = x + rangeW;
+                elBody.scrollTop = keepY;
+                return;
+            }
+
+            // Ушли слишком вправо: сдвигаем якорь на +1 день и переносим скролл влево на ширину дня
+            if (x > rangeW * 1.75) {
+                const keepY = elBody.scrollTop;
+                state.anchor = addMs(state.anchor, state.rangeMs);
+                render();
+                updateGridOffset();
+                elBody.scrollLeft = x - rangeW;
+                elBody.scrollTop = keepY;
+            }
+        }, { passive: true });
+
+
+
+
+        // утилиты
+        function addMs(d, ms) { return new Date(d.getTime() + ms); }
+        function clamp(d, min, max) { return (d < min) ? min : (d > max) ? max : d; }
+        function startOfDayUTC(d) { const x = new Date(d); x.setUTCHours(0, 0, 0, 0); return x; }
+        function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+
+        function formatTitle(d, view) {
+            if (view === 'day')
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            if (view === 'week') {
+                const e = addMs(d, 6 * 24 * 3600_000);
+                return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ` +
+                    `${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            }
+            if (view === 'month')
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+            return '';
+        }
+
+
+        // позиция заголовков дня: центр пока вписывается в границы дня
+        function positionDayTags() {
+            const daybar = elHeader.querySelector('.tl-daybar');
+            if (!daybar || state.view !== 'day') return;
+
+            // ширина колонки и суток
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            const dayW = state.colCount * colW;
+
+            // видимая ширина календаря и текущий скролл
+            const viewW = elBody.clientWidth;
+            const scrollX = elBody.scrollLeft;
+
+            // три непрерывных дня, которые мы отрисовываем в шапке (координаты КОНТЕНТА!)
+            const blocksLeft = [0, dayW, 2 * dayW];
+
+            const EDGE = 6; // небольшой внутренний отступ от рамки
+
+            const boxes = Array.from(daybar.querySelectorAll('.tl-daybox'));
+            const tags = Array.from(daybar.querySelectorAll('.tl-daytag'));
+
+            // рамки «пришиваем» к своим суткам — координаты контента, НИЧЕГО не вычитаем
+            boxes.forEach((box, i) => {
+                const L = blocksLeft[i];
+                box.style.left = `${L + 1}px`;       // +1, чтобы бордер лег внутрь
+                box.style.width = `${dayW - 2}px`;
+            });
+
+            // подпись дня: «впереди слева → залипла по центру экрана → прибита к правому краю своего дня»
+            tags.forEach((tag, i) => {
+                const tagW = tag.offsetWidth || 0;
+
+                // границы СВОЕГО дня (контент)
+                const L = blocksLeft[i];
+                const R = L + dayW;
+
+                // желаемый X в координатах КОНТЕНТА, чтобы визуально стоять в центре экрана
+                // (учитываем, что вся шапка сдвинута на -scrollX transform-ом)
+                const desiredCenterContent = scrollX + (viewW - tagW) / 2;
+
+                // клэмпим по своему блоку + внутренний отступ
+                const x = Math.max(L + EDGE, Math.min(R - tagW - EDGE, desiredCenterContent));
+                tag.style.left = `${x}px`;
+            });
+        }
+
+
+    }
+    // =================== [/TIMELINE] ===================
+
 
     // навесить обработчики формы
     function wireUI() {

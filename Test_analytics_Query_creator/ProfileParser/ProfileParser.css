@@ -1890,3 +1890,903 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
 .pp-item.collapsed .pp-body {
     display: none;
 }
+
+/* ===== LiveOps Calendar (скролл над таблицей) ===== */
+.pp-cal {
+    margin: 8px 0 16px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+}
+
+.pp-cal-toolbar {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pp-cal-range {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.pp-chip {
+    border: 1px solid var(--border);
+    background: var(--surface, var(--card));
+    color: var(--text);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.pp-chip.selected {
+    background: var(--accent, #6B4EFF);
+    color: #fff;
+    border-color: transparent;
+}
+
+.pp-cal-nav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pp-cal-window {
+    font-weight: 700;
+    min-width: 220px;
+    text-align: center;
+}
+
+.pp-cal-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+}
+
+.pp-cal-side {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--card);
+    max-height: 260px;
+    overflow: auto;
+}
+
+.pp-cal-side-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    user-select: none;
+}
+
+.pp-cal-side-row .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.pp-cal-side-row .lbl {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pp-cal-main {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    overflow: auto;
+
+    --pp-scale-h: 40px;
+    padding-top: var(--pp-scale-h);
+    /* одна шкала сверху */
+    padding-bottom: var(--pp-scale-h);
+    /* и одна снизу */
+}
+
+
+
+.pp-cal-scale {
+    position: sticky;
+    z-index: 1;
+    display: grid;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+/* верхняя шкала явно привязана к верху */
+.pp-cal-scale.top {
+    top: 0;
+}
+
+/* нижняя шкала — к низу, и убираем top на всякий случай */
+.pp-cal-scale.bottom {
+    bottom: 0;
+    top: auto;
+}
+
+
+/* шкала с подписями поверх полотна */
+.pp-cal-scale {
+    position: sticky;
+    z-index: 2;
+    min-height: 40px;
+    /* место под 2 строки */
+    align-items: start;
+    /* текст прижат к верху */
+    display: grid;
+    background: var(--card);
+}
+
+.pp-cal-scale.top {
+    top: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.pp-cal-scale.bottom {
+    bottom: 0;
+    border-top: 1px solid var(--border);
+}
+
+.pp-cal-tick {
+    padding: 6px 8px;
+    font-size: 12px;
+    color: var(--muted, #8a8f98);
+}
+
+.pp-cal-tick {
+    padding: 4px 6px;
+    font-size: 12px;
+    line-height: 1.15;
+    white-space: pre-line;
+    /* уважает \n и даёт перенос по пробелам */
+    overflow: visible;
+    /* не обрезаем текст */
+    text-overflow: clip;
+    /* без многоточий */
+    min-width: 1px;
+}
+
+.pp-cal-rows {
+    position: relative;
+    contain: layout paint;
+    /* меньше грязных инвалидаций при зуме */
+}
+
+
+.pp-cal-row {
+    position: relative;
+    min-height: 40px;
+    border-bottom: 1px dashed var(--border);
+    content-visibility: auto;
+    /* отрисовывать только видимые */
+    contain-intrinsic-size: 40px 1200px;
+    /* резерв высоты/ширины для расчетов */
+}
+
+.pp-cal-bar {
+    --lane: 0;
+    position: absolute;
+    left: 0;
+    top: calc(6px + var(--lane)*22px);
+    height: 20px;
+    border-radius: 6px;
+    color: #fff;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+    opacity: .95;
+}
+
+.pp-cal-bar .txt {
+    position: sticky;
+    left: 0;
+    padding: 0 6px;
+    max-width: calc(100% - 8px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 20px;
+    /* лёгкий градиент, чтобы текст красиво исчезал вправо */
+    -webkit-mask-image: linear-gradient(to right, black 70%, transparent);
+    mask-image: linear-gradient(to right, black 70%, transparent);
+}
+
+
+.pp-cal-bar.muted {
+    opacity: .25;
+    filter: grayscale(.2);
+}
+
+body.theme-dark .pp-cal-tick {
+    color: #aeb4bf;
+}
+
+/* === Calendar: дневная сетка, выравнивание левых рядов, оверлэпы === */
+
+/* высота ряда слева = высоте ряда таймлайна */
+.pp-cal-side-row {
+    min-height: 40px;
+    /* совпадает с .pp-cal-row:min-height */
+    align-items: center;
+    border-bottom: 1px dashed var(--border);
+}
+
+/* сетка дней — рисуем вертикальные линии фоном поверх rows */
+.pp-cal-rows {
+    --pp-dayw: 80px;
+    /* выставляется из JS динамически */
+    position: relative;
+}
+
+/* растягиваем сетку на всю высоту полотна */
+.pp-cal-main {
+    position: relative;
+}
+
+/* <— добавь эту строку прямо в блок .pp-cal-main */
+
+.pp-cal-main::after {
+    content: "";
+    position: absolute;
+    /* было sticky */
+    left: 0;
+    right: 0;
+    top: var(--pp-scale-h);
+    bottom: var(--pp-scale-h);
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(to right,
+            transparent 0,
+            transparent calc(var(--pp-dayw) - 1px),
+            rgba(0, 0, 0, .12) calc(var(--pp-dayw) - 1px),
+            rgba(0, 0, 0, .12) var(--pp-dayw));
+    background-position-x: var(--pp-grid-off, 0px);
+    z-index: 1;
+}
+
+
+.theme-dark .pp-cal-main::after,
+:root.theme-dark .pp-cal-main::after,
+.dark .pp-cal-main::after {
+    background-image:
+        repeating-linear-gradient(to right,
+            transparent 0,
+            transparent calc(var(--pp-dayw) - 1px),
+            rgba(255, 255, 255, .13) calc(var(--pp-dayw) - 1px),
+            rgba(255, 255, 255, .13) var(--pp-dayw));
+}
+
+/* сами бары — одна линия (lane=0), а перекрытия показываем отдельными сегментами */
+.pp-cal-bar {
+    z-index: 1;
+}
+
+/* базовый бар */
+.pp-cal-overlap {
+    position: absolute;
+    left: 0;
+    top: calc(6px + 0*22px);
+    /* тот же Y, что у .pp-cal-bar при --lane:0 */
+    height: 20px;
+    border-radius: 6px;
+    z-index: 2;
+    /* выше баров */
+    mix-blend-mode: multiply;
+    background:
+        repeating-linear-gradient(45deg,
+            rgba(0, 0, 0, .12) 0px,
+            rgba(0, 0, 0, .12) 6px,
+            transparent 6px,
+            transparent 12px);
+}
+
+.theme-dark .pp-cal-overlap,
+:root.theme-dark .pp-cal-overlap,
+.dark .pp-cal-overlap {
+    background:
+        repeating-linear-gradient(45deg,
+            rgba(255, 255, 255, .20) 0px,
+            rgba(255, 255, 255, .20) 6px,
+            transparent 6px,
+            transparent 12px);
+}
+
+/* ширина «полотна» совпадает у шкалы и строк, чтобы появился горизонтальный скролл */
+.pp-cal-rows {
+    width: var(--pp-canvas-w, auto);
+}
+
+.pp-cal-scale {
+    will-change: transform;
+}
+
+/* чтобы колесо/свайп не прокручивали всю страницу, когда курсор над календарём */
+.pp-cal-main {
+    overscroll-behavior-x: contain;
+    /* горизонталь удерживаем внутри календаря */
+    overscroll-behavior-y: auto;
+    /* вертикаль отдаём странице */
+    cursor: grab;
+}
+
+.pp-cal-main:active {
+    cursor: grabbing;
+}
+
+/* Jump to… panel */
+.pp-jump-wrap {
+    position: relative;
+}
+
+.pp-jump-panel {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+    z-index: 10;
+    min-width: 320px;
+}
+
+.pp-jump-panel .pp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pp-jump-panel label {
+    font-size: 12px;
+    color: var(--muted, #8a8f98);
+}
+
+.pp-jump-panel .pp-input {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: var(--surface, var(--card));
+    color: var(--text);
+}
+
+.pp-jump-panel .pp-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.pp-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface, var(--card));
+    cursor: pointer;
+}
+
+.pp-btn.ghost {
+    background: transparent;
+}
+
+.pp-note {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    color: var(--muted, #8a8f98);
+    text-align: right;
+}
+
+#pp-root .pp-cal-window {
+    display: none !important;
+}
+
+/* внутри Jump-панели делаем выпадающий пикер относительным к полю */
+#pp-root .pp-jump-panel .pp-field {
+    position: relative;
+}
+
+#pp-root #ppDtPicker {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    min-width: 280px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .18);
+    z-index: 20;
+}
+
+/* Jump/Date pickers: строго скрывать по [hidden] */
+#pp-root .pp-jump-panel[hidden],
+#pp-root #ppDtPicker[hidden] {
+    display: none !important;
+}
+
+.pp-cal-scale {
+    will-change: transform;
+}
+
+/* второй ряд шкалы тоже «липкий» сверху, под первым */
+.pp-cal-scale.top.second {
+    top: var(--pp-scale-h);
+    /* сразу под верхней шкалой */
+    border-bottom: 1px solid var(--border);
+}
+
+/* [SEGMENTS POPUP] — кнопка и попап внутри бара */
+.pp-cal-bar {
+    position: absolute;
+    overflow: visible;
+}
+
+/* уже есть, но фиксируем зависимость */
+.pp-seg-btn {
+    margin-left: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    color: #fff;
+    opacity: .9;
+}
+
+.pp-seg-btn:hover {
+    opacity: 1;
+}
+
+.pp-seg-pop {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
+    min-width: 220px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--card, #111827);
+    color: var(--text, #e5e7eb);
+    border: 1px solid var(--border, #334155);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    z-index: 10;
+}
+
+.pp-seg-pop .seg {
+    font-weight: 600;
+    margin: 6px 0 2px;
+}
+
+.pp-seg-pop .ext {
+    margin: 2px 0 6px 14px;
+    opacity: .9;
+}
+
+/* [SEGMENTS in INFO panel] */
+.pp-seg-list {
+    margin-top: 6px;
+}
+
+.pp-seg-list .seg-item {
+    margin: 6px 0;
+}
+
+.pp-seg-ext {
+    margin: 6px 0 0 14px;
+    opacity: .9;
+}
+
+.pp-link.small {
+    font-size: 12px;
+}
+
+/* ===================== [TIMELINE] Pure CSS ===================== */
+#ppCal {
+    --tl-row-h: 44px;
+    --tl-col-w: 80px;
+    --tl-border: #e5e7eb;
+    --tl-accent: #111827;
+    --tl-muted: #6b7280;
+    --tl-daybar-h: 28px;
+    --tl-visible-rows: 13;
+}
+
+#ppCal .tl-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 8px;
+}
+
+#ppCal .tl-left {
+    display: flex;
+    gap: 6px
+}
+
+#ppCal .tl-right {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end
+}
+
+#ppCal .tl-title {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center
+}
+
+#ppCal .tl-btn {
+    padding: 6px 10px;
+    border: 1px solid var(--tl-border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer
+}
+
+#ppCal .tl-btn:active {
+    transform: translateY(1px)
+}
+
+#ppCal .tl-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border-top: 1px solid var(--tl-border);
+}
+
+#ppCal .tl-rescol {
+    border-right: 1px solid var(--tl-border);
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    /* ← прячем «хвост» списка за окном */
+    contain: paint;
+    z-index: 0;
+}
+
+/* [ANCHOR TL-RES-HEADER] — заголовок слева той же высоты, что daybar+часы */
+#ppCal .tl-res-header {
+    height: calc(var(--tl-daybar-h) + 40px);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--tl-border);
+    box-sizing: border-box;
+
+    /* фиксируем и поднимаем над списком */
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #fff;
+}
+
+#ppCal .tl-res-list {
+    display: block
+}
+
+/* [FIX TL-RES-CLIP] — левая колонка не «просвечивает» за пределами календаря */
+#ppCal .tl-rescol {
+    position: relative;
+    overflow: hidden;
+    /* важен clip внутри самого календаря */
+}
+
+/* [FIX TL-RES-PERF] — плавный сдвиг трансформом, без артефактов */
+#ppCal .tl-res-list {
+    will-change: transform;
+    transform: translateZ(0);
+    /* выделяем композитный слой */
+}
+
+/* [ANCHOR TL-RES-ITEM] — высота как у строки сетки + тот же разделитель */
+#ppCal .tl-res-item {
+    height: var(--tl-row-h);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 0;
+    /* убираем бордер */
+    box-shadow: inset 0 -1px var(--tl-border);
+    /* как у .tl-row в полотне */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+}
+
+#ppCal .tl-grid {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+#ppCal .tl-grid-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+    border-bottom: 1px solid var(--tl-border);
+    white-space: nowrap;
+    overflow: hidden;
+    padding-top: var(--tl-daybar-h);
+    /* ⟵ место под строку дня */
+}
+
+.tl-grid-header {
+    position: relative;
+}
+
+/* [ANCHOR TL-HEADER-COLS] — шапка без бордеров, вертикали — тем же тайлом и смещением */
+#ppCal .tl-grid-header .tl-col {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: var(--tl-col-w);
+    font-size: 12px;
+    color: var(--tl-muted);
+    border-right: 0;
+    /* ← убрали бордеры */
+
+    /* рисуем ту же вертикальную сетку поверх шапки (для непрерывности) */
+    background-image: linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px);
+    background-size: var(--tl-col-w) 100%;
+    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0;
+    background-repeat: repeat;
+}
+
+
+#ppCal .tl-grid-body {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(var(--tl-row-h) * 13);
+}
+
+
+
+
+/* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
+#ppCal .tl-grid-body .tl-row {
+    position: relative;
+    height: var(--tl-row-h);
+    box-shadow: inset 0 -1px var(--tl-border);
+    /* горизонталь */
+    background: transparent !important;
+    background-position: 0 0 !important;
+    background-attachment: local !important;
+    background-repeat: repeat;
+}
+
+
+/* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка: чёткие 1px линии, без пропусков */
+#ppCal .tl-grid-body {
+    background-image:
+        linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px),
+        linear-gradient(to bottom, var(--tl-border) 0 1px, transparent 1px);
+
+    background-size: var(--tl-col-w) 100%, 100% var(--tl-row-h);
+    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0, 0 0;
+
+    background-repeat: repeat, repeat;
+    background-attachment: local;
+    background-origin: content-box;
+    will-change: background-position;
+}
+
+
+/* линии рисуем НЕ бордером ячеек, чтобы не было двойных линий и обрывов */
+#ppCal .tl-grid-body .tl-cell {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    width: var(--tl-col-w);
+    border-right: 0 !important;
+    box-sizing: border-box;
+}
+
+
+/* [ANCHOR TL-CSS-WIDTH] — ширина не ограничивается, иначе обрывается сетка */
+#ppCal .tl-grid-header,
+#ppCal .tl-grid-body {
+    max-width: none !important;
+
+}
+
+/* строка дня поверх часов */
+#ppCal .tl-daybar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--tl-daybar-h);
+    pointer-events: none;
+    z-index: 3;
+}
+
+#ppCal .tl-daytag {
+    position: absolute;
+    top: 0;
+    line-height: var(--tl-daybar-h);
+    font-weight: 700;
+    padding: 0 8px;
+    white-space: nowrap;
+}
+
+
+#ppCal .tl-event {
+    position: absolute;
+    top: 6px;
+    height: calc(var(--tl-row-h) - 12px);
+    border-radius: 6px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+#ppCal .tl-event.type-0 {
+    background: #3b82f6
+}
+
+#ppCal .tl-event.type-1 {
+    background: #ef4444
+}
+
+#ppCal .tl-event.type-2 {
+    background: #22c55e
+}
+
+#ppCal .tl-event.type-3 {
+    background: #f59e0b
+}
+
+#ppCal .tl-now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #ef4444;
+    opacity: .8;
+    pointer-events: none
+}
+
+@media (max-width:900px) {
+    #ppCal {
+        --tl-col-w: 64px;
+    }
+
+    #ppCal .tl-wrap {
+        grid-template-columns: 200px 1fr
+    }
+}
+
+/* горизонтальный скролл только у таймлинии; вертикаль отдаём странице */
+#ppCal .tl-grid-body::-webkit-scrollbar {
+    height: 10px
+}
+
+#ppCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px
+}
+
+/* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
+#ppCal .tl-event .txt {
+    position: sticky;
+    left: 0;
+    padding: 0 6px 0 8px;
+    max-width: calc(100% - 8px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: inherit;
+    -webkit-mask-image: linear-gradient(to right, black 70%, transparent);
+    mask-image: linear-gradient(to right, black 70%, transparent);
+}
+
+/* «сейчас» по UTC */
+.pp-cal-now {
+    position: absolute;
+    top: var(--pp-scale-h);
+    bottom: var(--pp-scale-h);
+    width: 2px;
+    background: #ef4444;
+    opacity: .95;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* === [TIMELINE] Day box inside header === */
+#ppCal .tl-daybar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--tl-daybar-h);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.tl-daybar {
+    position: absolute;
+    /* поверх ячеек часов */
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 28px;
+    /* как высота часовой строки */
+    pointer-events: none;
+    /* не мешаем взаимодействию с событиями */
+    z-index: 2;
+}
+
+#ppCal .tl-daybox {
+    position: absolute;
+    top: 4px;
+    height: calc(var(--tl-daybar-h) - 8px);
+    border: 1px solid var(--tl-border);
+    border-radius: 8px;
+    background: #fff;
+    /* чтоб часы под ним слегка отделялись */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .02);
+}
+
+.tl-daybox {
+    position: absolute;
+    top: 3px;
+    height: 22px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    background: #fff;
+    /* подложка, чтобы текст читался */
+}
+
+:root.theme-dark #ppCal .tl-daybox,
+.theme-dark #ppCal .tl-daybox,
+[data-theme="dark"] #ppCal .tl-daybox,
+.dark #ppCal .tl-daybox {
+    background: #0f172a;
+    border-color: var(--tl-border);
+}
+
+#ppCal .tl-daytag {
+    position: absolute;
+    top: 0;
+    line-height: var(--tl-daybar-h);
+    font-weight: 700;
+    padding: 0 8px;
+    white-space: nowrap;
+}
+
+.tl-daytag {
+    position: absolute;
+    top: 4px;
+    padding: 0 8px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    /* не перехватываем клики */
+}
+
+
+/* =================== [/TIMELINE] =================== */

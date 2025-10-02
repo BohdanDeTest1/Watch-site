@@ -145,6 +145,26 @@
         el('#ppResults')?.appendChild(wrap);
     }
 
+    // Делает секцию сворачиваемой (по умолчанию — свернута)
+    function wireCollapser(wrap) {
+        const btn = wrap.querySelector('.pp-collapser');
+        const body = wrap.querySelector('.pp-body');
+        const chev = btn?.querySelector('.chev');
+
+        function setCollapsed(flag) {
+            wrap.classList.toggle('collapsed', flag);
+            if (body) body.hidden = flag;
+            if (chev) chev.textContent = flag ? '▾' : '▴';
+        }
+        setCollapsed(true); // дефолт: закрыто
+
+        btn?.addEventListener('click', () => setCollapsed(!wrap.classList.contains('collapsed')));
+        btn?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+        });
+    }
+
+
     // --- LiveOps helpers ---
     // seconds/ms → "YYYY-MM-DD HH:mm:ss UTC"
     function formatUnix(unixLike) {

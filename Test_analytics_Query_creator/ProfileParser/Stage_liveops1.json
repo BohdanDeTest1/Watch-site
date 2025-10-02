@@ -1,0 +1,1796 @@
+{
+    "liveops": [
+        {
+            "unit": "FlameCards_Derba_05_2025-09-20_17:47",
+            "type": "FlameCards",
+            "conditionIds": [
+                "FlameCards"
+            ],
+            "name": "FlameCards_Derba_05",
+            "isFtue": false,
+            "startDate": 1758390420000,
+            "endDate": 1759513620000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.961"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "FlameCards_Derba_05_2025-09-20_17:47_0",
+            "theme": {
+                "id": "OTPParadiseFlameCardsVadym"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "pause",
+            "configurationName": "uriy_flame_card_combo_1",
+            "albumId": "uriy_flame_card_combo_1",
+            "multipliersConfiguration": "multipliers|uriy_flame_multiplier"
+        },
+        {
+            "unit": "FlameCards_Derba_04_2025-09-19_17:46",
+            "type": "FlameCards",
+            "conditionIds": [
+                "FlameCards"
+            ],
+            "name": "FlameCards_Derba_04",
+            "isFtue": false,
+            "startDate": 1758303960000,
+            "endDate": 1759427160000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.961"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "FlameCards_Derba_04_2025-09-19_17:46_0",
+            "theme": {
+                "id": "OTPParadiseFlameCardsVadym"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": true,
+            "eventState": "freeze",
+            "configurationName": "uriy_flame_card_combo_1",
+            "albumId": "uriy_flame_card_combo_1",
+            "multipliersConfiguration": "multipliers|uriy_flame_multiplier"
+        },
+        {
+            "unit": "FlameCards_Derba_02_2025-09-17_17:44",
+            "type": "FlameCards",
+            "conditionIds": [
+                "FlameCards"
+            ],
+            "name": "FlameCards_Derba_02",
+            "isFtue": false,
+            "startDate": 1758131040000,
+            "endDate": 1759254240000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.961"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "FlameCards_Derba_02_2025-09-17_17:44_0",
+            "theme": {
+                "id": "OTPParadiseFlameCardsVadym"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on",
+            "configurationName": "uriy_flame_card_combo_1",
+            "albumId": "uriy_flame_card_combo_1",
+            "multipliersConfiguration": "multipliers|uriy_flame_multiplier"
+        },
+        {
+            "unit": "FlameCards_Derba_01_2025-04-04_12:00",
+            "type": "FlameCards",
+            "conditionIds": [
+                "FlameCards"
+            ],
+            "name": "FlameCards_Derba_01",
+            "isFtue": false,
+            "startDate": 1743768000000,
+            "endDate": 1746005100000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.961"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "FlameCards_Derba_01_2025-04-04_12:00_0",
+            "theme": {
+                "id": "OTPParadiseFlameCardsVadym"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on",
+            "configurationName": "uriy_flame_card_combo_1",
+            "albumId": "uriy_flame_card_combo_1",
+            "multipliersConfiguration": "multipliers|uriy_flame_multiplier"
+        },
+        {
+            "unit": "SeasonalCards_FC_Derba_01_2025-03-05_15:23",
+            "type": "SeasonalCards",
+            "conditionIds": [
+                "SeasonalCards"
+            ],
+            "name": "SeasonalCards_FC_Derba_01",
+            "isFtue": false,
+            "startDate": 1741188180000,
+            "endDate": 1741447380000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 12,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 12
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "SeasonalCards"
+                }
+            ],
+            "liveopsEffects": {
+                "endEvent": [
+                    {
+                        "effect": "endEvent",
+                        "conditions": {
+                            "eventActedOnConditions": {},
+                            "eventAffectedConditions": {
+                                "eventStatuses": [
+                                    "COMPENSATION_PERIOD",
+                                    "ACTIVE"
+                                ],
+                                "eventType": "GenericToken",
+                                "category": "SeasonalCards"
+                            }
+                        }
+                    }
+                ]
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1741188180000,
+                "endDate": 1741447380000,
+                "assetKeysNames": [
+                    "starsToken"
+                ]
+            },
+            "id": "SeasonalCards_FC_Derba_01_2025-03-05_15:23_0",
+            "theme": {
+                "configuration_id": "OTPParadiseDreamsTheme",
+                "id": "OTPParadiseDreamsTheme",
+                "clientAssets": [
+                    {
+                        "name": "CardsSeasonAssets",
+                        "android": "/resources/traveltown/1.0_master/cardsThemesAssets_bundlesAssets/1701685876208_album_summer_popups_20231204.and",
+                        "ios": "/resources/traveltown/1.0_master/cardsThemesAssets_bundlesAssets/1701685876208_album_summer_popups_20231204.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1741188180000,
+            "endDate": 1741447380000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 12,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 12
+                    }
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "SeasonalCards",
+            "tokenName": "starsToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_SeasonalCards_FC_Derba_01",
+            "unit": "generic_token_SeasonalCards_FC_Derba_01_2025-03-05_15:23",
+            "category": "SeasonalCards",
+            "multipleEventUnit": "SeasonalCards",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_SeasonalCards_FC_Derba_01_2025-03-05_15:23_0",
+            "eventIdGeneratedTokenEvent": "SeasonalCards_FC_Derba_01_2025-03-05_15:23_0",
+            "theme": {
+                "id": "OTPParadiseDreamsTheme"
+            }
+        },
+        {
+            "unit": "OTPPartnersLiveop_2025-02-05_11:43",
+            "type": "Partners",
+            "conditionIds": [
+                "Partners"
+            ],
+            "name": "OTPPartnersLiveop",
+            "isFtue": false,
+            "startDate": 1738755780000,
+            "endDate": 1803210180000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 4,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 4
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "Partners"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1738755780000,
+                "endDate": 1803210180000,
+                "assetKeysNames": [
+                    "partnersToken"
+                ]
+            },
+            "id": "OTPPartnersLiveop_2025-02-05_11:43_0",
+            "theme": {
+                "configuration_name": "OTPPartnersThemeNoEC",
+                "id": "OTPPartnersThemeNoEC",
+                "numberOfObjects": 4,
+                "supportEventCenter": "false",
+                "clientAssets": [
+                    {
+                        "name": "PartnersEventAssets",
+                        "android": "/resources/traveltown/1.0_master/partnersAssets_bundlesAssets/1746702761802_partners_theme.and",
+                        "ios": "/resources/traveltown/1.0_master/partnersAssets_bundlesAssets/1746702761802_partners_theme.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1738755780000,
+            "endDate": 1803210180000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 4,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 4
+                    }
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "Partners",
+            "tokenName": "partnersToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_OTPPartnersLiveop",
+            "unit": "generic_token_OTPPartnersLiveop_2025-02-05_11:43",
+            "category": "Partners",
+            "multipleEventUnit": "Partners",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_OTPPartnersLiveop_2025-02-05_11:43_0",
+            "eventIdGeneratedTokenEvent": "OTPPartnersLiveop_2025-02-05_11:43_0",
+            "theme": {
+                "id": "OTPPartnersThemeNoEC"
+            }
+        },
+        {
+            "unit": "BoardEvent_CBBE2E_11_2024-11-05_16:56",
+            "type": "BoardEventCombo",
+            "conditionIds": [
+                "BoardEventCombo"
+            ],
+            "name": "BoardEvent_CBBE2E_11",
+            "isFtue": false,
+            "startDate": 1730825760000,
+            "endDate": 1794070560000,
+            "teaserDurationSeconds": 0,
+            "originEventStartDate": 1730825760000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "displayCoreWidget": true,
+            "minimumTimeToNextActivation": 10,
+            "subEventIds": [
+                "BoardEvent_CBBE2E_11_2024-11-05_16:56_0_1"
+            ],
+            "subEventThemes": {
+                "BoardEvent_CBBE2E_11_2024-11-05_16:56_0_1": {
+                    "configuration_id": "OTPBoardEventTheme_incloudeXPRush",
+                    "id": "OTPBoardEventThemeXPRush",
+                    "type": "BoardEventCombo",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "BoardEventAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1702297557503_boardevent_takeoff_xprush_11_12_07h55m.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1702297557503_boardevent_takeoff_xprush_11_12_07h55m.ios"
+                        },
+                        {
+                            "name": "CartBadgeRed",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1725523565281_CartBadgeRed.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1725523565281_CartBadgeRed.ios"
+                        }
+                    ]
+                }
+            },
+            "id": "BoardEvent_CBBE2E_11_2024-11-05_16:56_0",
+            "theme": {
+                "id": "DerbaBoardEventTheme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "PickingCBBE2E_06_2024-11-01_20:10",
+            "type": "PickingGame",
+            "conditionIds": [
+                "PickingGame"
+            ],
+            "name": "PickingCBBE2E_06",
+            "isFtue": false,
+            "startDate": 1730491800000,
+            "endDate": 1762027800000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1730491800000,
+                "endDate": 1762027800000,
+                "assetKeysNames": [
+                    "picks"
+                ]
+            },
+            "subEventIds": [],
+            "pickingBarExists": false,
+            "id": "PickingCBBE2E_06_2024-11-01_20:10_0",
+            "theme": {
+                "id": "picking_new_theme_cards_boom"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "PickingCBBE2E_06_2024-11-01_20:10",
+            "type": "PickingGame",
+            "conditionIds": [
+                "PickingGame"
+            ],
+            "name": "PickingCBBE2E_06",
+            "isFtue": false,
+            "startDate": 1730491800000,
+            "endDate": 1762027800000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1730491800000,
+                "endDate": 1762027800000,
+                "assetKeysNames": [
+                    "picks"
+                ]
+            },
+            "subEventIds": [],
+            "pickingBarExists": false,
+            "id": "PickingCBBE2E_06_2024-11-01_20:10_1",
+            "theme": {
+                "id": "picking_new_theme_cards_boom"
+            },
+            "internalSegment": "payer",
+            "segment": "payer_payer",
+            "externalSegment": "payer",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "inviteFriendsOTP_2024-06-17_15:52",
+            "type": "InviteFriends",
+            "conditionIds": [
+                "InviteFriends"
+            ],
+            "name": "inviteFriendsOTP",
+            "isFtue": false,
+            "startDate": 1718639520000,
+            "endDate": 1781365920000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "inviteFriendsOTP_2024-06-17_15:52_0",
+            "theme": {
+                "configuration_id": "InviteFriendsThemeGuy",
+                "id": "InviteFriendsThemeGuy",
+                "type": "BoardEventCombo",
+                "supportEventCenter": "false",
+                "clientAssets": [
+                    {
+                        "name": "InviteFriendsAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1687691109230_friendinvite_liveops.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1687691109230_friendinvite_liveops.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "OTPRewardsMap_2024-06-17_12:27",
+            "type": "GAE",
+            "conditionIds": [
+                "GAE2"
+            ],
+            "name": "OTPRewardsMap",
+            "isFtue": false,
+            "startDate": 1718627220000,
+            "endDate": 1782476820000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "OTPRewardsMap_2024-06-17_12:27_0",
+            "theme": {
+                "id": "GAE_PhaseTwoTheme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": true,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "OTPSpecialChain_2024-01-10_14:51",
+            "type": "SpecialChain",
+            "conditionIds": [
+                "SpecialChain"
+            ],
+            "name": "OTPSpecialChain",
+            "isFtue": false,
+            "startDate": 1704898260000,
+            "endDate": 1736261460000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 12,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 12
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 6,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "subEventIds": [
+                "OTPSpecialChain_2024-01-10_14:51_0_OTPSpecialChain_1",
+                "OTPSpecialChain_2024-01-10_14:51_0_OTPSpecialChain_2"
+            ],
+            "subEventThemes": {
+                "OTPSpecialChain_2024-01-10_14:51_0_OTPSpecialChain_1": {
+                    "configuration_id": "OTPSpecialChainTheme",
+                    "id": "OTPSpecialChainTheme",
+                    "clientAssets": [
+                        {
+                            "name": "SpecialChainEventAssets",
+                            "android": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1698769775816_specialchain_halloween_taffysquest.and",
+                            "ios": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1732023345732_specialchain_halloween23_taffys_quest_bonus.ios"
+                        }
+                    ]
+                },
+                "OTPSpecialChain_2024-01-10_14:51_0_OTPSpecialChain_2": {
+                    "configuration_id": "OTPSpecialChainTheme",
+                    "id": "OTPSpecialChainTheme",
+                    "clientAssets": [
+                        {
+                            "name": "SpecialChainEventAssets",
+                            "android": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1698769775816_specialchain_halloween_taffysquest.and",
+                            "ios": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1732023345732_specialchain_halloween23_taffys_quest_bonus.ios"
+                        }
+                    ]
+                }
+            },
+            "id": "OTPSpecialChain_2024-01-10_14:51_0",
+            "theme": {
+                "id": "OTPSpecialChainTheme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "OTPVanityLiveop_2023-08-23_11:30",
+            "type": "VanityIsland",
+            "conditionIds": [
+                "VanityIsland"
+            ],
+            "name": "OTPVanityLiveop",
+            "isFtue": false,
+            "startDate": 1692790200000,
+            "endDate": 1783601400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 5,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 5
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1692790200000,
+                "endDate": 1783601400000,
+                "assetKeysNames": [
+                    "vanityIslandToken"
+                ]
+            },
+            "id": "OTPVanityLiveop_2023-08-23_11:30_0",
+            "theme": {
+                "configuration_id": "OTPVanityTheme",
+                "id": "OTPVanityTheme",
+                "clientAssets": [
+                    {
+                        "name": "vanityEventAssets",
+                        "android": "/resources/traveltown/1.0_master/vanityThemesAssets_bundlesAssets/1739776612279_vanity_pirates2025_9041_16-02-2025_19-58.and",
+                        "ios": "/resources/traveltown/1.0_master/vanityThemesAssets_bundlesAssets/1685530215819_vanity_pirates.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "OTPTopUp_2023-08-17_14:45",
+            "type": "TopUp",
+            "conditionIds": [
+                "TopUp"
+            ],
+            "name": "OTPTopUp",
+            "isFtue": false,
+            "startDate": 1692283500000,
+            "endDate": 1725115500000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 13,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 13
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "id": "OTPTopUp_2023-08-17_14:45_0",
+            "theme": {
+                "id": "liveops-events_arctic_new"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-09T17:56:00_0",
+            "unit": "test_new_bb_v3_2025-02-09T17:56:00",
+            "name": "test_new_bb_v3_2025-02-09T17:56:00",
+            "startDate": 1739123760000,
+            "endDate": 1740743760000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_base",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_base",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 222
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-09T17:56:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-19T13:51:00_0",
+            "unit": "test_new_bb_v3_2025-02-19T13:51:00",
+            "name": "test_new_bb_v3_2025-02-19T13:51:00",
+            "startDate": 1739973060000,
+            "endDate": 1740750660000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-19T13:51:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-19T13:51:00_1",
+            "unit": "test_new_bb_v3_2025-02-19T13:51:00",
+            "name": "test_new_bb_v3_2025-02-19T13:51:00",
+            "startDate": 1739973060000,
+            "endDate": 1740750660000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_high",
+            "externalSegment": "default",
+            "internalSegment": "board_event_high",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-19T13:51:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-12T12:58:00_0",
+            "unit": "test_new_bb_v3_2025-02-12T12:58:00",
+            "name": "test_new_bb_v3_2025-02-12T12:58:00",
+            "startDate": 1739365080000,
+            "endDate": 1740747480000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_target",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_target",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-12T12:58:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-12T12:58:00_1",
+            "unit": "test_new_bb_v3_2025-02-12T12:58:00",
+            "name": "test_new_bb_v3_2025-02-12T12:58:00",
+            "startDate": 1739365080000,
+            "endDate": 1740747480000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_high_target",
+            "externalSegment": "default",
+            "internalSegment": "board_event_high_target",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-12T12:58:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-12T12:58:00_2",
+            "unit": "test_new_bb_v3_2025-02-12T12:58:00",
+            "name": "test_new_bb_v3_2025-02-12T12:58:00",
+            "startDate": 1739365080000,
+            "endDate": 1740747480000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_high",
+            "externalSegment": "default",
+            "internalSegment": "board_event_high",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-12T12:58:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-02T17:43:00_0",
+            "unit": "test_new_bb_v3_2025-02-02T17:43:00",
+            "name": "test_new_bb_v3_2025-02-02T17:43:00",
+            "startDate": 1738518180000,
+            "endDate": 1741354980000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_target",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_target",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 33
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "3.33.333"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-02T17:43:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-02T17:43:00_1",
+            "unit": "test_new_bb_v3_2025-02-02T17:43:00",
+            "name": "test_new_bb_v3_2025-02-02T17:43:00",
+            "startDate": 1738518180000,
+            "endDate": 1741354980000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_base",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_base",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 33
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "3.33.333"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-02T17:43:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_new_bb_v3_2025-02-02T17:43:00_2",
+            "unit": "test_new_bb_v3_2025-02-02T17:43:00",
+            "name": "test_new_bb_v3_2025-02-02T17:43:00",
+            "startDate": 1738518180000,
+            "endDate": 1741354980000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 33
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "3.33.333"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_new_bb_v3",
+            "cruiseWorkflowId": "test_new_bb_v3_2025-02-02T17:43:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:27:00_0",
+            "unit": "test_eden_flow_2025-01-30T15:27:00",
+            "name": "test_eden_flow_2025-01-30T15:27:00",
+            "startDate": 1738250820000,
+            "endDate": 1738337220000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_target",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_target",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:27:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:27:00_1",
+            "unit": "test_eden_flow_2025-01-30T15:27:00",
+            "name": "test_eden_flow_2025-01-30T15:27:00",
+            "startDate": 1738250820000,
+            "endDate": 1738337220000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_base",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_base",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:27:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:27:00_2",
+            "unit": "test_eden_flow_2025-01-30T15:27:00",
+            "name": "test_eden_flow_2025-01-30T15:27:00",
+            "startDate": 1738250820000,
+            "endDate": 1738337220000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:27:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:24:00_0",
+            "unit": "test_eden_flow_2025-01-30T15:24:00",
+            "name": "test_eden_flow_2025-01-30T15:24:00",
+            "startDate": 1738250640000,
+            "endDate": 1738337040000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_target",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_target",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:24:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:24:00_1",
+            "unit": "test_eden_flow_2025-01-30T15:24:00",
+            "name": "test_eden_flow_2025-01-30T15:24:00",
+            "startDate": 1738250640000,
+            "endDate": 1738337040000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low_base",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low_base",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:24:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        },
+        {
+            "id": "test_eden_flow_2025-01-30T15:24:00_2",
+            "unit": "test_eden_flow_2025-01-30T15:24:00",
+            "name": "test_eden_flow_2025-01-30T15:24:00",
+            "startDate": 1738250640000,
+            "endDate": 1738337040000,
+            "type": "Cruise",
+            "theme": {
+                "id": "default"
+            },
+            "segment": "board_event_low",
+            "externalSegment": "default",
+            "internalSegment": "board_event_low",
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 22
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.22.222"
+                }
+            ],
+            "eventState": "on",
+            "freezeEvent": false,
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "isFtue": false,
+            "flowId": "test_eden_flow",
+            "cruiseWorkflowId": "test_eden_flow_2025-01-30T15:24:00",
+            "removeEventBySegment": false,
+            "clientOrderPriority": 100
+        }
+    ],
+    "liveopsIdsByUnit": {
+        "FlameCards_Derba_05_2025-09-20_17:47": [
+            "FlameCards_Derba_05_2025-09-20_17:47_0"
+        ],
+        "FlameCards_Derba_04_2025-09-19_17:46": [
+            "FlameCards_Derba_04_2025-09-19_17:46_0"
+        ],
+        "FlameCards_Derba_02_2025-09-17_17:44": [
+            "FlameCards_Derba_02_2025-09-17_17:44_0"
+        ],
+        "FlameCards_Derba_01_2025-04-04_12:00": [
+            "FlameCards_Derba_01_2025-04-04_12:00_0"
+        ],
+        "SeasonalCards_FC_Derba_01_2025-03-05_15:23": [
+            "SeasonalCards_FC_Derba_01_2025-03-05_15:23_0"
+        ],
+        "generic_token_SeasonalCards_FC_Derba_01_2025-03-05_15:23": [
+            "generic_token_SeasonalCards_FC_Derba_01_2025-03-05_15:23_0"
+        ],
+        "OTPPartnersLiveop_2025-02-05_11:43": [
+            "OTPPartnersLiveop_2025-02-05_11:43_0"
+        ],
+        "generic_token_OTPPartnersLiveop_2025-02-05_11:43": [
+            "generic_token_OTPPartnersLiveop_2025-02-05_11:43_0"
+        ],
+        "BoardEvent_CBBE2E_11_2024-11-05_16:56": [
+            "BoardEvent_CBBE2E_11_2024-11-05_16:56_0"
+        ],
+        "PickingCBBE2E_06_2024-11-01_20:10": [
+            "PickingCBBE2E_06_2024-11-01_20:10_0",
+            "PickingCBBE2E_06_2024-11-01_20:10_1"
+        ],
+        "raceOTP_2024-06-18_15:12": [],
+        "inviteFriendsOTP_2024-06-17_15:52": [
+            "inviteFriendsOTP_2024-06-17_15:52_0"
+        ],
+        "OTPRewardsMap_2024-06-17_12:27": [
+            "OTPRewardsMap_2024-06-17_12:27_0"
+        ],
+        "OTPSpecialChain_2024-01-10_14:51": [
+            "OTPSpecialChain_2024-01-10_14:51_0"
+        ],
+        "OTPVanityLiveop_2023-08-23_11:30": [
+            "OTPVanityLiveop_2023-08-23_11:30_0"
+        ],
+        "OTPTopUp_2023-08-17_14:45": [
+            "OTPTopUp_2023-08-17_14:45_0"
+        ],
+        "test_new_bb_v3_2025-02-09T17:56:00": [
+            "test_new_bb_v3_2025-02-09T17:56:00_0"
+        ],
+        "test_new_bb_v3_2025-02-19T13:51:00": [
+            "test_new_bb_v3_2025-02-19T13:51:00_0",
+            "test_new_bb_v3_2025-02-19T13:51:00_1"
+        ],
+        "test_new_bb_v3_2025-02-12T12:58:00": [
+            "test_new_bb_v3_2025-02-12T12:58:00_0",
+            "test_new_bb_v3_2025-02-12T12:58:00_1",
+            "test_new_bb_v3_2025-02-12T12:58:00_2"
+        ],
+        "test_new_bb_v3_2025-02-02T17:43:00": [
+            "test_new_bb_v3_2025-02-02T17:43:00_0",
+            "test_new_bb_v3_2025-02-02T17:43:00_1",
+            "test_new_bb_v3_2025-02-02T17:43:00_2"
+        ],
+        "test_eden_flow_2025-01-30T15:27:00": [
+            "test_eden_flow_2025-01-30T15:27:00_0",
+            "test_eden_flow_2025-01-30T15:27:00_1",
+            "test_eden_flow_2025-01-30T15:27:00_2"
+        ],
+        "test_eden_flow_2025-01-30T15:24:00": [
+            "test_eden_flow_2025-01-30T15:24:00_0",
+            "test_eden_flow_2025-01-30T15:24:00_1",
+            "test_eden_flow_2025-01-30T15:24:00_2"
+        ]
+    }
+}
