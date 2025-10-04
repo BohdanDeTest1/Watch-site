@@ -3,6 +3,7 @@
     --pp-row-h: 52px;
     --pp-detail-w: 28%;
     --pp-gap: 24px;
+    --pp-side-bg: #fff;
     /* больше зазор → панель не наезжает на кнопки Info */
     --pp-k-col: 140px;
     --pp-k-gap: 10px;
@@ -11,8 +12,15 @@
     --card-bg-filter: #1c2136;
     --table-pad-x: 12px;
     --filter-pop-bg: #ffffff;
+    --pp-grid-line: rgba(83, 103, 124, 0.22);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --pp-side-bg: #1a1c25;
+        /* или #0d1117, если хочешь совсем тёмную */
+    }
+}
 
 
 
@@ -1957,13 +1965,17 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     overflow: auto;
 }
 
-.pp-cal-side-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 6px;
-    user-select: none;
+#ppCalSide {
+    background: var(--pp-side-bg);
+    position: relative;
+    /* нужно для ::after fade */
+    overflow: auto;
+    /* как у .pp-cal-side */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
 }
+
 
 .pp-cal-side-row .dot {
     width: 10px;
@@ -2061,14 +2073,16 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
 }
 
 
-.pp-cal-row {
-    position: relative;
-    min-height: 40px;
-    border-bottom: 1px dashed var(--border);
-    content-visibility: auto;
-    /* отрисовывать только видимые */
-    contain-intrinsic-size: 40px 1200px;
-    /* резерв высоты/ширины для расчетов */
+.pp-cal-side-row {
+    height: var(--tl-row-h);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    gap: 8px;
+    font-size: 13px;
+    line-height: var(--tl-row-h);
+    user-select: none;
 }
 
 .pp-cal-bar {
@@ -2117,7 +2131,7 @@ body.theme-dark .pp-cal-tick {
     min-height: 40px;
     /* совпадает с .pp-cal-row:min-height */
     align-items: center;
-    border-bottom: 1px dashed var(--border);
+    border-bottom: 1px solid var(--pp-grid-line);
 }
 
 /* сетка дней — рисуем вертикальные линии фоном поверх rows */
@@ -2401,7 +2415,30 @@ body.theme-dark .pp-cal-tick {
     --tl-muted: #6b7280;
     --tl-daybar-h: 28px;
     --tl-visible-rows: 13;
+    --tl-ev-brw: 1px;
+    /* можно .5px */
+    --tl-ev-brc: rgba(0, 0, 0, .22);
 }
+
+/* фоновый цвет именно левой панели (сплошной) */
+#ppCal {
+    --cal-left-bg: #12151e;
+}
+
+:root.theme-dark #ppCal,
+.theme-dark #ppCal,
+[data-theme="dark"] #ppCal,
+.dark #ppCal {
+    --cal-left-bg: #12151e;
+    --tl-ev-brc: rgba(255, 255, 255, .22);
+}
+
+/* подбери свой сплошной тёмный */
+
+:root {
+    --tl-row-h: 44px;
+}
+
 
 #ppCal .tl-toolbar {
     display: grid;
@@ -2446,42 +2483,23 @@ body.theme-dark .pp-cal-tick {
     border-top: 1px solid var(--tl-border);
 }
 
+
+
 #ppCal .tl-rescol {
     border-right: 1px solid var(--tl-border);
-    background: #fff;
+    background: var(--cal-left-bg, var(--card-bg));
+    /* вместо #fff */
     position: relative;
-    overflow: hidden;
-    /* ← прячем «хвост» списка за окном */
+    overflow: visible;
+    /* пусть фейд рисуется внутри колонки */
     contain: paint;
-    z-index: 0;
+    z-index: 1;
+    /* можно 1–3; главное — не ниже грида */
 }
 
-/* [ANCHOR TL-RES-HEADER] — заголовок слева той же высоты, что daybar+часы */
-#ppCal .tl-res-header {
-    height: calc(var(--tl-daybar-h) + 40px);
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    font-weight: 600;
-    border-bottom: 1px solid var(--tl-border);
-    box-sizing: border-box;
-
-    /* фиксируем и поднимаем над списком */
-    position: sticky;
-    top: 0;
-    z-index: 3;
-    background: #fff;
-}
 
 #ppCal .tl-res-list {
-    display: block
-}
-
-/* [FIX TL-RES-CLIP] — левая колонка не «просвечивает» за пределами календаря */
-#ppCal .tl-rescol {
-    position: relative;
-    overflow: hidden;
-    /* важен clip внутри самого календаря */
+    display: block;
 }
 
 /* [FIX TL-RES-PERF] — плавный сдвиг трансформом, без артефактов */
@@ -2492,21 +2510,37 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [ANCHOR TL-RES-ITEM] — высота как у строки сетки + тот же разделитель */
+/* [ANCHOR TL-RES-ITEM] — короткий разделитель вместо прямого бордера */
 #ppCal .tl-res-item {
     height: var(--tl-row-h);
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    /* было: border-bottom: 1px solid var(--tl-border); */
     border-bottom: 0;
-    /* убираем бордер */
-    box-shadow: inset 0 -1px var(--tl-border);
-    /* как у .tl-row в полотне */
+    /* <- убираем, чтобы не тянулся на всю ширину */
+    position: relative;
+    /* для ::after */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
-    backface-visibility: hidden;
 }
+
+#ppCal .tl-res-item::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    /* отступ слева оставляем как у текста */
+    right: 10px;
+    /* отступ справа: линия НЕ доезжает до края */
+    bottom: 0;
+    height: 1px;
+    background: var(--tl-border);
+    pointer-events: none;
+}
+
 
 #ppCal .tl-grid {
     position: relative;
@@ -2514,17 +2548,23 @@ body.theme-dark .pp-cal-tick {
     z-index: 1;
 }
 
+
+
 #ppCal .tl-grid-header {
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #fff;
+    background: var(--card-bg);
     border-bottom: 1px solid var(--tl-border);
     white-space: nowrap;
     overflow: hidden;
     padding-top: var(--tl-daybar-h);
     /* ⟵ место под строку дня */
 }
+
+
+
+
 
 .tl-grid-header {
     position: relative;
@@ -2641,7 +2681,8 @@ body.theme-dark .pp-cal-tick {
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
+    box-shadow: inset 0 0 0 var(--tl-ev-brw) var(--tl-ev-brc);
 }
 
 #ppCal .tl-event.type-0 {
@@ -2700,8 +2741,10 @@ body.theme-dark .pp-cal-tick {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: inherit;
-    -webkit-mask-image: linear-gradient(to right, black 70%, transparent);
-    mask-image: linear-gradient(to right, black 70%, transparent);
+    -webkit-mask-image: none;
+    /* без фейда */
+    mask-image: none;
+    /* без фейда */
 }
 
 /* «сейчас» по UTC */
@@ -2769,6 +2812,32 @@ body.theme-dark .pp-cal-tick {
     border-color: var(--tl-border);
 }
 
+/* Темная тема для таймлайна */
+:root.theme-dark #ppCal,
+.theme-dark #ppCal,
+[data-theme="dark"] #ppCal,
+.dark #ppCal {
+    --tl-border: var(--border);
+    /* системная линия */
+    --tl-accent: var(--text);
+    /* акцентные надписи */
+    --tl-muted: var(--muted);
+    /* приглушённый текст */
+}
+
+/* фон левой колонки/хедера в темной и светлой темах */
+#ppCal {
+    --cal-left-bg: var(--card-bg);
+}
+
+:root.theme-dark #ppCal,
+.theme-dark #ppCal,
+[data-theme="dark"] #ppCal,
+.dark #ppCal {
+    --cal-left-bg: var(--card-bg);
+}
+
+
 #ppCal .tl-daytag {
     position: absolute;
     top: 0;
@@ -2788,5 +2857,131 @@ body.theme-dark .pp-cal-tick {
     /* не перехватываем клики */
 }
 
+.pp-cal-side-row {
+    height: var(--tl-row-h);
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    gap: 8px;
+    font-size: 13px;
+    line-height: var(--tl-row-h);
+    user-select: none;
+    box-sizing: border-box;
+    position: relative;
+}
 
-/* =================== [/TIMELINE] =================== */
+.pp-cal-side-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 6px;
+    /* ← не доезжаем слева */
+    right: 12px;
+    /* ← не доезжаем справа (к границе с календарём) */
+    height: 1px;
+    background: var(--pp-grid-line);
+    pointer-events: none;
+}
+
+
+
+.pp-cal-row {
+    height: 44px;
+    /* та же высота */
+    position: relative;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e5e7eb;
+    /* ⬅️ тот же border */
+}
+
+/* [FADE EDGE] Фейд на границе между левой панелью и календарём */
+.pp-cal-fade-edge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to right, var(--pp-side-bg) 60%, transparent);
+}
+
+.pp-cal-left {
+    background: var(--pp-side-bg);
+    position: relative;
+    z-index: 1;
+}
+
+/* [PATCH] Fade-переход на границе левая панель ↔ календарь */
+#ppCalSide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* прилипаем к правому краю левой панели */
+    width: 14px;
+    /* можно 10–16 подобрать под вкус */
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    /* плавный переход от цвета панели к прозрачности в сторону календаря */
+    background: linear-gradient(to right, var(--pp-side-bg) 60%, transparent);
+}
+
+/* [HEADER SOLID — финальная версия] */
+#ppCal .tl-res-header {
+    height: calc(var(--tl-daybar-h) + 40px);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--tl-border);
+    box-sizing: border-box;
+
+    position: sticky;
+    top: 0;
+    z-index: 7;
+    /* выше фейда и контента */
+    background: var(--cal-left-bg, var(--card-bg)) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    isolation: isolate;
+    /* чтобы ничего не «подмешивалось» из-под него */
+}
+
+/* [RESCOL — финальная версия] */
+#ppCal .tl-rescol {
+    border-right: 1px solid var(--tl-border);
+    background: var(--cal-left-bg, var(--card-bg));
+    /* вместо #fff */
+    position: relative;
+    overflow: hidden;
+    /* внутри панели клипим список */
+    contain: paint;
+    z-index: 1;
+}
+
+/* [FADE IN RESCOL — финальная версия] */
+#ppCal .tl-rescol::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--tl-daybar-h) + 40px);
+    /* ниже шапки Events */
+    bottom: 0;
+    right: 0;
+    /* фейд остаётся внутри панели */
+    width: 28px;
+    /* подстрой: 20–36 */
+    pointer-events: none;
+    z-index: 2;
+    /* ниже z-index шапки (7) */
+    background: linear-gradient(to right,
+            var(--cal-left-bg, var(--card-bg)) 0%,
+            transparent 75%);
+}
+
+/* [OVERRIDE TL-EVENT BORDER] — в самом конце файла */
+#ppCal .tl-event {
+    box-shadow: inset 0 0 0 var(--tl-ev-brw) var(--tl-ev-brc);
+}

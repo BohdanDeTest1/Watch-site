@@ -863,18 +863,15 @@
             // сначала получаем ссылки на обе шкалы
             const scaleTop = scale;
             const scaleBottom = wrapEl.querySelector('#ppCalScaleBottom');
-
-            // // [НОВОЕ] ширина полотна строк — полная (для горизонтального скролла)
-            // // (используем уже объявленный выше mainEl)
-            // const vw = mainEl?.clientWidth || 0;
-            // const totalW = Math.ceil((B - A) / msPerPx) + vw; // +1 вьюпорт вправо — подписи не «кончаются»
-
-            // // ширина полотна строк — полная (для горизонтального скролла)
-            // rowsBox.style.width = totalW + 'px';
-
-            // ширина полотна = строго под диапазон [A,B)
             const totalW = Math.ceil((B - A) / calState.msPerPx);
             rowsBox.style.width = totalW + 'px';
+
+            // [FIX] вертикальный скролл и синхронное смещение event-type колонок
+            elBody.addEventListener('scroll', () => {
+                const dpr = window.devicePixelRatio || 1;
+                const y = Math.round(elBody.scrollTop * dpr) / dpr;
+                elRes.style.transform = `translateY(${-y}px)`;
+            });
 
             // [ANCHOR: R1] ширина вьюпорта для шкал
             const vw = mainEl?.clientWidth || 0;
@@ -2610,10 +2607,6 @@
                     row.appendChild(cell);
                 }
 
-                // события в этой строке — окно [start3, end3)
-                // const rowEvents = events.filter(ev => ev.type === r && ev.end > start3 && ev.start < end3);
-
-                // события в этой строке уже отобраны по окну и сгруппированы
                 const rowEvents = byType.get(r) || [];
 
 
@@ -2657,6 +2650,9 @@
                 elBody.appendChild(row);
             });
 
+
+
+
             // индикатор «сейчас» (day/week) на тройном окне
             const oldNow = elBody.querySelector('.tl-now');
             if (oldNow) oldNow.remove();
@@ -2675,6 +2671,33 @@
 
             // [ANCHOR TL-HEADER-WIDTH:SYNC] — шапку делаем ровно ширине фактического полотна
             elHeader.style.width = elBody.scrollWidth + 'px';
+
+            // --- [ANCHOR TL-STICKY-FIX] страхуем "липкость" заголовков на горизонтальном скролле
+            const syncStickyTitles = () => {
+                const body = elBody; // тот же #ppCal .tl-grid-body
+                const sx = body.scrollLeft;
+
+                body.querySelectorAll('.tl-event').forEach(bar => {
+                    const txt = bar.querySelector('.txt');
+                    if (!txt) return;
+
+                    const left = bar.offsetLeft;
+                    const right = left + bar.offsetWidth;
+
+                    // Сколько бар "ушёл" за видимую область слева
+                    const shift = Math.max(0, sx - left);
+
+                    // Не позволяем тексту выйти за правую границу бара
+                    const maxShift = Math.max(0, right - left - txt.offsetWidth - 8);
+
+                    txt.style.transform = `translateX(${Math.min(shift, maxShift)}px)`;
+                });
+            };
+
+            // при скролле и после рендера
+            elBody.addEventListener('scroll', syncStickyTitles);
+            syncStickyTitles();
+
 
             // окно слева той же высоты, что видимое полотно
             elRes.style.height = `${elBody.clientHeight}px`;
@@ -2747,23 +2770,20 @@
             (elGrid || elBody).style.setProperty('--tl-grid-off', '0px');
         }
 
-        // // [ANCHOR TL-HEADER-SYNC] — шапка двигается вместе с горизонтальным скроллом тела
-        // elBody.addEventListener('scroll', () => {
-        //     elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
-        //     elRes.style.transform = `translateY(${-elBody.scrollTop}px)`;  // ← плавный сдвиг без «ступенек»
-        //     positionDayTags();
-        //     updateGridOffset();
-        // }, { passive: true });
 
         // [ANCHOR TL-HEADER-SYNC]
         elBody.addEventListener('scroll', () => {
             elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+
+            // [FIX SNAP TO PIXEL]
             const dpr = window.devicePixelRatio || 1;
-            const y = Math.round(elBody.scrollTop * dpr) / dpr;   // снап к физ. пикселям
-            elRes.style.transform = `translate3d(0, ${-y}px, 0)`; // GPU-композитинг
+            const y = Math.round(elBody.scrollTop * dpr) / dpr;
+
+            elRes.style.transform = `translateY(${-y}px)`;
             positionDayTags();
             updateGridOffset();
         }, { passive: true });
+
 
         /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
         elBody.addEventListener('scroll', () => {
