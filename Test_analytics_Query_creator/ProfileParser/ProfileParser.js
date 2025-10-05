@@ -1054,14 +1054,6 @@
 
             const totalW = Math.ceil((calState.canvasEndMs - A) / msPerPx);
 
-
-            // const gridMs = pickGridMs(msPerPx);
-            // const cellW = gridMs / msPerPx;
-
-            // const totalW = Math.ceil((calState.canvasEndMs - A) / msPerPx) + (main?.clientWidth || 0);
-
-            // const totalW = Math.max(main?.clientWidth || 0, Math.ceil((calState.canvasEndMs - A) / msPerPx));
-
             // 1) Полотно рядов — широкое (для горизонтального скролла) + шаг фон-сетки
             rowsBox.style.width = totalW + 'px';
             rowsBox.style.setProperty('--pp-dayw', cellW + 'px');
@@ -2609,8 +2601,75 @@
 
                 const rowEvents = byType.get(r) || [];
 
+                // [ANCHOR TL-LANES] — раскладка пересечений по «дорожкам»
+                // Сортируем по старту, укладываем в первую свободную «дорогу» (где end <= start)
+                const evs = rowEvents
+                    .map((ev, i) => ({ ...ev, _i: i }))
+                    .sort((a, b) => a.start - b.start);
 
-                rowEvents.forEach((ev) => {
+                const laneEnds = []; // lane -> lastEnd
+                const placed = [];   // {ev, lane}
+
+                for (const ev of evs) {
+                    let lane = 0;
+                    while (lane < laneEnds.length && laneEnds[lane] > ev.start) lane++;
+                    laneEnds[lane] = ev.end;
+                    placed.push({ ev, lane });
+                }
+
+                // Высота одной ячейки события — 22px (как просил)
+                const LANE_H = 22;
+                const V_PAD = 8; // суммарный вертикальный внутренний отступ строки (сверху+снизу)
+
+                const lanesUsed = laneEnds.length || 1;
+                const rowPx = V_PAD + lanesUsed * LANE_H;
+                // Жёстко задаём высоту конкретной .tl-row (у тебя разные строки могут иметь разную высоту)
+                row.style.height = rowPx + 'px';
+
+                // Синхронизируем высоту левой ячейки этого типа:
+                const resItem = elRes.querySelector(`.tl-res-item[data-res="${CSS.escape(r)}"]`);
+                if (resItem) resItem.style.height = rowPx + 'px';
+
+
+                //             rowEvents.forEach((ev) => {
+                //                 const a = clamp(ev.start, start3, end3);
+                //                 const b = clamp(ev.end, start3, end3);
+                //                 const leftPx = ((a - start3) / state.colMs) * colW;
+                //                 const width = Math.max(8, ((b - a) / state.colMs) * colW);
+
+                //                 const badge = document.createElement('div');
+                //                 badge.className = `tl-event type-${ri % 4}`;
+                //                 badge.style.left = `${leftPx}px`;
+                //                 badge.style.width = `${width}px`;
+
+                //                 // ↓ оставь твой текущий HTML с липким заголовком и попапом сегментов
+                //                 const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
+                //                 const segHtml = hasSegs ? `
+                //   <button class="pp-seg-btn" type="button" aria-label="Segments">▾</button>
+                //   <div class="pp-seg-pop" hidden>
+                //     ${ev.segments.map(s => {
+                //                     const exts = (ev.externalsBySegment && ev.externalsBySegment[s]) ? ev.externalsBySegment[s] : [];
+                //                     return `<div class="seg"><code>${s}</code>${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''}</div>`;
+                //                 }).join('')}
+                //   </div>` : '';
+
+                //                 badge.innerHTML = `<span class="txt">${escapeHtml(ev.title || '')}</span>${segHtml}`;
+                //                 row.appendChild(badge);
+                //                 const txtEl = badge.querySelector('.txt');
+                //                 if (txtEl) txtEl.title = ev.title || '';
+
+                //                 if (hasSegs) {
+                //                     const btn = badge.querySelector('.pp-seg-btn');
+                //                     const pop = badge.querySelector('.pp-seg-pop');
+                //                     btn?.addEventListener('click', (e) => {
+                //                         e.stopPropagation();
+                //                         const hidden = pop.hasAttribute('hidden');
+                //                         if (hidden) pop.removeAttribute('hidden'); else pop.setAttribute('hidden', '');
+                //                     });
+                //                 }
+                //             });
+
+                placed.forEach(({ ev, lane }) => {
                     const a = clamp(ev.start, start3, end3);
                     const b = clamp(ev.end, start3, end3);
                     const leftPx = ((a - start3) / state.colMs) * colW;
@@ -2620,20 +2679,23 @@
                     badge.className = `tl-event type-${ri % 4}`;
                     badge.style.left = `${leftPx}px`;
                     badge.style.width = `${width}px`;
+                    // передаём lane в CSS
+                    badge.style.setProperty('--lane', lane);
 
-                    // ↓ оставь твой текущий HTML с липким заголовком и попапом сегментов
                     const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
                     const segHtml = hasSegs ? `
       <button class="pp-seg-btn" type="button" aria-label="Segments">▾</button>
       <div class="pp-seg-pop" hidden>
         ${ev.segments.map(s => {
                         const exts = (ev.externalsBySegment && ev.externalsBySegment[s]) ? ev.externalsBySegment[s] : [];
-                        return `<div class="seg"><code>${s}</code>${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''}</div>`;
+                        return `<div class="seg"><code>${s}</code>${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''
+                            }</div>`;
                     }).join('')}
       </div>` : '';
 
                     badge.innerHTML = `<span class="txt">${escapeHtml(ev.title || '')}</span>${segHtml}`;
                     row.appendChild(badge);
+
                     const txtEl = badge.querySelector('.txt');
                     if (txtEl) txtEl.title = ev.title || '';
 
@@ -2647,6 +2709,7 @@
                         });
                     }
                 });
+
 
 
                 elBody.appendChild(row);
