@@ -2634,6 +2634,8 @@
 
                     badge.innerHTML = `<span class="txt">${escapeHtml(ev.title || '')}</span>${segHtml}`;
                     row.appendChild(badge);
+                    const txtEl = badge.querySelector('.txt');
+                    if (txtEl) txtEl.title = ev.title || '';
 
                     if (hasSegs) {
                         const btn = badge.querySelector('.pp-seg-btn');
