@@ -2988,10 +2988,9 @@ body.theme-dark .pp-cal-tick {
 
 /* [ANCHOR TL-LANE-CSS] — позиционирование события по «дорожке» */
 #ppCal .tl-event {
-    top: calc(4px + var(--lane, 0) * 22px);
-    /* 4px верхний отступ + lane*22 */
-    height: 22px;
-    /* фиксированная высота бара */
+    /* делаем высоту бара 21px и добавляем 2px зазор между лайнами */
+    top: calc(var(--lane, 0) * (21px + 2px));
+    height: 21px;
 }
 
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
