@@ -2100,19 +2100,29 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     opacity: .95;
 }
 
-.pp-cal-bar .txt {
+/* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
+#ppCal .tl-event .txt {
     position: sticky;
     left: 0;
-    padding: 0 6px;
-    max-width: calc(100% - 8px);
+    padding: 0 6px 0 8px;
+
+    /* ключевые строки: занимаем всю ширину бара и позволяем сжиматься */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+
+    /* показывать полное имя; сокращать только при реальной нехватке */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 20px;
-    /* лёгкий градиент, чтобы текст красиво исчезал вправо */
-    -webkit-mask-image: linear-gradient(to right, black 70%, transparent);
-    mask-image: linear-gradient(to right, black 70%, transparent);
+    line-height: inherit;
+
+    /* без масок/фейдов, чтобы не «съедало» текст визуально */
+    -webkit-mask-image: none;
+    mask-image: none;
 }
+
+
 
 
 .pp-cal-bar.muted {
@@ -2681,6 +2691,7 @@ body.theme-dark .pp-cal-tick {
     color: #fff;
     /* контейнер только обрезает, но не решает, ставить ли '…' */
     overflow: hidden;
+    gap: 6px;
     /* убрали text-overflow у контейнера */
     /* white-space у контейнера не нужен — им управляет .txt */
 }
@@ -2733,21 +2744,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
-#ppCal .tl-event .txt {
-    position: sticky;
-    left: 0;
-    padding: 0 6px 0 8px;
-    /* даём занять всю ширину бара */
-    max-width: 100%;
-    /* показываем полное имя, а сокращаем только если реально не помещается */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: inherit;
-    /* убираем искусственный fade, он мешал видимости полного имени */
-    -webkit-mask-image: none;
-    mask-image: none;
-}
+
+
 
 /* «сейчас» по UTC */
 .pp-cal-now {
@@ -2994,4 +2992,208 @@ body.theme-dark .pp-cal-tick {
     /* 4px верхний отступ + lane*22 */
     height: 22px;
     /* фиксированная высота бара */
+}
+
+/* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
+#ppCal .tl-event .txt {
+    position: sticky;
+    left: 0;
+    padding: 0 6px 0 8px;
+
+    /* КЛЮЧ: делаем текст полноценным flex-элементом */
+    flex: 1 1 auto;
+    /* тянется на всю доступную ширину бара */
+    min-width: 0;
+    /* разрешает сжиматься, убирает «ранние» … */
+    max-width: none;
+    /* снимает ограничитель 100% */
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: inherit;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+#ppCal .tl-event {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+}
+
+/* фиксируем «▸» строго справа внутри бара */
+#ppCal .tl-event .tl-info {
+    position: absolute;
+    right: 4px;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    opacity: .9;
+}
+
+#ppCal .tl-event .tl-info:hover {
+    opacity: 1
+}
+
+
+.pp-seg-btn {
+    flex: 1 1 auto;
+    /* тянется на всю доступную ширину бара */
+    min-width: 0;
+    /* разрешает сжиматься, убирает «ранние» … */
+    max-width: none;
+    /* снимает ограничитель 100% */
+
+}
+
+/* === ProfileParser: Timeline (scoped) ====================================== */
+.pp-cal {
+    /* корневой контейнер новой версии календаря */
+    --ppc-border: var(--border, #2d2d2d);
+    --ppc-bg: var(--btn-n-field-bg, #141414);
+    --ppc-muted: var(--muted, #9aa0a6);
+}
+
+/* Блок ивента на таймлайне */
+.pp-cal .pp-cal__event {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    /* даёт титулу расти по высоте */
+    gap: 6px;
+    padding: 2px 26px 2px 6px;
+    /* справа запас под кнопку */
+    border-radius: 6px;
+    overflow: visible;
+    /* не обрезаем многострочный текст */
+}
+
+/* Название: убираем ellipsis + переносим по словам/символам */
+.pp-cal .pp-cal__event-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: normal;
+    /* было nowrap где-то вне — перебиваем тут */
+    overflow: visible;
+    /* было hidden — больше не нужно */
+    text-overflow: clip;
+    /* было ellipsis */
+    word-break: break-word;
+    /* чтобы очень длинные токены не ломали блок */
+    line-height: 1.2;
+}
+
+/* Кнопка-треугольник: фикс справа от названия */
+.pp-cal .pp-cal__event-infoBtn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    opacity: .9;
+}
+
+.pp-cal .pp-cal__event-infoBtn:hover {
+    opacity: 1;
+}
+
+/* Поповер */
+.pp-cal .pp-cal__popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 260px;
+    max-width: 360px;
+    padding: 10px 12px;
+    border: 1px solid var(--ppc-border);
+    border-radius: 10px;
+    background: var(--ppc-bg);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    z-index: 1000;
+}
+
+.pp-cal .pp-cal__pop-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.pp-cal .pp-cal__pop-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.pp-cal .pp-cal__pop-row .k {
+    color: var(--ppc-muted);
+}
+
+.pp-cal .pp-cal__pop-row .v {
+    word-break: break-word;
+}
+
+/* Страховка: если где-то в старых файлах остался ellipsis */
+.pp-cal .pp-cal__event .pp-cal__event-title[style*="ellipsis"],
+.pp-cal .pp-cal__event[style*="ellipsis"] .pp-cal__event-title {
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}
+
+/* [ANCHOR TL-INFO-OVERRIDES] — фикс для кнопки и поповера */
+#ppCal .tl-event {
+    overflow: visible !important;
+    /* поповер не клипается */
+    padding-right: 22px;
+    /* запас под кнопку справа */
+    position: absolute;
+    /* как и было, просто явно */
+}
+
+/* [FIX TL-TITLE & INFO BTN OVERRIDES] — append at file end */
+#ppCal .tl-event {
+    /* резервируем место под кнопку и не клипим поповер/текст */
+    padding-right: 26px;
+    overflow: visible;
+}
+
+#ppCal .tl-event .txt {
+    /* показываем полное имя без троеточий + не клипим */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+#ppCal .tl-event .tl-info {
+    /* фиксируем «▸» строго справа в баре и поверх текста */
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    opacity: .9;
+    z-index: 2;
+}
+
+#ppCal .tl-event .tl-info:hover {
+    opacity: 1;
 }

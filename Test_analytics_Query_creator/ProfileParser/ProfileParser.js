@@ -259,6 +259,29 @@
             arr = Object.entries(raw).map(([id, v]) => ({ id, ...v }));
         }
 
+        function toMsAny(v) {
+            if (v == null || v === '') return NaN;
+            // уже число
+            if (typeof v === 'number' && Number.isFinite(v)) return v < 1e12 ? v * 1000 : v;
+
+            // строка с только цифрами → unix sec/ms
+            if (typeof v === 'string' && /^[0-9]+$/.test(v)) {
+                const n = Number(v);
+                return n < 1e12 ? n * 1000 : n;
+            }
+            // иначе пробуем парсить как ISO
+            const t = Date.parse(String(v));
+            return Number.isFinite(t) ? t : NaN;
+        }
+        function prettyFromAny(v) {
+            const ms = toMsAny(v);
+            if (!Number.isFinite(ms)) return '—';
+            const d = new Date(ms);
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+        }
+
+
         return arr.map((it, idx) => {
             const id = it.id ?? it.ID ?? idx;
             const name = it.name ?? it.title ?? `LiveOp ${idx + 1}`;
@@ -342,10 +365,14 @@
 
             return {
                 id, name, type,
-                startPretty: formatUnix(start),
-                endPretty: formatUnix(end),
-                startTS: Number(start) < 1e12 ? Number(start) * 1000 : Number(start),
-                endTS: Number(end) < 1e12 ? Number(end) * 1000 : Number(end),
+                // startPretty: formatUnix(start),
+                // endPretty: formatUnix(end),
+                // startTS: Number(start) < 1e12 ? Number(start) * 1000 : Number(start),
+                // endTS: Number(end) < 1e12 ? Number(end) * 1000 : Number(end),
+                startPretty: prettyFromAny(start),
+                endPretty: prettyFromAny(end),
+                startTS: toMsAny(start),
+                endTS: toMsAny(end),
                 conditions: condLines,
                 themeId, themeAssets,
                 displayState, freezeEvent,
@@ -2697,7 +2724,42 @@
                     row.appendChild(badge);
 
                     const txtEl = badge.querySelector('.txt');
-                    if (txtEl) txtEl.title = ev.title || '';
+                    // ⬇️ показываем полное название без троеточий (перебиваем возможный CSS)
+                    if (txtEl) {
+                        txtEl.style.whiteSpace = 'normal';
+                        txtEl.style.overflow = 'visible';
+                        txtEl.style.textOverflow = 'clip';
+                        txtEl.style.display = 'block';
+                    }
+
+                    // ⬇️ прокинем данные для поповера (UTC)
+                    badge.dataset.title = ev.title || '';
+                    badge.dataset.type = ev.type || 'none';
+                    badge.dataset.startUtc = fmtUTC(ev.start);
+                    badge.dataset.endUtc = fmtUTC(ev.end);
+
+                    // ⬇️ кнопка-треугольник, закреплённая справа в баре
+                    const infoBtn = document.createElement('button');
+                    infoBtn.type = 'button';
+                    infoBtn.className = 'tl-info';
+                    infoBtn.setAttribute('aria-label', 'Event info');
+                    // визуально «строго справа», без правок CSS-файла:
+                    infoBtn.style.position = 'absolute';
+                    infoBtn.style.top = '2px';
+                    infoBtn.style.right = '2px';
+                    infoBtn.style.width = '18px';
+                    infoBtn.style.height = '18px';
+                    infoBtn.style.border = 'none';
+                    infoBtn.style.background = 'transparent';
+                    infoBtn.style.cursor = 'pointer';
+                    infoBtn.style.fontSize = '14px';
+                    infoBtn.style.lineHeight = '1';
+                    infoBtn.style.opacity = '0.9';
+                    infoBtn.textContent = '▸';
+                    badge.appendChild(infoBtn);
+
+                    document.addEventListener('click', closeInfoPops);
+
 
                     if (hasSegs) {
                         const btn = badge.querySelector('.pp-seg-btn');
@@ -2745,17 +2807,8 @@
                 body.querySelectorAll('.tl-event').forEach(bar => {
                     const txt = bar.querySelector('.txt');
                     if (!txt) return;
-
-                    const left = bar.offsetLeft;
-                    const right = left + bar.offsetWidth;
-
-                    // Сколько бар "ушёл" за видимую область слева
-                    const shift = Math.max(0, sx - left);
-
-                    // Не позволяем тексту выйти за правую границу бара
-                    const maxShift = Math.max(0, right - left - txt.offsetWidth - 8);
-
-                    txt.style.transform = `translateX(${Math.min(shift, maxShift)}px)`;
+                    // Без «липкости»: всегда показываем текст там, где он отрендерен
+                    txt.style.transform = '';
                 });
             };
 
@@ -2848,6 +2901,64 @@
             positionDayTags();
             updateGridOffset();
         }, { passive: true });
+
+        // === [ANCHOR TL-INFO-DELEGATE] поповер по кнопке "▸" ======================
+        function fmtUTC(d) {
+            if (!(d instanceof Date)) return '—';
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+        }
+        function closeInfoPops() {
+            elBody.querySelectorAll('.tl-info-pop').forEach(n => n.remove());
+        }
+
+        elBody.addEventListener('click', (e) => {
+            const btn = e.target.closest('.tl-info');
+            if (!btn) return;
+            e.stopPropagation();
+            e.preventDefault();
+
+            // закрыть чужие поповеры
+            closeInfoPops();
+
+            const bar = btn.closest('.tl-event');
+            if (!bar) return;
+
+            const title = bar.dataset.title || (bar.querySelector('.txt')?.textContent?.trim()) || '—';
+            const type = (bar.dataset.type || 'none').toLowerCase();
+            const startU = bar.dataset.startUtc || '—';
+            const endU = bar.dataset.endUtc || '—';
+
+            const pop = document.createElement('div');
+            pop.className = 'tl-info-pop';
+            // компактные inline-стили, чтобы не трогать CSS-файлы
+            pop.style.position = 'absolute';
+            pop.style.right = '2px';
+            pop.style.top = '22px';
+            pop.style.minWidth = '240px';
+            pop.style.maxWidth = '360px';
+            pop.style.padding = '8px 10px';
+            pop.style.border = '1px solid var(--border, #333)';
+            pop.style.borderRadius = '8px';
+            pop.style.background = 'var(--btn-n-field-bg, rgba(20,20,20,.98))';
+            pop.style.boxShadow = '0 10px 24px rgba(0,0,0,.35)';
+            pop.style.zIndex = '1000';
+            pop.style.pointerEvents = 'auto';
+
+            pop.innerHTML = `
+    <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
+    <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12px;line-height:1.25;">
+      <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
+      <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
+      <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
+    </div>
+  `;
+
+            bar.appendChild(pop);
+        });
+
+        // закрытие по клику вне
+        document.addEventListener('click', () => closeInfoPops());
 
 
         /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
