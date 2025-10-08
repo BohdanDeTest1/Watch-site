@@ -941,6 +941,7 @@
             // const mainEl = wrapEl.querySelector('.pp-cal-main');
             const off = -((mainEl?.scrollLeft || 0) % cellW);
             mainEl?.style.setProperty('--pp-grid-off', off + 'px');
+            mainEl?.style.setProperty('--pp-dayw', cellW + 'px');
 
 
             // левая панель типов
@@ -2508,6 +2509,7 @@
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const xNow = ((new Date() - state.anchor) / state.colMs) * colW;
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
+                positionDayTags();
             }
 
             if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
@@ -2843,6 +2845,7 @@
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
             elBody.scrollLeft = state.colCount * colW; // начало «средней» трети (сегодня)
             state._centeredOnce = true;
+            positionDayTags();
         }
 
         // подстроить высоту левой колонки под высоту тела при ресайзе

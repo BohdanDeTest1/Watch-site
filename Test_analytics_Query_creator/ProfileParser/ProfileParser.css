@@ -2158,14 +2158,14 @@ body.theme-dark .pp-cal-tick {
 
 /* <— добавь эту строку прямо в блок .pp-cal-main */
 
-.pp-cal-main::after {
+.pp-cal-rows::after {
     content: "";
     position: absolute;
-    /* было sticky */
     left: 0;
     right: 0;
-    top: var(--pp-scale-h);
-    bottom: var(--pp-scale-h);
+    top: 0;
+    bottom: 0;
+    /* чтобы не зависеть от --pp-scale-h */
     pointer-events: none;
     background-image:
         repeating-linear-gradient(to right,
@@ -2178,9 +2178,9 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-.theme-dark .pp-cal-main::after,
-:root.theme-dark .pp-cal-main::after,
-.dark .pp-cal-main::after {
+.theme-dark .pp-cal-rows::after,
+:root.theme-dark .pp-cal-rows::after,
+.dark .pp-cal-rows::after {
     background-image:
         repeating-linear-gradient(to right,
             transparent 0,
@@ -2615,8 +2615,8 @@ body.theme-dark .pp-cal-tick {
 #ppCal .tl-grid-body .tl-row {
     position: relative;
     height: var(--tl-row-h);
-    box-shadow: inset 0 -1px var(--tl-border);
-    /* горизонталь */
+    box-shadow: none;
+    /* было: inset 0 -1px var(--tl-border) */
     background: transparent !important;
     background-position: 0 0 !important;
     background-attachment: local !important;
@@ -2627,12 +2627,12 @@ body.theme-dark .pp-cal-tick {
 /* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка: чёткие 1px линии, без пропусков */
 #ppCal .tl-grid-body {
     background-image:
-        linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px);
-    /* только вертикали */
-
-    background-size: var(--tl-col-w) 100%;
-    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0;
-
+        /* вертикали */
+        linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px),
+        /* горизонтали */
+        linear-gradient(to bottom, var(--tl-border) 0 1px, transparent 1px);
+    background-size: var(--tl-col-w) 100%, 100% var(--tl-row-h);
+    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0, 0 0;
     background-repeat: repeat;
     background-attachment: local;
     background-origin: content-box;
