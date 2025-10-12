@@ -2569,6 +2569,7 @@ body.theme-dark .pp-cal-tick {
     white-space: nowrap;
     overflow: hidden;
     padding-top: var(--tl-daybar-h);
+    will-change: transform, width;
     /* ⟵ место под строку дня */
 }
 
@@ -3195,4 +3196,9 @@ body.theme-dark .pp-cal-tick {
 
 #ppCal .tl-event .tl-info:hover {
     opacity: 1;
+}
+
+#ppCal .tl-grid-header {
+    will-change: transform, width;
+    /* <— ДОБАВИЛИ */
 }

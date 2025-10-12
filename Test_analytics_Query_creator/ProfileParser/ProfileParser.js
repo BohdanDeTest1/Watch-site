@@ -901,18 +901,35 @@
             });
 
             // [ANCHOR: R1] ширина вьюпорта для шкал
-            const vw = mainEl?.clientWidth || 0;
+            const vw0 = mainEl?.clientWidth || 0;
 
-            scaleTop.style.width = vw + 'px';
-            if (scaleBottom) scaleBottom.style.width = vw + 'px';
+            // утилита, чтобы не дублировать присвоения
+            const setScaleWidth = (w) => {
+                scaleTop.style.width = w + 'px';
+                if (scaleBottom) scaleBottom.style.width = w + 'px';
+            };
+
+            // первичная ширина (если 0 — всё равно выставим, а дальше добьем RAF-ом)
+            setScaleWidth(vw0);
 
             // [НОВОЕ] первичная отрисовка (сверху — «крупные», снизу — «мелкие»)
             const makeScales = () => {
                 const t = buildScale(scaleTop, A, B, gridMs, cellW, mainEl, 'major');
-                calState.ticks = t; // храним число «видимых» тиков, если вдруг где-то нужно
+                calState.ticks = t;
                 buildScale(scaleBottom, A, B, gridMs, cellW, mainEl, 'minor');
             };
-            makeScales();
+
+            // если прямо сейчас ширина нулевая (контейнер ещё не в лейауте) — дорисуем на первом кадре
+            if (!vw0) {
+                requestAnimationFrame(() => {
+                    const vw1 = mainEl?.clientWidth || scaleTop.parentElement?.clientWidth || 0;
+                    if (vw1) setScaleWidth(vw1);
+                    makeScales();
+                });
+            } else {
+                makeScales();
+            }
+
 
             // сразу после makeScales();
             if (calState._onScroll && mainEl) {
@@ -931,6 +948,7 @@
                 });
             };
             mainEl?.addEventListener('scroll', calState._onScroll);
+
 
 
             mainEl.style.overflowX = 'auto';
@@ -1143,6 +1161,24 @@
                 });
             };
             mainEl?.addEventListener('scroll', calState._onScroll);
+
+            // [ANCHOR: R1-RESIZE] пересчёт ширины и перерисовка шкал при изменении контейнера
+            (() => {
+                if (!mainEl) return;
+                const ro = new ResizeObserver(() => {
+                    const w = mainEl.clientWidth || 0;
+                    if (w) {
+                        scaleTop.style.width = w + 'px';
+                        if (scaleBottom) scaleBottom.style.width = w + 'px';
+                        // перерисовать подписи в новых границах
+                        makeScales();
+                        // обновить смещение тайловой сетки
+                        const off = -(mainEl.scrollLeft % cellW);
+                        mainEl.style.setProperty('--pp-grid-off', off + 'px');
+                    }
+                });
+                ro.observe(mainEl);
+            })();
 
 
             // первичная отрисовка после пересчёта
@@ -2505,12 +2541,24 @@
             if (b.dataset.nav === 'today') {
                 state.anchor = startOfDayUTC(new Date());
                 render();
-                // центрируем «сейчас»
+
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const xNow = ((new Date() - state.anchor) / state.colMs) * colW;
+
+                // В day-режиме рисуем 3 диапазона (вчера|сегодня|завтра),
+                // поэтому учитываем смещение на левую треть
+                const extra = (state.view === 'day') ? state.colCount * colW : 0;
+
+                // пиксели до «сейчас» от 00:00 UTC «сегодня» + extra
+                const xNow = ((new Date() - state.anchor) / state.colMs) * colW + extra;
+
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
                 positionDayTags();
+
+                // синхронизация слушателей/шапки на программной прокрутке
+                elBody.dispatchEvent(new Event('scroll'));
             }
+
+
 
             if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
             if (b.dataset.nav === 'next') { state.anchor = addMs(state.anchor, state.rangeMs); render(); }
@@ -2568,7 +2616,7 @@
                 elHeader.appendChild(div);
             }
 
-            elHeader.style.width = 'auto';
+            //  elHeader.style.width = 'auto';
 
 
 
@@ -2658,45 +2706,6 @@
                 // Синхронизируем высоту левой ячейки этого типа:
                 const resItem = elRes.querySelector(`.tl-res-item[data-res="${CSS.escape(r)}"]`);
                 if (resItem) resItem.style.height = rowPx + 'px';
-
-
-                //             rowEvents.forEach((ev) => {
-                //                 const a = clamp(ev.start, start3, end3);
-                //                 const b = clamp(ev.end, start3, end3);
-                //                 const leftPx = ((a - start3) / state.colMs) * colW;
-                //                 const width = Math.max(8, ((b - a) / state.colMs) * colW);
-
-                //                 const badge = document.createElement('div');
-                //                 badge.className = `tl-event type-${ri % 4}`;
-                //                 badge.style.left = `${leftPx}px`;
-                //                 badge.style.width = `${width}px`;
-
-                //                 // ↓ оставь твой текущий HTML с липким заголовком и попапом сегментов
-                //                 const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
-                //                 const segHtml = hasSegs ? `
-                //   <button class="pp-seg-btn" type="button" aria-label="Segments">▾</button>
-                //   <div class="pp-seg-pop" hidden>
-                //     ${ev.segments.map(s => {
-                //                     const exts = (ev.externalsBySegment && ev.externalsBySegment[s]) ? ev.externalsBySegment[s] : [];
-                //                     return `<div class="seg"><code>${s}</code>${exts.length ? `<div class="ext">${exts.map(e => `<div><code>${e}</code></div>`).join('')}</div>` : ''}</div>`;
-                //                 }).join('')}
-                //   </div>` : '';
-
-                //                 badge.innerHTML = `<span class="txt">${escapeHtml(ev.title || '')}</span>${segHtml}`;
-                //                 row.appendChild(badge);
-                //                 const txtEl = badge.querySelector('.txt');
-                //                 if (txtEl) txtEl.title = ev.title || '';
-
-                //                 if (hasSegs) {
-                //                     const btn = badge.querySelector('.pp-seg-btn');
-                //                     const pop = badge.querySelector('.pp-seg-pop');
-                //                     btn?.addEventListener('click', (e) => {
-                //                         e.stopPropagation();
-                //                         const hidden = pop.hasAttribute('hidden');
-                //                         if (hidden) pop.removeAttribute('hidden'); else pop.setAttribute('hidden', '');
-                //                     });
-                //                 }
-                //             });
 
                 placed.forEach(({ ev, lane }) => {
                     const a = clamp(ev.start, start3, end3);
@@ -2801,6 +2810,10 @@
             // [ANCHOR TL-HEADER-WIDTH:SYNC] — шапку делаем ровно ширине фактического полотна
             elHeader.style.width = elBody.scrollWidth + 'px';
 
+            // [FIX-HEADER-ALIGN:RENDER] — сдвинуть шапку сразу, без ожидания первого scroll
+            elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+
+
             // --- [ANCHOR TL-STICKY-FIX] страхуем "липкость" заголовков на горизонтальном скролле
             const syncStickyTitles = () => {
                 const body = elBody; // тот же #ppCal .tl-grid-body
@@ -2833,19 +2846,110 @@
             updateGridOffset();
         }
 
-        // первичная настройка
         setView(state.view);
         render();
-        positionDayTags(); // чтобы подпись встала корректно сразу после первого render()
+        positionDayTags();
         updateGridOffset();
 
+        /* --- [FIX INITIAL FIRST-PAINT] — гарантируем, что шапка (часы/дни) появится при первом входе --- */
+        (function ensureHeaderIsPainted() {
+            const body = elBody;
+            const header = elHeader;
 
-        // [ANCHOR TL-CENTER-DAY] — стартуем из центральной трети, чтобы можно было крутить в обе стороны
+            function syncHeaderNow() {
+                // ширина шапки = фактическая ширина полотна
+                header.style.width = body.scrollWidth + 'px';
+                // сдвигаем шапку сразу, чтобы не ждать первого scroll
+                header.style.transform = `translateX(${-body.scrollLeft}px)`;
+                // смещения тайловой сетки + подписи дней
+                updateGridOffset();
+                positionDayTags();
+
+                // маленький «пинок» отрисовке: реальное изменение scrollLeft на 1px туда-обратно
+                const sx = body.scrollLeft;
+                body.scrollLeft = sx + 1;
+                body.scrollLeft = sx;
+
+                // и на всякий случай уведомим слушателей
+                body.dispatchEvent(new Event('scroll'));
+            }
+
+            // Если элемент уже имеет ширину и содержимое — синхронизируем немедленно.
+            // Иначе — ждём первого кадра / появления размеров.
+            if (body.clientWidth > 0 && body.scrollWidth > 0) {
+                requestAnimationFrame(syncHeaderNow);
+                return;
+            }
+
+            // 1) Первый кадр после вставки в DOM
+            requestAnimationFrame(() => {
+                if (body.clientWidth > 0 && body.scrollWidth > 0) {
+                    syncHeaderNow();
+                    return;
+                }
+
+                // 2) Если всё ещё 0 (например, контейнер скрыт во вкладке), подключаем ResizeObserver один раз
+                const ro = new ResizeObserver(() => {
+                    if (body.clientWidth > 0 && body.scrollWidth > 0) {
+                        syncHeaderNow();
+                        ro.disconnect();
+                    }
+                });
+                ro.observe(body);
+            });
+        })();
+
+        /* [FIX INITIAL-HEADER-SYNC] — гарантируем прорисовку шапки и daybar на первом кадре */
+        requestAnimationFrame(() => {
+            // 1) ширина шапки = фактическая ширина полотна
+            elHeader.style.width = elBody.scrollWidth + 'px';
+
+            // 2) сразу синхронизируем смещение шапки со scrollLeft
+            elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+
+            // 3) сетка + подписи
+            updateGridOffset();
+            positionDayTags();
+
+            // 4) реальное изменение scrollLeft на 1px туда-обратно (заставляет sticky-слой отрисоваться)
+            const _sx = elBody.scrollLeft;
+            elBody.scrollLeft = _sx + 1;
+            elBody.scrollLeft = _sx;
+
+            // 5) резервный «пинок» слушателям
+            elBody.dispatchEvent(new Event('scroll'));
+        });
+
+
+        // [ANCHOR TL-CENTER-DAY] — центрируем «сейчас» (UTC) при первом входе
         if (!state._centeredOnce && state.view === 'day') {
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-            elBody.scrollLeft = state.colCount * colW; // начало «средней» трети (сегодня)
+
+            // сколько пикселей от 00:00 UTC «сегодня» до текущего момента
+            const now = new Date();
+            const xFromStart = ((now - state.anchor) / state.colMs) * colW;
+
+            // тройной буфер: слева «вчера», в середине «сегодня»
+            const offsetToMiddle = state.colCount * colW;
+
+            // таргет = середина «сегодня» + смещение на текущее время - половина видимой ширины
+            const xTarget = offsetToMiddle + xFromStart - elBody.clientWidth / 2;
+
+            elBody.scrollLeft = Math.max(0, xTarget);
             state._centeredOnce = true;
+
+            // сразу выставить подписи дней над часами
             positionDayTags();
+
+            // некоторые браузеры не триггерят scroll-событие на программный scrollLeft — пнём слушатели
+            elBody.dispatchEvent(new Event('scroll'));
+
+            requestAnimationFrame(() => {
+                elHeader.style.width = elBody.scrollWidth + 'px';
+                elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
+                updateGridOffset();
+                positionDayTags();
+            });
         }
 
         // подстроить высоту левой колонки под высоту тела при ресайзе
