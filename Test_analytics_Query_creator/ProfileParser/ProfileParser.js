@@ -679,7 +679,7 @@
             canvasStartMs: null,  // задаются в renderCalendar
             canvasEndMs: null,
             gridMs: null,   // ← добавь
-            view: 'month',        // 'month' | 'week' | 'day'
+            view: 'day',        // 'month' | 'week' | 'day'
             anchorMs: Date.now(),
             ticks: 0
         };
@@ -892,6 +892,17 @@
             const scaleBottom = wrapEl.querySelector('#ppCalScaleBottom');
             const totalW = Math.ceil((B - A) / calState.msPerPx);
             rowsBox.style.width = totalW + 'px';
+
+            // --- Центровка на «сейчас» при первом входе (UTC) ---
+            if (!calState._centeredOnce) {
+                const main = wrapEl.querySelector('.pp-cal-main');
+                if (main && Number.isFinite(A) && calState.msPerPx) {
+                    const xNow = (Date.now() - A) / calState.msPerPx; // px от начала диапазона
+                    main.scrollLeft = Math.max(0, xNow - main.clientWidth / 2);
+                    calState._centeredOnce = true;
+                }
+            }
+
 
             // [FIX] вертикальный скролл и синхронное смещение event-type колонок
             elBody.addEventListener('scroll', () => {
@@ -2480,13 +2491,17 @@
         // ---- state
         const state = {
             view: 'day',            // 'day' | 'week' | 'month'
-            anchor: startOfDayUTC(new Date()), // текущая дата-«якорь»
+            anchor: startOfLocalDayAsUTC(new Date()), // текущая дата-«якорь»
             colMs: 3600_000,        // длительность колонки
             rangeMs: 24 * 3600_000,   // длительность всей полосы
             colCount: 24,           // количество колонок
             rowH: 44,
             colW: 80
         };
+
+        // Блокируем «шов» до первичного центрирования
+        let allowSeamShift = false;
+
 
         function normType(s) {
             // схлопываем пробелы и обрезаем
@@ -2538,25 +2553,28 @@
         toolbar.addEventListener('click', (e) => {
             const b = e.target.closest('button'); if (!b) return;
             if (b.dataset.view) { setView(b.dataset.view); render(); }
+
+
             if (b.dataset.nav === 'today') {
-                state.anchor = startOfDayUTC(new Date());
+                state.anchor = startOfLocalDayAsUTC(new Date());
                 render();
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-
-                // В day-режиме рисуем 3 диапазона (вчера|сегодня|завтра),
-                // поэтому учитываем смещение на левую треть
                 const extra = (state.view === 'day') ? state.colCount * colW : 0;
-
-                // пиксели до «сейчас» от 00:00 UTC «сегодня» + extra
                 const xNow = ((new Date() - state.anchor) / state.colMs) * colW + extra;
+
+                // временно глушим «шов», чтобы программный скролл не сдвинул якорь
+                const prev = allowSeamShift;
+                allowSeamShift = false;
 
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
                 positionDayTags();
-
-                // синхронизация слушателей/шапки на программной прокрутке
                 elBody.dispatchEvent(new Event('scroll'));
+
+                // возвращаем прежний режим
+                allowSeamShift = prev;
             }
+
 
 
 
@@ -2935,11 +2953,18 @@
             // таргет = середина «сегодня» + смещение на текущее время - половина видимой ширины
             const xTarget = offsetToMiddle + xFromStart - elBody.clientWidth / 2;
 
+            // временно глушим «шов», чтобы программный скролл не сдвинул якорь
+            const prev = allowSeamShift;
+            allowSeamShift = false;
+
             elBody.scrollLeft = Math.max(0, xTarget);
             state._centeredOnce = true;
 
             // сразу выставить подписи дней над часами
             positionDayTags();
+
+            // теперь «шов» можно включать
+            allowSeamShift = prev;
 
             // некоторые браузеры не триггерят scroll-событие на программный scrollLeft — пнём слушатели
             elBody.dispatchEvent(new Event('scroll'));
@@ -2951,6 +2976,7 @@
                 positionDayTags();
             });
         }
+
 
         // подстроить высоту левой колонки под высоту тела при ресайзе
         window.addEventListener('resize', () => {
@@ -3069,9 +3095,11 @@
 
 
         /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
+        /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
         elBody.addEventListener('scroll', () => {
             // шапка и левая колонка уже синхронизируются выше ([ANCHOR TL-HEADER-SYNC])
-            if (state.view !== 'day') return; // «шов» требуется только в режиме суток
+            if (state.view !== 'day') return;           // «шов» нужен только в day
+            if (!allowSeamShift) return;                // пока не разрешили — не сдвигаем якорь
 
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
             const rangeW = state.colCount * colW; // ширина одного дня, px
@@ -3107,6 +3135,14 @@
         function clamp(d, min, max) { return (d < min) ? min : (d > max) ? max : d; }
         function startOfDayUTC(d) { const x = new Date(d); x.setUTCHours(0, 0, 0, 0); return x; }
         function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+        // локальная полночь (текущего пользователя), приведённая к UTC-инстанту
+        function startOfLocalDayAsUTC(now = new Date()) {
+            // локальная полночь:
+            const localMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            // сделать инстант, эквивалентный этой локальной полуночи, в UTC-линией времени:
+            return new Date(localMidnight.getTime() - now.getTimezoneOffset() * 60000);
+        }
 
 
         function formatTitle(d, view) {
