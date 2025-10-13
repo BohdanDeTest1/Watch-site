@@ -2714,15 +2714,20 @@ body.theme-dark .pp-cal-tick {
     background: #f59e0b
 }
 
+/* красная линия "сейчас" в старшем таймлайне */
 #ppCal .tl-now {
     position: absolute;
     top: 0;
-    bottom: 0;
+    /* тянем сверху */
+    /* bottom: 0;          ← удалить/не задавать, иначе height из JS игнорируется */
     width: 2px;
     background: #ef4444;
-    opacity: .8;
-    pointer-events: none
+    opacity: .9;
+    pointer-events: none;
+    z-index: 3;
+    /* поверх событий и сетки */
 }
+
 
 @media (max-width:900px) {
     #ppCal {
@@ -2749,16 +2754,20 @@ body.theme-dark .pp-cal-tick {
 
 
 /* «сейчас» по UTC */
+/* «сейчас» по UTC — новая pp-cal */
 .pp-cal-now {
     position: absolute;
-    top: var(--pp-scale-h);
-    bottom: var(--pp-scale-h);
+    top: 0;
+    /* от самого верха прокручиваемого контейнера */
+    height: var(--pp-now-h, 100%);
+    /* JS проставит scrollHeight в переменную */
     width: 2px;
     background: #ef4444;
     opacity: .95;
     pointer-events: none;
     z-index: 2;
 }
+
 
 /* === [TIMELINE] Day box inside header === */
 #ppCal .tl-daybar {

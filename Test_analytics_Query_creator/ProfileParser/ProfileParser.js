@@ -2992,17 +2992,26 @@
             elRes.style.height = `${elBody.clientHeight}px`;
         });
 
+
+
         // [ANCHOR TL-NOW-TICK] — поддержка «сейчас» без полного ререндера
         (function wireNowTick() {
             let raf = 0;
-            function updateNow() {
-                const now = new Date();
-                const start = state.anchor;
-                const end = addMs(start, state.rangeMs);
 
-                // есть ли «now»-полоса?
+            function updateNow() {
+                const now = new Date(); // UTC-инстант
+
+                // БАЗА диапазона:
+                // - day: тройной холст (prev | current | next) → старт = anchor - 1 день
+                // - week/month: одинарный холст
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const startBase = (state.view === 'day') ? addMs(state.anchor, -state.rangeMs) : state.anchor;
+                const totalMs = (state.view === 'day') ? state.rangeMs * 3 : state.rangeMs;
+                const endBase = addMs(startBase, totalMs);
+
+                // Показываем линию только если now попадает в текущее «полотно» и это не month
                 let nowEl = elBody.querySelector('.tl-now');
-                if (!(now >= start && now <= end) || state.view === 'month') {
+                if (!(now >= startBase && now <= endBase) || state.view === 'month') {
                     if (nowEl) nowEl.remove();
                     return;
                 }
@@ -3011,17 +3020,36 @@
                     nowEl.className = 'tl-now';
                     elBody.appendChild(nowEl);
                 }
-                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const x = ((now - start) / state.colMs) * colW;
+
+                // Позиция X от начала текущего полотна
+                const x = ((now - startBase) / state.colMs) * colW;
                 nowEl.style.left = `${x}px`;
+
+                // ВЫСОТА: тянем от самого верха на ВЕСЬ контент (включая всё, что проскроллено вниз)
+                nowEl.style.top = '0px';
+                nowEl.style.bottom = ''; // важно: убрать любые bottom, чтобы не ограничивал высоту
+                nowEl.style.height = elBody.scrollHeight + 'px';
             }
 
-            // первичная установка и далее — раз в минуту
+            // первичная отрисовка + раз в минуту
             updateNow();
             setInterval(() => {
                 if (raf) cancelAnimationFrame(raf);
                 raf = requestAnimationFrame(updateNow);
             }, 60 * 1000);
+
+            // при ресайзе/изменении высоты — обновим высоту линии
+            window.addEventListener('resize', () => {
+                const n = elBody.querySelector('.tl-now');
+                if (n) n.style.height = elBody.scrollHeight + 'px';
+            });
+
+            // полезно дёрнуть обновление после каждого render()
+            const _render = render;
+            render = function () {
+                _render();
+                requestAnimationFrame(updateNow);
+            };
         })();
 
 
