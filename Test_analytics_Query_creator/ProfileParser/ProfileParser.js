@@ -2491,7 +2491,7 @@
         // ---- state
         const state = {
             view: 'day',            // 'day' | 'week' | 'month'
-            anchor: startOfLocalDayAsUTC(new Date()), // текущая дата-«якорь»
+            anchor: startOfDayUTC(new Date()), // текущая дата-«якорь»
             colMs: 3600_000,        // длительность колонки
             rangeMs: 24 * 3600_000,   // длительность всей полосы
             colCount: 24,           // количество колонок
@@ -2556,24 +2556,22 @@
 
 
             if (b.dataset.nav === 'today') {
-                state.anchor = startOfLocalDayAsUTC(new Date());
+                state.anchor = startOfDayUTC(new Date());  // UTC-полночь «сегодня»
                 render();
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const extra = (state.view === 'day') ? state.colCount * colW : 0;
-                const xNow = ((new Date() - state.anchor) / state.colMs) * colW + extra;
+                const now = new Date(); // инстант (UTC-линия)
+                const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
 
-                // временно глушим «шов», чтобы программный скролл не сдвинул якорь
                 const prev = allowSeamShift;
-                allowSeamShift = false;
-
+                allowSeamShift = false;  // во время программного скролла «шов» глушим
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
                 positionDayTags();
                 elBody.dispatchEvent(new Event('scroll'));
-
-                // возвращаем прежний режим
                 allowSeamShift = prev;
             }
+
 
 
 
@@ -2939,43 +2937,54 @@
         });
 
 
-        // [ANCHOR TL-CENTER-DAY] — центрируем «сейчас» (UTC) при первом входе
+        // [ANCHOR TL-CENTER-DAY] — центрируем «сейчас» (UTC) при первом входе (надёжно, после лейаута)
         if (!state._centeredOnce && state.view === 'day') {
-            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            const doCenter = () => {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                if (colW <= 0 || elBody.clientWidth === 0) return false; // рано — нет размеров
 
-            // сколько пикселей от 00:00 UTC «сегодня» до текущего момента
-            const now = new Date();
-            const xFromStart = ((now - state.anchor) / state.colMs) * colW;
+                // UTC: «якорь» — полночь UTC текущего дня
+                const now = new Date(); // инстант (UTC-линия), корректно для разницы во времени
+                const xFromStart = ((now - state.anchor) / state.colMs) * colW;
 
-            // тройной буфер: слева «вчера», в середине «сегодня»
-            const offsetToMiddle = state.colCount * colW;
+                // тройной буфер: слева «вчера», по центру — «сегодня»
+                const offsetToMiddle = state.colCount * colW;
 
-            // таргет = середина «сегодня» + смещение на текущее время - половина видимой ширины
-            const xTarget = offsetToMiddle + xFromStart - elBody.clientWidth / 2;
+                // целевая позиция так, чтобы «сейчас» оказалось по центру вьюпорта
+                const xTarget = Math.max(0, offsetToMiddle + xFromStart - elBody.clientWidth / 2);
 
-            // временно глушим «шов», чтобы программный скролл не сдвинул якорь
-            const prev = allowSeamShift;
-            allowSeamShift = false;
+                const prev = allowSeamShift;
+                allowSeamShift = false;          // чтобы «шов» не сдвигал якорь при программном скролле
+                elBody.scrollLeft = xTarget;
+                state._centeredOnce = true;
 
-            elBody.scrollLeft = Math.max(0, xTarget);
-            state._centeredOnce = true;
-
-            // сразу выставить подписи дней над часами
-            positionDayTags();
-
-            // теперь «шов» можно включать
-            allowSeamShift = prev;
-
-            // некоторые браузеры не триггерят scroll-событие на программный scrollLeft — пнём слушатели
-            elBody.dispatchEvent(new Event('scroll'));
-
-            requestAnimationFrame(() => {
+                // синхронизируем шапку и подписи
                 elHeader.style.width = elBody.scrollWidth + 'px';
                 elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
                 updateGridOffset();
                 positionDayTags();
-            });
+
+                allowSeamShift = prev;
+                // некоторые браузеры не шлют scroll-событие на программный сдвиг — пнём вручную
+                elBody.dispatchEvent(new Event('scroll'));
+                return true;
+            };
+
+            // 1) Пытаемся сразу (после текущего render)
+            if (!doCenter()) {
+                // 2) На первый кадр — когда стили применились
+                requestAnimationFrame(() => {
+                    if (!doCenter()) {
+                        // 3) Если контейнер ещё без размеров (скрытая вкладка и т.п.) — ждём ResizeObserver
+                        const ro = new ResizeObserver(() => {
+                            if (doCenter()) ro.disconnect();
+                        });
+                        ro.observe(elBody);
+                    }
+                });
+            }
         }
+
 
 
         // подстроить высоту левой колонки под высоту тела при ресайзе
@@ -3146,19 +3155,22 @@
 
 
         function formatTitle(d, view) {
-            if (view === 'day')
-                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
+            const tz = { timeZone: 'UTC' };
+            if (view === 'day') {
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', ...tz });
+            }
             if (view === 'week') {
                 const e = addMs(d, 6 * 24 * 3600_000);
-                return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ` +
-                    `${e.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                const a = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', ...tz });
+                const b = e.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', ...tz });
+                return `${a} – ${b}`;
             }
-            if (view === 'month')
-                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-
+            if (view === 'month') {
+                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', ...tz });
+            }
             return '';
         }
+
 
 
         // позиция заголовков дня: центр пока вписывается в границы дня
