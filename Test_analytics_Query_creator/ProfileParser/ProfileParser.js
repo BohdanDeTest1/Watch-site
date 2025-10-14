@@ -799,22 +799,7 @@
             calState.canvasStartMs = A;
             calState.canvasEndMs = B;
 
-            // [NOW-UTC] — ставим красную вертикальную линию "сейчас"
-            const mainHost = wrapEl.querySelector('.pp-cal-main');
-            let nowEl = mainHost.querySelector('.pp-cal-now');
-            if (!nowEl) {
-                nowEl = document.createElement('div');
-                nowEl.className = 'pp-cal-now';
-                mainHost.appendChild(nowEl);
-            }
-            const now = Date.now(); // UTC millis
-            if (now >= A && now <= B) {
-                const x = (now - A) / calState.msPerPx;   // пиксели от начала диапазона
-                nowEl.style.left = x + 'px';
-                nowEl.hidden = false;
-            } else {
-                nowEl.hidden = true;
-            }
+
 
 
             // назначаем «шаг сетки» и базовый масштаб под режим
@@ -892,6 +877,65 @@
             const scaleBottom = wrapEl.querySelector('#ppCalScaleBottom');
             const totalW = Math.ceil((B - A) / calState.msPerPx);
             rowsBox.style.width = totalW + 'px';
+
+            // [NOW-UTC:FIXED] — рисуем «сейчас» после того, как известен локальный msPerPx и размеры
+            (function drawNowUTC() {
+                const mainHost = wrapEl.querySelector('.pp-cal-main');
+                if (!mainHost) return;
+
+                // высота линии: тянем до низа контента (включая все ряды)
+                const nowH = (rowsBox?.scrollHeight || mainHost.scrollHeight || 0);
+                if (nowH > 0) {
+                    mainHost.style.setProperty('--pp-now-h', nowH + 'px'); // см. .pp-cal-now { height: var(--pp-now-h) }
+                }
+
+                // создать/получить элемент линии
+                let nowEl = mainHost.querySelector('.pp-cal-now');
+                if (!nowEl) {
+                    nowEl = document.createElement('div');
+                    nowEl.className = 'pp-cal-now';
+                    mainHost.appendChild(nowEl);
+                }
+
+                const now = Date.now(); // UTC millis
+
+                if (now >= A && now <= B) {
+                    const x = (now - A) / msPerPx;
+                    nowEl.style.left = x + 'px';
+                    nowEl.hidden = false;
+
+                    // [AUTO-CENTER-NOW] — один раз при первом рендере прокручиваем, чтобы «сейчас» попало в видимую область
+                    if (!calState._didCenterNow) {
+                        const viewW = mainHost.clientWidth || 0;
+                        const scroll = mainHost.scrollLeft || 0;
+
+                        // если линия «сейчас» вне текущего окна — подвинем так, чтобы она была в центре
+                        if (viewW > 0 && (x < scroll || x > (scroll + viewW))) {
+                            const target = Math.max(0, Math.round(x - viewW / 2));
+                            mainHost.scrollLeft = target;
+                        }
+                        calState._didCenterNow = true; // больше не автоцентрируем, чтобы не мешать пользователю
+                    }
+                } else {
+                    nowEl.hidden = true;
+                }
+
+
+                // поддерживаем актуальную высоту при изменениях размеров/контента
+                if (!drawNowUTC._ro && typeof ResizeObserver === 'function' && rowsBox) {
+                    drawNowUTC._ro = new ResizeObserver(() => {
+                        const h = rowsBox.scrollHeight;
+                        if (h > 0) mainHost.style.setProperty('--pp-now-h', h + 'px');
+                    });
+                    drawNowUTC._ro.observe(rowsBox);
+                    // плюс быстрый хук на ресайз окна
+                    window.addEventListener('resize', () => {
+                        const h = rowsBox.scrollHeight;
+                        if (h > 0) mainHost.style.setProperty('--pp-now-h', h + 'px');
+                    }, { passive: true });
+                }
+            })();
+
 
             // --- Центровка на «сейчас» при первом входе (UTC) ---
             if (!calState._centeredOnce) {
@@ -3032,11 +3076,38 @@
             }
 
             // первичная отрисовка + раз в минуту
-            updateNow();
+            // Было:
+            // updateNow();
+            // setInterval(() => {
+            //     if (raf) cancelAnimationFrame(raf);
+            //     raf = requestAnimationFrame(updateNow);
+            // }, 60 * 1000);
+
+            // Стало: дождёмся применённых стилей/размеров, затем запустим первый апдейт.
+            (function runInitialNow() {
+                // Проверяем, что у нас есть валидные размеры колонок и полотна
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW || 0;
+                const ready =
+                    colW > 0 &&
+                    (state && typeof state.colMs === 'number' && state.colMs > 0) &&
+                    elBody.scrollWidth > 0;
+
+                if (!ready) {
+                    // Ждём следующий кадр, когда лэйаут стабилизируется (после первого render/вставки в DOM)
+                    requestAnimationFrame(runInitialNow);
+                    return;
+                }
+
+                // Первый апдейт — на ближайшем кадре, чтобы попасть после всех transform/scroll sync
+                requestAnimationFrame(updateNow);
+            })();
+
+            // Дальше — минутный тик как и раньше
             setInterval(() => {
                 if (raf) cancelAnimationFrame(raf);
                 raf = requestAnimationFrame(updateNow);
             }, 60 * 1000);
+
 
             // при ресайзе/изменении высоты — обновим высоту линии
             window.addEventListener('resize', () => {
