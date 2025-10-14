@@ -2542,6 +2542,7 @@
             rowH: 44,
             colW: 80
         };
+        const DAY_SPAN = 50;
 
         // Блокируем «шов» до первичного центрирования
         let allowSeamShift = false;
@@ -2604,7 +2605,10 @@
                 render();
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const extra = (state.view === 'day') ? state.colCount * colW : 0;
+                const HALF = Math.floor(DAY_SPAN / 2);
+                const dayW = state.colCount * colW;
+                const extra = (state.view === 'day') ? HALF * dayW : 0;
+
                 const now = new Date(); // инстант (UTC-линия)
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
 
@@ -2635,8 +2639,10 @@
             // [ANCHOR TL-TRIPLE-RANGE] — 3-секционный холст для бесшовного day-скролла
             const start = state.anchor;
             const end = addMs(start, state.rangeMs);
-            const start3 = (state.view === 'day') ? addMs(start, -state.rangeMs) : start;
-            const end3 = (state.view === 'day') ? addMs(start, 2 * state.rangeMs) : end;
+            const HALF = Math.floor(DAY_SPAN / 2);
+            // окно для day: центрируем якорь и даем слева HALF дней, справа (DAY_SPAN - HALF)
+            const start3 = (state.view === 'day') ? addMs(start, -HALF * state.rangeMs) : start;
+            const end3 = (state.view === 'day') ? addMs(start, (DAY_SPAN - HALF) * state.rangeMs) : end;
 
 
             elTitle.textContent = (state.view === 'day') ? '' : formatTitle(start, state.view);
@@ -2662,7 +2668,7 @@
 
             // колонки заголовка
             elHeader.innerHTML = '';
-            const visibleCols = (state.view === 'day') ? state.colCount * 3 : state.colCount;
+            const visibleCols = (state.view === 'day') ? state.colCount * DAY_SPAN : state.colCount;
             for (let i = 0; i < visibleCols; i++) {
                 const t0 = addMs(start3, i * state.colMs);
                 const label = (state.view === 'day')
@@ -2695,7 +2701,12 @@
                 const dayW = state.colCount * colW;
 
                 // три дня: вчера | сегодня | завтра
-                const starts = [addMs(start, -state.rangeMs), start, addMs(start, state.rangeMs)];
+                const mid = Math.floor(DAY_SPAN / 2);
+                // генерируем массив начал суток: …, D-2, D-1, D0(сегодня), D+1, D+2, …
+                const starts = Array.from({ length: DAY_SPAN }, (_, i) =>
+                    addMs(start, (i - mid) * state.rangeMs)
+                );
+
 
                 // EN: "October 1, 2025"
                 const fmtEnLong = d =>
@@ -2729,7 +2740,8 @@
                 const row = document.createElement('div');   // ← создать строку
                 row.className = 'tl-row';
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const colsForRow = (state.view === 'day') ? state.colCount * 3 : state.colCount;
+                const colsForRow = (state.view === 'day') ? state.colCount * DAY_SPAN : state.colCount;
+
                 for (let i = 0; i < colsForRow; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'tl-cell';
@@ -2992,7 +3004,10 @@
                 const xFromStart = ((now - state.anchor) / state.colMs) * colW;
 
                 // тройной буфер: слева «вчера», по центру — «сегодня»
-                const offsetToMiddle = state.colCount * colW;
+                const HALF = Math.floor(DAY_SPAN / 2);
+                const dayW = state.colCount * colW;
+                const offsetToMiddle = HALF * dayW;
+
 
                 // целевая позиция так, чтобы «сейчас» оказалось по центру вьюпорта
                 const xTarget = Math.max(0, offsetToMiddle + xFromStart - elBody.clientWidth / 2);
@@ -3049,8 +3064,10 @@
                 // - day: тройной холст (prev | current | next) → старт = anchor - 1 день
                 // - week/month: одинарный холст
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const startBase = (state.view === 'day') ? addMs(state.anchor, -state.rangeMs) : state.anchor;
-                const totalMs = (state.view === 'day') ? state.rangeMs * 3 : state.rangeMs;
+                const HALF = Math.floor(DAY_SPAN / 2);
+                const startBase = (state.view === 'day') ? addMs(state.anchor, -HALF * state.rangeMs) : state.anchor;
+                const totalMs = (state.view === 'day') ? state.rangeMs * DAY_SPAN : state.rangeMs;
+
                 const endBase = addMs(startBase, totalMs);
 
                 // Показываем линию только если now попадает в текущее «полотно» и это не month
@@ -3286,7 +3303,8 @@
             const scrollX = elBody.scrollLeft;
 
             // три непрерывных дня, которые мы отрисовываем в шапке (координаты КОНТЕНТА!)
-            const blocksLeft = [0, dayW, 2 * dayW];
+            const blocksLeft = Array.from({ length: DAY_SPAN }, (_, i) => i * dayW);
+
 
             const EDGE = 6; // небольшой внутренний отступ от рамки
 
