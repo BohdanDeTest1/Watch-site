@@ -2527,16 +2527,19 @@ body.theme-dark .pp-cal-tick {
     align-items: center;
     padding-left: 12px;
     padding-right: 12px;
-    /* было: border-bottom: 1px solid var(--tl-border); */
     border-bottom: 0;
-    /* <- убираем, чтобы не тянулся на всю ширину */
     position: relative;
     /* для ::after */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
+
+    /* плавное изменение высоты левой ячейки */
+    transition: height 200ms ease;
+    will-change: height;
 }
+
 
 #ppCal .tl-res-item::after {
     content: "";
@@ -2613,6 +2616,7 @@ body.theme-dark .pp-cal-tick {
 
 
 /* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
+/* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
 #ppCal .tl-grid-body .tl-row {
     position: relative;
     height: var(--tl-row-h);
@@ -2622,7 +2626,12 @@ body.theme-dark .pp-cal-tick {
     background-position: 0 0 !important;
     background-attachment: local !important;
     background-repeat: repeat;
+
+    /* плавное изменение высоты строки при смене числа дорожек */
+    transition: height 200ms ease;
+    will-change: height;
 }
+
 
 
 /* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка: чёткие 1px линии, без пропусков */

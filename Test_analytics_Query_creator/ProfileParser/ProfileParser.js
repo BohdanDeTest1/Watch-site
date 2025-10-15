@@ -678,11 +678,13 @@
             msPerPx: null,        // миллисекунд на 1px (масштаб)
             canvasStartMs: null,  // задаются в renderCalendar
             canvasEndMs: null,
-            gridMs: null,   // ← добавь
-            view: 'day',        // 'month' | 'week' | 'day'
-            anchorMs: Date.now(),
+            gridMs: null,
+            view: 'day',          // 'month' | 'week' | 'day'
+            anchorMs: startOfLocalDayAsUTCms(),
+            // ← фикс
             ticks: 0
         };
+
 
         function pickGridMs(msPerPx) {
             // шаги: 30с → 1м → 5м → 10м → 15м → 30м → 1–12ч → 1–3д → неделя
@@ -717,23 +719,35 @@
 
         }
 
-        function startOfDayUTC(ms) {
+        function startOfDayUTCms(ms) {
             const d = new Date(ms); d.setUTCHours(0, 0, 0, 0); return d.getTime();
         }
+
         function startOfWeekUTC(ms) { // неделя с понедельника
-            const d = new Date(startOfDayUTC(ms));
+            const d = new Date(startOfDayUTCms(ms));
             const wd = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - wd);
             return d.getTime();
         }
+
         function startOfMonthUTC(ms) {
             const d = new Date(ms); d.setUTCDate(1); d.setUTCHours(0, 0, 0, 0); return d.getTime();
         }
 
         // диапазон [A,B) под выбранный режим
         function computeRange(view, anchorMs) {
-            if (view === 'day') { const A = startOfDayUTC(anchorMs); return [A, A + 24 * 3600e3]; }
+            if (view === 'day') { const A = startOfDayUTCms(anchorMs); return [A, A + 24 * 3600e3]; }
+
             if (view === 'week') { const A = startOfWeekUTC(anchorMs); return [A, A + 7 * 24 * 3600e3]; }
             const A = startOfMonthUTC(anchorMs); const d = new Date(A); d.setUTCMonth(d.getUTCMonth() + 1); return [A, d.getTime()];
+        }
+
+        // Локальная полночь в миллисекундах (UTC-инстант как число)
+        function startOfLocalDayAsUTCms(now = new Date()) {
+            const localMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            return localMidnight.getTime() - now.getTimezoneOffset() * 60000;
+        }
+        if (typeof window !== 'undefined') {
+            window.startOfLocalDayAsUTCms = window.startOfLocalDayAsUTCms || startOfLocalDayAsUTCms;
         }
 
 
@@ -792,15 +806,10 @@
             const bands = groupByType(rows);
 
             // шкала + строки
-            const mainEl = wrapEl.querySelector('.pp-cal-main'); // используем единое имя
+            const mainEl = wrapEl.querySelector('.pp-cal-main');
 
-            // фиксированный диапазон по режиму (month/week/day)
-            const [A, B] = computeRange(calState.view, calState.anchorMs);
-            calState.canvasStartMs = A;
-            calState.canvasEndMs = B;
-
-
-
+            // базовый диапазон A..B под режим (day/week/month)
+            const [baseA, baseB] = computeRange(calState.view, calState.anchorMs);
 
             // назначаем «шаг сетки» и базовый масштаб под режим
             let gridMs, msPerPx;
@@ -808,7 +817,7 @@
                 gridMs = 24 * 3600e3; msPerPx = gridMs / 48;   // ≈48px на день
             } else if (calState.view === 'week') {        // деление = 1 час
                 gridMs = 3600e3; msPerPx = gridMs / 20;   // ≈20px на час
-            } else {                                     // day — 15 минут
+            } else {                                      // day — 15 минут
                 gridMs = 15 * 60e3; msPerPx = gridMs / 14;   // ≈14px на 15 минут
             }
             calState.gridMs = gridMs;
@@ -816,6 +825,19 @@
 
             const cellW = gridMs / msPerPx;
 
+            // --- ВАЖНО: расширяем канву относительно базового окна ---
+            const viewWpx = Math.max(1, (mainEl?.clientWidth || 0));
+            const viewWms = viewWpx * msPerPx;
+            // держим канву ≈ 6 экранов по времени, по центру вокруг baseA..baseB
+            const baseW = baseB - baseA;
+            const desiredW = Math.max(baseW, viewWms * 6);
+            const center = baseA + baseW / 2;
+            const A = center - desiredW / 2;
+            const B = center + desiredW / 2;
+
+            // сохраняем границы полотна (будут сдвигаться при скролле)
+            calState.canvasStartMs = A;
+            calState.canvasEndMs = B;
 
             updateUnitChips();
 
@@ -994,15 +1016,56 @@
             calState._onScroll = function onScroll() {
                 if (scaleRaf) return;
                 scaleRaf = requestAnimationFrame(() => {
-                    // 1) подписи шкал только в видимой области
-                    makeScales();
-                    // 2) сдвиг фоновой сетки во вьюпорте
+                    // 1) сдвиг фоновой сетки
                     const off = -(mainEl.scrollLeft % cellW);
                     mainEl.style.setProperty('--pp-grid-off', off + 'px');
+
+                    // 2) бесшовный скролл: «перебазирование» полотна
+                    const msPerPx = calState.msPerPx || 1;
+                    const vw = mainEl.clientWidth || 0;
+                    const vwMs = vw * msPerPx;
+
+                    const A = calState.canvasStartMs;
+                    const B = calState.canvasEndMs;
+                    const W = B - A;
+
+                    const leftPx = mainEl.scrollLeft;
+                    const rightPx = leftPx + vw;
+
+                    const nearLeft = leftPx < vw * 0.25;
+                    const nearRight = rightPx > (mainEl.scrollWidth - vw * 0.25);
+
+                    if (nearLeft || nearRight) {
+                        // сохраняем мировую позицию экрана (левый край)
+                        const worldLeftMs = A + leftPx * msPerPx;
+                        const shift = Math.max(vwMs * 3, W / 2); // сдвигаем ≈ на пол-канвы (или 3 экрана)
+
+                        let newA = A, newB = B;
+                        if (nearLeft) { newA = A - shift; newB = B - shift; }
+                        if (nearRight) { newA = A + shift; newB = B + shift; }
+
+                        calState.canvasStartMs = newA;
+                        calState.canvasEndMs = newB;
+
+                        // ширина полотна = (B - A) / msPerPx + один экран запаса
+                        const totalW = Math.ceil((newB - newA) / msPerPx) + vw;
+                        const rowsBox = wrapEl.querySelector('.pp-cal-rows');
+                        rowsBox.style.width = totalW + 'px';
+
+                        // перерисовать подписи шкал под новый A/B
+                        makeScales();
+
+                        // вернуть прежний мировой левый край
+                        const newLeftPx = (worldLeftMs - newA) / msPerPx;
+                        const maxLeft = Math.max(0, mainEl.scrollWidth - mainEl.clientWidth);
+                        mainEl.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
+                    }
+
                     scaleRaf = 0;
                 });
             };
             mainEl?.addEventListener('scroll', calState._onScroll);
+
 
 
 
@@ -1015,6 +1078,22 @@
             const off = -((mainEl?.scrollLeft || 0) % cellW);
             mainEl?.style.setProperty('--pp-grid-off', off + 'px');
             mainEl?.style.setProperty('--pp-dayw', cellW + 'px');
+
+            // --- первичное центрирование на локальном «сегодня» (один раз) ---
+            if (!calState._centeredOnce && Number.isFinite(calState.canvasStartMs)) {
+                const todayMs = startOfLocalDayAsUTC(new Date()).getTime();
+                const A0 = calState.canvasStartMs;
+                const B0 = calState.canvasEndMs;
+                const msPerPx0 = calState.msPerPx || 1;
+                const vw0 = mainEl.clientWidth || 0;
+
+                // если «сегодня» попадает в нашу канву — центрируем по нему; иначе — по центру канвы
+                const target = (todayMs >= A0 && todayMs <= B0) ? todayMs : (A0 + (B0 - A0) / 2);
+                const left = Math.max(0, (target - A0) / msPerPx0 - vw0 / 2);
+
+                mainEl.scrollLeft = left;
+                calState._centeredOnce = true;
+            }
 
 
             // левая панель типов
@@ -2535,7 +2614,7 @@
         // ---- state
         const state = {
             view: 'day',            // 'day' | 'week' | 'month'
-            anchor: startOfDayUTC(new Date()), // текущая дата-«якорь»
+            anchor: startOfLocalDayAsUTC(new Date()), // локальная полночь как UTC-инстант
             colMs: 3600_000,        // длительность колонки
             rangeMs: 24 * 3600_000,   // длительность всей полосы
             colCount: 24,           // количество колонок
@@ -2543,6 +2622,8 @@
             colW: 80
         };
         const DAY_SPAN = 50;
+        const VISIBLE_DAY_SPAN = 3;
+
 
         // Блокируем «шов» до первичного центрирования
         let allowSeamShift = false;
@@ -2601,13 +2682,14 @@
 
 
             if (b.dataset.nav === 'today') {
-                state.anchor = startOfDayUTC(new Date());  // UTC-полночь «сегодня»
+                state.anchor = startOfLocalDayAsUTC(new Date());   // UTC-полночь «сегодня»
                 render();
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const HALF = Math.floor(DAY_SPAN / 2);
+                const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
-                const extra = (state.view === 'day') ? HALF * dayW : 0;
+                const extra = (state.view === 'day') ? halfVisible * dayW : 0;
+
 
                 const now = new Date(); // инстант (UTC-линия)
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
@@ -2639,10 +2721,10 @@
             // [ANCHOR TL-TRIPLE-RANGE] — 3-секционный холст для бесшовного day-скролла
             const start = state.anchor;
             const end = addMs(start, state.rangeMs);
-            const HALF = Math.floor(DAY_SPAN / 2);
-            // окно для day: центрируем якорь и даем слева HALF дней, справа (DAY_SPAN - HALF)
+            const HALF = Math.floor(VISIBLE_DAY_SPAN / 2);
+            // окно 3 дня: вчера | сегодня | завтра вокруг якоря
             const start3 = (state.view === 'day') ? addMs(start, -HALF * state.rangeMs) : start;
-            const end3 = (state.view === 'day') ? addMs(start, (DAY_SPAN - HALF) * state.rangeMs) : end;
+            const end3 = (state.view === 'day') ? addMs(start, (VISIBLE_DAY_SPAN - HALF) * state.rangeMs) : end;
 
 
             elTitle.textContent = (state.view === 'day') ? '' : formatTitle(start, state.view);
@@ -2650,11 +2732,12 @@
 
             // [ANCHOR TL-RESOURCES:RENDER] — ВСЕ типы слева (фиксированный список)
             // 1) полный список типов из исходного массива events (не зависит от окна)
-            const resources = buildResourcesFromEvents(events);
-            drawResList(resources);
-
-            // 2) а для отрисовки баров берём только события, попавшие в текущее окно
+            // [ANCHOR TL-RESOURCES:RENDER] — типы слева = ТОЛЬКО из видимого окна (3 дня)
             const windowEvents = events.filter(ev => ev.end > start3 && ev.start < end3);
+
+            // строим список ресурсов только по текущим 3 дням
+            const resources = buildResourcesFromEvents(windowEvents);
+            drawResList(resources);
 
             // готовим быстрый доступ «тип → события» только по видимому окну,
             // чтобы в строках без событий оставались пустые (но существующие) строки
@@ -2668,7 +2751,8 @@
 
             // колонки заголовка
             elHeader.innerHTML = '';
-            const visibleCols = (state.view === 'day') ? state.colCount * DAY_SPAN : state.colCount;
+            const visibleCols = (state.view === 'day') ? state.colCount * VISIBLE_DAY_SPAN : state.colCount;
+
             for (let i = 0; i < visibleCols; i++) {
                 const t0 = addMs(start3, i * state.colMs);
                 const label = (state.view === 'day')
@@ -2701,11 +2785,13 @@
                 const dayW = state.colCount * colW;
 
                 // три дня: вчера | сегодня | завтра
-                const mid = Math.floor(DAY_SPAN / 2);
+                const mid = Math.floor(VISIBLE_DAY_SPAN / 2);
+
                 // генерируем массив начал суток: …, D-2, D-1, D0(сегодня), D+1, D+2, …
-                const starts = Array.from({ length: DAY_SPAN }, (_, i) =>
+                const starts = Array.from({ length: VISIBLE_DAY_SPAN }, (_, i) =>
                     addMs(start, (i - mid) * state.rangeMs)
                 );
+
 
 
                 // EN: "October 1, 2025"
@@ -2740,7 +2826,8 @@
                 const row = document.createElement('div');   // ← создать строку
                 row.className = 'tl-row';
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const colsForRow = (state.view === 'day') ? state.colCount * DAY_SPAN : state.colCount;
+                const colsForRow = (state.view === 'day') ? state.colCount * VISIBLE_DAY_SPAN : state.colCount;
+
 
                 for (let i = 0; i < colsForRow; i++) {
                     const cell = document.createElement('div');
@@ -3004,9 +3091,9 @@
                 const xFromStart = ((now - state.anchor) / state.colMs) * colW;
 
                 // тройной буфер: слева «вчера», по центру — «сегодня»
-                const HALF = Math.floor(DAY_SPAN / 2);
+                const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
-                const offsetToMiddle = HALF * dayW;
+                const offsetToMiddle = halfVisible * dayW;
 
 
                 // целевая позиция так, чтобы «сейчас» оказалось по центру вьюпорта
@@ -3023,9 +3110,15 @@
                 updateGridOffset();
                 positionDayTags();
 
+
+
                 allowSeamShift = prev;
                 // некоторые браузеры не шлют scroll-событие на программный сдвиг — пнём вручную
                 elBody.dispatchEvent(new Event('scroll'));
+
+                // ВАЖНО: после первичного центрирования разрешаем «шов»
+                allowSeamShift = true;
+
                 return true;
             };
 
@@ -3064,8 +3157,8 @@
                 // - day: тройной холст (prev | current | next) → старт = anchor - 1 день
                 // - week/month: одинарный холст
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const HALF = Math.floor(DAY_SPAN / 2);
-                const startBase = (state.view === 'day') ? addMs(state.anchor, -HALF * state.rangeMs) : state.anchor;
+                const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+                const startBase = (state.view === 'day') ? addMs(state.anchor, -halfVisible * state.rangeMs) : state.anchor;
                 const totalMs = (state.view === 'day') ? state.rangeMs * DAY_SPAN : state.rangeMs;
 
                 const endBase = addMs(startBase, totalMs);
@@ -3258,7 +3351,7 @@
         // утилиты
         function addMs(d, ms) { return new Date(d.getTime() + ms); }
         function clamp(d, min, max) { return (d < min) ? min : (d > max) ? max : d; }
-        function startOfDayUTC(d) { const x = new Date(d); x.setUTCHours(0, 0, 0, 0); return x; }
+        function startOfDayUTC_Date(d) { const x = new Date(d); x.setUTCHours(0, 0, 0, 0); return x; }
         function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 
         // локальная полночь (текущего пользователя), приведённая к UTC-инстанту
@@ -3303,7 +3396,7 @@
             const scrollX = elBody.scrollLeft;
 
             // три непрерывных дня, которые мы отрисовываем в шапке (координаты КОНТЕНТА!)
-            const blocksLeft = Array.from({ length: DAY_SPAN }, (_, i) => i * dayW);
+            const blocksLeft = Array.from({ length: VISIBLE_DAY_SPAN }, (_, i) => i * dayW);
 
 
             const EDGE = 6; // небольшой внутренний отступ от рамки
