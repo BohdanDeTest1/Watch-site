@@ -2624,6 +2624,22 @@
         const DAY_SPAN = 50;
         const VISIBLE_DAY_SPAN = 3;
 
+        // окно типов = 24 часа: 12 назад + 12 вперёд от текущего центра
+        const WINDOW_HALF_HOURS = 12;
+
+        // вычисляем UTC-момент в центре текущей видимой области таймлайна
+        function getViewportCenterDate(start3) {
+            try {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const pxMid = (elBody.scrollLeft || 0) + (elBody.clientWidth || 0) / 2;
+                const colsFromStart = pxMid / colW;
+                return addMs(start3, colsFromStart * state.colMs);
+            } catch {
+                // запасной вариант — середина суток вокруг anchor
+                return addMs(state.anchor, state.rangeMs / 2);
+            }
+        }
+
 
         // Блокируем «шов» до первичного центрирования
         let allowSeamShift = false;
@@ -2717,30 +2733,35 @@
             if (v === 'month') { state.colMs = 7 * 24 * 3600_000; state.colCount = 6; state.rangeMs = state.colMs * state.colCount; }
         }
 
+
         function render() {
             // [ANCHOR TL-TRIPLE-RANGE] — 3-секционный холст для бесшовного day-скролла
             const start = state.anchor;
             const end = addMs(start, state.rangeMs);
             const HALF = Math.floor(VISIBLE_DAY_SPAN / 2);
-            // окно 3 дня: вчера | сегодня | завтра вокруг якоря
+
+            // окно 3 дня для полотна (остаётся для бесшовного скролла)
             const start3 = (state.view === 'day') ? addMs(start, -HALF * state.rangeMs) : start;
             const end3 = (state.view === 'day') ? addMs(start, (VISIBLE_DAY_SPAN - HALF) * state.rangeMs) : end;
 
+            // сохраняем для scroll-listener
+            state._start3 = start3;
 
             elTitle.textContent = (state.view === 'day') ? '' : formatTitle(start, state.view);
 
+            // === [ОКНО ТИПОВ: ±12ч от центра видимой области] ========================
+            const centerDate = getViewportCenterDate(start3);
+            const windowStart = addMs(centerDate, -WINDOW_HALF_HOURS * state.colMs);
+            const windowEnd = addMs(centerDate, +WINDOW_HALF_HOURS * state.colMs);
 
-            // [ANCHOR TL-RESOURCES:RENDER] — ВСЕ типы слева (фиксированный список)
-            // 1) полный список типов из исходного массива events (не зависит от окна)
-            // [ANCHOR TL-RESOURCES:RENDER] — типы слева = ТОЛЬКО из видимого окна (3 дня)
-            const windowEvents = events.filter(ev => ev.end > start3 && ev.start < end3);
+            // Берём только события, пересекающие окно 24 часа
+            const windowEvents = events.filter(ev => ev.end > windowStart && ev.start < windowEnd);
 
-            // строим список ресурсов только по текущим 3 дням
+            // типы слева — только по видимому 24ч окну
             const resources = buildResourcesFromEvents(windowEvents);
             drawResList(resources);
 
-            // готовим быстрый доступ «тип → события» только по видимому окну,
-            // чтобы в строках без событий оставались пустые (но существующие) строки
+            // быстрый доступ «тип → события» в рамках 24ч окна
             const byType = new Map();
             for (const ev of windowEvents) {
                 const k = ev.type;
@@ -3251,6 +3272,21 @@
             elRes.style.transform = `translateY(${-y}px)`;
             positionDayTags();
             updateGridOffset();
+
+            // === обновляем окно только при переходе центра в следующий час ===
+            if (state.view === 'day' && state._start3) {
+                const center = getViewportCenterDate(state._start3);
+                const hourKey = Math.floor(center.getTime() / 3600000); // UTC-час
+
+                if (hourKey !== state._lastCenterHour) {
+                    state._lastCenterHour = hourKey;
+                    // Полный render нужен, чтобы пересчитать и список слева, и события в теле.
+                    // Программного скролла мы тут не делаем — «шов» не затронем.
+                    render();
+                }
+            }
+
+
         }, { passive: true });
 
         // === [ANCHOR TL-INFO-DELEGATE] поповер по кнопке "▸" ======================
