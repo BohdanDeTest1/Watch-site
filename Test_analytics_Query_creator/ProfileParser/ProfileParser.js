@@ -3054,9 +3054,11 @@
                     placed.push({ ev, lane });
                 }
 
-                // Высота одной ячейки события — 22px (как просил)
-                const LANE_H = 22;
-                const V_PAD = 8; // суммарный вертикальный внутренний отступ строки (сверху+снизу)
+                // Высота «дорожки»: 21px бар + 2px зазор = 23px
+                const LANE_H = 23;
+
+                // Между разными типами делаем чуть больший зазор (сумма: верх+низ)
+                const V_PAD = 14;
 
                 const lanesUsed = laneEnds.length || 1;
                 const rowPx = V_PAD + lanesUsed * LANE_H;

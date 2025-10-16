@@ -2690,22 +2690,23 @@ body.theme-dark .pp-cal-tick {
     white-space: nowrap;
 }
 
+/* [TL-EVENT — lane-based layout, no row-tied height] */
 #ppCal .tl-event {
     position: absolute;
-    top: 6px;
-    height: calc(var(--tl-row-h) - 12px);
+    /* каждая «дорожка» = 23px (21px бар + 2px зазор) */
+    top: calc(var(--lane, 0) * 23px);
+    height: 21px;
     border-radius: 6px;
     padding: 0 8px;
     display: flex;
     align-items: center;
+    gap: 6px;
     font-size: 12px;
     color: #fff;
-    /* контейнер только обрезает, но не решает, ставить ли '…' */
-    overflow: hidden;
-    gap: 6px;
-    /* убрали text-overflow у контейнера */
-    /* white-space у контейнера не нужен — им управляет .txt */
+    overflow: visible;
+    /* не клипим текст/кнопку */
 }
+
 
 
 #ppCal .tl-event.type-0 {
