@@ -210,36 +210,161 @@
         return (s || '').replace(/\s*UTC$/, '');
     }
 
-    // === Фиксированная цветовая схема для типов событий ===
-    function colorForType(typeRaw) {
-        const type = String(typeRaw || '').trim().toLowerCase();
-        const TYPE_COLOR_OVERRIDES = [
-            { key: 'welcome pack', color: '#C2185B' },
-            { key: 'weekend sale', color: '#F39C12' },
-            { key: 'ads period', color: '#00ACC1' },
-            { key: 'starter pack', color: '#3F51B5' },
-            { key: 'event for ad', color: '#7E57C2' },
-            { key: 'battle pass', color: '#26A69A' },
-            { key: 'golden offer', color: '#8E44AD' },
-            { key: 'game event', color: '#26A69A' },
-            { key: 'game offer', color: '#8E44AD' },
-            { key: 'artist', color: '#7CB342' }
-        ];
-        for (const { key, color } of TYPE_COLOR_OVERRIDES) {
-            if (type.includes(key)) return color;
+    // // === Уникальные цвета для типов событий из заданной палитры (без повторов) ===
+    // // Палитра взята из твоего скриншота (дубликаты удалены, порядок сохранён).
+    // const __PP_PALETTE = [
+    //     '#F2F1E6', '#AADED2', '#75BDAD', '#CDFAF0', '#99D1C6', '#96D4C8', '#85D9D3', '#6BBFC5', '#89CCD4', '#5DA3AC',
+    //     '#7BAAB7', '#7AB6CA', '#AEE1F2', '#9ECCDE', '#94B7DD', '#83AAD5', '#99C1F2', '#98B4D7', '#A4C0EF', '#87A0D3',
+    //     '#7591CC', '#7A96D5', '#7F95CC', '#7C89B7', '#8589D4', '#ABA8E7', '#9D9ACE', '#CECBF8', '#B09FDC', '#B9A9D9',
+    //     '#AE86CC', '#DAB8EB', '#D790CC', '#BC7089', '#955766', '#A35667'
+    // ];
+
+    // // Кеш соответствий "тип → цвет" и текущий индекс палитры
+    // const __ppTypeColorCache = new Map();
+    // let __ppPaletteIndex = 0;
+
+    // // Резерв: если типов больше, чем цветов в палитре, создаём новые оттенки по "золотому углу"
+    // let __ppNextHue = 0;
+    // const __PP_GOLDEN_ANGLE = 137.508;
+    // const __PP_SAT = 72;   // %
+    // const __PP_LUM = 56;   // %
+
+    // function __ppNextColorFromPaletteOrHSL() {
+    //     if (__ppPaletteIndex < __PP_PALETTE.length) {
+    //         return __PP_PALETTE[__ppPaletteIndex++];
+    //     }
+    //     const hue = Math.round(__ppNextHue % 360);
+    //     __ppNextHue += __PP_GOLDEN_ANGLE;
+    //     return `hsl(${hue}deg ${__PP_SAT}% ${__PP_LUM}%)`;
+    // }
+
+    // // Публичный хелпер для отладки/перегенерации (опционально вызвать из консоли)
+    // window.__ppResetTypeColors = function () {
+    //     __ppTypeColorCache.clear();
+    //     __ppPaletteIndex = 0;
+    //     __ppNextHue = 0;
+    // };
+
+    // function colorForType(typeRaw) {
+    //     const key = String(typeRaw || '—').trim().toLowerCase();
+    //     if (__ppTypeColorCache.has(key)) return __ppTypeColorCache.get(key);
+    //     const color = __ppNextColorFromPaletteOrHSL();
+    //     __ppTypeColorCache.set(key, color);
+    //     return color;
+    // }
+
+    // === Палитра и генератор цветов/градиентов для типов событий ===
+    // Палитра подобрана по твоему скрину (исключены слишком светлые тона для читабельности текста).
+    // Мы берём только средние/тёмные тона, а фон баров красим вертикальным градиентом:
+    // верх чуть светлее, низ чуть темнее.
+
+    // базовые цвета (приближённые к карточкам на скрине), без «сверх-светлых»
+    const __PP_BASE_PALETTE = [
+        '#D74C87', // розовый
+        '#FF6F8A', // коралл-розовый
+        '#27BFC0', // бирюза
+        '#FF6464', // коралл
+        '#8F8F93', // серый средний
+        '#84DB8C', // зелёный пастель (не слишком светлый)
+        '#BFA792', // тёплый беж
+        '#73CFC1', // мятный
+        '#C4926F', // тёплый коричневатый
+        '#FFA63C', // тёплый оранж
+        '#8672D8', // фиолетово-синий
+        '#F04A38', // красно-оранж
+        '#1A9E24', // зелёный насыщенный
+        '#5A7DFF', // яркий индиго/синий
+        '#D59C1E', // золотистый
+        '#16C784', // изумруд
+        '#48A9F8'  // небесно-синий (средний)
+    ];
+
+    // вспомогательные функции: HEX <-> HSL и корректировка светлоты
+    function __hexToHsl(hex) {
+        hex = hex.replace('#', '').trim();
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.slice(0, 2), 16) / 255;
+        const g = parseInt(hex.slice(2, 4), 16) / 255;
+        const b = parseInt(hex.slice(4, 6), 16) / 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) { h = s = 0; }
+        else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h *= 60;
         }
-
-        const PALETTE = [
-            '#C2185B', '#00ACC1', '#3F51B5', '#8E44AD',
-            '#26A69A', '#EF6C00', '#2E7D32', '#5E35B1',
-            '#1E88E5', '#D81B60', '#7CB342', '#F39C12',
-            '#455A64', '#9C27B0', '#00796B', '#3949AB'
-        ];
-
-        let h = 0;
-        for (let i = 0; i < type.length; i++) h = (h * 31 + type.charCodeAt(i)) >>> 0;
-        return PALETTE[h % PALETTE.length];
+        return { h, s, l };
     }
+    function __hslToHex(h, s, l) {
+        function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        }
+        h = ((h % 360) + 360) % 360; s = Math.max(0, Math.min(1, s)); l = Math.max(0, Math.min(1, l));
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        const r = Math.round(hue2rgb(p, q, (h / 360) + 1 / 3) * 255);
+        const g = Math.round(hue2rgb(p, q, (h / 360)) * 255);
+        const b = Math.round(hue2rgb(p, q, (h / 360) - 1 / 3) * 255);
+        const toHex = (n) => n.toString(16).padStart(2, '0').toUpperCase();
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    function __adjustLightness(hex, delta /*-1..+1*/) {
+        const { h, s, l } = __hexToHsl(hex);
+        return __hslToHex(h, s, Math.max(0, Math.min(1, l + delta)));
+    }
+
+    // фильтрация «слишком светлых» (l>0.78) — из палитры их исключаем
+    const __PP_PALETTE = __PP_BASE_PALETTE.filter(c => __hexToHsl(c).l <= 0.78);
+
+    const __ppTypeColorCache = new Map(); // type -> базовый HEX
+    let __ppPaletteIdx = 0;
+
+    // резерв, если типов больше, чем оттенков в палитре
+    let __ppNextHue = 0;
+    const __PP_GOLDEN_ANGLE = 137.508;
+
+    function __nextBaseColor() {
+        if (__ppPaletteIdx < __PP_PALETTE.length) return __PP_PALETTE[__ppPaletteIdx++];
+        // fallback: генерим новый различимый цвет
+        const hue = Math.round(__ppNextHue % 360); __ppNextHue += __PP_GOLDEN_ANGLE;
+        return __hslToHex(hue, 0.62, 0.48);
+    }
+
+    // сплошной цвет для компактных меток/бейджей
+    function colorForType(typeRaw) {
+        const key = String(typeRaw || '—').trim().toLowerCase();
+        if (__ppTypeColorCache.has(key)) return __ppTypeColorCache.get(key);
+        const base = __nextBaseColor();
+        __ppTypeColorCache.set(key, base);
+        return base;
+    }
+
+    // градиент для больших баров/«dot» (верх светлее, низ темнее)
+    function gradientForType(typeRaw) {
+        const base = colorForType(typeRaw);
+        const top = __adjustLightness(base, +0.10);   // +10% светлее
+        const bot = __adjustLightness(base, -0.12);   // −12% темнее
+        return `linear-gradient(to bottom, ${top}, ${bot})`;
+    }
+
+    // опционально — сброс кэша (можно вызвать из консоли)
+    window.__ppResetTypeColors = function () {
+        __ppTypeColorCache.clear();
+        __ppPaletteIdx = 0;
+        __ppNextHue = 0;
+    };
+
 
 
     // "YYYY-MM-DD HH:mm:ss UTC" -> ms (UTC)
@@ -1133,7 +1258,8 @@
                 row.className = 'pp-cal-side-row';
                 row.innerHTML = `
       <input type="checkbox" class="pp-cal-toggle" data-type="${b.type}" checked>
-      <span class="dot" style="background:${colorForType(b.type)}"></span>
+          <span class="dot" style="background:${gradientForType(b.type)}"></span>
+ 
       <span class="lbl" title="${b.type}">${b.type}</span>`;
                 side.appendChild(row);
             });
@@ -1169,7 +1295,7 @@
                     bar.style.left = leftPx + 'px';
                     bar.style.width = widthPx + 'px';
 
-                    bar.style.background = colorForType(band.type);
+                    bar.style.background = gradientForType(band.type);
                     // bar.title = `${ev.name}\n${stripUTC(ev.startPretty)} — ${stripUTC(ev.endPretty)} (UTC)`;
                     // bar.innerHTML = `<span class="txt">${ev.name}</span>`;
                     // rowEl.appendChild(bar);
@@ -2702,10 +2828,11 @@
             elRes.innerHTML = resourcesArr
                 .map(r => {
                     const label = humanTypeLabel(r);
-                    const color = colorForType(r);
+                    const color = gradientForType(r);
                     return `<div class="tl-res-item" data-res="${escapeHtml(r)}">
   <span class="tl-dot" style="background:${color}"></span>${escapeHtml(label)}
 </div>`;
+
                 })
                 .join('');
         }
