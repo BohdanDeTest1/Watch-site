@@ -2833,6 +2833,18 @@
                 .join('');
         }
 
+        // Сравнение массивов строк по длине и поэлементно (важен порядок ALL_TYPES)
+        function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (!Array.isArray(a) || !Array.isArray(b)) return false;
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+
 
         const events = items
             .filter(x => Number.isFinite(x.startTS) && Number.isFinite(x.endTS))
@@ -2920,7 +2932,13 @@
             // типы слева: показываем ТОЛЬКО те, что есть в окне, но в ГЛОБАЛЬНО фиксированном порядке
             const windowSet = new Set(buildResourcesFromEvents(windowEvents));
             const resources = ALL_TYPES.filter(t => windowSet.has(t));
-            drawResList(resources);
+
+            // Рисуем список слева только если он реально изменился
+            if (!arraysEqual(state._resList || [], resources)) {
+                drawResList(resources);
+                state._resList = resources.slice();
+            }
+
 
 
             // быстрый доступ «тип → события» в рамках 24ч окна
