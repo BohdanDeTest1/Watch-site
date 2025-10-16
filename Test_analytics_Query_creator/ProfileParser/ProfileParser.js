@@ -2818,11 +2818,7 @@
         function buildResourcesFromEvents(eventsArr) {
             return Array.from(new Set(eventsArr.map(e => e.type || '—')));
         }
-        // function drawResList(resourcesArr) {
-        //     elRes.innerHTML = resourcesArr
-        //         .map(r => `<div class="tl-res-item" data-res="${escapeHtml(r)}">${escapeHtml(r)}</div>`)
-        //         .join('');
-        // }
+
 
         function drawResList(resourcesArr) {
             elRes.innerHTML = resourcesArr
@@ -2848,6 +2844,10 @@
                 segments: Array.isArray(x.segments) ? x.segments : [],
                 externalsBySegment: x.externalsBySegment || {}
             }));
+
+        // Глобальный неизменный порядок типов (по всему списку событий)
+        const ALL_TYPES = buildResourcesFromEvents(events);
+
 
 
         // кнопки тулбара
@@ -2917,9 +2917,11 @@
             // Берём только события, пересекающие окно 24 часа
             const windowEvents = events.filter(ev => ev.end > windowStart && ev.start < windowEnd);
 
-            // типы слева — только по видимому 24ч окну
-            const resources = buildResourcesFromEvents(windowEvents);
+            // типы слева: показываем ТОЛЬКО те, что есть в окне, но в ГЛОБАЛЬНО фиксированном порядке
+            const windowSet = new Set(buildResourcesFromEvents(windowEvents));
+            const resources = ALL_TYPES.filter(t => windowSet.has(t));
             drawResList(resources);
+
 
             // быстрый доступ «тип → события» в рамках 24ч окна
             const byType = new Map();
