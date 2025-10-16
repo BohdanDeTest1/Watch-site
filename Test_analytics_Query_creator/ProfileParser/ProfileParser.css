@@ -1977,11 +1977,8 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
 }
 
 
-.pp-cal-side-row .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    display: inline-block;
+.pp-cal-side-row .dot.pp-deep {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .18), 0 1px 2px rgba(0, 0, 0, .15);
 }
 
 .pp-cal-side-row .lbl {
@@ -2091,14 +2088,18 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     left: 0;
     top: calc(6px + var(--lane)*22px);
     height: 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     color: #fff;
-    padding: 0 8px;
+    padding: 0 10px;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
-    opacity: .95;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+    opacity: 1;
+    /* фикс: не бледним глубокие цвета */
+    outline: 1px solid rgba(255, 255, 255, .12);
+    /* деликатный контур по краю */
 }
+
 
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
 #ppCal .tl-event .txt {
@@ -3219,4 +3220,18 @@ body.theme-dark .pp-cal-tick {
 #ppCal .tl-grid-header {
     will-change: transform, width;
     /* <— ДОБАВИЛИ */
+}
+
+/* цветной маркер типа в левой колонке */
+#ppCal .tl-res-item .tl-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+#ppCal .tl-event {
+    color: #fff;
 }

@@ -210,6 +210,38 @@
         return (s || '').replace(/\s*UTC$/, '');
     }
 
+    // === Фиксированная цветовая схема для типов событий ===
+    function colorForType(typeRaw) {
+        const type = String(typeRaw || '').trim().toLowerCase();
+        const TYPE_COLOR_OVERRIDES = [
+            { key: 'welcome pack', color: '#C2185B' },
+            { key: 'weekend sale', color: '#F39C12' },
+            { key: 'ads period', color: '#00ACC1' },
+            { key: 'starter pack', color: '#3F51B5' },
+            { key: 'event for ad', color: '#7E57C2' },
+            { key: 'battle pass', color: '#26A69A' },
+            { key: 'golden offer', color: '#8E44AD' },
+            { key: 'game event', color: '#26A69A' },
+            { key: 'game offer', color: '#8E44AD' },
+            { key: 'artist', color: '#7CB342' }
+        ];
+        for (const { key, color } of TYPE_COLOR_OVERRIDES) {
+            if (type.includes(key)) return color;
+        }
+
+        const PALETTE = [
+            '#C2185B', '#00ACC1', '#3F51B5', '#8E44AD',
+            '#26A69A', '#EF6C00', '#2E7D32', '#5E35B1',
+            '#1E88E5', '#D81B60', '#7CB342', '#F39C12',
+            '#455A64', '#9C27B0', '#00796B', '#3949AB'
+        ];
+
+        let h = 0;
+        for (let i = 0; i < type.length; i++) h = (h * 31 + type.charCodeAt(i)) >>> 0;
+        return PALETTE[h % PALETTE.length];
+    }
+
+
     // "YYYY-MM-DD HH:mm:ss UTC" -> ms (UTC)
     function toMsFromCell(s) {
         const iso = stripUTC(s).replace(' ', 'T') + 'Z';
@@ -612,11 +644,9 @@
 `;
 
         function stripUTC(s) { return (s || '').replace(/\s*UTC$/, ''); }
-        function colorForType(type) {
-            const palette = ['#6B4EFF', '#1EA7FD', '#8BC34A', '#FF9F1A', '#E14D9C', '#7E57C2', '#26A69A', '#F06292'];
-            let h = 0; for (let i = 0; i < type.length; i++) h = (h * 31 + type.charCodeAt(i)) >>> 0;
-            return palette[h % palette.length];
-        }
+
+
+
         function groupByType(rows) {
             const map = new Map();
             rows.forEach(r => { const k = r.type || '—'; (map.get(k) || map.set(k, []).get(k)).push(r); });
@@ -2672,7 +2702,10 @@
             elRes.innerHTML = resourcesArr
                 .map(r => {
                     const label = humanTypeLabel(r);
-                    return `<div class="tl-res-item" data-res="${escapeHtml(r)}">${escapeHtml(label)}</div>`;
+                    const color = colorForType(r);
+                    return `<div class="tl-res-item" data-res="${escapeHtml(r)}">
+  <span class="tl-dot" style="background:${color}"></span>${escapeHtml(label)}
+</div>`;
                 })
                 .join('');
         }
@@ -2894,9 +2927,14 @@
                     const width = Math.max(8, ((b - a) / state.colMs) * colW);
 
                     const badge = document.createElement('div');
-                    badge.className = `tl-event type-${ri % 4}`;
+                    badge.className = 'tl-event';
                     badge.style.left = `${leftPx}px`;
                     badge.style.width = `${width}px`;
+
+                    // фиксированный цвет из типа
+                    const bg = colorForType(ev.type);
+                    badge.style.background = bg;
+                    badge.style.color = '#fff';
                     // передаём lane в CSS
                     badge.style.setProperty('--lane', lane);
 
