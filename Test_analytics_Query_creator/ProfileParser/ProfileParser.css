@@ -2167,7 +2167,36 @@ body.theme-dark .pp-cal-tick {
     position: relative;
 }
 
-/* <— добавь эту строку прямо в блок .pp-cal-main */
+/* чередующиеся фоны часов (светло-серая / белая) — под линиями */
+.pp-cal-rows::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* одна полоса = ширина часа; вторая — следующего часа */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(0, 0, 0, .035) 0,
+            rgba(0, 0, 0, .035) var(--pp-dayw),
+            transparent var(--pp-dayw),
+            transparent calc(var(--pp-dayw) * 2));
+    background-position-x: var(--pp-grid-off, 0px);
+    z-index: 0;
+    /* под линиями (::after) и событиями */
+}
+
+/* тёмная тема: едва заметные светлые полосы */
+.theme-dark .pp-cal-rows::before,
+:root.theme-dark .pp-cal-rows::before,
+.dark .pp-cal-rows::before {
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(255, 255, 255, .035) 0,
+            rgba(255, 255, 255, .035) var(--pp-dayw),
+            transparent var(--pp-dayw),
+            transparent calc(var(--pp-dayw) * 2));
+}
+
 
 .pp-cal-rows::after {
     content: "";
@@ -2607,11 +2636,22 @@ body.theme-dark .pp-cal-tick {
     border-right: 0;
     /* ← убрали бордеры */
 
-    /* рисуем ту же вертикальную сетку поверх шапки (для непрерывности) */
-    background-image: linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px);
-    background-size: var(--tl-col-w) 100%;
-    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0;
+    /* тот же многослойный фон: зебра + вертикальные линии */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(0, 0, 0, .035) 0,
+            rgba(0, 0, 0, .035) var(--tl-col-w),
+            transparent var(--tl-col-w),
+            transparent calc(var(--tl-col-w) * 2)),
+        linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px);
+    background-size:
+        calc(var(--tl-col-w) * 2) 100%,
+        var(--tl-col-w) 100%;
+    background-position:
+        calc(var(--tl-grid-off, 0px)) 0,
+        calc(var(--tl-grid-off, 0px) + 0.5px) 0;
     background-repeat: repeat;
+
 }
 
 
@@ -2643,23 +2683,39 @@ body.theme-dark .pp-cal-tick {
     will-change: height;
 }
 
-
-
-/* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка: чёткие 1px линии, без пропусков */
+/* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка + зебра часов */
 #ppCal .tl-grid-body {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(var(--tl-row-h) * 13);
+
+    /* 1) зебра (фон колонок), 2) вертикальные линии, 3) горизонтальные линии */
     background-image:
+        /* зебра (чередование часов) */
+        repeating-linear-gradient(to right,
+            rgba(0, 0, 0, .035) 0,
+            rgba(0, 0, 0, .035) var(--tl-col-w),
+            transparent var(--tl-col-w),
+            transparent calc(var(--tl-col-w) * 2)),
         /* вертикали */
         linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px),
         /* горизонтали */
         linear-gradient(to bottom, var(--tl-border) 0 1px, transparent 1px);
-    background-size: var(--tl-col-w) 100%, 100% var(--tl-row-h);
-    background-position: calc(var(--tl-grid-off, 0px) + 0.5px) 0, 0 0;
+    background-size:
+        calc(var(--tl-col-w) * 2) 100%,
+        var(--tl-col-w) 100%,
+        100% var(--tl-row-h);
+    background-position:
+        calc(var(--tl-grid-off, 0px)) 0,
+        calc(var(--tl-grid-off, 0px) + 0.5px) 0,
+        0 0;
     background-repeat: repeat;
     background-attachment: local;
     background-origin: content-box;
     will-change: background-position;
 }
-
 
 
 /* линии рисуем НЕ бордером ячеек, чтобы не было двойных линий и обрывов */
