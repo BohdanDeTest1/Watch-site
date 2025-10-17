@@ -2214,6 +2214,8 @@ body.theme-dark .pp-cal-tick {
             rgba(0, 0, 0, .12) calc(var(--pp-dayw) - 1px),
             rgba(0, 0, 0, .12) var(--pp-dayw));
     background-position-x: var(--pp-grid-off, 0px);
+    border-right: none !important;
+    background: none !important;
     z-index: 1;
 }
 
@@ -2691,31 +2693,21 @@ body.theme-dark .pp-cal-tick {
     overflow-y: auto;
     max-height: calc(var(--tl-row-h) * 13);
 
-    /* 1) зебра (фон колонок), 2) вертикальные линии, 3) горизонтальные линии */
+    /* только зебра, без вертикальных и горизонтальных линий */
     background-image:
-        /* зебра (чередование часов) */
         repeating-linear-gradient(to right,
-            rgba(0, 0, 0, .035) 0,
-            rgba(0, 0, 0, .035) var(--tl-col-w),
-            transparent var(--tl-col-w),
-            transparent calc(var(--tl-col-w) * 2)),
-        /* вертикали */
-        linear-gradient(to right, var(--tl-border) 0 1px, transparent 1px),
-        /* горизонтали */
-        linear-gradient(to bottom, var(--tl-border) 0 1px, transparent 1px);
-    background-size:
-        calc(var(--tl-col-w) * 2) 100%,
-        var(--tl-col-w) 100%,
-        100% var(--tl-row-h);
-    background-position:
-        calc(var(--tl-grid-off, 0px)) 0,
-        calc(var(--tl-grid-off, 0px) + 0.5px) 0,
-        0 0;
+            #f9f9f9 0,
+            #f9f9f9 var(--tl-col-w),
+            white var(--tl-col-w),
+            white calc(var(--tl-col-w) * 2));
+    background-size: calc(var(--tl-col-w) * 2) 100%;
+    background-position: calc(var(--tl-grid-off, 0px)) 0;
     background-repeat: repeat;
     background-attachment: local;
     background-origin: content-box;
     will-change: background-position;
 }
+
 
 
 /* линии рисуем НЕ бордером ячеек, чтобы не было двойных линий и обрывов */
