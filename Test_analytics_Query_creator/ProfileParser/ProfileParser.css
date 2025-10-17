@@ -1908,6 +1908,16 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     background: var(--card);
 }
 
+/* Оптимизация плавности сдвигов хедера часов и левой колонки типов */
+#tlHeader {
+    will-change: transform;
+}
+
+#tlResList {
+    will-change: transform;
+}
+
+
 .pp-cal-toolbar {
     display: flex;
     gap: 16px;

@@ -2800,6 +2800,10 @@
         // Блокируем «шов» до первичного центрирования
         let allowSeamShift = false;
 
+        // Debounce для пост-скроллового рендера (убирает «мерцание» при X-скролле)
+        let _scrollRenderTimer = 0;
+        const RENDER_IDLE_MS = 120; // пауза (мс), после которой можно безопасно пересчитать окно
+
 
         function normType(s) {
             // схлопываем пробелы и обрезаем
@@ -3450,31 +3454,26 @@
 
         // [ANCHOR TL-HEADER-SYNC]
         elBody.addEventListener('scroll', () => {
+            // горизонтальный parallax шапки часов
             elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
 
-            // [FIX SNAP TO PIXEL]
+            // [FIX SNAP TO PIXEL] — убираем дрожь по Y и синхронизируем левую колонку
             const dpr = window.devicePixelRatio || 1;
             const y = Math.round(elBody.scrollTop * dpr) / dpr;
-
             elRes.style.transform = `translateY(${-y}px)`;
+
             positionDayTags();
             updateGridOffset();
 
-            // === обновляем окно только при переходе центра в следующий час ===
-            if (state.view === 'day' && state._start3) {
-                const center = getViewportCenterDate(state._start3);
-                const hourKey = Math.floor(center.getTime() / 3600000); // UTC-час
-
-                if (hourKey !== state._lastCenterHour) {
-                    state._lastCenterHour = hourKey;
-                    // Полный render нужен, чтобы пересчитать и список слева, и события в теле.
-                    // Программного скролла мы тут не делаем — «шов» не затронем.
-                    render();
-                }
-            }
-
-
+            // ЛЁГКИЙ РЕЖИМ: во время прокрутки НЕ делаем полный render(),
+            // чтобы не мигали события и список типов слева.
+            // Делаем его отложенно, если пользователь перестал крутить.
+            if (_scrollRenderTimer) clearTimeout(_scrollRenderTimer);
+            _scrollRenderTimer = setTimeout(() => {
+                render(); // один раз после паузы
+            }, RENDER_IDLE_MS);
         }, { passive: true });
+
 
         // === [ANCHOR TL-INFO-DELEGATE] поповер по кнопке "▸" ======================
         function fmtUTC(d) {
