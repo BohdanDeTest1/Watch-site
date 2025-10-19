@@ -2408,7 +2408,7 @@ body.theme-dark .pp-cal-tick {
     cursor: pointer;
     font-size: 12px;
     line-height: 1;
-    color: #fff;
+    color: transparent;
     opacity: .9;
 }
 
@@ -2706,6 +2706,82 @@ body.theme-dark .pp-cal-tick {
     background-attachment: local;
     background-origin: content-box;
     will-change: background-position;
+}
+
+/* === TL scrollbars (локально к календарю) === */
+#ppCal .tl-grid-body {
+    /* всегда резервируем место под полосы, чтобы не пропадали */
+    scrollbar-gutter: stable both-edges;
+
+    /* Firefox — тонкая полоса + цвета под светлую тему по умолчанию */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(17, 24, 39, .35) transparent;
+}
+
+/* WebKit (Chrome/Edge/Safari): размеры обеих осей */
+#ppCal .tl-grid-body::-webkit-scrollbar {
+    width: 8px;
+    /* вертикальная */
+    height: 8px;
+    /* горизонтальная */
+}
+
+#ppCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 39, .35);
+    border-radius: 8px;
+}
+
+#ppCal .tl-grid-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* уголок между полосами */
+#ppCal .tl-grid-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+/* === ТЁМНАЯ ТЕМА: делаем цвета светлее на тёмном фоне === */
+:root.theme-dark #ppCal .tl-grid-body,
+.theme-dark #ppCal .tl-grid-body,
+[data-theme="dark"] #ppCal .tl-grid-body,
+.dark #ppCal .tl-grid-body {
+    scrollbar-color: rgba(255, 255, 255, .28) transparent;
+    /* Firefox */
+}
+
+:root.theme-dark #ppCal .tl-grid-body::-webkit-scrollbar-thumb,
+.theme-dark #ppCal .tl-grid-body::-webkit-scrollbar-thumb,
+[data-theme="dark"] #ppCal .tl-grid-body::-webkit-scrollbar-thumb,
+.dark #ppCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, .28);
+}
+
+:root.theme-dark #ppCal .tl-grid-body::-webkit-scrollbar-corner,
+.theme-dark #ppCal .tl-grid-body::-webkit-scrollbar-corner,
+[data-theme="dark"] #ppCal .tl-grid-body::-webkit-scrollbar-corner,
+.dark #ppCal .tl-grid-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+    /* или var(--card-bg) если нужен сплошной */
+}
+
+
+/* DARK: зебра в темных оттенках для тела таймлайна */
+:root.theme-dark #ppCal .tl-grid-body,
+.theme-dark #ppCal .tl-grid-body,
+[data-theme="dark"] #ppCal .tl-grid-body,
+.dark #ppCal .tl-grid-body {
+    /* вместо white/#f9f9f9 — еле заметные светлые полосы */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(255, 255, 255, .055) 0,
+            rgba(255, 255, 255, .055) var(--tl-col-w),
+            transparent var(--tl-col-w),
+            transparent calc(var(--tl-col-w) * 2));
+    background-size: calc(var(--tl-col-w) * 2) 100%;
+    background-position: calc(var(--tl-grid-off, 0px)) 0;
+    background-repeat: repeat;
+    background-attachment: local;
+    background-origin: content-box;
 }
 
 
@@ -3293,4 +3369,30 @@ body.theme-dark .pp-cal-tick {
 
 #ppCal .tl-event {
     color: #fff;
+}
+
+/* Тёмная тема: скроллбар в календаре */
+:root.theme-dark,
+.theme-dark,
+[data-theme="dark"],
+.dark {
+    /* Общие стили скроллбаров */
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Уголок между горизонтальным и вертикальным скроллбаром */
+:root.theme-dark ::-webkit-scrollbar-corner,
+.theme-dark ::-webkit-scrollbar-corner,
+[data-theme="dark"] ::-webkit-scrollbar-corner,
+.dark ::-webkit-scrollbar-corner {
+    background-color: #1a1a1a !important;
+    /* можно заменить на #1a1a1a или var(--bg) */
+}
+
+/* Для Firefox (поддерживает scrollbar-color) */
+:root.theme-dark,
+.theme-dark,
+[data-theme="dark"],
+.dark {
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
