@@ -3244,24 +3244,6 @@ body.theme-dark .pp-cal-tick {
     line-height: 1.2;
 }
 
-/* Кнопка-треугольник: фикс справа от названия */
-.pp-cal .pp-cal__event-infoBtn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 18px;
-    height: 18px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    opacity: .9;
-}
-
-.pp-cal .pp-cal__event-infoBtn:hover {
-    opacity: 1;
-}
 
 /* Поповер */
 .pp-cal .pp-cal__popover {
@@ -3308,21 +3290,13 @@ body.theme-dark .pp-cal-tick {
     overflow: visible !important;
 }
 
-/* [ANCHOR TL-INFO-OVERRIDES] — фикс для кнопки и поповера */
-#ppCal .tl-event {
-    overflow: visible !important;
-    /* поповер не клипается */
-    padding-right: 22px;
-    /* запас под кнопку справа */
-    position: absolute;
-    /* как и было, просто явно */
-}
 
-/* [FIX TL-TITLE & INFO BTN OVERRIDES] — append at file end */
+/* TL event: без резерва под кнопку */
 #ppCal .tl-event {
-    /* резервируем место под кнопку и не клипим поповер/текст */
-    padding-right: 26px;
+    padding-right: 8px;
+    /* было 26px под кнопку — больше не нужно */
     overflow: visible;
+    /* можно оставить visible, поповеров больше нет */
 }
 
 #ppCal .tl-event .txt {
@@ -3330,26 +3304,6 @@ body.theme-dark .pp-cal-tick {
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
-}
-
-#ppCal .tl-event .tl-info {
-    /* фиксируем «▸» строго справа в баре и поверх текста */
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    width: 18px;
-    height: 18px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    opacity: .9;
-    z-index: 2;
-}
-
-#ppCal .tl-event .tl-info:hover {
-    opacity: 1;
 }
 
 #ppCal .tl-grid-header {

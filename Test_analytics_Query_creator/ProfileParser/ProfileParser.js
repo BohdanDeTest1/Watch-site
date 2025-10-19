@@ -3261,27 +3261,6 @@
                     badge.dataset.startUtc = fmtUTC(ev.start);
                     badge.dataset.endUtc = fmtUTC(ev.end);
 
-                    // ⬇️ кнопка-треугольник, закреплённая справа в баре
-                    const infoBtn = document.createElement('button');
-                    infoBtn.type = 'button';
-                    infoBtn.className = 'tl-info';
-                    infoBtn.setAttribute('aria-label', 'Event info');
-                    // визуально «строго справа», без правок CSS-файла:
-                    infoBtn.style.position = 'absolute';
-                    infoBtn.style.top = '2px';
-                    infoBtn.style.right = '2px';
-                    infoBtn.style.width = '18px';
-                    infoBtn.style.height = '18px';
-                    infoBtn.style.border = 'none';
-                    infoBtn.style.background = 'transparent';
-                    infoBtn.style.cursor = 'pointer';
-                    infoBtn.style.fontSize = '14px';
-                    infoBtn.style.lineHeight = '1';
-                    infoBtn.style.opacity = '0.9';
-                    infoBtn.textContent = '▸';
-                    badge.appendChild(infoBtn);
-
-                    document.addEventListener('click', closeInfoPops);
 
 
                     if (hasSegs) {
