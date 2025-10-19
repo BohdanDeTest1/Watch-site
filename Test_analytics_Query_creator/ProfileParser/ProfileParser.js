@@ -1391,6 +1391,81 @@
             // строки таймлайна (одна линия на тип, пересечения — штриховка)
             rowsBox.innerHTML = '';
 
+            // kill any native browser tooltips inside calendar (safety net)
+            if (!calState._killNativeTooltip) {
+                calState._killNativeTooltip = true;
+                // любой элемент с title внутри полотна — очищаем, чтобы не перебивать наш попап
+                mainEl.addEventListener('mouseover', (evt) => {
+                    const n = evt.target && (evt.target.closest('[title]'));
+                    if (n && n.getAttribute('title')) n.removeAttribute('title');
+                }, { passive: true, capture: true });
+            }
+
+
+            // === [CTX POPUP] helpers: create/close/position =================================
+            const mainElPos = mainEl.getBoundingClientRect();
+
+            function closeCtxPopup() {
+                mainEl.querySelectorAll('.pp-ctx').forEach(n => n.remove());
+            }
+
+            function openCtxPopup(e, data) {
+                closeCtxPopup();
+
+                const { title, start, end, segments = [], externalsBySegment = {} } = data || {};
+                const pop = document.createElement('div');
+                pop.className = 'pp-ctx';
+                pop.innerHTML = `
+    <div class="pp-ctx-title">${title ? escapeHtml(title) : ''}</div>
+    <div class="pp-ctx-row"><span class="k">Start</span><span class="v">${escapeHtml(start || '')}</span></div>
+    <div class="pp-ctx-row"><span class="k">End</span><span class="v">${escapeHtml(end || '')}</span></div>
+    ${Array.isArray(segments) && segments.length ? `
+      <div class="pp-ctx-row segs"><span class="k">Segments</span>
+        <div class="v">
+          ${segments.map(s => {
+                    const exts = externalsBySegment && externalsBySegment[s] ? externalsBySegment[s] : [];
+                    const extsHtml = exts.length ? `<div class="exts">${exts.map(x => `<code>${escapeHtml(x)}</code>`).join(' ')}</div>` : '';
+                    return `<div class="seg"><code>${escapeHtml(String(s))}</code>${extsHtml}</div>`;
+                }).join('')}
+        </div>
+      </div>` : ''
+                    }
+  `;
+
+                // Позиционируем под курсором внутри .pp-cal-main
+                const rect = mainEl.getBoundingClientRect();
+                const x = e.clientX - rect.left + mainEl.scrollLeft;
+                const y = e.clientY - rect.top + mainEl.scrollTop;
+
+                pop.style.left = x + 'px';
+                pop.style.top = y + 'px';
+                mainEl.appendChild(pop);
+
+                // Если вылезает за край — сместим влево/вверх
+                const pr = pop.getBoundingClientRect();
+                const overflowX = pr.right - (rect.right);
+                const overflowY = pr.bottom - (rect.bottom);
+                if (overflowX > 0) pop.style.left = (x - overflowX - 12) + 'px';
+                if (overflowY > 0) pop.style.top = (y - overflowY - 12) + 'px';
+
+                // Закрытие по клику вне и при скролле
+                const onDocClick = (evt) => {
+                    if (!pop.contains(evt.target)) {
+                        closeCtxPopup();
+                        document.removeEventListener('click', onDocClick, true);
+                    }
+                };
+                document.addEventListener('click', onDocClick, true);
+
+                const onScroll = () => closeCtxPopup();
+                // Скрываем при любом горизонтальном/вертикальном скролле внутри основного полотна
+                mainEl.addEventListener('scroll', onScroll, { once: true });
+            }
+
+
+            // ================================================================================
+
+
             bands.forEach(band => {
                 const rowEl = document.createElement('div');
                 rowEl.className = 'pp-cal-row';
@@ -1424,7 +1499,17 @@
                     // bar.innerHTML = `<span class="txt">${ev.name}</span>`;
                     // rowEl.appendChild(bar);
 
-                    bar.title = `${ev.name}\n${stripUTC(ev.startPretty)} — ${stripUTC(ev.endPretty)} (UTC)`;
+
+                    bar.removeAttribute('title');
+
+                    // Данные для контекстного окна (UTC-строки уже подготовлены в ev.startPretty/ev.endPretty)
+                    bar.dataset.title = ev.name || '';
+                    bar.dataset.startUtc = ev.startPretty || '';
+                    bar.dataset.endUtc = ev.endPretty || '';
+                    bar.dataset.segments = JSON.stringify(ev.segments || []);
+                    // externalsBySegment может отсутствовать — норм
+                    bar._externalsBySegment = ev.externalsBySegment || {};
+
 
                     // попап сегментов внутри бара
                     const hasSegs = Array.isArray(ev.segments) && ev.segments.length;
@@ -1441,6 +1526,30 @@
 
                     bar.innerHTML = `<span class="txt">${ev.name}</span>${popHtml}`;
                     rowEl.appendChild(bar);
+
+                    // Клик по ЛЮБОЙ части бара — показать контекстное окно в точке клика
+                    bar.addEventListener('click', (evt) => {
+                        // ЖЁСТКО гасим дефолт и всплытие, чтобы не стреляли старые слушатели
+                        evt.preventDefault();
+                        evt.stopPropagation();
+
+                        const data = {
+                            title: bar.dataset.title,
+                            start: bar.dataset.startUtc,
+                            end: bar.dataset.endUtc,
+                            segments: (() => { try { return JSON.parse(bar.dataset.segments || '[]'); } catch { return []; } })(),
+                            externalsBySegment: bar._externalsBySegment
+                        };
+                        openCtxPopup(evt, data);
+                    });
+
+                    // блокируем старое контекст-меню по правому клику
+                    bar.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+
+
 
                     // поведение ▾
                     if (hasSegs) {
@@ -1479,9 +1588,12 @@
                     ov.className = 'pp-cal-overlap';
                     ov.style.left = leftPx + 'px';
                     ov.style.width = widthPx + 'px';
-                    ov.dataset.a = String(a);       // ← добавить
-                    ov.dataset.b = String(bEnd);    // ← добавить
+                    ov.dataset.a = String(a);
+                    ov.dataset.b = String(bEnd);
+                    /* страховка: даже если CSS не подгрузился, перекрытия НЕ ловят клики */
+                    ov.style.pointerEvents = 'none';
                     rowEl.appendChild(ov);
+
                 });
             });
 
@@ -3585,6 +3697,38 @@
             positionDayTags();
             updateGridOffset();
 
+            // === [SEAM SHIFT] бесконечный горизонтальный скролл в day-view ===
+            // Когда подходим к левому/правому краю тройного окна (вчера|сегодня|завтра),
+            // сдвигаем якорь на сутки и компенсируем scrollLeft, чтобы пользователь этого не заметил.
+            if (state.view === 'day' && allowSeamShift) {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                const dayW = state.colCount * colW;               // ширина одних суток в пикселях
+                const maxLeft = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                const thresh = Math.min(dayW * 0.15, 200);        // «зона шва»: 15% или не более 200px
+
+                // Левый край — уходим на день назад
+                if (elBody.scrollLeft <= thresh) {
+                    const oldLeft = elBody.scrollLeft;
+                    const prev = allowSeamShift;
+                    allowSeamShift = false;                       // не триггерим себя же
+                    state.anchor = addMs(state.anchor, -state.rangeMs);
+                    render();                                     // перерисуем тройное окно
+                    elBody.scrollLeft = oldLeft + dayW;           // восстановим мировую позицию
+                    allowSeamShift = prev;
+                }
+
+                // Правый край — уходим на день вперёд
+                else if ((maxLeft - elBody.scrollLeft) <= thresh) {
+                    const oldLeft = elBody.scrollLeft;
+                    const prev = allowSeamShift;
+                    allowSeamShift = false;
+                    state.anchor = addMs(state.anchor, +state.rangeMs);
+                    render();
+                    elBody.scrollLeft = Math.max(0, oldLeft - dayW);
+                    allowSeamShift = prev;
+                }
+            }
+
             // ЛЁГКИЙ РЕЖИМ: во время прокрутки НЕ делаем полный render(),
             // чтобы не мигали события и список типов слева.
             // Делаем его отложенно, если пользователь перестал крутить.
@@ -3595,7 +3739,8 @@
         }, { passive: true });
 
 
-        // === [ANCHOR TL-INFO-DELEGATE] поповер по кнопке "▸" ======================
+
+        /* === [ANCHOR TL-INFO-DELEGATE] поповер по клику по бару =================== */
         function fmtUTC(d) {
             if (!(d instanceof Date)) return '—';
             const pad = n => String(n).padStart(2, '0');
@@ -3605,87 +3750,75 @@
             elBody.querySelectorAll('.tl-info-pop').forEach(n => n.remove());
         }
 
-        elBody.addEventListener('click', (e) => {
-            const btn = e.target.closest('.tl-info');
-            if (!btn) return;
-            e.stopPropagation();
-            e.preventDefault();
-
-            // закрыть чужие поповеры
-            closeInfoPops();
-
-            const bar = btn.closest('.tl-event');
+        /**
+         * ЖЁСТКИЙ перехват кликов: capture + stopImmediatePropagation.
+         * Любой клик по .tl-event (в любой точке бара) открывает поповер в месте клика.
+         * Старые хендлеры и «правая кромка» игнорируются.
+         */
+        function onBarClickCapture(e) {
+            const bar = e.target.closest('.tl-event');
             if (!bar) return;
 
+            // Перехват — никого дальше не пускаем
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+            // Закрываем другие
+            closeInfoPops();
+
+            // Данные
             const title = bar.dataset.title || (bar.querySelector('.txt')?.textContent?.trim()) || '—';
             const type = (bar.dataset.type || 'none').toLowerCase();
             const startU = bar.dataset.startUtc || '—';
             const endU = bar.dataset.endUtc || '—';
 
+            // Поповер
             const pop = document.createElement('div');
             pop.className = 'tl-info-pop';
-            // компактные inline-стили, чтобы не трогать CSS-файлы
             pop.style.position = 'absolute';
-            pop.style.right = '2px';
-            pop.style.top = '22px';
             pop.style.minWidth = '240px';
-            pop.style.maxWidth = '360px';
-            pop.style.padding = '8px 10px';
-            pop.style.border = '1px solid var(--border, #333)';
-            pop.style.borderRadius = '8px';
-            pop.style.background = 'var(--btn-n-field-bg, rgba(20,20,20,.98))';
-            pop.style.boxShadow = '0 10px 24px rgba(0,0,0,.35)';
-            pop.style.zIndex = '1000';
+            pop.style.maxWidth = '420px';
+            pop.style.padding = '10px 12px';
+            pop.style.border = '1px solid var(--border, #334155)';
+            pop.style.borderRadius = '10px';
+            pop.style.background = 'var(--btn-n-field-bg, rgba(20,20,20,.92))';
+            pop.style.boxShadow = '0 10px 28px rgba(0,0,0,.35)';
+            pop.style.zIndex = '4000';
             pop.style.pointerEvents = 'auto';
 
             pop.innerHTML = `
-    <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
-    <div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12px;line-height:1.25;">
-      <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
-      <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
-      <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
-    </div>
-  `;
+      <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
+      <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
+        <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
+        <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
+        <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
+      </div>
+    `;
 
-            bar.appendChild(pop);
-        });
+            // Позиционируем у точки клика (с учётом скролла тела таймлайна)
+            const bodyRect = elBody.getBoundingClientRect();
+            const x = e.clientX - bodyRect.left + elBody.scrollLeft;
+            const y = e.clientY - bodyRect.top + elBody.scrollTop;
 
-        // закрытие по клику вне
-        document.addEventListener('click', () => closeInfoPops());
+            pop.style.left = (x + 8) + 'px';
+            pop.style.top = (y + 12) + 'px';
 
+            elBody.appendChild(pop);
+        }
 
-        /* [ANCHOR TL-INFINITE] — бесшовный скролл: тройной буфер (prev | current | next) */
-        elBody.addEventListener('scroll', () => {
-            if (state.view !== 'day') return;
-            if (!allowSeamShift) return; // [KEEP] программные скроллы не трогаем «шов»
+        // 1) Вешаем ПЕРЕХВАТ на elBody (capture: true)
+        elBody.addEventListener('click', onBarClickCapture, true);
 
-            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-            const rangeW = state.colCount * colW;
-            const x = elBody.scrollLeft;
+        // 2) Закрытие по клику вне попапа/бара (capture: true, чтобы сработало раньше любых других)
+        document.addEventListener('click', (e) => {
+            const insideBar = e.target.closest('.tl-event');
+            const insidePop = e.target.closest('.tl-info-pop');
+            if (!insideBar && !insidePop) closeInfoPops();
+        }, true);
 
-            // Ушли слишком влево: сдвигаем якорь на -1 день и переносим скролл вправо на ширину дня
-            if (x < rangeW * 0.20) {
-                const keepY = elBody.scrollTop;
-                state.anchor = addMs(state.anchor, -state.rangeMs);
-                render();
-                updateGridOffset();
-                elBody.scrollLeft = x + rangeW;
-                elBody.scrollTop = keepY;
-                return;
-            }
-
-            // Ушли слишком вправо: сдвигаем якорь на +1 день и переносим скролл влево на ширину дня
-            if (x > rangeW * 1.80) {
-                const keepY = elBody.scrollTop;
-                state.anchor = addMs(state.anchor, state.rangeMs);
-                render();
-                updateGridOffset();
-                elBody.scrollLeft = x - rangeW;
-                elBody.scrollTop = keepY;
-            }
-        }, { passive: true });
-
-
+        // 3) Закрываем поповер при скролле таймлайна (чтобы не «висел»)
+        elBody.addEventListener('scroll', closeInfoPops, { passive: true });
 
 
         // утилиты

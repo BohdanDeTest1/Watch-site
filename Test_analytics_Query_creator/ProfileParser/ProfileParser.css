@@ -2110,6 +2110,15 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     /* деликатный контур по краю */
 }
 
+/* override: делаем бар кликабельным и гарантируем слой поверх перекрытий */
+.pp-cal-bar {
+    z-index: 3;
+    /* выше .pp-cal-overlap (z=2) */
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+
 
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
 #ppCal .tl-event .txt {
@@ -2233,8 +2242,13 @@ body.theme-dark .pp-cal-tick {
 
 /* сами бары — одна линия (lane=0), а перекрытия показываем отдельными сегментами */
 .pp-cal-bar {
-    z-index: 1;
+    z-index: 3;
+    /* выше .pp-cal-overlap */
+    cursor: pointer;
+    pointer-events: auto;
+    /* явно кликаемый слой */
 }
+
 
 /* базовый бар */
 .pp-cal-overlap {
@@ -2245,7 +2259,9 @@ body.theme-dark .pp-cal-tick {
     height: 20px;
     border-radius: 6px;
     z-index: 2;
-    /* выше баров */
+    /* визуально над баром — это ок */
+    pointer-events: none;
+    /* КЛЮЧ: пропускаем клики к .pp-cal-bar */
     mix-blend-mode: multiply;
     background:
         repeating-linear-gradient(45deg,
@@ -2254,6 +2270,8 @@ body.theme-dark .pp-cal-tick {
             transparent 6px,
             transparent 12px);
 }
+
+
 
 .theme-dark .pp-cal-overlap,
 :root.theme-dark .pp-cal-overlap,
@@ -2287,6 +2305,16 @@ body.theme-dark .pp-cal-tick {
 .pp-cal-main:active {
     cursor: grabbing;
 }
+
+/* ховер по бару — как по кнопке */
+.pp-cal-bar {
+    cursor: pointer;
+}
+
+.pp-cal-bar:hover {
+    filter: brightness(1.03);
+}
+
 
 /* Jump to… panel */
 .pp-jump-wrap {
@@ -3148,6 +3176,15 @@ body.theme-dark .pp-cal-tick {
     height: 21px;
 }
 
+/* [CTX POPUP — clickable TL bars] */
+#ppCal .tl-event {
+    cursor: pointer;
+    /* визуальная подсказка, что по бару можно кликать */
+    overflow: visible;
+    /* попап не обрезается баром */
+}
+
+
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
 #ppCal .tl-event .txt {
     position: sticky;
@@ -3177,19 +3214,10 @@ body.theme-dark .pp-cal-tick {
     overflow: hidden;
 }
 
-/* фиксируем «▸» строго справа внутри бара */
+
 #ppCal .tl-event .tl-info {
-    position: absolute;
-    right: 4px;
-    top: 2px;
-    width: 18px;
-    height: 18px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    opacity: .9;
+    display: none !important;
+    pointer-events: none !important;
 }
 
 #ppCal .tl-event .tl-info:hover {
@@ -3325,6 +3353,87 @@ body.theme-dark .pp-cal-tick {
     color: #fff;
 }
 
+/* =================== [CTX POPUP FOR BARS] =================== */
+.pp-cal-main {
+    position: relative;
+}
+
+/* кликабельная область бара */
+.pp-cal-bar {
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.pp-cal-bar:hover {
+    filter: brightness(1.03);
+}
+
+
+/* на всякий случай — уже есть в файле, но зафиксируем контекст позиционирования */
+
+.pp-ctx {
+    position: absolute;
+    min-width: 260px;
+    max-width: 420px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #334155);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+    background: rgba(255, 255, 255, .85);
+    color: #111827;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transform: translateY(6px);
+    z-index: 4000 !important;
+    /* поверх сетки/баров/хедера */
+    pointer-events: auto;
+}
+
+
+.pp-ctx .pp-ctx-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.pp-ctx .pp-ctx-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.25;
+    margin-top: 4px;
+}
+
+.pp-ctx .pp-ctx-row .k {
+    color: var(--muted, #6b7280);
+}
+
+.pp-ctx .pp-ctx-row .v {
+    word-break: break-word;
+}
+
+.pp-ctx .segs .v .seg {
+    margin: 4px 0;
+}
+
+.pp-ctx .segs .v .exts {
+    margin-left: 12px;
+    opacity: .9;
+}
+
+:root.theme-dark .pp-ctx,
+.theme-dark .pp-ctx,
+[data-theme="dark"] .pp-ctx,
+.dark .pp-ctx {
+    background: rgba(15, 23, 42, .85);
+    /* тёмная «смазанная» подложка */
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+
 /* Тёмная тема: скроллбар в календаре */
 :root.theme-dark,
 .theme-dark,
@@ -3349,4 +3458,12 @@ body.theme-dark .pp-cal-tick {
 [data-theme="dark"],
 .dark {
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+/* [CTX POPUP — hard override at EOF] */
+.pp-ctx {
+    position: absolute;
+    z-index: 4000 !important;
+    /* выше сетки/баров/хедера */
+    pointer-events: auto;
 }
