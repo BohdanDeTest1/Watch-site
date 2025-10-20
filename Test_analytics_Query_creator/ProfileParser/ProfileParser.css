@@ -2001,14 +2001,20 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--card);
-    overflow: auto;
+
+    /* Разрешаем попапу выходить за границы по Y, скролл оставляем по X */
+    overflow: visible;
+    overflow-x: auto;
+    overflow-y: visible;
 
     --pp-scale-h: 40px;
     padding-top: var(--pp-scale-h);
     /* одна шкала сверху */
     padding-bottom: var(--pp-scale-h);
     /* и одна снизу */
+    -webkit-overflow-scrolling: touch;
 }
+
 
 
 
@@ -2640,7 +2646,7 @@ body.theme-dark .pp-cal-tick {
     background: var(--card-bg);
     border-bottom: 1px solid var(--tl-border);
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     padding-top: var(--tl-daybar-h);
     will-change: transform, width;
     /* ⟵ место под строку дня */
@@ -3211,7 +3217,7 @@ body.theme-dark .pp-cal-tick {
     display: flex;
     align-items: center;
     gap: 6px;
-    overflow: hidden;
+    overflow: visible !important;
 }
 
 
@@ -3353,11 +3359,6 @@ body.theme-dark .pp-cal-tick {
     color: #fff;
 }
 
-/* =================== [CTX POPUP FOR BARS] =================== */
-.pp-cal-main {
-    position: relative;
-}
-
 /* кликабельная область бара */
 .pp-cal-bar {
     position: absolute;
@@ -3466,4 +3467,19 @@ body.theme-dark .pp-cal-tick {
     z-index: 4000 !important;
     /* выше сетки/баров/хедера */
     pointer-events: auto;
+}
+
+/* [TL-INFO-POP — portal в <body>, фиксированное позиционирование] */
+.tl-info-pop {
+    position: fixed !important;
+    z-index: 5000 !important;
+    pointer-events: auto;
+}
+
+
+/* [override] позволяем .pp-ctx не клипаться краями .pp-cal-main */
+.pp-cal .pp-cal-main {
+    overflow: visible;
+    overflow-x: auto;
+    overflow-y: visible;
 }

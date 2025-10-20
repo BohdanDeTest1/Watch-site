@@ -3767,9 +3767,13 @@
             const pad = n => String(n).padStart(2, '0');
             return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
         }
+
+
         function closeInfoPops() {
-            elBody.querySelectorAll('.tl-info-pop').forEach(n => n.remove());
+            // было: elBody.querySelectorAll('.tl-info-pop').forEach(n => n.remove());
+            document.querySelectorAll('.tl-info-pop').forEach(n => n.remove());
         }
+
 
         /**
          * ЖЁСТКИЙ перехват кликов: capture + stopImmediatePropagation.
@@ -3792,10 +3796,9 @@
             }
 
             // Если попап уже открыт — этот клик должен ТОЛЬКО закрыть его (без открытия нового)
-            if (elBody.querySelector('.tl-info-pop')) {
-                state._preventInfoOpen = true;  // помечаем, что этот клик «израсходован»
+            if (document.querySelector('.tl-info-pop')) {
+                state._preventInfoOpen = true;
                 closeInfoPops();
-                // Снимаем флаг на следующий тик — чтобы второй клик уже открыл новый попап
                 setTimeout(() => { state._preventInfoOpen = false; }, 0);
                 return;
             }
@@ -3830,14 +3833,21 @@
     `;
 
             // Позиционируем у точки клика (с учётом скролла тела таймлайна)
-            const bodyRect = elBody.getBoundingClientRect();
-            const x = e.clientX - bodyRect.left + elBody.scrollLeft;
-            const y = e.clientY - bodyRect.top + elBody.scrollTop;
+            // Позиционируем у точки клика — через portal в <body>, чтобы не клипалось
+            pop.style.position = 'fixed';
+            pop.style.zIndex = '5000';        // чуть выше всего календаря
+            pop.style.pointerEvents = 'auto';
 
-            pop.style.left = (x + 8) + 'px';
-            pop.style.top = (y + 12) + 'px';
+            // clientX/Y уже в экранных координатах — скроллы не нужны
+            const x = (e.clientX || 0) + 8;
+            const y = (e.clientY || 0) + 12;
 
-            elBody.appendChild(pop);
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+
+            // было: elBody.appendChild(pop);
+            document.body.appendChild(pop);
+
         }
 
         // 1) Вешаем ПЕРЕХВАТ на elBody (capture: true)
