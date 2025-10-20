@@ -1407,10 +1407,12 @@
 
             function closeCtxPopup() {
                 mainEl.querySelectorAll('.pp-ctx').forEach(n => n.remove());
+                calState._ctxOpen = false;
             }
 
             function openCtxPopup(e, data) {
                 closeCtxPopup();
+                calState._ctxOpen = true;
 
                 const { title, start, end, segments = [], externalsBySegment = {} } = data || {};
                 const pop = document.createElement('div');
@@ -1451,8 +1453,12 @@
                 // Закрытие по клику вне и при скролле
                 const onDocClick = (evt) => {
                     if (!pop.contains(evt.target)) {
+                        // этот клик использован для закрытия — блокируем открытие на нём же
+                        calState._preventOpenOnce = true;
                         closeCtxPopup();
                         document.removeEventListener('click', onDocClick, true);
+                        // разблокируем уже на следующий тик
+                        setTimeout(() => { calState._preventOpenOnce = false; }, 0);
                     }
                 };
                 document.addEventListener('click', onDocClick, true);
@@ -1532,6 +1538,20 @@
                         // ЖЁСТКО гасим дефолт и всплытие, чтобы не стреляли старые слушатели
                         evt.preventDefault();
                         evt.stopPropagation();
+
+                        // Если этот клик пришёл сразу после закрытия попапа — ничего не открываем
+                        if (calState._preventOpenOnce) {
+                            calState._preventOpenOnce = false; // на всякий — «съедаем» флаг
+                            return;
+                        }
+
+                        // Подстраховка: если по какой-то причине попап ещё открыт — закрываем и не открываем новый
+                        if (mainEl.querySelector('.pp-ctx')) {
+                            calState._preventOpenOnce = true;
+                            closeCtxPopup();
+                            setTimeout(() => { calState._preventOpenOnce = false; }, 0);
+                            return;
+                        }
 
                         const data = {
                             title: bar.dataset.title,
@@ -3028,7 +3048,8 @@
             rangeMs: 24 * 3600_000,   // длительность всей полосы
             colCount: 24,           // количество колонок
             rowH: 44,
-            colW: 80
+            colW: 80,
+            _preventInfoOpen: false
         };
         const DAY_SPAN = 50;
         const VISIBLE_DAY_SPAN = 3;
@@ -3764,8 +3785,20 @@
             e.stopPropagation();
             if (e.stopImmediatePropagation) e.stopImmediatePropagation();
 
-            // Закрываем другие
-            closeInfoPops();
+            // Если этот клик пришёл сразу после закрытия попапа — НЕ открываем заново
+            if (state._preventInfoOpen) {
+                state._preventInfoOpen = false; // «съедаем» одноразовый флаг
+                return;
+            }
+
+            // Если попап уже открыт — этот клик должен ТОЛЬКО закрыть его (без открытия нового)
+            if (elBody.querySelector('.tl-info-pop')) {
+                state._preventInfoOpen = true;  // помечаем, что этот клик «израсходован»
+                closeInfoPops();
+                // Снимаем флаг на следующий тик — чтобы второй клик уже открыл новый попап
+                setTimeout(() => { state._preventInfoOpen = false; }, 0);
+                return;
+            }
 
             // Данные
             const title = bar.dataset.title || (bar.querySelector('.txt')?.textContent?.trim()) || '—';
