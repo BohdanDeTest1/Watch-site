@@ -3333,8 +3333,7 @@ body.theme-dark .pp-cal-tick {
     /* можно оставить visible, поповеров больше нет */
 }
 
-#ppCal .tl-event .txt {
-    /* показываем полное имя без троеточий + не клипим */
+.tl-event .txt {
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
@@ -3482,4 +3481,19 @@ body.theme-dark .pp-cal-tick {
     overflow: visible;
     overflow-x: auto;
     overflow-y: visible;
+}
+
+/* Название события внутри бара — не вылезает за границы бара */
+.pp-cal-bar .txt {
+    flex: 1 1 auto;
+    /* занимать доступную ширину, разрешить сжиматься */
+    min-width: 0;
+    /* критично: позволяет реально сжиматься во flex-контейнере */
+    max-width: 100%;
+    /* не шире самого бара */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* обрезаем с троеточием, когда не хватает места */
+    line-height: 1.2;
 }

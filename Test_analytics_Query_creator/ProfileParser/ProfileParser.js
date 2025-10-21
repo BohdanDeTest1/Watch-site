@@ -3380,13 +3380,11 @@
                     row.appendChild(badge);
 
                     const txtEl = badge.querySelector('.txt');
-                    // ⬇️ показываем полное название без троеточий (перебиваем возможный CSS)
+                    // текст должен уметь сжиматься внутри flex-контейнера бара
                     if (txtEl) {
-                        txtEl.style.whiteSpace = 'normal';
-                        txtEl.style.overflow = 'visible';
-                        txtEl.style.textOverflow = 'clip';
-                        txtEl.style.display = 'block';
+                        txtEl.style.minWidth = '0';
                     }
+
 
                     // ⬇️ прокинем данные для поповера (UTC)
                     badge.dataset.title = ev.title || '';
