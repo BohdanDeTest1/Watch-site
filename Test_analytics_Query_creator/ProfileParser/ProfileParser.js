@@ -594,11 +594,20 @@
       <button class="tl-btn" data-nav="today">today</button>
     </div>
     <div class="tl-title" id="tlTitle"></div>
-    <div class="tl-right">
-      <button class="tl-btn" data-view="day">day</button>
-      <button class="tl-btn" data-view="week">week</button>
-      <button class="tl-btn" data-view="month">month</button>
+      <div class="tl-right">
+      <div class="tl-dropdown">
+        <button id="tlViewBtn" class="tl-btn tl-dropdown-btn" type="button">
+          <span class="tl-current">day</span> ▾
+        </button>
+        <div id="tlDropdownMenu" class="tl-dropdown-menu" hidden>
+          <button type="button" data-view="day">day</button>
+          <button type="button" data-view="week">week</button>
+          <button type="button" data-view="month">month</button>
+        </div>
+      </div>
     </div>
+
+
   </div>
 
   <div class="tl-wrap">
@@ -1628,6 +1637,32 @@
             clearTimeout(calState._nowTick);
             calState._nowTick = setTimeout(() => { renderCalendar(); }, 60 * 1000);
 
+            // === ВАЖНО: заново подключаем dropdown после перерисовки ===
+            const viewBtn = wrap.querySelector('#tlViewBtn');
+            const menu = wrap.querySelector('#tlDropdownMenu');
+            const currentLabel = wrap.querySelector('.tl-current');
+
+            if (viewBtn && menu && currentLabel) {
+                viewBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    menu.hidden = !menu.hidden;
+                };
+
+                menu.onclick = (e) => {
+                    const opt = e.target.closest('button[data-view]');
+                    if (!opt) return;
+                    const val = opt.dataset.view;
+                    currentLabel.textContent = val;
+                    menu.hidden = true;
+                    calState.view = val;
+                    renderCalendar();
+                };
+
+                document.addEventListener('click', (e) => {
+                    if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
+                });
+            }
+
 
         }
 
@@ -2054,6 +2089,31 @@
                     dtPop && (dtPop.hidden = true);
                 });
             })();
+
+            // === DROPDOWN (Day / Week / Month) ===
+            const viewBtn = wrap.querySelector('#tlViewBtn');
+            const menu = wrap.querySelector('#tlDropdownMenu');
+            const currentLabel = wrap.querySelector('.tl-current');
+
+            viewBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.hidden = !menu.hidden;
+            });
+
+            menu?.addEventListener('click', (e) => {
+                const opt = e.target.closest('button[data-view]');
+                if (!opt) return;
+                const val = opt.dataset.view;
+                currentLabel.textContent = val;
+                menu.hidden = true;
+                calState.view = val;
+                renderCalendar();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
+            });
+
 
         }
 
@@ -3140,12 +3200,25 @@
 
 
 
-        // кнопки тулбара
         const toolbar = document.getElementById('tlToolbar');
         toolbar.addEventListener('click', (e) => {
-            const b = e.target.closest('button'); if (!b) return;
-            if (b.dataset.view) { setView(b.dataset.view); render(); }
+            const b = e.target.closest('button');
+            if (!b) return;
 
+            // ▼▼▼ NEW: dropdown button (Day ▾) — открываем/закрываем меню и прекращаем делегирование
+            if (b.id === 'tlViewBtn') {
+                const menu = document.getElementById('tlDropdownMenu');
+                if (menu) {
+                    // Тоггл видимости
+                    menu.hidden = !menu.hidden;
+                }
+                e.stopPropagation();
+                e.preventDefault();
+                return; // важно — не пускаем дальше
+            }
+            // ▲▲▲ END NEW
+
+            if (b.dataset.view) { setView(b.dataset.view); render(); }
 
             if (b.dataset.nav === 'today') {
                 state.anchor = startOfLocalDayAsUTC(new Date());   // UTC-полночь «сегодня»
@@ -3155,7 +3228,6 @@
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
                 const extra = (state.view === 'day') ? halfVisible * dayW : 0;
-
 
                 const now = new Date(); // инстант (UTC-линия)
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
@@ -3168,13 +3240,10 @@
                 allowSeamShift = prev;
             }
 
-
-
-
-
             if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
             if (b.dataset.nav === 'next') { state.anchor = addMs(state.anchor, state.rangeMs); render(); }
         });
+
 
         function setView(v) {
             state.view = v;
@@ -3182,6 +3251,31 @@
             if (v === 'week') { state.colMs = 24 * 3600_000; state.colCount = 7; state.rangeMs = state.colMs * state.colCount; }
             if (v === 'month') { state.colMs = 7 * 24 * 3600_000; state.colCount = 6; state.rangeMs = state.colMs * state.colCount; }
         }
+
+        // === Dropdown menu wiring (Day / Week / Month) ===
+        (() => {
+            const menu = document.getElementById('tlDropdownMenu');
+            const label = document.querySelector('.tl-current');
+
+            if (!menu || !label) return;
+
+            // Клик по пункту меню
+            menu.addEventListener('click', (e) => {
+                const opt = e.target.closest('button[data-view]');
+                if (!opt) return;
+                const v = opt.dataset.view;
+                label.textContent = v;
+                menu.hidden = true;
+                setView(v);
+                render();
+            });
+
+            // Клик вне меню — закрыть
+            document.addEventListener('click', (e) => {
+                if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
+            }, { capture: true });
+        })();
+
 
 
         function render() {
