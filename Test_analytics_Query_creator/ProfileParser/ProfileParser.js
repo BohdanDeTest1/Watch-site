@@ -1231,15 +1231,113 @@
             // mainEl?.addEventListener('scroll', calState._onScroll);
 
             // --- вместо текущего calState._onScroll и inline-ребейза
+            // if (calState._onScroll && mainEl) {
+            //     mainEl.removeEventListener('scroll', calState._onScroll);
+            // }
+
+            // let scaleRaf = 0;
+            // // [NEW] отложенный ребейз после паузы
+            // clearTimeout(calState._rebaseTimer);
+            // calState._rebaseTimer = 0;
+
+            // function rebaseIfNeeded() {
+            //     const msPerPx = calState.msPerPx || 1;
+            //     const vw = mainEl.clientWidth || 0;
+            //     const vwMs = vw * msPerPx;
+
+            //     let A = calState.canvasStartMs;
+            //     let B = calState.canvasEndMs;
+            //     const W = B - A;
+
+            //     const leftPx = mainEl.scrollLeft;
+            //     const rightPx = leftPx + vw;
+
+            //     // Когда реально НЕОБХОДИМО «сшивать»
+            //     const nearLeft = leftPx < vw * 0.20;          // было 0.25 — делаем чуть реже
+            //     const nearRight = rightPx > (mainEl.scrollWidth - vw * 0.20);
+
+            //     if (!nearLeft && !nearRight) return;
+
+            //     // 1) запомним мировую позицию левого края
+            //     const worldLeftMs = A + leftPx * msPerPx;
+            //     const shift = Math.max(vwMs * 3, W / 2);        // как было, но единожды, вне scroll-цикла
+
+            //     let newA = A, newB = B;
+            //     if (nearLeft) { newA = A - shift; newB = B - shift; }
+            //     if (nearRight) { newA = A + shift; newB = B + shift; }
+
+            //     calState.canvasStartMs = newA;
+            //     calState.canvasEndMs = newB;
+
+            //     // обновим ширину полотна + шкалы
+            //     const totalW = Math.ceil((newB - newA) / msPerPx) + vw;
+            //     const rowsBox = wrapEl.querySelector('.pp-cal-rows');
+            //     if (rowsBox) rowsBox.style.width = totalW + 'px';
+
+            //     makeScales(); // подписи в новых границах
+
+            //     // восстановим прежнюю мировую позицию экрана
+            //     const newLeftPx = (worldLeftMs - newA) / msPerPx;
+            //     const maxLeft = Math.max(0, mainEl.scrollWidth - mainEl.clientWidth);
+            //     mainEl.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
+
+            //     // [NEW] после ребейза — форсируем перерасчёт позиций видимых баров
+            //     requestAnimationFrame(() => updateBarsPositions(/* padPx */ mainEl.clientWidth));
+            // }
+
+            // // [NEW] отдельный апдейтер позиций баров с «запасом»
+            // function updateBarsPositions(padPx = mainEl.clientWidth) {
+            //     const A = calState.canvasStartMs;
+            //     const msPerPx = calState.msPerPx || 1;
+            //     const rowsBox = wrapEl.querySelector('#ppCalRows') || wrapEl.querySelector('.pp-cal-rows');
+            //     if (!rowsBox || !Number.isFinite(A)) return;
+
+            //     const viewLeft = mainEl.scrollLeft;
+            //     const viewRight = viewLeft + mainEl.clientWidth;
+
+            //     const minTs = A + Math.max(0, viewLeft - padPx) * msPerPx;           // запас = 1 экран
+            //     const maxTs = A + (viewRight + padPx) * msPerPx;
+
+            //     const updIfVisible = el => {
+            //         const a = +el.dataset.a, b = +el.dataset.b;
+            //         if (!Number.isFinite(a) || !Number.isFinite(b)) return;
+            //         if (b < minTs || a > maxTs) return;
+            //         el.style.left = ((a - A) / msPerPx) + 'px';
+            //         el.style.width = Math.max(1, (b - a) / msPerPx) + 'px';
+            //     };
+            //     rowsBox.querySelectorAll('.pp-cal-bar, .pp-cal-overlap').forEach(updIfVisible);
+            // }
+
+            // calState._onScroll = function onScroll() {
+            //     // фон-сетка всегда сразу
+            //     if (!scaleRaf) {
+            //         scaleRaf = requestAnimationFrame(() => {
+            //             const off = -(mainEl.scrollLeft % cellW);
+            //             mainEl.style.setProperty('--pp-grid-off', off + 'px');
+            //             scaleRaf = 0;
+            //         });
+            //     }
+
+            //     // [NEW] переносим тяжёлый ребейз и перерасчёт баров на «idle» после скролла
+            //     clearTimeout(calState._rebaseTimer);
+            //     calState._rebaseTimer = setTimeout(() => {
+            //         rebaseIfNeeded();
+            //         updateBarsPositions(); // мягкий пересчёт для актуального окна
+            //     }, 120); // 120 мс пауза после скролла
+            // };
+            // mainEl?.addEventListener('scroll', calState._onScroll);
+
+
             if (calState._onScroll && mainEl) {
                 mainEl.removeEventListener('scroll', calState._onScroll);
             }
 
             let scaleRaf = 0;
-            // [NEW] отложенный ребейз после паузы
+            // отложенный ребейз после паузы
             clearTimeout(calState._rebaseTimer);
             calState._rebaseTimer = 0;
 
+            // «перешиваем» полотно времени, когда подходим к краям
             function rebaseIfNeeded() {
                 const msPerPx = calState.msPerPx || 1;
                 const vw = mainEl.clientWidth || 0;
@@ -1252,15 +1350,13 @@
                 const leftPx = mainEl.scrollLeft;
                 const rightPx = leftPx + vw;
 
-                // Когда реально НЕОБХОДИМО «сшивать»
-                const nearLeft = leftPx < vw * 0.20;          // было 0.25 — делаем чуть реже
+                const nearLeft = leftPx < vw * 0.20;
                 const nearRight = rightPx > (mainEl.scrollWidth - vw * 0.20);
-
                 if (!nearLeft && !nearRight) return;
 
-                // 1) запомним мировую позицию левого края
+                // запомним мировой левый край
                 const worldLeftMs = A + leftPx * msPerPx;
-                const shift = Math.max(vwMs * 3, W / 2);        // как было, но единожды, вне scroll-цикла
+                const shift = Math.max(vwMs * 3, W / 2);
 
                 let newA = A, newB = B;
                 if (nearLeft) { newA = A - shift; newB = B - shift; }
@@ -1269,23 +1365,24 @@
                 calState.canvasStartMs = newA;
                 calState.canvasEndMs = newB;
 
-                // обновим ширину полотна + шкалы
+                // ширина полотна рядов
                 const totalW = Math.ceil((newB - newA) / msPerPx) + vw;
                 const rowsBox = wrapEl.querySelector('.pp-cal-rows');
                 if (rowsBox) rowsBox.style.width = totalW + 'px';
 
-                makeScales(); // подписи в новых границах
+                // перерисуем подписи шкал под новый диапазон
+                makeScales?.();
 
-                // восстановим прежнюю мировую позицию экрана
+                // вернуть прежний мировой левый край
                 const newLeftPx = (worldLeftMs - newA) / msPerPx;
                 const maxLeft = Math.max(0, mainEl.scrollWidth - mainEl.clientWidth);
                 mainEl.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
 
-                // [NEW] после ребейза — форсируем перерасчёт позиций видимых баров
-                requestAnimationFrame(() => updateBarsPositions(/* padPx */ mainEl.clientWidth));
+                // и пересчитаем позиции видимых баров
+                requestAnimationFrame(() => updateBarsPositions(mainEl.clientWidth));
             }
 
-            // [NEW] отдельный апдейтер позиций баров с «запасом»
+            // апдейтер позиций баров (только видимое окно + запас)
             function updateBarsPositions(padPx = mainEl.clientWidth) {
                 const A = calState.canvasStartMs;
                 const msPerPx = calState.msPerPx || 1;
@@ -1294,22 +1391,22 @@
 
                 const viewLeft = mainEl.scrollLeft;
                 const viewRight = viewLeft + mainEl.clientWidth;
-
-                const minTs = A + Math.max(0, viewLeft - padPx) * msPerPx;           // запас = 1 экран
+                const minTs = A + Math.max(0, viewLeft - padPx) * msPerPx;
                 const maxTs = A + (viewRight + padPx) * msPerPx;
 
-                const updIfVisible = el => {
+                const updIfVisible = (el) => {
                     const a = +el.dataset.a, b = +el.dataset.b;
                     if (!Number.isFinite(a) || !Number.isFinite(b)) return;
                     if (b < minTs || a > maxTs) return;
                     el.style.left = ((a - A) / msPerPx) + 'px';
                     el.style.width = Math.max(1, (b - a) / msPerPx) + 'px';
                 };
+
                 rowsBox.querySelectorAll('.pp-cal-bar, .pp-cal-overlap').forEach(updIfVisible);
             }
 
             calState._onScroll = function onScroll() {
-                // фон-сетка всегда сразу
+                // фон-сетка — сразу
                 if (!scaleRaf) {
                     scaleRaf = requestAnimationFrame(() => {
                         const off = -(mainEl.scrollLeft % cellW);
@@ -1318,12 +1415,12 @@
                     });
                 }
 
-                // [NEW] переносим тяжёлый ребейз и перерасчёт баров на «idle» после скролла
+                // тяжёлые операции — после паузы
                 clearTimeout(calState._rebaseTimer);
                 calState._rebaseTimer = setTimeout(() => {
                     rebaseIfNeeded();
-                    updateBarsPositions(); // мягкий пересчёт для актуального окна
-                }, 120); // 120 мс пауза после скролла
+                    updateBarsPositions();
+                }, 120);
             };
             mainEl?.addEventListener('scroll', calState._onScroll);
 
@@ -1648,15 +1745,27 @@
                     menu.hidden = !menu.hidden;
                 };
 
+                // [UPDATED] правильное переключение масштаба + защита от back-swipe
                 menu.onclick = (e) => {
                     const opt = e.target.closest('button[data-view]');
                     if (!opt) return;
+
                     const val = opt.dataset.view;
                     currentLabel.textContent = val;
                     menu.hidden = true;
+
+                    // при смене масштаба — просим рендер заново и заново центрируем "сегодня"
+                    calState._centeredOnce = false;
                     calState.view = val;
                     renderCalendar();
+
+                    // страховка: после рендераscrollLeft>0, чтобы вертикальный жест не трактовался как "назад"
+                    requestAnimationFrame(() => {
+                        const m = wrap.querySelector('.pp-cal-main');
+                        if (m && m.scrollLeft === 0) m.scrollLeft = 1;
+                    });
                 };
+
 
                 document.addEventListener('click', (e) => {
                     if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
@@ -1729,37 +1838,37 @@
             };
 
 
-            if (calState._onScroll && mainEl) {
-                mainEl.removeEventListener('scroll', calState._onScroll);
-            }
-            let scaleRaf = 0;
-            calState._onScroll = function onScroll() {
-                if (scaleRaf) return;
-                scaleRaf = requestAnimationFrame(() => {
-                    const off = -(mainEl.scrollLeft % cellW);
-                    mainEl.style.setProperty('--pp-grid-off', off + 'px');
-                    scaleRaf = 0;
-                });
-            };
-            mainEl?.addEventListener('scroll', calState._onScroll);
+            // if (calState._onScroll && mainEl) {
+            //     mainEl.removeEventListener('scroll', calState._onScroll);
+            // }
+            // let scaleRaf = 0;
+            // calState._onScroll = function onScroll() {
+            //     if (scaleRaf) return;
+            //     scaleRaf = requestAnimationFrame(() => {
+            //         const off = -(mainEl.scrollLeft % cellW);
+            //         mainEl.style.setProperty('--pp-grid-off', off + 'px');
+            //         scaleRaf = 0;
+            //     });
+            // };
+            // mainEl?.addEventListener('scroll', calState._onScroll);
 
-            // [ANCHOR: R1-RESIZE] пересчёт ширины и перерисовка шкал при изменении контейнера
-            (() => {
-                if (!mainEl) return;
-                const ro = new ResizeObserver(() => {
-                    const w = mainEl.clientWidth || 0;
-                    if (w) {
-                        scaleTop.style.width = w + 'px';
-                        if (scaleBottom) scaleBottom.style.width = w + 'px';
-                        // перерисовать подписи в новых границах
-                        makeScales();
-                        // обновить смещение тайловой сетки
-                        const off = -(mainEl.scrollLeft % cellW);
-                        mainEl.style.setProperty('--pp-grid-off', off + 'px');
-                    }
-                });
-                ro.observe(mainEl);
-            })();
+            // // [ANCHOR: R1-RESIZE] пересчёт ширины и перерисовка шкал при изменении контейнера
+            // (() => {
+            //     if (!mainEl) return;
+            //     const ro = new ResizeObserver(() => {
+            //         const w = mainEl.clientWidth || 0;
+            //         if (w) {
+            //             scaleTop.style.width = w + 'px';
+            //             if (scaleBottom) scaleBottom.style.width = w + 'px';
+            //             // перерисовать подписи в новых границах
+            //             makeScales();
+            //             // обновить смещение тайловой сетки
+            //             const off = -(mainEl.scrollLeft % cellW);
+            //             mainEl.style.setProperty('--pp-grid-off', off + 'px');
+            //         }
+            //     });
+            //     ro.observe(mainEl);
+            // })();
 
 
             // первичная отрисовка после пересчёта
@@ -1915,12 +2024,16 @@
                 const t = e.touches[0];
                 tStartX = t.clientX;
                 tStartLeft = main.scrollLeft;
-            }, { passive: true });
+            }, { passive: false });
+
             main?.addEventListener('touchmove', (e) => {
+                // не позволяем вертикальной прокрутке страницы «съедать» свайп по горизонтали
+                e.preventDefault();
                 const t = e.touches[0];
                 const dx = t.clientX - tStartX;
                 main.scrollLeft = tStartLeft - dx;
-            }, { passive: true });
+            }, { passive: false });
+
 
             // wheel (трекпад/мышь): горизонтальная прокрутка с плавностью
             // — когда курсор над .pp-cal-main, вертикальные импульсы превращаем в горизонтальные
@@ -1939,19 +2052,68 @@
                     else { raf = 0; vx = 0; }
                 };
 
+                // main.addEventListener('wheel', (e) => {
+
+                //     if (e.ctrlKey) {
+
+
+                //     e.preventDefault();
+                //     const order = ['month', 'week', 'day'];
+                //     let i = order.indexOf(calState.view);
+                //     if (e.deltaY < 0 && i < order.length - 1) i++; // zoom in
+                //     if (e.deltaY > 0 && i > 0) i--; // zoom out
+                //     calState.view = order[i];
+
+                //     // сохранить «середину» текущего окна в anchor
+                //     if (Number.isFinite(calState.canvasStartMs)) {
+                //         const rect = main.getBoundingClientRect();
+                //         const x = e.clientX - rect.left + main.scrollLeft;
+                //         calState.anchorMs = calState.canvasStartMs + x * calState.msPerPx;
+                //     }
+                //     renderCalendar();
+                //     return;
+
+
+                // }
+
+                // // HORIZ SCROLL — как раньше: только явная горизонталь
+                // let horiz = e.deltaX;
+                // if (horiz === 0 && e.shiftKey) horiz = e.deltaY;
+                // const H = Math.abs(horiz), V = Math.abs(e.deltaY);
+
+                //     // если импульс совсем маленький — обычно игнорируем,
+                //     // НО на краях полотно не должно «прокидывать» жест в браузер (back/forward)
+                //     if (Math.abs(horiz) < 6) {
+                //         const atLeft = main.scrollLeft <= 0.5;
+                //         const atRight = (main.scrollLeft + main.clientWidth) >= (main.scrollWidth - 0.5);
+                //         const tryingLeft = (horiz < 0) || (horiz === 0 && e.shiftKey && e.deltaY < 0);
+                //         const tryingRight = (horiz > 0) || (horiz === 0 && e.shiftKey && e.deltaY > 0);
+                //         if ((atLeft && tryingLeft) || (atRight && tryingRight)) {
+                //             e.preventDefault(); // глушим браузерную навигацию
+                //         }
+                //         return;
+                //     }
+
+
+                //     if (H === 0 || H <= V * 1.1) return;
+                //     if (main.scrollWidth <= main.clientWidth) return;
+
+                //     const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? main.clientWidth : 1);
+                //     e.preventDefault();
+                //     vx += horiz * unit;
+                //     if (!raf) raf = requestAnimationFrame(step);
+                // }, { passive: false });
+
                 main.addEventListener('wheel', (e) => {
-
+                    // Zoom (Ctrl+wheel) — как было
                     if (e.ctrlKey) {
-
-
                         e.preventDefault();
                         const order = ['month', 'week', 'day'];
                         let i = order.indexOf(calState.view);
                         if (e.deltaY < 0 && i < order.length - 1) i++; // zoom in
-                        if (e.deltaY > 0 && i > 0) i--; // zoom out
+                        if (e.deltaY > 0 && i > 0) i--;                // zoom out
                         calState.view = order[i];
 
-                        // сохранить «середину» текущего окна в anchor
                         if (Number.isFinite(calState.canvasStartMs)) {
                             const rect = main.getBoundingClientRect();
                             const x = e.clientX - rect.left + main.scrollLeft;
@@ -1959,24 +2121,43 @@
                         }
                         renderCalendar();
                         return;
-
-
                     }
 
-                    // HORIZ SCROLL — как раньше: только явная горизонталь
+                    // === Горизонтальная прокрутка с «превращением» вертикальной ===
+                    // Если пользователь двигает вертикально (частый кейс на тачпадах),
+                    // используем deltaY как горизонтальный сигнал.
                     let horiz = e.deltaX;
-                    if (horiz === 0 && e.shiftKey) horiz = e.deltaY;
-                    const H = Math.abs(horiz), V = Math.abs(e.deltaY);
-                    if (Math.abs(horiz) < 6) return; // dead-zone: случайные касания игнорируем
+                    const absX = Math.abs(e.deltaX);
+                    const absY = Math.abs(e.deltaY);
 
-                    if (H === 0 || H <= V * 1.1) return;
-                    if (main.scrollWidth <= main.clientWidth) return;
+                    // Если явная горизонталь слабее вертикали — считаем, что жест вертикальный и «кладём» его в горизонталь
+                    if (absY > absX) {
+                        // инвертируем ось: жест вниз = вправо, жест вверх = влево (интуитивно для ленты времени)
+                        horiz = e.deltaY;
+                    }
 
-                    const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? main.clientWidth : 1);
-                    e.preventDefault();
-                    vx += horiz * unit;
-                    if (!raf) raf = requestAnimationFrame(step);
+                    // Также поддержим «старую школу»: Shift+wheel = горизонталь
+                    if (absX === 0 && e.shiftKey) horiz = e.deltaY;
+
+                    // Нечувствительность к микродрожанию, но без «залипаний»
+                    if (Math.abs(horiz) < 0.5) return;
+
+                    // Канва уже шире вьюпорта — крутим
+                    if (main.scrollWidth > main.clientWidth) {
+                        e.preventDefault();                 // не отдаём жест браузеру
+                        const unit = (e.deltaMode === 1)    // line
+                            ? 16
+                            : (e.deltaMode === 2            // page
+                                ? main.clientWidth
+                                : 1);                        // pixel
+                        vx += horiz * unit;                  // инерция из существующего кода
+                        if (!raf) raf = requestAnimationFrame(step);
+                    } else {
+                        // На всякий случай защищаемся на краях, чтобы не ловить back/forward у браузера
+                        e.preventDefault();
+                    }
                 }, { passive: false });
+
 
                 // чтобы колесо не уводило страницу при достижении краёв
                 main.style.overscrollBehaviorX = 'contain'; // горизонталь не «прокидываем» наружу
@@ -2106,9 +2287,27 @@
                 const val = opt.dataset.view;
                 currentLabel.textContent = val;
                 menu.hidden = true;
+
+                // === фикс залипания скролла ===
+                // сохраняем центр текущего окна, чтобы при смене вида не прыгало
+                const mainNow = wrap.querySelector('.pp-cal-main');
+                if (mainNow && Number.isFinite(calState.canvasStartMs) && calState.msPerPx) {
+                    const xCenter = mainNow.scrollLeft + mainNow.clientWidth / 2;
+                    calState.anchorMs = calState.canvasStartMs + xCenter * calState.msPerPx;
+                }
+
+                // сбрасываем центрирование, чтобы Day пересчитался заново
+                calState._centeredOnce = false;
                 calState.view = val;
                 renderCalendar();
+
+                // предотвращаем "back-swipe", если scrollLeft оказался = 0
+                requestAnimationFrame(() => {
+                    const m = wrap.querySelector('.pp-cal-main');
+                    if (m && m.scrollLeft === 0) m.scrollLeft = 1;
+                });
             });
+
 
             document.addEventListener('click', (e) => {
                 if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
@@ -3284,9 +3483,9 @@
             const end = addMs(start, state.rangeMs);
             const HALF = Math.floor(VISIBLE_DAY_SPAN / 2);
 
-            // окно 3 дня для полотна (остаётся для бесшовного скролла)
-            const start3 = (state.view === 'day') ? addMs(start, -HALF * state.rangeMs) : start;
-            const end3 = (state.view === 'day') ? addMs(start, (VISIBLE_DAY_SPAN - HALF) * state.rangeMs) : end;
+            // окно 3 диапазонов (prev | current | next) для ЛЮБОГО view
+            const start3 = addMs(start, -HALF * state.rangeMs);
+            const end3 = addMs(start, (VISIBLE_DAY_SPAN - HALF) * state.rangeMs);
 
             // сохраняем для scroll-listener
             state._start3 = start3;
@@ -3324,7 +3523,7 @@
 
             // колонки заголовка
             elHeader.innerHTML = '';
-            const visibleCols = (state.view === 'day') ? state.colCount * VISIBLE_DAY_SPAN : state.colCount;
+            const visibleCols = state.colCount * VISIBLE_DAY_SPAN; // тройной буфер для любого режима
 
             for (let i = 0; i < visibleCols; i++) {
                 const t0 = addMs(start3, i * state.colMs);
@@ -3399,7 +3598,7 @@
                 const row = document.createElement('div');   // ← создать строку
                 row.className = 'tl-row';
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const colsForRow = (state.view === 'day') ? state.colCount * VISIBLE_DAY_SPAN : state.colCount;
+                const colsForRow = state.colCount * VISIBLE_DAY_SPAN; // тройной буфер для любого режима
 
 
                 for (let i = 0; i < colsForRow; i++) {
@@ -3810,37 +4009,42 @@
             positionDayTags();
             updateGridOffset();
 
-            // === [SEAM SHIFT] бесконечный горизонтальный скролл в day-view ===
-            // Когда подходим к левому/правому краю тройного окна (вчера|сегодня|завтра),
-            // сдвигаем якорь на сутки и компенсируем scrollLeft, чтобы пользователь этого не заметил.
-            if (state.view === 'day' && allowSeamShift) {
+            // === [SEAM SHIFT] бесконечный горизонтальный скролл для любого view ===
+            // Подходя к краю тройного окна, сдвигаем anchor на ширину БАЗОВОГО диапазона (day|week|month)
+            // и компенсируем scrollLeft, чтобы мировая позиция сохранилась.
+            if (allowSeamShift) {
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                const dayW = state.colCount * colW;               // ширина одних суток в пикселях
-                const maxLeft = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
-                const thresh = Math.min(dayW * 0.15, 200);        // «зона шва»: 15% или не более 200px
 
-                // Левый край — уходим на день назад
+                // ширина ОДНОГО базового диапазона в px:
+                // day: 24 колонки; week: 7 колонок; month: 6 «недельных» колонок (по 7 дней)
+                const spanW = state.colCount * colW;
+
+                const maxLeft = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                const thresh = Math.min(spanW * 0.15, 200); // «зона шва»: 15% или не более 200px
+
+                // Левый край — уходим на один базовый диапазон назад
                 if (elBody.scrollLeft <= thresh) {
                     const oldLeft = elBody.scrollLeft;
                     const prev = allowSeamShift;
-                    allowSeamShift = false;                       // не триггерим себя же
+                    allowSeamShift = false; // не триггерим себя же
                     state.anchor = addMs(state.anchor, -state.rangeMs);
-                    render();                                     // перерисуем тройное окно
-                    elBody.scrollLeft = oldLeft + dayW;           // восстановим мировую позицию
+                    render();
+                    elBody.scrollLeft = oldLeft + spanW; // восстановить мировую позицию
                     allowSeamShift = prev;
                 }
-
-                // Правый край — уходим на день вперёд
+                // Правый край — уходим на один базовый диапазон вперёд
                 else if ((maxLeft - elBody.scrollLeft) <= thresh) {
                     const oldLeft = elBody.scrollLeft;
                     const prev = allowSeamShift;
                     allowSeamShift = false;
                     state.anchor = addMs(state.anchor, +state.rangeMs);
                     render();
-                    elBody.scrollLeft = Math.max(0, oldLeft - dayW);
+                    elBody.scrollLeft = Math.max(0, oldLeft - spanW);
                     allowSeamShift = prev;
                 }
             }
+
+
 
             // ЛЁГКИЙ РЕЖИМ: во время прокрутки НЕ делаем полный render(),
             // чтобы не мигали события и список типов слева.

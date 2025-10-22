@@ -2574,7 +2574,7 @@ body.theme-dark .pp-cal-tick {
     align-items: center;
     justify-content: space-between;
     gap: 6px;
-    min-width: 90px;
+    min-width: 120px;
     text-transform: capitalize;
 }
 
@@ -3541,4 +3541,8 @@ body.theme-dark .pp-cal-tick {
     text-overflow: ellipsis;
     /* обрезаем с троеточием, когда не хватает места */
     line-height: 1.2;
+}
+
+.pp-cal .pp-cal-main {
+    overscroll-behavior-x: contain;
 }
