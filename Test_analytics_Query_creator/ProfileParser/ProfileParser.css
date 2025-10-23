@@ -2509,6 +2509,9 @@ body.theme-dark .pp-cal-tick {
     --tl-ev-brw: 1px;
     /* можно .5px */
     --tl-ev-brc: rgba(0, 0, 0, .22);
+    --tl-res-head-h: calc(var(--tl-daybar-h) + 56px);
+    /* общая высота шапки (левая и правая) */
+
 }
 
 /* фоновый цвет именно левой панели (сплошной) */
@@ -2531,11 +2534,11 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-/#ppCal .tl-toolbar {
+#ppCal .tl-toolbar {
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 8px;
-    padding: 10px 8px;
+    padding: 8px 0px;
 }
 
 
@@ -2557,8 +2560,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 #ppCal .tl-btn {
-    padding: 6px 10px;
-    border: 1px solid var(--tl-border);
+    padding: 8px 10px;
+    border: 1.5px solid var(--tl-border);
     border-radius: 8px;
     background: #fff;
     cursor: pointer
@@ -2619,7 +2622,7 @@ body.theme-dark .pp-cal-tick {
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
-
+    top: 9px;
     /* плавное изменение высоты левой ячейки */
     transition: height 200ms ease;
     will-change: height;
@@ -2647,7 +2650,7 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-
+/* 
 #ppCal .tl-grid-header {
     position: sticky;
     top: 0;
@@ -2658,7 +2661,25 @@ body.theme-dark .pp-cal-tick {
     overflow: visible;
     padding-top: var(--tl-daybar-h);
     will-change: transform, width;
-    /* ⟵ место под строку дня */
+  
+}*/
+
+.tl-grid-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--tl-border);
+    white-space: nowrap;
+    overflow: visible;
+
+    /* ВАЖНО: общая высота шапки равна левой */
+    min-height: var(--tl-res-head-h);
+
+    /* строка «дней» остаётся прижатой к верху внутри шапки */
+    padding-top: var(--tl-daybar-h);
+
+    will-change: transform, width;
 }
 
 
@@ -2699,14 +2720,23 @@ body.theme-dark .pp-cal-tick {
 
 }
 
-
+/*
 #ppCal .tl-grid-body {
     position: relative;
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: auto;
     max-height: calc(var(--tl-row-h) * 13);
+}*/
+
+.tl-grid-body {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(var(--tl-row-h) * var(--tl-visible-rows));
 }
+
 
 
 
@@ -3128,9 +3158,10 @@ body.theme-dark .pp-cal-tick {
 
 /* [HEADER SOLID — финальная версия] */
 #ppCal .tl-res-header {
-    height: calc(var(--tl-daybar-h) + 40px);
+    height: var(--tl-res-head-h);
     display: flex;
     align-items: center;
+    /* текст "Events" по центру по вертикали */
     padding: 0 10px;
     font-weight: 600;
     border-bottom: 1px solid var(--tl-border);
@@ -3138,6 +3169,7 @@ body.theme-dark .pp-cal-tick {
 
     position: sticky;
     top: 0;
+    height: 110px;
     z-index: 7;
     /* выше фейда и контента */
     background: var(--cal-left-bg, var(--card-bg)) !important;
@@ -3145,8 +3177,8 @@ body.theme-dark .pp-cal-tick {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     isolation: isolate;
-    /* чтобы ничего не «подмешивалось» из-под него */
 }
+
 
 /* [RESCOL — финальная версия] */
 #ppCal .tl-rescol {
@@ -3164,7 +3196,7 @@ body.theme-dark .pp-cal-tick {
 #ppCal .tl-rescol::after {
     content: "";
     position: absolute;
-    top: calc(var(--tl-daybar-h) + 40px);
+    top: var(--tl-res-head-h);
     /* ниже шапки Events */
     bottom: 0;
     right: 0;
