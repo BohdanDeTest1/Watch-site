@@ -2428,6 +2428,11 @@ body.theme-dark .pp-cal-tick {
     border-bottom: 1px solid var(--border);
 }
 
+.pp-cal-main .pp-cal-scale {
+    width: 100%;
+    max-width: none;
+}
+
 /* [SEGMENTS POPUP] — кнопка и попап внутри бара */
 .pp-cal-bar {
     position: absolute;
@@ -2527,7 +2532,6 @@ body.theme-dark .pp-cal-tick {
 
 
 #ppCal .tl-toolbar {
-    display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 8px;
@@ -2564,48 +2568,7 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* === DROPDOWN (day/week/month) === */
-.tl-dropdown {
-    position: relative;
-    display: inline-block;
-}
 
-.tl-dropdown-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    min-width: 120px;
-    text-transform: capitalize;
-}
-
-.tl-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: var(--pp-bg, #fff);
-    border: 1px solid var(--pp-border, #ccc);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    padding: 4px 0;
-    z-index: 10;
-    min-width: 120px;
-}
-
-.tl-dropdown-menu button {
-    display: block;
-    width: 100%;
-    padding: 6px 10px;
-    background: none;
-    border: none;
-    text-align: left;
-    font-size: 14px;
-    cursor: pointer;
-    text-transform: capitalize;
-}
-
-.tl-dropdown-menu button:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
 
 
 #ppCal .tl-wrap {

@@ -595,18 +595,8 @@
     </div>
     <div class="tl-title" id="tlTitle"></div>
       <div class="tl-right">
-      <div class="tl-dropdown">
-        <button id="tlViewBtn" class="tl-btn tl-dropdown-btn" type="button">
-          <span class="tl-current">day</span> ▾
-        </button>
-        <div id="tlDropdownMenu" class="tl-dropdown-menu" hidden>
-          <button type="button" data-view="day">day</button>
-          <button type="button" data-view="week">week</button>
-          <button type="button" data-view="month">month</button>
-        </div>
-      </div>
-    </div>
-
+     
+<div class="tl-right"></div>
 
   </div>
 
@@ -897,12 +887,10 @@
             const d = new Date(ms); d.setUTCDate(1); d.setUTCHours(0, 0, 0, 0); return d.getTime();
         }
 
-        // диапазон [A,B) под выбранный режим
-        function computeRange(view, anchorMs) {
-            if (view === 'day') { const A = startOfDayUTCms(anchorMs); return [A, A + 24 * 3600e3]; }
-
-            if (view === 'week') { const A = startOfWeekUTC(anchorMs); return [A, A + 7 * 24 * 3600e3]; }
-            const A = startOfMonthUTC(anchorMs); const d = new Date(A); d.setUTCMonth(d.getUTCMonth() + 1); return [A, d.getTime()];
+        function computeRange(_view, anchorMs) {
+            // Всегда 1 сутки [UTC-полночь .. +24ч)
+            const A = startOfDayUTCms(anchorMs);
+            return [A, A + 24 * 3600e3];
         }
 
         // Локальная полночь в миллисекундах (UTC-инстант как число)
@@ -1141,17 +1129,10 @@
                 elRes.style.transform = `translateY(${-y}px)`;
             });
 
-            // [ANCHOR: R1] ширина вьюпорта для шкал
-            const vw0 = mainEl?.clientWidth || 0;
 
-            // утилита, чтобы не дублировать присвоения
-            const setScaleWidth = (w) => {
-                scaleTop.style.width = w + 'px';
-                if (scaleBottom) scaleBottom.style.width = w + 'px';
-            };
-
-            // первичная ширина (если 0 — всё равно выставим, а дальше добьем RAF-ом)
-            setScaleWidth(vw0);
+            // шкалы тянутся на всю ширину контейнера
+            scaleTop.style.width = '';
+            if (scaleBottom) scaleBottom.style.width = '';
 
             // [НОВОЕ] первичная отрисовка (сверху — «крупные», снизу — «мелкие»)
             const makeScales = () => {
@@ -1160,172 +1141,7 @@
                 buildScale(scaleBottom, A, B, gridMs, cellW, mainEl, 'minor');
             };
 
-            // если прямо сейчас ширина нулевая (контейнер ещё не в лейауте) — дорисуем на первом кадре
-            if (!vw0) {
-                requestAnimationFrame(() => {
-                    const vw1 = mainEl?.clientWidth || scaleTop.parentElement?.clientWidth || 0;
-                    if (vw1) setScaleWidth(vw1);
-                    makeScales();
-                });
-            } else {
-                makeScales();
-            }
-
-
-            // сразу после makeScales();
-            // if (calState._onScroll && mainEl) {
-            //     mainEl.removeEventListener('scroll', calState._onScroll);
-            // }
-            // let scaleRaf = 0;
-            // calState._onScroll = function onScroll() {
-            //     if (scaleRaf) return;
-            //     scaleRaf = requestAnimationFrame(() => {
-            //         // 1) сдвиг фоновой сетки
-            //         const off = -(mainEl.scrollLeft % cellW);
-            //         mainEl.style.setProperty('--pp-grid-off', off + 'px');
-
-            //         // 2) бесшовный скролл: «перебазирование» полотна
-            //         const msPerPx = calState.msPerPx || 1;
-            //         const vw = mainEl.clientWidth || 0;
-            //         const vwMs = vw * msPerPx;
-
-            //         const A = calState.canvasStartMs;
-            //         const B = calState.canvasEndMs;
-            //         const W = B - A;
-
-            //         const leftPx = mainEl.scrollLeft;
-            //         const rightPx = leftPx + vw;
-
-            //         const nearLeft = leftPx < vw * 0.25;
-            //         const nearRight = rightPx > (mainEl.scrollWidth - vw * 0.25);
-
-            //         if (nearLeft || nearRight) {
-            //             // сохраняем мировую позицию экрана (левый край)
-            //             const worldLeftMs = A + leftPx * msPerPx;
-            //             const shift = Math.max(vwMs * 3, W / 2); // сдвигаем ≈ на пол-канвы (или 3 экрана)
-
-            //             let newA = A, newB = B;
-            //             if (nearLeft) { newA = A - shift; newB = B - shift; }
-            //             if (nearRight) { newA = A + shift; newB = B + shift; }
-
-            //             calState.canvasStartMs = newA;
-            //             calState.canvasEndMs = newB;
-
-            //             // ширина полотна = (B - A) / msPerPx + один экран запаса
-            //             const totalW = Math.ceil((newB - newA) / msPerPx) + vw;
-            //             const rowsBox = wrapEl.querySelector('.pp-cal-rows');
-            //             rowsBox.style.width = totalW + 'px';
-
-            //             // перерисовать подписи шкал под новый A/B
-            //             makeScales();
-
-            //             // вернуть прежний мировой левый край
-            //             const newLeftPx = (worldLeftMs - newA) / msPerPx;
-            //             const maxLeft = Math.max(0, mainEl.scrollWidth - mainEl.clientWidth);
-            //             mainEl.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
-            //         }
-
-            //         scaleRaf = 0;
-            //     });
-            // };
-            // mainEl?.addEventListener('scroll', calState._onScroll);
-
-            // --- вместо текущего calState._onScroll и inline-ребейза
-            // if (calState._onScroll && mainEl) {
-            //     mainEl.removeEventListener('scroll', calState._onScroll);
-            // }
-
-            // let scaleRaf = 0;
-            // // [NEW] отложенный ребейз после паузы
-            // clearTimeout(calState._rebaseTimer);
-            // calState._rebaseTimer = 0;
-
-            // function rebaseIfNeeded() {
-            //     const msPerPx = calState.msPerPx || 1;
-            //     const vw = mainEl.clientWidth || 0;
-            //     const vwMs = vw * msPerPx;
-
-            //     let A = calState.canvasStartMs;
-            //     let B = calState.canvasEndMs;
-            //     const W = B - A;
-
-            //     const leftPx = mainEl.scrollLeft;
-            //     const rightPx = leftPx + vw;
-
-            //     // Когда реально НЕОБХОДИМО «сшивать»
-            //     const nearLeft = leftPx < vw * 0.20;          // было 0.25 — делаем чуть реже
-            //     const nearRight = rightPx > (mainEl.scrollWidth - vw * 0.20);
-
-            //     if (!nearLeft && !nearRight) return;
-
-            //     // 1) запомним мировую позицию левого края
-            //     const worldLeftMs = A + leftPx * msPerPx;
-            //     const shift = Math.max(vwMs * 3, W / 2);        // как было, но единожды, вне scroll-цикла
-
-            //     let newA = A, newB = B;
-            //     if (nearLeft) { newA = A - shift; newB = B - shift; }
-            //     if (nearRight) { newA = A + shift; newB = B + shift; }
-
-            //     calState.canvasStartMs = newA;
-            //     calState.canvasEndMs = newB;
-
-            //     // обновим ширину полотна + шкалы
-            //     const totalW = Math.ceil((newB - newA) / msPerPx) + vw;
-            //     const rowsBox = wrapEl.querySelector('.pp-cal-rows');
-            //     if (rowsBox) rowsBox.style.width = totalW + 'px';
-
-            //     makeScales(); // подписи в новых границах
-
-            //     // восстановим прежнюю мировую позицию экрана
-            //     const newLeftPx = (worldLeftMs - newA) / msPerPx;
-            //     const maxLeft = Math.max(0, mainEl.scrollWidth - mainEl.clientWidth);
-            //     mainEl.scrollLeft = Math.max(0, Math.min(newLeftPx, maxLeft));
-
-            //     // [NEW] после ребейза — форсируем перерасчёт позиций видимых баров
-            //     requestAnimationFrame(() => updateBarsPositions(/* padPx */ mainEl.clientWidth));
-            // }
-
-            // // [NEW] отдельный апдейтер позиций баров с «запасом»
-            // function updateBarsPositions(padPx = mainEl.clientWidth) {
-            //     const A = calState.canvasStartMs;
-            //     const msPerPx = calState.msPerPx || 1;
-            //     const rowsBox = wrapEl.querySelector('#ppCalRows') || wrapEl.querySelector('.pp-cal-rows');
-            //     if (!rowsBox || !Number.isFinite(A)) return;
-
-            //     const viewLeft = mainEl.scrollLeft;
-            //     const viewRight = viewLeft + mainEl.clientWidth;
-
-            //     const minTs = A + Math.max(0, viewLeft - padPx) * msPerPx;           // запас = 1 экран
-            //     const maxTs = A + (viewRight + padPx) * msPerPx;
-
-            //     const updIfVisible = el => {
-            //         const a = +el.dataset.a, b = +el.dataset.b;
-            //         if (!Number.isFinite(a) || !Number.isFinite(b)) return;
-            //         if (b < minTs || a > maxTs) return;
-            //         el.style.left = ((a - A) / msPerPx) + 'px';
-            //         el.style.width = Math.max(1, (b - a) / msPerPx) + 'px';
-            //     };
-            //     rowsBox.querySelectorAll('.pp-cal-bar, .pp-cal-overlap').forEach(updIfVisible);
-            // }
-
-            // calState._onScroll = function onScroll() {
-            //     // фон-сетка всегда сразу
-            //     if (!scaleRaf) {
-            //         scaleRaf = requestAnimationFrame(() => {
-            //             const off = -(mainEl.scrollLeft % cellW);
-            //             mainEl.style.setProperty('--pp-grid-off', off + 'px');
-            //             scaleRaf = 0;
-            //         });
-            //     }
-
-            //     // [NEW] переносим тяжёлый ребейз и перерасчёт баров на «idle» после скролла
-            //     clearTimeout(calState._rebaseTimer);
-            //     calState._rebaseTimer = setTimeout(() => {
-            //         rebaseIfNeeded();
-            //         updateBarsPositions(); // мягкий пересчёт для актуального окна
-            //     }, 120); // 120 мс пауза после скролла
-            // };
-            // mainEl?.addEventListener('scroll', calState._onScroll);
+            makeScales();
 
 
             if (calState._onScroll && mainEl) {
@@ -1751,7 +1567,7 @@
                     if (!opt) return;
 
                     const val = opt.dataset.view;
-                    currentLabel.textContent = val;
+                    currentLabel.textContent = opt.textContent.trim();
                     menu.hidden = true;
 
                     // при смене масштаба — просим рендер заново и заново центрируем "сегодня"
@@ -1796,8 +1612,8 @@
 
             // 2) Обе шкалы шириной вьюпорта; содержимое отрисовываем «по виду»
             const vw = main?.clientWidth || 0;
-            if (scaleT) scaleT.style.width = vw + 'px';
-            if (scaleB) scaleB.style.width = vw + 'px';
+            if (scaleT) scaleT.style.width = '';
+            if (scaleB) scaleB.style.width = '';
 
             calState.gridMs = gridMs;
 
@@ -2052,74 +1868,12 @@
                     else { raf = 0; vx = 0; }
                 };
 
-                // main.addEventListener('wheel', (e) => {
-
-                //     if (e.ctrlKey) {
-
-
-                //     e.preventDefault();
-                //     const order = ['month', 'week', 'day'];
-                //     let i = order.indexOf(calState.view);
-                //     if (e.deltaY < 0 && i < order.length - 1) i++; // zoom in
-                //     if (e.deltaY > 0 && i > 0) i--; // zoom out
-                //     calState.view = order[i];
-
-                //     // сохранить «середину» текущего окна в anchor
-                //     if (Number.isFinite(calState.canvasStartMs)) {
-                //         const rect = main.getBoundingClientRect();
-                //         const x = e.clientX - rect.left + main.scrollLeft;
-                //         calState.anchorMs = calState.canvasStartMs + x * calState.msPerPx;
-                //     }
-                //     renderCalendar();
-                //     return;
-
-
-                // }
-
-                // // HORIZ SCROLL — как раньше: только явная горизонталь
-                // let horiz = e.deltaX;
-                // if (horiz === 0 && e.shiftKey) horiz = e.deltaY;
-                // const H = Math.abs(horiz), V = Math.abs(e.deltaY);
-
-                //     // если импульс совсем маленький — обычно игнорируем,
-                //     // НО на краях полотно не должно «прокидывать» жест в браузер (back/forward)
-                //     if (Math.abs(horiz) < 6) {
-                //         const atLeft = main.scrollLeft <= 0.5;
-                //         const atRight = (main.scrollLeft + main.clientWidth) >= (main.scrollWidth - 0.5);
-                //         const tryingLeft = (horiz < 0) || (horiz === 0 && e.shiftKey && e.deltaY < 0);
-                //         const tryingRight = (horiz > 0) || (horiz === 0 && e.shiftKey && e.deltaY > 0);
-                //         if ((atLeft && tryingLeft) || (atRight && tryingRight)) {
-                //             e.preventDefault(); // глушим браузерную навигацию
-                //         }
-                //         return;
-                //     }
-
-
-                //     if (H === 0 || H <= V * 1.1) return;
-                //     if (main.scrollWidth <= main.clientWidth) return;
-
-                //     const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? main.clientWidth : 1);
-                //     e.preventDefault();
-                //     vx += horiz * unit;
-                //     if (!raf) raf = requestAnimationFrame(step);
-                // }, { passive: false });
 
                 main.addEventListener('wheel', (e) => {
                     // Zoom (Ctrl+wheel) — как было
                     if (e.ctrlKey) {
+                        // Зум отключён — удерживаем только горизонтальный скролл
                         e.preventDefault();
-                        const order = ['month', 'week', 'day'];
-                        let i = order.indexOf(calState.view);
-                        if (e.deltaY < 0 && i < order.length - 1) i++; // zoom in
-                        if (e.deltaY > 0 && i > 0) i--;                // zoom out
-                        calState.view = order[i];
-
-                        if (Number.isFinite(calState.canvasStartMs)) {
-                            const rect = main.getBoundingClientRect();
-                            const x = e.clientX - rect.left + main.scrollLeft;
-                            calState.anchorMs = calState.canvasStartMs + x * calState.msPerPx;
-                        }
-                        renderCalendar();
                         return;
                     }
 
@@ -2270,50 +2024,6 @@
                     dtPop && (dtPop.hidden = true);
                 });
             })();
-
-            // === DROPDOWN (Day / Week / Month) ===
-            const viewBtn = wrap.querySelector('#tlViewBtn');
-            const menu = wrap.querySelector('#tlDropdownMenu');
-            const currentLabel = wrap.querySelector('.tl-current');
-
-            viewBtn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                menu.hidden = !menu.hidden;
-            });
-
-            menu?.addEventListener('click', (e) => {
-                const opt = e.target.closest('button[data-view]');
-                if (!opt) return;
-                const val = opt.dataset.view;
-                currentLabel.textContent = val;
-                menu.hidden = true;
-
-                // === фикс залипания скролла ===
-                // сохраняем центр текущего окна, чтобы при смене вида не прыгало
-                const mainNow = wrap.querySelector('.pp-cal-main');
-                if (mainNow && Number.isFinite(calState.canvasStartMs) && calState.msPerPx) {
-                    const xCenter = mainNow.scrollLeft + mainNow.clientWidth / 2;
-                    calState.anchorMs = calState.canvasStartMs + xCenter * calState.msPerPx;
-                }
-
-                // сбрасываем центрирование, чтобы Day пересчитался заново
-                calState._centeredOnce = false;
-                calState.view = val;
-                renderCalendar();
-
-                // предотвращаем "back-swipe", если scrollLeft оказался = 0
-                requestAnimationFrame(() => {
-                    const m = wrap.querySelector('.pp-cal-main');
-                    if (m && m.scrollLeft === 0) m.scrollLeft = 1;
-                });
-            });
-
-
-            document.addEventListener('click', (e) => {
-                if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
-            });
-
-
         }
 
         // инициализация календаря один раз при создании карточки
@@ -3404,23 +3114,8 @@
             const b = e.target.closest('button');
             if (!b) return;
 
-            // ▼▼▼ NEW: dropdown button (Day ▾) — открываем/закрываем меню и прекращаем делегирование
-            if (b.id === 'tlViewBtn') {
-                const menu = document.getElementById('tlDropdownMenu');
-                if (menu) {
-                    // Тоггл видимости
-                    menu.hidden = !menu.hidden;
-                }
-                e.stopPropagation();
-                e.preventDefault();
-                return; // важно — не пускаем дальше
-            }
-            // ▲▲▲ END NEW
-
-            if (b.dataset.view) { setView(b.dataset.view); render(); }
-
             if (b.dataset.nav === 'today') {
-                state.anchor = startOfLocalDayAsUTC(new Date());   // UTC-полночь «сегодня»
+                state.anchor = startOfLocalDayAsUTC(new Date());
                 render();
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
@@ -3428,11 +3123,11 @@
                 const dayW = state.colCount * colW;
                 const extra = (state.view === 'day') ? halfVisible * dayW : 0;
 
-                const now = new Date(); // инстант (UTC-линия)
+                const now = new Date();
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
 
                 const prev = allowSeamShift;
-                allowSeamShift = false;  // во время программного скролла «шов» глушим
+                allowSeamShift = false;
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
                 positionDayTags();
                 elBody.dispatchEvent(new Event('scroll'));
@@ -3444,36 +3139,15 @@
         });
 
 
-        function setView(v) {
-            state.view = v;
-            if (v === 'day') { state.colMs = 3600_000; state.colCount = 24; state.rangeMs = state.colMs * state.colCount; }
-            if (v === 'week') { state.colMs = 24 * 3600_000; state.colCount = 7; state.rangeMs = state.colMs * state.colCount; }
-            if (v === 'month') { state.colMs = 7 * 24 * 3600_000; state.colCount = 6; state.rangeMs = state.colMs * state.colCount; }
+
+        function setView() {
+            // Жестко держим единственный режим — day (24 часа по 1 часу в колонке)
+            state.view = 'day';
+            state.colMs = 3600_000;
+            state.colCount = 24;
+            state.rangeMs = state.colMs * state.colCount;
         }
 
-        // === Dropdown menu wiring (Day / Week / Month) ===
-        (() => {
-            const menu = document.getElementById('tlDropdownMenu');
-            const label = document.querySelector('.tl-current');
-
-            if (!menu || !label) return;
-
-            // Клик по пункту меню
-            menu.addEventListener('click', (e) => {
-                const opt = e.target.closest('button[data-view]');
-                if (!opt) return;
-                const v = opt.dataset.view;
-                label.textContent = v;
-                menu.hidden = true;
-                setView(v);
-                render();
-            });
-
-            // Клик вне меню — закрыть
-            document.addEventListener('click', (e) => {
-                if (!menu.hidden && !e.target.closest('.tl-dropdown')) menu.hidden = true;
-            }, { capture: true });
-        })();
 
 
 
@@ -4181,13 +3855,18 @@
                 return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', ...tz });
             }
             if (view === 'week') {
-                const e = addMs(d, 6 * 24 * 3600_000);
+                // теперь это «3 days»: d..d+2
+                const e = addMs(d, 2 * 24 * 3600_000);
                 const a = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', ...tz });
                 const b = e.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', ...tz });
                 return `${a} – ${b}`;
             }
             if (view === 'month') {
-                return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', ...tz });
+                // теперь это «week»: показываем диапазон недели d..d+6
+                const e = addMs(d, 6 * 24 * 3600_000);
+                const a = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', ...tz });
+                const b = e.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', ...tz });
+                return `${a} – ${b}`;
             }
             return '';
         }
