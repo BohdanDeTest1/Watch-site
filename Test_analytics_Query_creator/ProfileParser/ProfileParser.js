@@ -587,18 +587,7 @@
   <div class="pp-body">
  <!-- [CAL] Timeline (pure JS/CSS) -->
 <section class="pp-cal" id="ppCal">
-  <div class="tl-toolbar" id="tlToolbar">
-    <div class="tl-left">
-      <button class="tl-btn" data-nav="prev"  aria-label="Previous">&#x276E;</button>
-      <button class="tl-btn" data-nav="next"  aria-label="Next">&#x276F;</button>
-      <button class="tl-btn" data-nav="today">today</button>
-    </div>
-    <div class="tl-title" id="tlTitle"></div>
-      <div class="tl-right">
-     
-<div class="tl-right"></div>
-
-  </div>
+ 
 
   <div class="tl-wrap">
     <div class="tl-rescol">
@@ -607,6 +596,18 @@
     </div>
 
     <div class="tl-grid" id="tlGrid">
+     <div class="tl-toolbar" id="tlToolbar">
+    <div class="tl-left">
+      <button class="tl-btn" data-nav="prev"  aria-label="Previous">&#x276E;</button>
+       <button class="tl-btn" data-nav="today">today</button>
+      <button class="tl-btn" data-nav="next"  aria-label="Next">&#x276F;</button>
+    </div>
+    <div class="tl-title" id="tlTitle"></div>
+      <div class="tl-right">
+     
+<div class="tl-right"></div>
+
+  </div>
       <div class="tl-grid-header" id="tlHeader"></div>
       <div class="tl-grid-body" id="tlBody"></div>
     </div>
@@ -3021,10 +3022,10 @@
             _preventInfoOpen: false
         };
         const DAY_SPAN = 50;
-        const VISIBLE_DAY_SPAN = 3;
+        const VISIBLE_DAY_SPAN = 2;
 
         // окно типов = 24 часа: 12 назад + 12 вперёд от текущего центра
-        const WINDOW_HALF_HOURS = 12;
+        const WINDOW_HALF_HOURS = 18
 
         // вычисляем UTC-момент в центре текущей видимой области таймлайна
         function getViewportCenterDate(start3) {
