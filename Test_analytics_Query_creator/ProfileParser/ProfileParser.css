@@ -2720,25 +2720,17 @@ body.theme-dark .pp-cal-tick {
 
 }
 
-/*
-#ppCal .tl-grid-body {
-    position: relative;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: auto;
-    max-height: calc(var(--tl-row-h) * 13);
-}*/
 
+
+/* тело таймлайна — разрешаем элементам выходить вверх, чтобы бейдж ::before был видим */
 .tl-grid-body {
     position: relative;
     white-space: nowrap;
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: visible;
+    /* <-- раньше было auto, из-за этого бейдж обрезался */
     max-height: calc(var(--tl-row-h) * var(--tl-visible-rows));
 }
-
-
-
 
 
 /* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
@@ -2970,21 +2962,44 @@ body.theme-dark .pp-cal-tick {
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
 
 
-
-/* «сейчас» по UTC */
-/* «сейчас» по UTC — новая pp-cal */
+/* вертикальная линия «сейчас» */
 .pp-cal-now {
     position: absolute;
     top: 0;
-    /* от самого верха прокручиваемого контейнера */
     height: var(--pp-now-h, 100%);
-    /* JS проставит scrollHeight в переменную */
     width: 2px;
     background: #ef4444;
     opacity: .95;
     pointer-events: none;
-    z-index: 2;
+    z-index: 4;
+    will-change: transform;
 }
+
+
+/* бейдж с часами UTC */
+.pp-cal-now::before {
+    content: attr(data-time);
+    position: sticky;
+    /* <-- теперь бейдж приклеен к верхней границе контейнера */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 2px;
+    /* небольшое смещение вниз от верхней границы */
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    white-space: nowrap;
+    z-index: 6;
+}
+
 
 
 /* === [TIMELINE] Day box inside header === */
@@ -3541,4 +3556,9 @@ body.theme-dark .pp-cal-tick {
 
 .pp-cal .pp-cal-main {
     overscroll-behavior-x: contain;
+}
+
+/* линия «сейчас», если у неё есть класс pp-cal-now — всегда поверх сетки/баров */
+#ppCal .tl-now.pp-cal-now {
+    z-index: 4;
 }

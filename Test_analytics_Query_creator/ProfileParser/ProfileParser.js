@@ -1079,6 +1079,16 @@
                     nowEl.style.left = x + 'px';
                     nowEl.hidden = false;
 
+                    // обновляем подпись времени UTC на бейдже
+                    {
+                        const d = new Date();
+                        const hh = String(d.getUTCHours()).padStart(2, '0');
+                        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+                        nowEl.setAttribute('data-time', `${hh}:${mm}`);
+                    }
+
+
+
                     // [AUTO-CENTER-NOW] — один раз при первом рендере прокручиваем, чтобы «сейчас» попало в видимую область
                     if (!calState._didCenterNow) {
                         const viewW = mainHost.clientWidth || 0;
@@ -3389,7 +3399,7 @@
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const x = ((now - start3) / state.colMs) * colW;
                 const nowEl = document.createElement('div');
-                nowEl.className = 'tl-now';
+                nowEl.className = 'tl-now pp-cal-now';
                 nowEl.style.left = `${x}px`;
                 elBody.appendChild(nowEl);
             }
@@ -3399,6 +3409,10 @@
 
             // [ANCHOR TL-HEADER-WIDTH:SYNC] — шапку делаем ровно ширине фактического полотна
             elHeader.style.width = elBody.scrollWidth + 'px';
+
+            // высота верхней шкалы — для позиционирования бейджа (см. CSS var(--pp-scale-h))
+            elBody.style.setProperty('--pp-scale-h', (elHeader?.clientHeight || 32) + 'px');
+
 
             // [FIX-HEADER-ALIGN:RENDER] — сдвинуть шапку сразу, без ожидания первого scroll
             elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
@@ -3584,17 +3598,12 @@
             function updateNow() {
                 const now = new Date(); // UTC-инстант
 
-                // БАЗА диапазона:
-                // - day: тройной холст (prev | current | next) → старт = anchor - 1 день
-                // - week/month: одинарный холст
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const startBase = (state.view === 'day') ? addMs(state.anchor, -halfVisible * state.rangeMs) : state.anchor;
                 const totalMs = (state.view === 'day') ? state.rangeMs * DAY_SPAN : state.rangeMs;
-
                 const endBase = addMs(startBase, totalMs);
 
-                // Показываем линию только если now попадает в текущее «полотно» и это не month
                 let nowEl = elBody.querySelector('.tl-now');
                 if (!(now >= startBase && now <= endBase) || state.view === 'month') {
                     if (nowEl) nowEl.remove();
@@ -3602,27 +3611,27 @@
                 }
                 if (!nowEl) {
                     nowEl = document.createElement('div');
-                    nowEl.className = 'tl-now';
+                    nowEl.className = 'tl-now pp-cal-now';
                     elBody.appendChild(nowEl);
                 }
 
-                // Позиция X от начала текущего полотна
+                // позиция X
                 const x = ((now - startBase) / state.colMs) * colW;
                 nowEl.style.left = `${x}px`;
 
-                // ВЫСОТА: тянем от самого верха на ВЕСЬ контент (включая всё, что проскроллено вниз)
+                // высота от самого верха на весь контент
                 nowEl.style.top = '0px';
-                nowEl.style.bottom = ''; // важно: убрать любые bottom, чтобы не ограничивал высоту
+                nowEl.style.bottom = '';
                 nowEl.style.height = elBody.scrollHeight + 'px';
-            }
 
-            // первичная отрисовка + раз в минуту
-            // Было:
-            // updateNow();
-            // setInterval(() => {
-            //     if (raf) cancelAnimationFrame(raf);
-            //     raf = requestAnimationFrame(updateNow);
-            // }, 60 * 1000);
+                // ⬅️ ОБНОВЛЯЕМ ВРЕМЯ НА БЕЙДЖЕ (UTC, 24ч)
+                nowEl.setAttribute(
+                    'data-time',
+                    now.toLocaleTimeString('en-GB', {
+                        hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC'
+                    })
+                );
+            }
 
             // Стало: дождёмся применённых стилей/размеров, затем запустим первый апдейт.
             (function runInitialNow() {
