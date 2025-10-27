@@ -1,0 +1,4167 @@
+{
+    "promotions": [
+        {
+            "name": "qa_for_release_journey",
+            "themeId": "qa_journey_theme_release",
+            "displayProgressBar": false,
+            "startDate": 1754222400000,
+            "endDate": 1798804800000,
+            "unit": "qa_for_release_journey_2025-08-03_12:00",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "qa_journey_theme_release",
+                "id": "qa_journey_theme_release",
+                "type": "journey_promotion",
+                "withProgressBar": "false",
+                "supportTopup": "true",
+                "canDisplayOoeAd": "false",
+                "containsWidget": "true",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.ios"
+                    },
+                    {
+                        "name": "widget",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.ios"
+                    },
+                    {
+                        "name": "meta_indicator",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "journey_promotion",
+            "displayCurrencies": [
+                {
+                    "name": "journeyToken"
+                }
+            ],
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": true,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_for_release_journey_2025-08-03_12:00_1",
+            "displayLimit": false,
+            "offersConfigName": "qa_tokenPromotion_release",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "index": 3,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    "3": {
+                        "index": 3,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 5
+                            }
+                        ]
+                    }
+                }
+            },
+            "configuredSubType": "journey_promotion",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 5
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "journeyToken",
+                            "price": 20
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_toolbox-small_00",
+                            "value": 1
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "sku": "traveltown.bundle.3.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "vanityIslandToken",
+                            "value": 1,
+                            "type": "vanityTokens"
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": false,
+                    "topUp": false
+                },
+                {
+                    "index": 4,
+                    "virtualCurrency": [
+                        {
+                            "currency": "journeyToken",
+                            "price": 30
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 5,
+                    "virtualCurrency": [
+                        {
+                            "currency": "journeyToken",
+                            "price": 40
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 6,
+                    "virtualCurrency": [
+                        {
+                            "currency": "journeyToken",
+                            "price": 50
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "pack_paradaisedreams_medium_p2",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 7,
+                    "virtualCurrency": [
+                        {
+                            "currency": "journeyToken",
+                            "price": 60
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 10
+                        },
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 10
+                        },
+                        {
+                            "name": "Wheel_energy_110",
+                            "value": 1,
+                            "type": "wheel"
+                        }
+                    ],
+                    "id": "qa_tokenPromotion_release_2025-08-03_12:00_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1
+                }
+            },
+            "promotionSource": "liveopConfigured",
+            "genericToken": "journeyToken",
+            "eventId": "liveop_qa_for_release_journey_2025-08-03_12:00_0",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_for_release_journey_2025-08-03_12:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_flame_cards_packs_release_base",
+            "themeId": "single_london_windowshopper",
+            "priority": 50,
+            "displayProgressBar": "false",
+            "startDate": 1748950320000,
+            "endDate": 1784201520000,
+            "unit": "qa_flame_cards_packs_release_base_2025-06-03_11:32",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_london_windowshopper",
+                "id": "single_london_windowshopper",
+                "ganttAutomation": [
+                    "routine_single",
+                    "routine_singlenocards"
+                ],
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685427501845_single_london_windowshopper_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685427501845_single_london_windowshopper_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685427501845_single_london_windowshopper_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685427501845_single_london_windowshopper_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "configurationDescription": "p2_nocards_type2_v1",
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_flame_cards_packs_release_base_2025-06-03_11:32_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_flame_cards_packs_release_base",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 5,
+                    "rewards": [
+                        {
+                            "name": "qa_flame_initial_pack_release_base",
+                            "value": 1,
+                            "type": "pack"
+                        },
+                        {
+                            "name": "qa_flame_pack_5_release_base",
+                            "value": 1,
+                            "type": "pack"
+                        },
+                        {
+                            "name": "qa_flame_pack_standalone_release_base",
+                            "value": 1,
+                            "type": "pack"
+                        },
+                        {
+                            "name": "qa_flame_pack_mix_release_base",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_flame_cards_packs_release_base_2025-06-03_11:32_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 2,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_flame_cards_packs_release_base_2025-06-03_11:32_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb",
+            "themeId": "single_markgenericenergy_yellow",
+            "priority": 60,
+            "displayProgressBar": "false",
+            "startDate": 1747581900000,
+            "endDate": 1810999560000,
+            "unit": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb_2025-05-18_15:25",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_markgenericenergy_yellow",
+                "id": "single_markgenericenergy_yellow",
+                "ganttAutomation": [
+                    "routine_singleooe",
+                    "routine_singlenocards",
+                    "routine_singleooelow"
+                ],
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "supportTopup": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685265400151_single_markgenericenergy_yellow_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685265400151_single_markgenericenergy_yellow_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685265400151_single_markgenericenergy_yellow_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1685265400151_single_markgenericenergy_yellow_icon.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb_2025-05-18_15:25_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 10,
+                    "rewards": [
+                        {
+                            "name": "qa_pack_paradaisedreams_ReleaseNew_cb",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb_2025-05-18_15:25_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.240",
+                    "logic": "SEMVER"
+                },
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_qa_pack_paradaisedreams_ReleaseNew_cb_2025-05-18_15:25_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_shop_promotion_ReleaseNew",
+            "themeId": "qa_ShopTheme_for_releaseNewBase",
+            "displayProgressBar": false,
+            "startDate": 1745754360000,
+            "endDate": 1767268020000,
+            "unit": "qa_shop_promotion_ReleaseNew_2025-04-27_11:46",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "qa_ShopTheme_for_releaseNewBase",
+                "id": "qa_ShopTheme_for_releaseNewBase",
+                "type": "shop_promotion",
+                "withProgressBar": "false",
+                "canDisplayOoeAd": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1745911320356_duplicatedcards_shop_popup_10689_28-04-2025_18-25.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1745911320356_duplicatedcards_shop_popup_10689_28-04-2025_18-24.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "shop_promotion",
+            "subType": "stars_shop",
+            "displayCurrencies": [
+                {
+                    "name": "starsToken"
+                }
+            ],
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "configurationDescription": "qa_shop_promotion_ReleaseNew",
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_shop_promotion_ReleaseNew_2025-04-27_11:46_1",
+            "displayLimit": false,
+            "offersConfigName": "qa_shop_for_ReleaseNewBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "starsToken",
+                            "price": 10
+                        }
+                    ],
+                    "rewards": [
+                        {
+                            "name": "qa_combo_chest1",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_shop_for_ReleaseNewBase_2025-04-27_11:46_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "starsToken",
+                            "price": 20
+                        }
+                    ],
+                    "rewards": [
+                        {
+                            "name": "qa_combo_chest1",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_shop_for_ReleaseNewBase_2025-04-27_11:46_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "virtualCurrency": [
+                        {
+                            "currency": "starsToken",
+                            "price": 30
+                        }
+                    ],
+                    "rewards": [
+                        {
+                            "name": "qa_chest_ReleaseBase",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_shop_for_ReleaseNewBase_2025-04-27_11:46_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "1",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "StarsShop": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_shop_promotion_ReleaseNew_2025-04-27_11:46_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_partners_promotion_releasebasenew",
+            "themeId": "single_bday_superparty",
+            "displayProgressBar": "false",
+            "startDate": 1736857680000,
+            "endDate": 1792153680000,
+            "unit": "qa_partners_promotion_releasebasenew_2025-01-14_12:28",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": "",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1705233342451_single_bday_superparty_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1705233342451_single_bday_superparty_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1705233342451_single_bday_superparty_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1705233342451_single_bday_superparty_icon.ios"
+                    }
+                ],
+                "id": "single_bday_superparty",
+                "withProgressBar": "false",
+                "type": "single_promotion",
+                "configuration_id": "single_bday_superparty",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_partners_promotion_releasebasenew_2025-01-14_12:28_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_partners_promotion_releasebasenew",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 99,
+                    "rewards": [
+                        {
+                            "name": "partnersToken",
+                            "value": 500,
+                            "type": "genericToken"
+                        }
+                    ],
+                    "id": "qa_partners_promotion_releasebasenew_2025-01-14_12:28_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "11",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_partners_promotion_releasebasenew_2025-01-14_12:28_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_endless2_event_promo_ReleaseBase",
+            "themeId": "endless_progressbar_sweetsNtreats",
+            "priority": 1,
+            "triggersFrequency": 3,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_endless2_event_promo_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardEvent",
+            "subEventIndex": 1,
+            "theme": {
+                "configuration_id": "endless_progressbar_sweetsNtreats",
+                "id": "endless_progressbar_sweetsNtreats",
+                "type": "endless_promotion",
+                "withProgressBar": "true",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "endless_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_endless2_event_promo_ReleaseBase_2024-01-01_11:00_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_endless2_progressbar_ReleaseBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 15,
+                        "rewards": [
+                            {
+                                "name": "item_booster-joker_00",
+                                "value": 1
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 15,
+                        "rewards": [
+                            {
+                                "name": "item_booster-joker_00",
+                                "value": 1
+                            }
+                        ]
+                    }
+                }
+            },
+            "configuredSubType": "endless_promotion",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 10
+                        }
+                    ],
+                    "progressBarPoints": 5,
+                    "id": "qa_endless2_progressbar_ReleaseBase_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 10
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 30
+                        }
+                    ],
+                    "id": "qa_endless2_progressbar_ReleaseBase_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        }
+                    ],
+                    "progressBarPoints": 5,
+                    "id": "qa_endless2_progressbar_ReleaseBase_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 4,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "iar_0-01_0-5",
+                            "value": 1,
+                            "type": "itemAsReward"
+                        }
+                    ],
+                    "progressBarPoints": 5,
+                    "id": "qa_endless2_progressbar_ReleaseBase_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 5,
+                    "sku": "traveltown.bundle.0.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "chest_energygift",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_endless2_progressbar_ReleaseBase_2024-01-01_11:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": false,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "EventEntrance": {
+                    "frequency": 2,
+                    "firstRun": 2
+                },
+                "EventOutOfEnergy": {
+                    "frequency": 2,
+                    "firstRun": 2
+                },
+                "EventOutOfHardCurrency": {
+                    "frequency": 2,
+                    "firstRun": 2
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_endless2_event_promo_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_endless2_event_promo_ReleaseBase_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_disco_promotion_ReleaseBase",
+            "themeId": "qa_disco_ReleaseBase",
+            "displayProgressBar": true,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_disco_promotion_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "qa_disco_ReleaseBase",
+                "id": "qa_disco_ReleaseBase",
+                "type": "disco_promotion",
+                "withProgressBar": "true",
+                "supportPurchasebByVanityToken": "true",
+                "numberOfTiles": 10,
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_popup_6825_30-10-2024_10-14.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_popup_6825_30-10-2024_10-13.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_icon_6825_30-10-2024_10-14.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_icon_6825_30-10-2024_10-13.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "random_reward_promotion",
+            "subType": "disco_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "configurationDescription": "qa_disco_promotion_ReleaseBase",
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_disco_promotion_ReleaseBase_2024-01-01_11:00_1",
+            "displayLimit": false,
+            "offersConfigName": "qa_disco_ReleaseBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 100
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 100
+                            }
+                        ]
+                    }
+                }
+            },
+            "offers": [
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1
+                },
+                {
+                    "sku": "traveltown.bundle.6.99.1",
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 10
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "iar_1-8",
+                            "value": 1,
+                            "type": "itemAsReward"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Energy",
+                            "price": 10
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "itemsbox_classic_PROD",
+                            "value": 1,
+                            "type": "itemsBox"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Smiley",
+                            "price": 10
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "vanityIslandToken",
+                            "price": 10
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "HC",
+                            "value": 10
+                        }
+                    ]
+                },
+                {
+                    "sku": "traveltown.bundle.6.99.1",
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "m_generic_btg_imm",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ]
+                },
+                {
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_7",
+                    "offerIndex": 7,
+                    "isVirtual": true,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        }
+                    ]
+                },
+                {
+                    "sku": "traveltown.bundle.6.99.1",
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_8",
+                    "offerIndex": 8,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1
+                },
+                {
+                    "sku": "traveltown.bundle.6.99.1",
+                    "id": "qa_disco_ReleaseBase_2024-01-01_11:00_1_9",
+                    "offerIndex": 9,
+                    "isVirtual": false,
+                    "topUp": false,
+                    "limit": 1,
+                    "extraReward": [
+                        {
+                            "name": "HC",
+                            "value": 10
+                        }
+                    ]
+                }
+            ],
+            "tiles": [
+                {
+                    "tileIndex": 1,
+                    "rewards": [
+                        {
+                            "name": "m_generic_btg_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 10
+                        }
+                    ],
+                    "weight": 10,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 2,
+                    "rewards": [
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 10
+                        }
+                    ],
+                    "weight": 20,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 3,
+                    "rewards": [
+                        {
+                            "name": "vanity_halloween_element_haunted_ship1",
+                            "value": 1,
+                            "type": "vanityDecoration"
+                        },
+                        {
+                            "name": "HC",
+                            "value": 10
+                        }
+                    ],
+                    "weight": 1,
+                    "progressBarPoints": 10,
+                    "isScripted": true
+                },
+                {
+                    "tileIndex": 4,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "weight": 19,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 5,
+                    "rewards": [
+                        {
+                            "name": "qa_special_frame_ReleaseBase",
+                            "value": 1,
+                            "type": "profileFrame"
+                        }
+                    ],
+                    "weight": 25,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 6,
+                    "rewards": [
+                        {
+                            "name": "iar_1-8",
+                            "value": 1,
+                            "type": "itemAsReward"
+                        }
+                    ],
+                    "weight": 5,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 7,
+                    "rewards": [
+                        {
+                            "name": "itemsbox_classic_PROD",
+                            "value": 1,
+                            "type": "itemsBox"
+                        },
+                        {
+                            "name": "qa_acc_portal_release",
+                            "value": 1,
+                            "type": "accPortal"
+                        }
+                    ],
+                    "weight": 10,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 8,
+                    "rewards": [
+                        {
+                            "name": "m_generic_btg_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "weight": 30,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 9,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 10
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 100
+                        }
+                    ],
+                    "weight": 15,
+                    "isScripted": false
+                },
+                {
+                    "tileIndex": 10,
+                    "rewards": [
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "weight": 20,
+                    "progressBarPoints": 10,
+                    "isScripted": false
+                }
+            ],
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_disco_promotion_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_disco_promotion_ReleaseBase_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promotion_triggered_by_acc_portal",
+            "themeId": "single_london2024_outofenergy",
+            "priority": 55,
+            "displayProgressBar": "false",
+            "startDate": 1730218860000,
+            "endDate": 1771604520000,
+            "unit": "qa_single_promotion_triggered_by_acc_portal_2024-10-29_16:21",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_london2024_outofenergy",
+                "id": "single_london2024_outofenergy",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_icon.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes",
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promotion_triggered_by_acc_portal_2024-10-29_16:21_1_1",
+            "displayLimit": true,
+            "offersConfigName": "single_promotion_sb_booster_generic_free_v4",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "booster_sb_4_lanes_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "id": "single_promotion_sb_booster_generic_free_v4_2024-10-29_16:21_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400",
+                    "logic": "SEMVER"
+                },
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promotion_triggered_by_acc_portal"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promotion_triggered_by_acc_portal_2024-10-29_16:21_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promotion_contains_acc_portal",
+            "themeId": "single_blackfriday_outofenergy",
+            "priority": 55,
+            "displayProgressBar": "false",
+            "startDate": 1727960940000,
+            "endDate": 1792847340000,
+            "unit": "qa_single_promotion_contains_acc_portal_2024-10-03_13:09",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_blackfriday_outofenergy",
+                "id": "single_blackfriday_outofenergy",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1725347703118_single_blackfriday_outofenergy_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1725347703118_single_blackfriday_outofenergy_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1725347703118_single_blackfriday_outofenergy_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1725347703118_single_blackfriday_outofenergy_icon.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes",
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promotion_contains_acc_portal_2024-10-03_13:09_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_single_promotion_acc_portal_release",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "qa_acc_portal_release",
+                            "value": 20,
+                            "type": "accPortal"
+                        }
+                    ],
+                    "id": "qa_single_promotion_acc_portal_release_2024-10-03_13:09_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400",
+                    "logic": "SEMVER"
+                },
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promotion_contains_acc_portal_2024-10-03_13:09_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promotion_contains_single_portal",
+            "themeId": "single_blackfriday_stampcard",
+            "priority": 55,
+            "displayProgressBar": "false",
+            "startDate": 1728389520000,
+            "endDate": 1792757520000,
+            "unit": "qa_single_promotion_contains_single_portal_2024-10-08_12:12",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_blackfriday_stampcard",
+                "id": "single_blackfriday_stampcard",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732712505305_single_blackfriday_stampcard_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732712505305_single_blackfriday_stampcard_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732712505305_single_blackfriday_stampcard_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732712505305_single_blackfriday_stampcard_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promotion_contains_single_portal_2024-10-08_12:12_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_single_promotion_single_portal_release",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "qa_single_portal_release",
+                            "value": 1,
+                            "type": "singlePortal"
+                        }
+                    ],
+                    "id": "qa_single_promotion_single_portal_release_2024-10-08_12:12_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400",
+                    "logic": "SEMVER"
+                },
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promotion_contains_single_portal_2024-10-08_12:12_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promo_ReleaseBase_3",
+            "themeId": "endless_cybermonday2024_cybersurprises",
+            "timeDurationMinutes": 60,
+            "triggersFrequency": 3,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_single_promo_ReleaseBase_3_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "endless_cybermonday2024_cybersurprises",
+                "id": "endless_cybermonday2024_cybersurprises",
+                "type": "endless_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731835694065_endless_cybermonday2024_cybersurprises_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731835694065_endless_cybermonday2024_cybersurprises_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731326280575_endless_cybermonday2024_cybersurprises_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731326280575_endless_cybermonday2024_cybersurprises_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "endless_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promo_ReleaseBase_3_2024-01-01_11:00_1",
+            "displayLimit": true,
+            "offersConfigName": "QAEndless_check",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "configuredSubType": "endless_promotion",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "qa_standard_itemsSelectionBox_release",
+                            "value": 1,
+                            "type": "itemsSelectionBox"
+                        }
+                    ],
+                    "id": "QAEndless_check_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "sku": "traveltown.bundle.14.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 1
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 1
+                        },
+                        {
+                            "name": "booster_time-twist_generic_10min",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 12
+                        }
+                    ],
+                    "id": "QAEndless_check_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": false,
+                    "topUp": true,
+                    "topUpPosition": "first"
+                },
+                {
+                    "index": 3,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 1
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 1
+                        }
+                    ],
+                    "id": "QAEndless_check_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 4,
+                    "sku": "traveltown.bundle.24.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 1
+                        },
+                        {
+                            "name": "item_toolbox-large_00",
+                            "value": 1
+                        }
+                    ],
+                    "id": "QAEndless_check_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": true,
+                    "topUpPosition": "first"
+                },
+                {
+                    "index": 5,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 1
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 1
+                        }
+                    ],
+                    "id": "QAEndless_check_2024-01-01_11:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "9",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 10,
+                    "firstRun": 10
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promo_ReleaseBase_3"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promo_ReleaseBase_3_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promo_ReleaseBase_2",
+            "themeId": "single_thanksgiving2024_ooe",
+            "timeDurationMinutes": 60,
+            "triggersFrequency": 3,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_single_promo_ReleaseBase_2_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_thanksgiving2024_ooe",
+                "id": "single_thanksgiving2024_ooe",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_icon.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes",
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promo_ReleaseBase_2_2024-01-01_11:00_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_single_core_sku_ReleaseBase_2",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "sku": "traveltown.19.99.44",
+                    "limit": 3,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 2
+                        }
+                    ],
+                    "id": "qa_single_core_sku_ReleaseBase_2_2024-01-01_11:00_1_1_0",
+                    "topUp": true,
+                    "topUpPosition": "last",
+                    "isVirtual": false,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "9",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 10,
+                    "firstRun": 10
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promo_ReleaseBase_2"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promo_ReleaseBase_2_2024-01-01_11:00_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promotion_free_ReleaseBase",
+            "themeId": "single_thanksgiving24_superpicnic",
+            "timeDurationMinutes": 60,
+            "priority": 10,
+            "exposureCap": 3,
+            "triggersFrequency": 10,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_single_promotion_free_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_thanksgiving24_superpicnic",
+                "id": "single_thanksgiving24_superpicnic",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_popup_6567_20-10-2024_16-58.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_popup_6567_20-10-2024_17-01.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_icon_6567_20-10-2024_16-58.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_icon_6567_20-10-2024_17-01.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes",
+                "supportTopup": ""
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promotion_free_ReleaseBase_2024-01-01_11:00_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_core_promo_free_ReleaseBase",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 15,
+                    "rewards": [
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_v1_ftue_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_core_promo_free_ReleaseBase_2024-01-01_11:00_1_1_0",
+                    "topUp": false,
+                    "isVirtual": true,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "10",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 3,
+                    "firstRun": 3
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promotion_free_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promotion_free_ReleaseBase_2024-01-01_11:00_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_endless_event_promo_ReleaseBase",
+            "themeId": "endless_progressbar_sweetsNtreats",
+            "priority": 1,
+            "triggersFrequency": 3,
+            "displayProgressBar": true,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_endless_event_promo_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardEvent",
+            "subEventIndex": 1,
+            "theme": {
+                "configuration_id": "endless_progressbar_sweetsNtreats",
+                "id": "endless_progressbar_sweetsNtreats",
+                "type": "endless_promotion",
+                "withProgressBar": "true",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "endless_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_endless_event_promo_ReleaseBase_2024-01-01_11:00_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_endless_progressbar_ReleaseBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 100,
+                        "rewards": [
+                            {
+                                "name": "chest_energygift",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                                "value": 1,
+                                "type": "pack"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "qa_special_frame_ReleaseBase",
+                                "value": 1,
+                                "type": "profileFrame"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 100,
+                        "rewards": [
+                            {
+                                "name": "chest_energygift",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                                "value": 1,
+                                "type": "pack"
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 5,
+                        "rewards": [
+                            {
+                                "name": "qa_special_frame_ReleaseBase",
+                                "value": 1,
+                                "type": "profileFrame"
+                            }
+                        ]
+                    }
+                }
+            },
+            "configuredSubType": "endless_promotion",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "qa_Super_itemsSelectionBox_release",
+                            "value": 1,
+                            "type": "itemsSelectionBox"
+                        }
+                    ],
+                    "progressBarPoints": 50,
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 10
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 30
+                        }
+                    ],
+                    "progressBarPoints": 50,
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 1
+                        }
+                    ],
+                    "progressBarPoints": 55,
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 4,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "iar_0-01_0-5",
+                            "value": 1,
+                            "type": "itemAsReward"
+                        }
+                    ],
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 5,
+                    "sku": "traveltown.bundle.0.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 10
+                        },
+                        {
+                            "name": "Energy",
+                            "value": 40
+                        }
+                    ],
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": false,
+                    "topUp": false
+                },
+                {
+                    "index": 6,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "chest_energygift",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        }
+                    ],
+                    "id": "qa_endless_progressbar_ReleaseBase_2024-01-01_11:00_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "10",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "EventEntrance": {
+                    "frequency": 1,
+                    "firstRun": 1
+                },
+                "EventOutOfEnergy": {
+                    "frequency": 1,
+                    "firstRun": 1
+                },
+                "EventOutOfHardCurrency": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_endless_event_promo_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_endless_event_promo_ReleaseBase_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_puzzle_promotion_ReleaseBase",
+            "themeId": "puzzle_ny25_party",
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_puzzle_promotion_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "puzzle_ny25_party",
+                "id": "puzzle_ny25_party",
+                "type": "puzzle_promotion",
+                "withProgressBar": "false",
+                "supportPurchasebByVanityToken": "false",
+                "internal_id": "puzzle_6_plus_offers",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1734948693000_puzzle_ny25_party_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1734948693000_puzzle_ny25_party_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1734948693000_puzzle_ny25_party_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1734948693000_puzzle_ny25_party_icon.ios"
+                    }
+                ],
+                "supportTopup": ""
+            },
+            "type": "endless_promotion",
+            "subType": "puzzle",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "configurationDescription": "release - puzzle",
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_puzzle_promotion_ReleaseBase_2024-01-01_11:00_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_puzzle_progressbar_ReleaseBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "progressBar": {
+                "missions": [
+                    {
+                        "index": 0,
+                        "pointGoal": 1000,
+                        "rewards": [
+                            {
+                                "name": "red_generic_scratch_card_imm",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 500
+                            }
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "pointGoal": 20,
+                        "rewards": [
+                            {
+                                "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                                "value": 1,
+                                "type": "pack"
+                            }
+                        ]
+                    }
+                ],
+                "missionsByIndex": {
+                    "0": {
+                        "index": 0,
+                        "pointGoal": 1000,
+                        "rewards": [
+                            {
+                                "name": "red_generic_scratch_card_imm",
+                                "value": 1,
+                                "type": "chest"
+                            }
+                        ]
+                    },
+                    "1": {
+                        "index": 1,
+                        "pointGoal": 50,
+                        "rewards": [
+                            {
+                                "name": "HC",
+                                "value": 500
+                            }
+                        ]
+                    },
+                    "2": {
+                        "index": 2,
+                        "pointGoal": 20,
+                        "rewards": [
+                            {
+                                "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                                "value": 1,
+                                "type": "pack"
+                            }
+                        ]
+                    }
+                }
+            },
+            "configuredSubType": "puzzle_promotion",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 5
+                        }
+                    ],
+                    "progressBarPoints": 1000,
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "iar_0_035_0_15",
+                            "value": 1,
+                            "type": "itemAsReward"
+                        }
+                    ],
+                    "progressBarPoints": 60,
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_resource-diamond_00",
+                            "value": 1
+                        }
+                    ],
+                    "progressBarPoints": 10,
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 4,
+                    "sku": "traveltown.bundle.0.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 15
+                        }
+                    ],
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": false
+                },
+                {
+                    "index": 5,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_4",
+                    "offerIndex": 4,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 6,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "booster_time-twist_generic_15min",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_5",
+                    "offerIndex": 5,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 7,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Free",
+                            "price": 0
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "red_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        }
+                    ],
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_6",
+                    "offerIndex": 6,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 8,
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 10
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Energy",
+                            "value": 100
+                        }
+                    ],
+                    "id": "qa_puzzle_progressbar_ReleaseBase_2024-01-01_11:00_1_7",
+                    "offerIndex": 7,
+                    "isVirtual": true,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                },
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.380",
+                    "logic": "SEMVER"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 3,
+                    "firstRun": 2
+                },
+                "OutOfEnergy": {
+                    "frequency": 3,
+                    "firstRun": 2
+                },
+                "OutOfHardCurrency": {
+                    "frequency": 3,
+                    "firstRun": 2
+                }
+            },
+            "promotionSource": "configured",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_puzzle_promotion_ReleaseBase_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_buy_all_promotion_ReleaseBase",
+            "themeId": "qa_buyall_theme_release",
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_buy_all_promotion_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "None",
+            "theme": {
+                "configuration_id": "qa_buyall_theme_release",
+                "id": "qa_buyall_theme_release",
+                "type": "buy_all_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": ""
+            },
+            "type": "buy_all_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "configurationDescription": "release - buy all",
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_buy_all_promotion_ReleaseBase_2024-01-01_11:00_1",
+            "displayLimit": false,
+            "offersConfigName": "qa_buyall_offer_ReleaseBase",
+            "segmentsIndex": 1,
+            "externalSegmentIndex": 1,
+            "state": "on",
+            "isSingle": false,
+            "offers": [
+                {
+                    "index": 1,
+                    "virtualCurrency": [
+                        {
+                            "currency": "Energy",
+                            "price": 10
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 2
+                        },
+                        {
+                            "name": "HC",
+                            "value": 10
+                        },
+                        {
+                            "name": "EventEnergy",
+                            "value": 10
+                        }
+                    ],
+                    "id": "qa_buyall_offer_ReleaseBase_2024-01-01_11:00_1_0",
+                    "offerIndex": 0,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 2,
+                    "virtualCurrency": [
+                        {
+                            "currency": "HC",
+                            "price": 10
+                        }
+                    ],
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "Smiley",
+                            "value": 10
+                        },
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "value": 1,
+                            "type": "booster"
+                        },
+                        {
+                            "name": "booster_surprise-box_0-3_green_60min",
+                            "value": 2,
+                            "type": "booster"
+                        }
+                    ],
+                    "id": "qa_buyall_offer_ReleaseBase_2024-01-01_11:00_1_1",
+                    "offerIndex": 1,
+                    "isVirtual": true,
+                    "topUp": false
+                },
+                {
+                    "index": 3,
+                    "sku": "traveltown.7.99.71",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 100
+                        },
+                        {
+                            "name": "EventEnergy",
+                            "value": 200
+                        }
+                    ],
+                    "id": "qa_buyall_offer_ReleaseBase_2024-01-01_11:00_1_2",
+                    "offerIndex": 2,
+                    "isVirtual": false,
+                    "topUp": false
+                },
+                {
+                    "sku": "traveltown.store.19.99.1",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "item_booster-joker_00",
+                            "value": 2
+                        },
+                        {
+                            "name": "HC",
+                            "value": 110
+                        },
+                        {
+                            "name": "EventEnergy",
+                            "value": 210
+                        },
+                        {
+                            "name": "Smiley",
+                            "value": 10
+                        },
+                        {
+                            "name": "booster_time-twist_generic_30min",
+                            "type": "booster",
+                            "value": 1
+                        },
+                        {
+                            "name": "booster_surprise-box_0-3_green_60min",
+                            "type": "booster",
+                            "value": 2
+                        }
+                    ],
+                    "id": "qa_buyall_offer_ReleaseBase_2024-01-01_11:00_1_3",
+                    "offerIndex": 3,
+                    "isVirtual": false,
+                    "topUp": false
+                }
+            ],
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "5",
+                    "logic": "BASIC"
+                },
+                {
+                    "pathToField": "user-config-service.appVersion",
+                    "operator": ">=",
+                    "value": "2.12.380",
+                    "logic": "SEMVER"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 3,
+                    "firstRun": 3
+                },
+                "OutOfEnergy": {
+                    "frequency": 3,
+                    "firstRun": 3
+                },
+                "EventOutOfHardCurrency": {
+                    "frequency": 3,
+                    "firstRun": 3
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_buy_all_promotion_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_buy_all_promotion_ReleaseBase_2024-01-01_11:00_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promotion_simpletrigger_ReleaseBase",
+            "themeId": "single_hitthetownpack_pink",
+            "timeDurationMinutes": 60,
+            "priority": 10,
+            "exposureCap": 3,
+            "triggersFrequency": 1,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_single_promotion_simpletrigger_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "single_hitthetownpack_pink",
+                "id": "single_hitthetownpack_pink",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "supportTopup": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_icon.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promotion_simpletrigger_ReleaseBase_2024-01-01_11:00_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_triggered_single_ReleaseNew",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "sku": "traveltown.4.99.50",
+                    "limit": 1,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 100
+                        }
+                    ],
+                    "id": "qa_triggered_single_ReleaseNew_2024-01-01_11:00_1_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "17",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 3,
+                    "firstRun": 3
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promotion_simpletrigger_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promotion_simpletrigger_ReleaseBase_2024-01-01_11:00_1_1",
+                "segmentsForEvaluation": []
+            }
+        },
+        {
+            "name": "qa_single_promo_ReleaseBase",
+            "themeId": "singlepromotion_blackfriday_biggestbfsale_200",
+            "timeDurationMinutes": 60,
+            "triggersFrequency": 3,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "unit": "qa_single_promo_ReleaseBase_2024-01-01_11:00",
+            "showOnBoard": false,
+            "showOn": "BoardCore",
+            "theme": {
+                "configuration_id": "singlepromotion_blackfriday_biggestbfsale_200",
+                "id": "singlepromotion_blackfriday_biggestbfsale_200",
+                "type": "single_promotion",
+                "withProgressBar": "false",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_popup.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_icon.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_icon.ios"
+                    }
+                ],
+                "supportTopup": "",
+                "supportPurchasebByVanityToken": "",
+                "internal_id": "promo_1-5_prizes"
+            },
+            "type": "single_promotion",
+            "displayOoeAd": false,
+            "usedForOoeFlow": false,
+            "displayCoreWidget": false,
+            "externalSegment": "default",
+            "segment": "default",
+            "id": "qa_single_promo_ReleaseBase_2024-01-01_11:00_1_1",
+            "displayLimit": true,
+            "offersConfigName": "qa_single_core_sku_ReleaseBase",
+            "externalSegmentIndex": 1,
+            "offers": [
+                {
+                    "index": 1,
+                    "sku": "traveltown.bundle.7.99.5",
+                    "limit": 3,
+                    "rewards": [
+                        {
+                            "name": "HC",
+                            "value": 400
+                        },
+                        {
+                            "name": "qa_pack_paradaisedreams_large_ReleaseNew",
+                            "value": 1,
+                            "type": "pack"
+                        },
+                        {
+                            "name": "purple_generic_scratch_card_imm",
+                            "value": 1,
+                            "type": "chest"
+                        },
+                        {
+                            "name": "qa_wheel_8_a",
+                            "value": 1,
+                            "type": "wheel"
+                        },
+                        {
+                            "name": "qa_cbb_releasebase",
+                            "value": 1,
+                            "type": "booster"
+                        }
+                    ],
+                    "id": "qa_single_core_sku_ReleaseBase_2024-01-01_11:00_1_1_0",
+                    "topUp": false,
+                    "isVirtual": false,
+                    "offerIndex": 0
+                }
+            ],
+            "state": "on",
+            "conditions": [
+                {
+                    "pathToField": "town-service.level",
+                    "operator": ">=",
+                    "value": "9",
+                    "logic": "BASIC"
+                }
+            ],
+            "displayTriggers": {
+                "OutOfEnergy": {
+                    "frequency": 1,
+                    "firstRun": 1
+                },
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                },
+                "OutOfHardCurrency": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "workflowActivationData": {
+                "workflowId": "qa_single_promo_ReleaseBase"
+            },
+            "promotionSource": "triggered",
+            "segmentsForRewards": {
+                "segmentsTableKey": "qa_single_promo_ReleaseBase_2024-01-01_11:00_1_1",
+                "segmentsForEvaluation": []
+            }
+        }
+    ],
+    "workflows": {
+        "qa_endless2_event_promo_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "EventEntrance>0,EventOutOfEnergy>0,EventOutOfHardCurrency>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_endless2_event_promo_ReleaseBase",
+                    "edgeIds": [
+                        "qa_endless2_event_promo_ReleaseBase_edge_0",
+                        "qa_endless2_event_promo_ReleaseBase_edge_1",
+                        "qa_endless2_event_promo_ReleaseBase_edge_2"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_endless2_event_promo_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_endless2_event_promo_ReleaseBase_edge_0": {
+                                        "serializedContent": "EventEntrance>0",
+                                        "triggerConfig": "EventEntrance>0"
+                                    },
+                                    "qa_endless2_event_promo_ReleaseBase_edge_1": {
+                                        "serializedContent": "EventOutOfEnergy>0",
+                                        "triggerConfig": "EventOutOfEnergy>0"
+                                    },
+                                    "qa_endless2_event_promo_ReleaseBase_edge_2": {
+                                        "serializedContent": "EventOutOfHardCurrency>0",
+                                        "triggerConfig": "EventOutOfHardCurrency>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "frequency": 3,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_endless2_event_promo_ReleaseBase_edge_0": {
+                                "serializedContent": "EventEntrance>0",
+                                "triggerConfig": "EventEntrance>0"
+                            },
+                            "qa_endless2_event_promo_ReleaseBase_edge_1": {
+                                "serializedContent": "EventOutOfEnergy>0",
+                                "triggerConfig": "EventOutOfEnergy>0"
+                            },
+                            "qa_endless2_event_promo_ReleaseBase_edge_2": {
+                                "serializedContent": "EventOutOfHardCurrency>0",
+                                "triggerConfig": "EventOutOfHardCurrency>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_endless2_event_promo_ReleaseBase_edge_0": {
+                    "flowId": "qa_endless2_event_promo_ReleaseBase",
+                    "id": "qa_endless2_event_promo_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'live_ops_event_board_opened' and eventEntranceCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventEntranceCounter",
+                            "query": "if(event == 'live_ops_event_board_opened', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "live_ops_event_board_opened"
+                    ]
+                },
+                "qa_endless2_event_promo_ReleaseBase_edge_1": {
+                    "flowId": "qa_endless2_event_promo_ReleaseBase",
+                    "id": "qa_endless2_event_promo_ReleaseBase_edge_1",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'out_of_energy' and exists(event.msg.live_ops_event_id) and eventOutOfEnergyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventOutOfEnergyCounter",
+                            "query": "if(event == 'out_of_energy' and exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_energy"
+                    ]
+                },
+                "qa_endless2_event_promo_ReleaseBase_edge_2": {
+                    "flowId": "qa_endless2_event_promo_ReleaseBase",
+                    "id": "qa_endless2_event_promo_ReleaseBase_edge_2",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'out_of_hc' and exists(event.msg.live_ops_event_id) and eventOutOfHardCurrencyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventOutOfHardCurrencyCounter",
+                            "query": "if(event == 'out_of_hc' and exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_hc"
+                    ]
+                }
+            }
+        },
+        "qa_disco_promotion_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>=1"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_disco_promotion_ReleaseBase",
+                    "edgeIds": [
+                        "qa_disco_promotion_ReleaseBase_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_disco_promotion_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_disco_promotion_ReleaseBase_edge_0": {
+                                        "serializedContent": "AppLoadResume>=1",
+                                        "triggerConfig": "AppLoadResume>=1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_popup_6825_30-10-2024_10-14.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_popup_6825_30-10-2024_10-13.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_icon_6825_30-10-2024_10-14.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1730716191162_discopromotion_firsttheme_icon_6825_30-10-2024_10-13.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_disco_promotion_ReleaseBase_edge_0": {
+                                "serializedContent": "AppLoadResume>=1",
+                                "triggerConfig": "AppLoadResume>=1"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_disco_promotion_ReleaseBase_edge_0": {
+                    "flowId": "qa_disco_promotion_ReleaseBase",
+                    "id": "qa_disco_promotion_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter >= 1)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "qa_single_promotion_triggered_by_acc_portal": {
+            "startDate": "2024-10-29T16:21:00.000Z",
+            "endDate": "2026-02-20T16:22:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AccPortal4claimed>=5"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promotion_triggered_by_acc_portal",
+                    "edgeIds": [
+                        "qa_single_promotion_triggered_by_acc_portal_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promotion_triggered_by_acc_portal",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promotion_triggered_by_acc_portal_edge_0": {
+                                        "serializedContent": "AccPortal4claimed>=5",
+                                        "triggerConfig": "AccPortal4claimed>=5"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724153713727_single_london2024_outofenergy_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promotion_triggered_by_acc_portal_edge_0": {
+                                "serializedContent": "AccPortal4claimed>=5",
+                                "triggerConfig": "AccPortal4claimed>=5"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promotion_triggered_by_acc_portal_edge_0": {
+                    "flowId": "qa_single_promotion_triggered_by_acc_portal",
+                    "id": "qa_single_promotion_triggered_by_acc_portal_edge_0",
+                    "toNodeId": "notificationNode",
+                    "rule": "(event.event == 'portal_item_claimed' and event.msg.trigger_group == 'accPortal4' and event.msg.amount > 0 and accPortal4claimedCounter >= 5)",
+                    "counters": [
+                        {
+                            "name": "accPortal4claimedCounter",
+                            "query": "if(event == 'portal_item_claimed' and msg.trigger_group == 'accPortal4' and msg.amount > 0, msg.amount, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "portal_item_claimed"
+                    ]
+                }
+            }
+        },
+        "qa_single_promo_ReleaseBase_3": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": -1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promo_ReleaseBase_3",
+                    "edgeIds": [
+                        "qa_single_promo_ReleaseBase_3_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promo_ReleaseBase_3",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promo_ReleaseBase_3_edge_0": {
+                                        "serializedContent": "AppLoadResume>0",
+                                        "triggerConfig": "AppLoadResume>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731835694065_endless_cybermonday2024_cybersurprises_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731835694065_endless_cybermonday2024_cybersurprises_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731326280575_endless_cybermonday2024_cybersurprises_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1731326280575_endless_cybermonday2024_cybersurprises_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "duration": 60,
+                    "frequency": 3,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promo_ReleaseBase_3_edge_0": {
+                                "serializedContent": "AppLoadResume>0",
+                                "triggerConfig": "AppLoadResume>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promo_ReleaseBase_3_edge_0": {
+                    "flowId": "qa_single_promo_ReleaseBase_3",
+                    "id": "qa_single_promo_ReleaseBase_3_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "qa_single_promo_ReleaseBase_2": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": -1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promo_ReleaseBase_2",
+                    "edgeIds": [
+                        "qa_single_promo_ReleaseBase_2_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promo_ReleaseBase_2",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promo_ReleaseBase_2_edge_0": {
+                                        "serializedContent": "AppLoadResume>0",
+                                        "triggerConfig": "AppLoadResume>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729073003188_single_thanksgiving2024_singleooe_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "duration": 60,
+                    "frequency": 3,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promo_ReleaseBase_2_edge_0": {
+                                "serializedContent": "AppLoadResume>0",
+                                "triggerConfig": "AppLoadResume>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promo_ReleaseBase_2_edge_0": {
+                    "flowId": "qa_single_promo_ReleaseBase_2",
+                    "id": "qa_single_promo_ReleaseBase_2_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "qa_single_promotion_free_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 21,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promotion_free_ReleaseBase",
+                    "edgeIds": [
+                        "qa_single_promotion_free_ReleaseBase_edge_0"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promotion_free_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promotion_free_ReleaseBase_edge_0": {
+                                        "serializedContent": "AppLoadResume>0",
+                                        "triggerConfig": "AppLoadResume>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_popup_6567_20-10-2024_16-58.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_popup_6567_20-10-2024_17-01.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_icon_6567_20-10-2024_16-58.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1729433010779_singlepromotion_thanksgiving2024_superpicnic_icon_6567_20-10-2024_17-01.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 3,
+                    "cooldown": 60,
+                    "duration": 60,
+                    "frequency": 10,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promotion_free_ReleaseBase_edge_0": {
+                                "serializedContent": "AppLoadResume>0",
+                                "triggerConfig": "AppLoadResume>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promotion_free_ReleaseBase_edge_0": {
+                    "flowId": "qa_single_promotion_free_ReleaseBase",
+                    "id": "qa_single_promotion_free_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        },
+        "qa_endless_event_promo_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "EventEntrance>0,EventOutOfEnergy>0,EventOutOfHardCurrency>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_endless_event_promo_ReleaseBase",
+                    "edgeIds": [
+                        "qa_endless_event_promo_ReleaseBase_edge_0",
+                        "qa_endless_event_promo_ReleaseBase_edge_1",
+                        "qa_endless_event_promo_ReleaseBase_edge_2"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_endless_event_promo_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_endless_event_promo_ReleaseBase_edge_0": {
+                                        "serializedContent": "EventEntrance>0",
+                                        "triggerConfig": "EventEntrance>0"
+                                    },
+                                    "qa_endless_event_promo_ReleaseBase_edge_1": {
+                                        "serializedContent": "EventOutOfEnergy>0",
+                                        "triggerConfig": "EventOutOfEnergy>0"
+                                    },
+                                    "qa_endless_event_promo_ReleaseBase_edge_2": {
+                                        "serializedContent": "EventOutOfHardCurrency>0",
+                                        "triggerConfig": "EventOutOfHardCurrency>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1724064981207_endlesspromotion_sweetsntreats_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "frequency": 3,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_endless_event_promo_ReleaseBase_edge_0": {
+                                "serializedContent": "EventEntrance>0",
+                                "triggerConfig": "EventEntrance>0"
+                            },
+                            "qa_endless_event_promo_ReleaseBase_edge_1": {
+                                "serializedContent": "EventOutOfEnergy>0",
+                                "triggerConfig": "EventOutOfEnergy>0"
+                            },
+                            "qa_endless_event_promo_ReleaseBase_edge_2": {
+                                "serializedContent": "EventOutOfHardCurrency>0",
+                                "triggerConfig": "EventOutOfHardCurrency>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_endless_event_promo_ReleaseBase_edge_0": {
+                    "flowId": "qa_endless_event_promo_ReleaseBase",
+                    "id": "qa_endless_event_promo_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'live_ops_event_board_opened' and eventEntranceCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventEntranceCounter",
+                            "query": "if(event == 'live_ops_event_board_opened', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "live_ops_event_board_opened"
+                    ]
+                },
+                "qa_endless_event_promo_ReleaseBase_edge_1": {
+                    "flowId": "qa_endless_event_promo_ReleaseBase",
+                    "id": "qa_endless_event_promo_ReleaseBase_edge_1",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'out_of_energy' and exists(event.msg.live_ops_event_id) and eventOutOfEnergyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventOutOfEnergyCounter",
+                            "query": "if(event == 'out_of_energy' and exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_energy"
+                    ]
+                },
+                "qa_endless_event_promo_ReleaseBase_edge_2": {
+                    "flowId": "qa_endless_event_promo_ReleaseBase",
+                    "id": "qa_endless_event_promo_ReleaseBase_edge_2",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'out_of_hc' and exists(event.msg.live_ops_event_id) and eventOutOfHardCurrencyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "eventOutOfHardCurrencyCounter",
+                            "query": "if(event == 'out_of_hc' and exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_hc"
+                    ]
+                }
+            }
+        },
+        "qa_buy_all_promotion_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "AppLoadResume,OutOfEnergy,OutOfHardCurrency"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_buy_all_promotion_ReleaseBase",
+                    "edgeIds": [
+                        "qa_buy_all_promotion_ReleaseBase_edge_0",
+                        "qa_buy_all_promotion_ReleaseBase_edge_1",
+                        "qa_buy_all_promotion_ReleaseBase_edge_2"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_buy_all_promotion_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_buy_all_promotion_ReleaseBase_edge_0": {
+                                        "serializedContent": "AppLoadResume",
+                                        "triggerConfig": "AppLoadResume"
+                                    },
+                                    "qa_buy_all_promotion_ReleaseBase_edge_1": {
+                                        "serializedContent": "OutOfEnergy",
+                                        "triggerConfig": "OutOfEnergy"
+                                    },
+                                    "qa_buy_all_promotion_ReleaseBase_edge_2": {
+                                        "serializedContent": "OutOfHardCurrency",
+                                        "triggerConfig": "OutOfHardCurrency"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1690902419297_buyallpromotion_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_buy_all_promotion_ReleaseBase_edge_0": {
+                                "serializedContent": "AppLoadResume",
+                                "triggerConfig": "AppLoadResume"
+                            },
+                            "qa_buy_all_promotion_ReleaseBase_edge_1": {
+                                "serializedContent": "OutOfEnergy",
+                                "triggerConfig": "OutOfEnergy"
+                            },
+                            "qa_buy_all_promotion_ReleaseBase_edge_2": {
+                                "serializedContent": "OutOfHardCurrency",
+                                "triggerConfig": "OutOfHardCurrency"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_buy_all_promotion_ReleaseBase_edge_0": {
+                    "flowId": "qa_buy_all_promotion_ReleaseBase",
+                    "id": "qa_buy_all_promotion_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'loading_completed' or event.event == 'return_from_background')",
+                    "counters": [],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                },
+                "qa_buy_all_promotion_ReleaseBase_edge_1": {
+                    "flowId": "qa_buy_all_promotion_ReleaseBase",
+                    "id": "qa_buy_all_promotion_ReleaseBase_edge_1",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'out_of_energy' and not_exists(event.msg.live_ops_event_id))",
+                    "counters": [],
+                    "hitEvents": [
+                        "out_of_energy"
+                    ]
+                },
+                "qa_buy_all_promotion_ReleaseBase_edge_2": {
+                    "flowId": "qa_buy_all_promotion_ReleaseBase",
+                    "id": "qa_buy_all_promotion_ReleaseBase_edge_2",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 2,
+                    "rule": "(event.event == 'out_of_hc' and not_exists(event.msg.live_ops_event_id))",
+                    "counters": [],
+                    "hitEvents": [
+                        "out_of_hc"
+                    ]
+                }
+            }
+        },
+        "qa_single_promotion_simpletrigger_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": 3,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "LevelUp,CompleteEventOrders"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promotion_simpletrigger_ReleaseBase",
+                    "edgeIds": [
+                        "qa_single_promotion_simpletrigger_ReleaseBase_edge_0",
+                        "qa_single_promotion_simpletrigger_ReleaseBase_edge_1"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promotion_simpletrigger_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promotion_simpletrigger_ReleaseBase_edge_0": {
+                                        "serializedContent": "LevelUp",
+                                        "triggerConfig": "LevelUp"
+                                    },
+                                    "qa_single_promotion_simpletrigger_ReleaseBase_edge_1": {
+                                        "serializedContent": "CompleteEventOrders",
+                                        "triggerConfig": "CompleteEventOrders"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1689498545179_single_hitthetownpack_pink_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "exposureCap": 3,
+                    "cooldown": 60,
+                    "duration": 60,
+                    "frequency": 1,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promotion_simpletrigger_ReleaseBase_edge_0": {
+                                "serializedContent": "LevelUp",
+                                "triggerConfig": "LevelUp"
+                            },
+                            "qa_single_promotion_simpletrigger_ReleaseBase_edge_1": {
+                                "serializedContent": "CompleteEventOrders",
+                                "triggerConfig": "CompleteEventOrders"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promotion_simpletrigger_ReleaseBase_edge_0": {
+                    "flowId": "qa_single_promotion_simpletrigger_ReleaseBase",
+                    "id": "qa_single_promotion_simpletrigger_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'level_up_server')",
+                    "counters": [],
+                    "hitEvents": [
+                        "level_up_server"
+                    ]
+                },
+                "qa_single_promotion_simpletrigger_ReleaseBase_edge_1": {
+                    "flowId": "qa_single_promotion_simpletrigger_ReleaseBase",
+                    "id": "qa_single_promotion_simpletrigger_ReleaseBase_edge_1",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'order_completed_server' and exists(event.msg.live_ops_event_id))",
+                    "counters": [],
+                    "hitEvents": [
+                        "order_completed_server"
+                    ]
+                }
+            }
+        },
+        "qa_single_promo_ReleaseBase": {
+            "startDate": "2024-01-01T11:00:00.000Z",
+            "endDate": "2026-10-31T11:00:00.000Z",
+            "autoActivated": false,
+            "cycle": -1,
+            "analyticsData": {
+                "reason": "promotion",
+                "trigger_config": "OutOfEnergy>0,OutOfHardCurrency>0,AppLoadResume>0"
+            },
+            "rootNodeId": "rootNode",
+            "nodes": {
+                "rootNode": {
+                    "id": "rootNode",
+                    "flowId": "qa_single_promo_ReleaseBase",
+                    "edgeIds": [
+                        "qa_single_promo_ReleaseBase_edge_0",
+                        "qa_single_promo_ReleaseBase_edge_1",
+                        "qa_single_promo_ReleaseBase_edge_2"
+                    ],
+                    "continueToNextNode": false
+                },
+                "notificationNode": {
+                    "id": "notificationNode",
+                    "flowId": "qa_single_promo_ReleaseBase",
+                    "edgeIds": [],
+                    "notificationActions": [
+                        {
+                            "notificationType": "promotion",
+                            "payload": {
+                                "triggerDataForAnalyticsByEdgeId": {
+                                    "qa_single_promo_ReleaseBase_edge_0": {
+                                        "serializedContent": "OutOfEnergy>0",
+                                        "triggerConfig": "OutOfEnergy>0"
+                                    },
+                                    "qa_single_promo_ReleaseBase_edge_1": {
+                                        "serializedContent": "OutOfHardCurrency>0",
+                                        "triggerConfig": "OutOfHardCurrency>0"
+                                    },
+                                    "qa_single_promo_ReleaseBase_edge_2": {
+                                        "serializedContent": "AppLoadResume>0",
+                                        "triggerConfig": "AppLoadResume>0"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "notificationType": "clientAssets",
+                            "payload": {
+                                "clientAssets": [
+                                    {
+                                        "name": "popup",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_popup.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_popup.ios"
+                                    },
+                                    {
+                                        "name": "icon",
+                                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_icon.and",
+                                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1732190285550_singlepromotion_blackfriday_biggestbfsale_200_icon.ios"
+                                    }
+                                ]
+                            },
+                            "preflight": true
+                        }
+                    ],
+                    "duration": 60,
+                    "frequency": 3,
+                    "analyticsData": {
+                        "reason": "promotion",
+                        "dataByEdge": {
+                            "qa_single_promo_ReleaseBase_edge_0": {
+                                "serializedContent": "OutOfEnergy>0",
+                                "triggerConfig": "OutOfEnergy>0"
+                            },
+                            "qa_single_promo_ReleaseBase_edge_1": {
+                                "serializedContent": "OutOfHardCurrency>0",
+                                "triggerConfig": "OutOfHardCurrency>0"
+                            },
+                            "qa_single_promo_ReleaseBase_edge_2": {
+                                "serializedContent": "AppLoadResume>0",
+                                "triggerConfig": "AppLoadResume>0"
+                            }
+                        }
+                    },
+                    "segments": [],
+                    "segmentsRule": "1 == 1",
+                    "continueToNextNode": false
+                }
+            },
+            "edges": {
+                "qa_single_promo_ReleaseBase_edge_0": {
+                    "flowId": "qa_single_promo_ReleaseBase",
+                    "id": "qa_single_promo_ReleaseBase_edge_0",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'out_of_energy' and not_exists(event.msg.live_ops_event_id) and outOfEnergyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "outOfEnergyCounter",
+                            "query": "if(event == 'out_of_energy' and not_exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_energy"
+                    ]
+                },
+                "qa_single_promo_ReleaseBase_edge_1": {
+                    "flowId": "qa_single_promo_ReleaseBase",
+                    "id": "qa_single_promo_ReleaseBase_edge_1",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "(event.event == 'out_of_hc' and not_exists(event.msg.live_ops_event_id) and outOfHardCurrencyCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "outOfHardCurrencyCounter",
+                            "query": "if(event == 'out_of_hc' and not_exists(msg.live_ops_event_id), 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "out_of_hc"
+                    ]
+                },
+                "qa_single_promo_ReleaseBase_edge_2": {
+                    "flowId": "qa_single_promo_ReleaseBase",
+                    "id": "qa_single_promo_ReleaseBase_edge_2",
+                    "toNodeId": "notificationNode",
+                    "ruleCompletionAmount": 1,
+                    "rule": "((event.event == 'loading_completed' or event.event == 'return_from_background') and appLoadResumeCounter > 0)",
+                    "counters": [
+                        {
+                            "name": "appLoadResumeCounter",
+                            "query": "if(event == 'loading_completed' or event == 'return_from_background', 1, 0)"
+                        }
+                    ],
+                    "hitEvents": [
+                        "loading_completed",
+                        "return_from_background"
+                    ]
+                }
+            }
+        }
+    },
+    "externalLiveopsInstructions": [
+        {
+            "config": {
+                "startDate": "2025-08-03 12:00",
+                "endDate": "2027-01-01 12:00",
+                "name": "liveop_qa_for_release_journey",
+                "triggers": [],
+                "liveopState": "on",
+                "themeId": "qa_journey_theme_release",
+                "type": "PromotionEvent",
+                "externalLiveopsConfiguration": [
+                    {
+                        "externalSegment": "default",
+                        "segment": "default",
+                        "state": "on",
+                        "themeId": "qa_journey_theme_release"
+                    }
+                ],
+                "source": "liveopConfigured"
+            },
+            "serializedData": {
+                "conditionIds": [
+                    "journeyToken"
+                ],
+                "liveopsEffects": {
+                    "endEvent": [
+                        {
+                            "effect": "endEvent",
+                            "conditions": {
+                                "eventActedOnConditions": {},
+                                "eventAffectedConditions": {
+                                    "eventStatuses": [
+                                        "COMPENSATION_PERIOD",
+                                        "ACTIVE"
+                                    ],
+                                    "eventType": "GenericToken",
+                                    "category": "journeyToken"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "displayTriggers": {
+                    "AppLoadResume": {
+                        "frequency": 1
+                    }
+                }
+            },
+            "extraData": {
+                "requireGenericToken": true,
+                "prerequisitesCategory": "journeyToken",
+                "gracePeriodSecondsForGenericToken": 300
+            },
+            "themesByThemeId": {
+                "qa_journey_theme_release": {
+                    "configuration_id": "qa_journey_theme_release",
+                    "id": "qa_journey_theme_release",
+                    "type": "journey_promotion",
+                    "withProgressBar": "false",
+                    "supportTopup": "true",
+                    "canDisplayOoeAd": "false",
+                    "containsWidget": "true",
+                    "clientAssets": [
+                        {
+                            "name": "popup",
+                            "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.and",
+                            "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.ios"
+                        },
+                        {
+                            "name": "icon",
+                            "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.and",
+                            "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.ios"
+                        },
+                        {
+                            "name": "widget",
+                            "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.and",
+                            "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.ios"
+                        },
+                        {
+                            "name": "meta_indicator",
+                            "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.and",
+                            "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.ios"
+                        }
+                    ],
+                    "supportPurchasebByVanityToken": ""
+                }
+            }
+        }
+    ]
+}

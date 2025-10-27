@@ -1,0 +1,3190 @@
+{
+    "liveops": [
+        {
+            "unit": "qa_MOER_boss_release_base_2025-10-23_15:18",
+            "type": "MegaOrderExtraReward",
+            "conditionIds": [
+                "MegaOrderExtraReward"
+            ],
+            "name": "qa_MOER_boss_release_base",
+            "isFtue": false,
+            "startDate": 1761232680000,
+            "endDate": 1797002280000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 25
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_MOER_boss_release_base_2025-10-23_15:18_0",
+            "theme": {
+                "id": "no_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_MOER_boss_release_base_1_2025-10-25_15:17",
+            "type": "MegaOrderExtraReward",
+            "conditionIds": [
+                "MegaOrderExtraReward"
+            ],
+            "name": "qa_MOER_boss_release_base_1",
+            "isFtue": false,
+            "startDate": 1761405420000,
+            "endDate": 1796915820000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 25
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_MOER_boss_release_base_1_2025-10-25_15:17_0",
+            "theme": {
+                "id": "no_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_boss_fight_releasebase_2025-10-25_15:13",
+            "type": "BoardEventCombo",
+            "conditionIds": [
+                "BoardEventCombo"
+            ],
+            "name": "qa_boss_fight_releasebase",
+            "isFtue": false,
+            "startDate": 1761405180000,
+            "endDate": 1798297980000,
+            "teaserDurationSeconds": 0,
+            "originEventStartDate": 1761405180000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 25
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 2,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "displayCoreWidget": true,
+            "minimumTimeToNextActivation": 10,
+            "subEventIds": [
+                "qa_boss_fight_releasebase_2025-10-25_15:13_0_1",
+                "qa_boss_fight_releasebase_2025-10-25_15:13_0_2"
+            ],
+            "subEventThemes": {
+                "qa_boss_fight_releasebase_2025-10-25_15:13_0_1": {
+                    "configuration_id": "qa_board_boss_releasebase",
+                    "id": "qa_board_boss_releasebase",
+                    "type": "BoardEventCombo",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "BoardEventAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1761119491428_bossfight_final_android.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1761119491428_bossfight_final_ios.ios"
+                        },
+                        {
+                            "name": "CartBadgeRed",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.ios"
+                        }
+                    ]
+                },
+                "qa_boss_fight_releasebase_2025-10-25_15:13_0_2": {
+                    "configuration_id": "qa_board_boss_releasebase",
+                    "id": "qa_board_boss_releasebase",
+                    "type": "BoardEventCombo",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "BoardEventAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1761119491428_bossfight_final_android.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1761119491428_bossfight_final_ios.ios"
+                        },
+                        {
+                            "name": "CartBadgeRed",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.ios"
+                        }
+                    ]
+                }
+            },
+            "id": "qa_boss_fight_releasebase_2025-10-25_15:13_0",
+            "theme": {
+                "configuration_id": "liveop_generic_theme",
+                "id": "liveop_generic_theme",
+                "type": "None",
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "GAEEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_townfair_releasebase_new_2025-09-08_14:51",
+            "type": "TownFair",
+            "conditionIds": [
+                "TownFair"
+            ],
+            "name": "qa_townfair_releasebase_new",
+            "isFtue": false,
+            "startDate": 1757343060000,
+            "endDate": 1789224660000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 18,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 18
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<",
+                    "value": 20
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "TownFair"
+                }
+            ],
+            "badgeLocations": {
+                "showOnEvent": false,
+                "showOnCore": true,
+                "showOnMeta": true
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 20,
+                    "durationInHours": 24,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 20
+                    }
+                }
+            ],
+            "removeActiveEventConditionsDurationMs": 86400000,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1757343060000,
+                "endDate": 1789224660000,
+                "assetKeysNames": [
+                    "townFairToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "qa_townfair_releasebase_new_2025-09-08_14:51_0",
+            "theme": {
+                "configuration_id": "town_fair_theme",
+                "id": "town_fair_theme",
+                "clientAssets": [
+                    {
+                        "name": "TownFairEventAssets",
+                        "android": "/resources/traveltown/1.0_master/townFairThemesAssets_bundlesAssets/1756971915137_townfair_base_13554_03-09-2025_15-01.and",
+                        "ios": "/resources/traveltown/1.0_master/townFairThemesAssets_bundlesAssets/1756971915137_townfair_base_13554_03-09-2025_14-57.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1757343060000,
+            "endDate": 1789224660000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 18,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 18
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<",
+                    "value": 20
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "TownFair",
+            "tokenName": "townFairToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_qa_townfair_releasebase_new",
+            "unit": "generic_token_qa_townfair_releasebase_new_2025-09-08_14:51",
+            "category": "TownFair",
+            "multipleEventUnit": "TownFair",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "tokenRefillData": {
+                "initialTokens": 80,
+                "refillAmount": 2,
+                "maxRefillAmount": 100,
+                "refillTimeSeconds": 120
+            },
+            "displayIcon": false,
+            "id": "generic_token_qa_townfair_releasebase_new_2025-09-08_14:51_0",
+            "eventIdGeneratedTokenEvent": "qa_townfair_releasebase_new_2025-09-08_14:51_0",
+            "theme": {
+                "id": "town_fair_theme"
+            }
+        },
+        {
+            "unit": "qa_liveop_for_rng_release_2025-08-17_12:15",
+            "type": "RngLiveop",
+            "conditionIds": [
+                "RNG"
+            ],
+            "name": "qa_liveop_for_rng_release",
+            "isFtue": false,
+            "startDate": 1755432900000,
+            "endDate": 1798805760000,
+            "conditions": [],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_liveop_for_rng_release_2025-08-17_12:15_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_golden_pass_1160_2025-07-14_12:15",
+            "type": "GoldenPass",
+            "conditionIds": [
+                "GoldenPass"
+            ],
+            "name": "qa_golden_pass_1160",
+            "isFtue": false,
+            "startDate": 1752495300000,
+            "endDate": 1784981700000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 3,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 3
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<",
+                    "value": 39
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_golden_pass_1160_2025-07-14_12:15_0",
+            "theme": {
+                "configuration_id": "golden_pass_phase2",
+                "id": "golden_pass_phase2",
+                "clientAssets": [
+                    {
+                        "name": "GoldenPassEventAssets",
+                        "android": "/resources/traveltown/1.0_master/goldenPassAssets_bundlesAssets/1757936955924_goldenpassevent_base_13856_15-09-2025_11-25.and",
+                        "ios": "/resources/traveltown/1.0_master/goldenPassAssets_bundlesAssets/1757936955924_goldenpassevent_base_13856_15-09-2025_11-27.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_travelTogether_for_ReleaseBase_2025-06-15_15:57",
+            "type": "TravelTogether",
+            "conditionIds": [
+                "TravelTogether"
+            ],
+            "name": "qa_travelTogether_for_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1750003020000,
+            "endDate": 1798819020000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 14,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 14
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.850"
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "minutesRemainingToPreventActivation": 180,
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_travelTogether_for_ReleaseBase_2025-06-15_15:57_0",
+            "theme": {
+                "configuration_name": "qa_travelTogether_for_releaseBase",
+                "id": "qa_travelTogether_for_releaseBase",
+                "clientAssets": [
+                    {
+                        "name": "TravelTogetherEventAssets",
+                        "android": "/resources/traveltown/1.0_master/travelTogetherAssets_bundlesAssets/1750942359564_traveltogether_11602_04-06-2025_16-30.and",
+                        "ios": "/resources/traveltown/1.0_master/travelTogetherAssets_bundlesAssets/1750942359564_traveltogether_11602_04-06-2025_16-33.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_flame_release_base_2025-06-03_11:33",
+            "type": "FlameCards",
+            "conditionIds": [
+                "FlameCards"
+            ],
+            "name": "qa_flame_release_base",
+            "isFtue": false,
+            "startDate": 1748950380000,
+            "endDate": 1784287980000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 4,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 4
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_flame_release_base_2025-06-03_11:33_0",
+            "theme": {
+                "configuration_id": "qa_flame_cards_theme_releasebase",
+                "id": "qa_flame_cards_theme_releasebase",
+                "clientAssets": [
+                    {
+                        "name": "FlameCardsEventAssets",
+                        "android": "/resources/traveltown/1.0_master/flameCardsAssets_bundlesAssets/1749025637640_flame_cards_test_theme_11538_02-06-2025_15-11.and",
+                        "ios": "/resources/traveltown/1.0_master/flameCardsAssets_bundlesAssets/1749025637640_flame_cards_test_theme_11538_02-06-2025_15-12.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on",
+            "configurationName": "qa_flame_release_base",
+            "albumId": "qa_flame_release_base"
+        },
+        {
+            "unit": "qa_pets_ReleaseBaseNew_2025-05-31_11:00",
+            "type": "Pets",
+            "conditionIds": [
+                "Pets"
+            ],
+            "name": "qa_pets_ReleaseBaseNew",
+            "isFtue": false,
+            "startDate": 1748689200000,
+            "endDate": 1782900000000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 25,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 25
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "Pets"
+                }
+            ],
+            "liveopsEffects": {
+                "endEvent": [
+                    {
+                        "effect": "endEvent",
+                        "conditions": {
+                            "eventActedOnConditions": {},
+                            "eventAffectedConditions": {
+                                "eventStatuses": [
+                                    "COMPENSATION_PERIOD"
+                                ],
+                                "eventType": "GenericToken",
+                                "category": "Pets"
+                            }
+                        }
+                    }
+                ]
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1748689200000,
+                "endDate": 1782900000000,
+                "assetKeysNames": [
+                    "petsToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "qa_pets_ReleaseBaseNew_2025-05-31_11:00_0",
+            "theme": {
+                "configuration_name": "pets_combo_theme_ReleaseBaseNew",
+                "configurationId": "pets_combo_theme_ReleaseBaseNew",
+                "configurations": [
+                    {
+                        "petAnimalTheme": "pets_animal_theme_ReleaseBaseNew",
+                        "petLiveopTheme": "pets_liveop_theme_ReleaseBaseNew"
+                    }
+                ],
+                "id": "pets_combo_theme_ReleaseBaseNew",
+                "clientAssets": [
+                    {
+                        "name": "PetsPetAssets",
+                        "android": "/resources/traveltown/1.0_master/petsAnimalAssets_bundlesAssets/1757584125664_petspet_magichippo_13783_11-09-2025_12-41.and",
+                        "ios": "/resources/traveltown/1.0_master/petsAnimalAssets_bundlesAssets/1757584125664_petspet_magichippo_13783_11-09-2025_12-43.ios"
+                    },
+                    {
+                        "name": "PetsEventAssets",
+                        "android": "/resources/traveltown/1.0_master/petsLiveopAssets_bundlesAssets/1761477857224_pets_base_14651_16-10-2025_15-52.and",
+                        "ios": "/resources/traveltown/1.0_master/petsLiveopAssets_bundlesAssets/1761477857224_pets_base_14651_16-10-2025_15-52.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1748689200000,
+            "endDate": 1782900000000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 25,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 25
+                    }
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "Pets",
+            "tokenName": "petsToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_qa_pets_ReleaseBaseNew",
+            "unit": "generic_token_qa_pets_ReleaseBaseNew_2025-05-31_11:00",
+            "category": "Pets",
+            "multipleEventUnit": "Pets",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_qa_pets_ReleaseBaseNew_2025-05-31_11:00_0",
+            "eventIdGeneratedTokenEvent": "qa_pets_ReleaseBaseNew_2025-05-31_11:00_0",
+            "theme": {
+                "id": "pets_combo_theme_ReleaseBaseNew"
+            }
+        },
+        {
+            "unit": "qa_achievements_liveop_for_ReleseBase2_2025-05-25_13:56",
+            "type": "Achievements",
+            "conditionIds": [
+                "Achievements"
+            ],
+            "name": "qa_achievements_liveop_for_ReleseBase2",
+            "isFtue": false,
+            "startDate": 1748181360000,
+            "endDate": 1801382400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 12,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 12
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 24
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "badgeLocations": {
+                "showOnEvent": true,
+                "showOnCore": true,
+                "showOnMeta": true
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "multipleEventUnit": "default",
+            "id": "qa_achievements_liveop_for_ReleseBase2_2025-05-25_13:56_0",
+            "theme": {
+                "configuration_name": "Achievment_with_bar_phase2",
+                "id": "Achievment_with_bar_phase2",
+                "supportEventCenter": "true",
+                "phase": "2",
+                "clientAssets": [
+                    {
+                        "name": "AchievementEventAssets",
+                        "android": "/resources/traveltown/1.0_master/achievementsAssets_bundlesAssets/1749981332626_achievements_base_11806_12-06-2025_13-27.and",
+                        "ios": "/resources/traveltown/1.0_master/achievementsAssets_bundlesAssets/1749981332626_achievements_base_11806_12-06-2025_13-26.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_moer_green_releasebase_2025-05-11_15:01",
+            "type": "MegaOrderExtraReward",
+            "conditionIds": [
+                "MegaOrderExtraReward"
+            ],
+            "name": "qa_moer_green_releasebase",
+            "isFtue": false,
+            "startDate": 1746975660000,
+            "endDate": 1810393260000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_moer_green_releasebase_2025-05-11_15:01_0",
+            "theme": {
+                "configuration_id": "qa_moer_base_green",
+                "id": "qa_moer_base_green",
+                "type": "MegaOrderExtraReward",
+                "supportEventCenter": "false",
+                "clientAssets": [
+                    {
+                        "name": "megaOrderExtraRewardsEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1746439765630_moer_base_green.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1746439765630_moer_base_green.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_moer_purpletheme_releasebase_2025-05-11_15:01",
+            "type": "MegaOrderExtraReward",
+            "conditionIds": [
+                "MegaOrderExtraReward"
+            ],
+            "name": "qa_moer_purpletheme_releasebase",
+            "isFtue": false,
+            "startDate": 1746975660000,
+            "endDate": 1810393260000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_moer_purpletheme_releasebase_2025-05-11_15:01_0",
+            "theme": {
+                "configuration_id": "qa_moer_base_purple",
+                "id": "qa_moer_base_purple",
+                "type": "MegaOrderExtraReward",
+                "supportEventCenter": "false",
+                "clientAssets": [
+                    {
+                        "name": "megaOrderExtraRewardsEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1746439765630_moer_base_purple.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1746439765630_moer_base_purple.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_moer_no_theme_releasebase_2025-05-11_14:59",
+            "type": "MegaOrderExtraReward",
+            "conditionIds": [
+                "MegaOrderExtraReward"
+            ],
+            "name": "qa_moer_no_theme_releasebase",
+            "isFtue": false,
+            "startDate": 1746975540000,
+            "endDate": 1809788340000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_moer_no_theme_releasebase_2025-05-11_14:59_0",
+            "theme": {
+                "id": "no_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_hiddengame_liveop_releasebase_2025-04-06_13:05",
+            "type": "HiddenGame",
+            "conditionIds": [
+                "HiddenGame"
+            ],
+            "name": "qa_hiddengame_liveop_releasebase",
+            "isFtue": false,
+            "startDate": 1743944700000,
+            "endDate": 1810386300000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 30
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "HiddenGame"
+                }
+            ],
+            "liveopsEffects": {
+                "endEvent": [
+                    {
+                        "effect": "endEvent",
+                        "conditions": {
+                            "eventActedOnConditions": {
+                                "isEventCompleted": true
+                            },
+                            "eventAffectedConditions": {
+                                "eventStatuses": [
+                                    "COMPENSATION_PERIOD",
+                                    "ACTIVE"
+                                ],
+                                "eventType": "GenericToken",
+                                "category": "HiddenGame"
+                            }
+                        }
+                    }
+                ]
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1743944700000,
+                "endDate": 1810386300000,
+                "assetKeysNames": [
+                    "crusherToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "subEventsData": {
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_1": {
+                    "isHiddenBarConfigured": false
+                },
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_2": {
+                    "isHiddenBarConfigured": true
+                }
+            },
+            "shouldRepeatLastSubEvent": false,
+            "subEventIds": [
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_1",
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_2"
+            ],
+            "subEventThemes": {
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_1": {
+                    "configuration_id": "Hidden_Game_Theme_Phase2_Sounds_v2",
+                    "id": "Hidden_Game_Theme_Phase2_Sounds_v2",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "HiddenGameEventAssets",
+                            "android": "/resources/traveltown/1.0_master/hiddenGameAssets_bundlesAssets/1757492963219_hidden_game_base_phasetwo_13716_10-09-2025_10-07.and",
+                            "ios": "/resources/traveltown/1.0_master/hiddenGameAssets_bundlesAssets/1757492963219_hidden_game_base_phasetwo_13716_10-09-2025_10-08.ios"
+                        }
+                    ],
+                    "elementsConfiguration": [
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x1",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x2",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x3",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x4",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x1",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x2",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x3",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x4",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x1",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x2",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x3",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x4",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x1",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x2",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x3",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x4",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_5x5",
+                            "horizontalSizeUnit": 5,
+                            "verticalSizeUnit": 5
+                        }
+                    ]
+                },
+                "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0_qa_hiddengame_combo_releasebase_2": {
+                    "configuration_id": "Hidden_Game_Theme_Phase2_Sounds_v2",
+                    "id": "Hidden_Game_Theme_Phase2_Sounds_v2",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "HiddenGameEventAssets",
+                            "android": "/resources/traveltown/1.0_master/hiddenGameAssets_bundlesAssets/1757492963219_hidden_game_base_phasetwo_13716_10-09-2025_10-07.and",
+                            "ios": "/resources/traveltown/1.0_master/hiddenGameAssets_bundlesAssets/1757492963219_hidden_game_base_phasetwo_13716_10-09-2025_10-08.ios"
+                        }
+                    ],
+                    "elementsConfiguration": [
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x1",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x2",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x3",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_1x4",
+                            "horizontalSizeUnit": 1,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x1",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x2",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x3",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_2x4",
+                            "horizontalSizeUnit": 2,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x1",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x2",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x3",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_3x4",
+                            "horizontalSizeUnit": 3,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x1",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 1
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x2",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 2
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x3",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 3
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_4x4",
+                            "horizontalSizeUnit": 4,
+                            "verticalSizeUnit": 4
+                        },
+                        {
+                            "elementId": "HiddenGame_Base_Element_5x5",
+                            "horizontalSizeUnit": 5,
+                            "verticalSizeUnit": 5
+                        }
+                    ]
+                }
+            },
+            "id": "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": true,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1743944700000,
+            "endDate": 1810386300000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 30
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "HiddenGame",
+            "tokenName": "crusherToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_qa_hiddengame_liveop_releasebase",
+            "unit": "generic_token_qa_hiddengame_liveop_releasebase_2025-04-06_13:05",
+            "category": "HiddenGame",
+            "multipleEventUnit": "HiddenGame",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0",
+            "eventIdGeneratedTokenEvent": "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            }
+        },
+        {
+            "unit": "qa_lava_releasebasenew_2025-03-30_16:46",
+            "type": "Lava",
+            "conditionIds": [
+                "Lava"
+            ],
+            "name": "qa_lava_releasebasenew",
+            "isFtue": false,
+            "startDate": 1743353160000,
+            "endDate": 1775839560000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 29
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "minutesRemainingToPreventActivation": 5,
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subEventIds": [
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_1",
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_2"
+            ],
+            "subEventThemes": {
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_1": {
+                    "configuration_id": "lava_theme_releasebase",
+                    "id": "lava_theme_releasebase",
+                    "themeType": "Smiley",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "LavaEventAssets",
+                            "android": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.and",
+                            "ios": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.ios"
+                        }
+                    ],
+                    "voluntaryTheme": "false"
+                },
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_2": {
+                    "configuration_id": "lava_theme_releasebase",
+                    "id": "lava_theme_releasebase",
+                    "themeType": "Smiley",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "LavaEventAssets",
+                            "android": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.and",
+                            "ios": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.ios"
+                        }
+                    ],
+                    "voluntaryTheme": "false"
+                }
+            },
+            "subEventProgressMap": [
+                {
+                    "won": 2,
+                    "lost": 2
+                },
+                {
+                    "won": null,
+                    "lost": null
+                }
+            ],
+            "subEventsProgressData": {
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_1": {
+                    "isBonusRound": false,
+                    "isLoserRepeatRound": false
+                },
+                "qa_lava_releasebasenew_2025-03-30_16:46_0_qa_lava_releasebase_2": {
+                    "isBonusRound": false,
+                    "isLoserRepeatRound": false
+                }
+            },
+            "id": "qa_lava_releasebasenew_2025-03-30_16:46_0",
+            "theme": {
+                "configuration_id": "lava_theme_releasebase",
+                "id": "lava_theme_releasebase",
+                "themeType": "Smiley",
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "LavaEventAssets",
+                        "android": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.and",
+                        "ios": "/resources/traveltown/1.0_master/lavaAssets_bundlesAssets/1752409220286_lava_theme_config_12407_11-07-2025_13-26.ios"
+                    }
+                ],
+                "voluntaryTheme": "false"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_tournament_ReleaseBase_2024-01-01_11:00",
+            "type": "Tournament",
+            "conditionIds": [
+                "Tournament"
+            ],
+            "name": "qa_tournament_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 25,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 25
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<",
+                    "value": 39
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subEventIds": [
+                "qa_tournament_ReleaseBase_2024-01-01_11:00_0_qa_tournament_ReleaseBase_1"
+            ],
+            "subEventThemes": {
+                "qa_tournament_ReleaseBase_2024-01-01_11:00_0_qa_tournament_ReleaseBase_1": {
+                    "configuration_name": "tournament_theme",
+                    "id": "tournament_theme",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "TournamentEventAssets",
+                            "android": "/resources/traveltown/1.0_master/tournamentAssets_bundlesAssets/1742116408759_tournamentevent_base_9745_16-03-2025_10-42.and",
+                            "ios": "/resources/traveltown/1.0_master/tournamentAssets_bundlesAssets/1742116408759_tournamentevent_base_9745_16-03-2025_10-42.ios"
+                        }
+                    ]
+                }
+            },
+            "subEventProgressMap": [
+                {
+                    "won": null,
+                    "lost": null
+                }
+            ],
+            "subEventsProgressData": {
+                "qa_tournament_ReleaseBase_2024-01-01_11:00_0_qa_tournament_ReleaseBase_1": {
+                    "isBonusRound": false,
+                    "shouldOverrideSubEventIndex": false
+                }
+            },
+            "id": "qa_tournament_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_partners_releasebasenew_2025-01-14_12:25",
+            "type": "Partners",
+            "conditionIds": [
+                "Partners"
+            ],
+            "name": "qa_partners_releasebasenew",
+            "isFtue": false,
+            "startDate": 1736857500000,
+            "endDate": 1795263960000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.852"
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 24
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "Partners"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1736857500000,
+                "endDate": 1795263960000,
+                "assetKeysNames": [
+                    "partnersToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "qa_partners_releasebasenew_2025-01-14_12:25_0",
+            "theme": {
+                "configuration_name": "QA_Partners_Theme_ReleaseBaseNew",
+                "id": "QA_Partners_Theme_ReleaseBaseNew",
+                "numberOfObjects": 4,
+                "supportEventCenter": "false",
+                "numberOfEngineSlices": [
+                    {
+                        "sliceAmountOptions": 12
+                    }
+                ],
+                "clientAssets": [
+                    {
+                        "name": "PartnersEventAssets",
+                        "android": "/resources/traveltown/1.0_master/partnersAssets_bundlesAssets/1745327089806_partners_theme_10575_22-04-2025_12-50.and",
+                        "ios": "/resources/traveltown/1.0_master/partnersAssets_bundlesAssets/1745327089806_partners_theme_10575_22-04-2025_12-43.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1736857500000,
+            "endDate": 1795263960000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 11,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 11
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.852"
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 24
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "Partners",
+            "tokenName": "partnersToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_qa_partners_releasebasenew",
+            "unit": "generic_token_qa_partners_releasebasenew_2025-01-14_12:25",
+            "category": "Partners",
+            "multipleEventUnit": "Partners",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_qa_partners_releasebasenew_2025-01-14_12:25_0",
+            "eventIdGeneratedTokenEvent": "qa_partners_releasebasenew_2025-01-14_12:25_0",
+            "theme": {
+                "id": "QA_Partners_Theme_ReleaseBaseNew"
+            }
+        },
+        {
+            "unit": "qa_tlo_streak_ReleaseBase_2024-01-01_11:00",
+            "type": "TLOStreak",
+            "conditionIds": [
+                "TLOStreak"
+            ],
+            "name": "qa_tlo_streak_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 27,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 27
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.750"
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": false,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_tlo_streak_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_name": "tlostreak_theme_ReleaseBase",
+                "id": "tlostreak_theme_ReleaseBase",
+                "numberOfTlos": 5,
+                "clientAssets": [
+                    {
+                        "name": "TloStreakEventAssets",
+                        "android": "/resources/traveltown/1.0_master/tloStreakAssets_bundlesAssets/1739116117145_tlostreak_generic_stairs_release.and",
+                        "ios": "/resources/traveltown/1.0_master/tloStreakAssets_bundlesAssets/1739116117145_tlostreak_generic_stairs_release.ios"
+                    }
+                ],
+                "supportEventCenter": "false",
+                "containsWidget": "false"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_duel_ReleaseBase_2024-01-01_11:00",
+            "type": "DuelCombo",
+            "conditionIds": [
+                "DuelCombo"
+            ],
+            "name": "qa_duel_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 21,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 21
+                    }
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subEventIds": [
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_1",
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_2",
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_3",
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_4"
+            ],
+            "subEventThemes": {
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_1": {
+                    "configuration_name": "qa_duel_ReleaseBase",
+                    "id": "qa_duel_ReleaseBase",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "DuelEventAssets",
+                            "android": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.and",
+                            "ios": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.ios"
+                        }
+                    ]
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_2": {
+                    "configuration_name": "qa_duel_ReleaseBase",
+                    "id": "qa_duel_ReleaseBase",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "DuelEventAssets",
+                            "android": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.and",
+                            "ios": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.ios"
+                        }
+                    ]
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_3": {
+                    "configuration_name": "qa_duel_ReleaseBase",
+                    "id": "qa_duel_ReleaseBase",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "DuelEventAssets",
+                            "android": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.and",
+                            "ios": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.ios"
+                        }
+                    ]
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_4": {
+                    "configuration_name": "qa_duel_ReleaseBase",
+                    "id": "qa_duel_ReleaseBase",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "DuelEventAssets",
+                            "android": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.and",
+                            "ios": "/resources/traveltown/1.0_master/duelAssets_bundlesAssets/1738074567770_duelevent_base_bug_fix.ios"
+                        }
+                    ]
+                }
+            },
+            "subEventProgressMap": [
+                {
+                    "won": 2,
+                    "lost": 2
+                },
+                {
+                    "won": 3,
+                    "lost": 3
+                },
+                {
+                    "won": 4,
+                    "lost": 4
+                },
+                {
+                    "won": 4,
+                    "lost": 4
+                }
+            ],
+            "subEventsProgressData": {
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_1": {
+                    "isBonusRound": false,
+                    "shouldOverrideSubEventIndex": false
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_2": {
+                    "isBonusRound": false,
+                    "shouldOverrideSubEventIndex": false
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_3": {
+                    "isBonusRound": false,
+                    "shouldOverrideSubEventIndex": false
+                },
+                "qa_duel_ReleaseBase_2024-01-01_11:00_0_qa_duel_ReleaseBase_4": {
+                    "isBonusRound": false,
+                    "shouldOverrideSubEventIndex": false
+                }
+            },
+            "id": "qa_duel_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "playground_release_base_stamp_2024-01-01_11:00",
+            "type": "PlayGround",
+            "conditionIds": [
+                "PlayGround"
+            ],
+            "name": "playground_release_base_stamp",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 16,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 16
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 29
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "badgeLocations": {
+                "showOnEvent": true,
+                "showOnCore": true,
+                "showOnMeta": true
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subType": "StampPurchase",
+            "id": "playground_release_base_stamp_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_name": "playground_4thofjuly2025_stampcard_6",
+                "id": "playground_4thofjuly2025_stampcard_6",
+                "playgroundSubType": "StampPurchase",
+                "internalId": "upto_4",
+                "numberOfPlaceholders": 1,
+                "numberOfTiles": 6,
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "PlaygroundEventAssets",
+                        "android": "/resources/traveltown/1.0_master/playgroundAssets_bundlesAssets/1751873516634_playground_4thofjuly2025_stampcard_6.and",
+                        "ios": "/resources/traveltown/1.0_master/playgroundAssets_bundlesAssets/1751873532920_playground_4thofjuly2025_stampcard_6.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "playground_release_base_rewardrunway_2024-01-01_11:00",
+            "type": "PlayGround",
+            "conditionIds": [
+                "PlayGround"
+            ],
+            "name": "playground_release_base_rewardrunway",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "badgeLocations": {
+                "showOnEvent": false,
+                "showOnCore": true,
+                "showOnMeta": true
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subType": "RewardMap",
+            "id": "playground_release_base_rewardrunway_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_name": "playground_1mfollowers_rewardrunway",
+                "id": "playground_1mfollowers_rewardrunway",
+                "playgroundSubType": "RewardMap",
+                "internalId": "exactly_1",
+                "numberOfPlaceholders": 1,
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "PlaygroundEventAssets",
+                        "android": "/resources/traveltown/1.0_master/playgroundAssets_bundlesAssets/1748936447204_playground_1mfollowers_rewardrunway.and",
+                        "ios": "/resources/traveltown/1.0_master/playgroundAssets_bundlesAssets/1748936447204_playground_1mfollowers_rewardrunway.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_release_base_new_topup_2024-01-01_11:00",
+            "type": "TopUp",
+            "conditionIds": [
+                "TopUp"
+            ],
+            "name": "qa_release_base_new_topup",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1824894000000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 17,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 17
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400"
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_release_base_new_topup_2024-01-01_11:00_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_CardsBoom_release_base_new_2024-01-01_11:00",
+            "type": "CardsBoom",
+            "conditionIds": [
+                "CardsBoom"
+            ],
+            "name": "qa_CardsBoom_release_base_new",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 30,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 30
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.620"
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "SeasonalCards"
+                }
+            ],
+            "durationInMinutes": 180,
+            "minutesRemainingToPreventActivation": 10,
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_CardsBoom_release_base_new_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_name": "CardsBoom_number_theme",
+                "id": "CardsBoom_number_theme",
+                "containsPercent": "true",
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "CardsBoomEventAssets",
+                        "android": "/resources/traveltown/1.0_master/cardsBoomAssets_bundlesAssets/1735215635103_cardsboom_eventcenter.and",
+                        "ios": "/resources/traveltown/1.0_master/cardsBoomAssets_bundlesAssets/1735215635103_cardsboom_eventcenter.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on",
+            "boomType": "50%_more",
+            "displayWidget": true,
+            "boomPercentageTheme": 50,
+            "minutesRemainingToPreventContinue": 0
+        },
+        {
+            "unit": "qa_board_event_2_0_release_base_2024-01-01_11:00",
+            "type": "BoardEventCombo",
+            "conditionIds": [
+                "BoardEventCombo"
+            ],
+            "name": "qa_board_event_2_0_release_base",
+            "isFtue": false,
+            "startDate": 1704106368000,
+            "endDate": 1793469600000,
+            "teaserDurationSeconds": 431.99999999999994,
+            "originEventStartDate": 1704106800000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 20
+                }
+            ],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 2,
+                    "firstRun": 1
+                }
+            },
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "displayCoreWidget": true,
+            "minimumTimeToNextActivation": 240,
+            "subEventIds": [
+                "qa_board_event_2_0_release_base_2024-01-01_11:00_0_1",
+                "qa_board_event_2_0_release_base_2024-01-01_11:00_0_2"
+            ],
+            "subEventThemes": {
+                "qa_board_event_2_0_release_base_2024-01-01_11:00_0_1": {
+                    "configuration_id": "qa_board_takeoff_event_2_0_pink_212600",
+                    "id": "qa_board_takeoff_event_2_0_pink_212600",
+                    "type": "BoardEventCombo",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "BoardEventAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1720343264054_boardevent_takeoff_2.0_4417_02-07-2024_18-11.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1720343264054_boardevent_takeoff_2.0_4417_02-07-2024_18-00.ios"
+                        },
+                        {
+                            "name": "CartBadgeRed",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.ios"
+                        },
+                        {
+                            "name": "EventEnergyAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1726477891669_eventenergy_pink_5660_10-09-2024_17-44.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1726477891669_eventenergy_pink_5660_10-09-2024_17-41.ios"
+                        }
+                    ]
+                },
+                "qa_board_event_2_0_release_base_2024-01-01_11:00_0_2": {
+                    "configuration_id": "qa_board_takeoff_event_2_0_pink_212600",
+                    "id": "qa_board_takeoff_event_2_0_pink_212600",
+                    "type": "BoardEventCombo",
+                    "supportEventCenter": "false",
+                    "clientAssets": [
+                        {
+                            "name": "BoardEventAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1720343264054_boardevent_takeoff_2.0_4417_02-07-2024_18-11.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1720343264054_boardevent_takeoff_2.0_4417_02-07-2024_18-00.ios"
+                        },
+                        {
+                            "name": "CartBadgeRed",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1683106912554_CartBadgeRed.ios"
+                        },
+                        {
+                            "name": "EventEnergyAssets",
+                            "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1726477891669_eventenergy_pink_5660_10-09-2024_17-44.and",
+                            "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1726477891669_eventenergy_pink_5660_10-09-2024_17-41.ios"
+                        }
+                    ]
+                }
+            },
+            "id": "qa_board_event_2_0_release_base_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "liveop_generic_theme",
+                "id": "liveop_generic_theme",
+                "type": "None",
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "GAEEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00",
+            "type": "SeasonalCards",
+            "conditionIds": [
+                "SeasonalCards"
+            ],
+            "name": "qa_paradisedreams_liveop_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1824894000000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 3,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 3
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.450"
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "SeasonalCards"
+                }
+            ],
+            "liveopsEffects": {
+                "endEvent": [
+                    {
+                        "effect": "endEvent",
+                        "conditions": {
+                            "eventActedOnConditions": {},
+                            "eventAffectedConditions": {
+                                "eventStatuses": [
+                                    "COMPENSATION_PERIOD",
+                                    "ACTIVE"
+                                ],
+                                "eventType": "GenericToken",
+                                "category": "SeasonalCards"
+                            }
+                        }
+                    }
+                ]
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1704106800000,
+                "endDate": 1824894000000,
+                "assetKeysNames": [
+                    "starsToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "qa_seasonalcards_paradisedreams_212450",
+                "id": "qa_seasonalcards_paradisedreams_212450",
+                "clientAssets": [
+                    {
+                        "name": "CardsSeasonAssets",
+                        "android": "/resources/traveltown/1.0_master/cardsThemesAssets_bundlesAssets/1704616514601_album_summer_popups_ReleaseNew.and",
+                        "ios": "/resources/traveltown/1.0_master/cardsThemesAssets_bundlesAssets/1704616514601_album_summer_popups_ReleaseNew.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1704106800000,
+            "endDate": 1824894000000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 3,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 3
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.450"
+                }
+            ],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "SeasonalCards",
+            "tokenName": "starsToken",
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_qa_paradisedreams_liveop_ReleaseBase",
+            "unit": "generic_token_qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00",
+            "category": "SeasonalCards",
+            "multipleEventUnit": "SeasonalCards",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00_0",
+            "eventIdGeneratedTokenEvent": "qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "id": "qa_seasonalcards_paradisedreams_212450"
+            }
+        },
+        {
+            "unit": "qa_rng_in_event_ReleaseBase_2024-01-01_11:00",
+            "type": "BoardEventRNG",
+            "conditionIds": [
+                "BoardEventRNG"
+            ],
+            "name": "qa_rng_in_event_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400"
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "board-service",
+                    "fieldName": "eventLevel",
+                    "operator": ">=",
+                    "value": 1
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "BoardEventCombo",
+                    "comboIndex": 0
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_rng_in_event_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_oer_vanity_release_base_2024-01-01_11:00",
+            "type": "OrderExtraReward",
+            "conditionIds": [
+                "OrderExtraReward"
+            ],
+            "name": "qa_oer_vanity_release_base",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400"
+                }
+            ],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "VanityIsland"
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_oer_vanity_release_base_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "qa_oer_releasebase",
+                "id": "qa_oer_releasebase",
+                "type": "OrderExtraReward",
+                "supportEventCenter": "false",
+                "clientAssets": [
+                    {
+                        "name": "orderExtraRewardsEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1743951825946_qa_oer_releasebase.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1743951825946_qa_oer_releasebase.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_VanityIsland_halloween_island_ReleaseBase_2024-01-01_11:00",
+            "type": "VanityIsland",
+            "conditionIds": [
+                "VanityIsland"
+            ],
+            "name": "qa_VanityIsland_halloween_island_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 20,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 20
+                    }
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1704106800000,
+                "endDate": 1793444400000,
+                "assetKeysNames": [
+                    "vanityIslandToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "qa_VanityIsland_halloween_island_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "vanity_kingarthur_frames",
+                "id": "vanity_kingarthur_frames",
+                "clientAssets": [
+                    {
+                        "name": "vanityEventAssets",
+                        "android": "/resources/traveltown/1.0_master/vanityThemesAssets_bundlesAssets/1727337293359_vanity_kingarthur_frames.and",
+                        "ios": "/resources/traveltown/1.0_master/vanityThemesAssets_bundlesAssets/1727337293359_vanity_kingarthur_frames.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_special_chain_release_base_2024-01-01_11:00",
+            "type": "SpecialChain",
+            "conditionIds": [
+                "SpecialChain"
+            ],
+            "name": "qa_special_chain_release_base",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 15,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 15
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.400"
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 24
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "subEventIds": [
+                "qa_special_chain_release_base_2024-01-01_11:00_0_qa_special_chain_release_base_1"
+            ],
+            "subEventThemes": {
+                "qa_special_chain_release_base_2024-01-01_11:00_0_qa_special_chain_release_base_1": {
+                    "clientAssets": [
+                        {
+                            "name": "SpecialChainEventAssets",
+                            "android": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1691067411057_specialchain_hobbies_taffysquest_part1.and",
+                            "ios": "/resources/traveltown/1.0_master/specialChainAssets_bundlesAssets/1691067411057_specialchain_hobbies_taffysquest_part1.ios"
+                        }
+                    ],
+                    "id": "specialchain_hobbies_taffysquest_part1",
+                    "configuration_id": "specialchain_hobbies_taffysquest_part1"
+                }
+            },
+            "id": "qa_special_chain_release_base_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "liveop_generic_theme",
+                "id": "liveop_generic_theme",
+                "type": "None",
+                "supportEventCenter": "true",
+                "clientAssets": [
+                    {
+                        "name": "GAEEventAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1685458146326_liveop_generic_theme.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_xprush_ReleaseBase_2024-01-01_11:00",
+            "type": "EventXpRush",
+            "conditionIds": [
+                "EventXpRush"
+            ],
+            "name": "qa_xprush_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [],
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "BoardEventCombo",
+                    "comboIndex": 0
+                }
+            ],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_xprush_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "qa_xprush_ReleaseNew",
+                "id": "qa_xprush_ReleaseNew",
+                "clientAssets": [
+                    {
+                        "name": "EventXpRushAssets",
+                        "android": "/resources/traveltown/1.0_master/xpRushAssets_bundlesAssets/1702900187219_eventxprush_base.and",
+                        "ios": "/resources/traveltown/1.0_master/xpRushAssets_bundlesAssets/1702900187219_eventxprush_base.ios"
+                    }
+                ],
+                "ganttAutomation": null
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on",
+            "durationInMiliSeconds": 2400000
+        },
+        {
+            "unit": "qa_invitefriends_ReleaseBase_2024-01-01_11:00",
+            "type": "InviteFriends",
+            "conditionIds": [
+                "InviteFriends"
+            ],
+            "name": "qa_invitefriends_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1811858400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 15,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 15
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 20
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_invitefriends_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "qa_release_invitefriends",
+                "id": "qa_release_invitefriends",
+                "type": "InviteFriends",
+                "clientAssets": [
+                    {
+                        "name": "InviteFriendsAssets",
+                        "android": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1690214307184_friendinvite_liveops_24-07_17h29m.and",
+                        "ios": "/resources/traveltown/1.0_master/liveopsAssets_bundlesAssets/1690214307184_friendinvite_liveops_24-07_17h29m.ios"
+                    }
+                ],
+                "supportEventCenter": "false"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_picking_release_base_2024-01-01_11:00",
+            "type": "PickingGame",
+            "conditionIds": [
+                "PickingGame"
+            ],
+            "name": "qa_picking_release_base",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 14,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 14
+                    }
+                },
+                {
+                    "logic": "SEMVER",
+                    "serviceName": "user-config-service",
+                    "fieldName": "appVersion",
+                    "operator": ">=",
+                    "value": "2.12.403"
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 24
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1704106800000,
+                "endDate": 1793444400000,
+                "assetKeysNames": [
+                    "picks"
+                ]
+            },
+            "endEventByTrigger": false,
+            "subEventIds": [
+                "qa_picking_release_base_2024-01-01_11:00_0_qa_pickinggame_releasebase_1",
+                "qa_picking_release_base_2024-01-01_11:00_0_qa_pickinggame_releasebase_2"
+            ],
+            "subEventThemes": {
+                "qa_picking_release_base_2024-01-01_11:00_0_qa_pickinggame_releasebase_1": {
+                    "configuration_id": "picking_game_eventcenter",
+                    "id": "picking_game_eventcenter",
+                    "withBar": "true",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "PickingGameEventAssets",
+                            "android": "/resources/traveltown/1.0_master/pickingGameAssets_bundlesAssets/1735549926152_picking_game_eventcenter.and",
+                            "ios": "/resources/traveltown/1.0_master/pickingGameAssets_bundlesAssets/1735549926152_picking_game_eventcenter.ios"
+                        }
+                    ]
+                },
+                "qa_picking_release_base_2024-01-01_11:00_0_qa_pickinggame_releasebase_2": {
+                    "configuration_id": "picking_game_eventcenter",
+                    "id": "picking_game_eventcenter",
+                    "withBar": "true",
+                    "supportEventCenter": "true",
+                    "clientAssets": [
+                        {
+                            "name": "PickingGameEventAssets",
+                            "android": "/resources/traveltown/1.0_master/pickingGameAssets_bundlesAssets/1735549926152_picking_game_eventcenter.and",
+                            "ios": "/resources/traveltown/1.0_master/pickingGameAssets_bundlesAssets/1735549926152_picking_game_eventcenter.ios"
+                        }
+                    ]
+                }
+            },
+            "pickingBarExists": true,
+            "id": "qa_picking_release_base_2024-01-01_11:00_0",
+            "theme": {
+                "id": "liveop_generic_theme"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_tlo_liveop_ReleaseBase_2024-01-01_11:00",
+            "type": "TimeLimitedOrderEvent",
+            "conditionIds": [
+                "TimeLimitedOrderEvent"
+            ],
+            "name": "qa_tlo_liveop_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 12,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 12
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 26
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_tlo_liveop_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "configuration_id": "tlo_popup_generic",
+                "id": "tlo_popup_generic",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/tloThemesAssets_bundlesAssets/1696341446692_tlo_generic_popup.and",
+                        "ios": "/resources/traveltown/1.0_master/tloThemesAssets_bundlesAssets/1696341446692_tlo_generic_popup.ios"
+                    }
+                ]
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "qa_gae2_liveop_ReleaseBase_2024-01-01_11:00",
+            "type": "GAE",
+            "conditionIds": [
+                "GAE2"
+            ],
+            "name": "qa_gae2_liveop_ReleaseBase",
+            "isFtue": false,
+            "startDate": 1704106800000,
+            "endDate": 1793444400000,
+            "conditions": [
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": ">=",
+                    "value": 10,
+                    "serialized": {
+                        "type": "minLevel",
+                        "value": 10
+                    }
+                },
+                {
+                    "logic": "BASIC",
+                    "serviceName": "town-service",
+                    "fieldName": "level",
+                    "operator": "<=",
+                    "value": 21
+                }
+            ],
+            "liveopsPrerequisites": [],
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "endEventByTrigger": false,
+            "id": "qa_gae2_liveop_ReleaseBase_2024-01-01_11:00_0",
+            "theme": {
+                "id": "gae_4ofJuly25"
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": true,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "unit": "liveop_qa_for_release_journey_2025-08-03_12:00",
+            "type": "PromotionEvent",
+            "conditionIds": [
+                "journeyToken"
+            ],
+            "name": "liveop_qa_for_release_journey",
+            "isFtue": false,
+            "startDate": 1754222400000,
+            "endDate": 1798804800000,
+            "conditions": [],
+            "displayTriggers": {
+                "AppLoadResume": {
+                    "frequency": 1
+                }
+            },
+            "liveopsPrerequisites": [
+                {
+                    "eventType": "GenericToken",
+                    "category": "journeyToken"
+                }
+            ],
+            "liveopsEffects": {
+                "endEvent": [
+                    {
+                        "effect": "endEvent",
+                        "conditions": {
+                            "eventActedOnConditions": {},
+                            "eventAffectedConditions": {
+                                "eventStatuses": [
+                                    "COMPENSATION_PERIOD",
+                                    "ACTIVE"
+                                ],
+                                "eventType": "GenericToken",
+                                "category": "journeyToken"
+                            }
+                        }
+                    }
+                ]
+            },
+            "source": "configured",
+            "forceEnrollment": true,
+            "removeEventBySegment": false,
+            "removeActiveEventConditions": [],
+            "removeActiveEventConditionsDurationMs": 0,
+            "removeAfterEnd": false,
+            "reActivateTrigger": false,
+            "clientOrderPriority": 100,
+            "moonshopAssetkeysData": {
+                "startDate": 1754222400000,
+                "endDate": 1798804800000,
+                "assetKeysNames": [
+                    "journeyToken"
+                ]
+            },
+            "endEventByTrigger": false,
+            "id": "liveop_qa_for_release_journey_2025-08-03_12:00_0",
+            "theme": {
+                "configuration_id": "qa_journey_theme_release",
+                "id": "qa_journey_theme_release",
+                "type": "journey_promotion",
+                "withProgressBar": "false",
+                "supportTopup": "true",
+                "canDisplayOoeAd": "false",
+                "containsWidget": "true",
+                "clientAssets": [
+                    {
+                        "name": "popup",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1758112063628_journeypromotion_template_popup_new.ios"
+                    },
+                    {
+                        "name": "icon",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_icon_new.ios"
+                    },
+                    {
+                        "name": "widget",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_widgets_new.ios"
+                    },
+                    {
+                        "name": "meta_indicator",
+                        "android": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.and",
+                        "ios": "/resources/traveltown/1.0_master/promotionsAssets_bundlesAssets/1755610234911_journeypromotion_base_metabutton_new.ios"
+                    }
+                ],
+                "supportPurchasebByVanityToken": ""
+            },
+            "internalSegment": "default",
+            "segment": "default",
+            "externalSegment": "default",
+            "displayIcon": false,
+            "freezeEvent": false,
+            "eventState": "on"
+        },
+        {
+            "clientOrderPriority": 100,
+            "startDate": 1754222400000,
+            "endDate": 1798804800000,
+            "conditions": [],
+            "isFtue": false,
+            "removeActiveEventConditions": [],
+            "creatorEventType": "PromotionEvent",
+            "tokenName": "journeyToken",
+            "gracePeriodSeconds": 300,
+            "type": "GenericToken",
+            "conditionIds": [
+                "GenericToken"
+            ],
+            "name": "generic_token_liveop_qa_for_release_journey",
+            "unit": "generic_token_liveop_qa_for_release_journey_2025-08-03_12:00",
+            "category": "journeyToken",
+            "multipleEventUnit": "journeyToken",
+            "source": "configured",
+            "removeEventBySegment": false,
+            "liveopsPrerequisites": [],
+            "removeAfterEnd": false,
+            "forceEnrollment": true,
+            "removeActiveEventConditionsDurationMs": 0,
+            "reActivateTrigger": false,
+            "endEventByTrigger": false,
+            "segment": "default",
+            "internalSegment": "default",
+            "externalSegment": "default",
+            "eventState": "on",
+            "freezeEvent": false,
+            "displayIcon": false,
+            "id": "generic_token_liveop_qa_for_release_journey_2025-08-03_12:00_0",
+            "eventIdGeneratedTokenEvent": "liveop_qa_for_release_journey_2025-08-03_12:00_0",
+            "theme": {
+                "id": "qa_journey_theme_release"
+            }
+        }
+    ],
+    "liveopsIdsByUnit": {
+        "qa_MOER_boss_release_base_2025-10-23_15:18": [
+            "qa_MOER_boss_release_base_2025-10-23_15:18_0"
+        ],
+        "qa_MOER_boss_release_base_1_2025-10-25_15:17": [
+            "qa_MOER_boss_release_base_1_2025-10-25_15:17_0"
+        ],
+        "qa_boss_fight_releasebase_2025-10-25_15:13": [
+            "qa_boss_fight_releasebase_2025-10-25_15:13_0"
+        ],
+        "qa_townfair_releasebase_new_2025-09-08_14:51": [
+            "qa_townfair_releasebase_new_2025-09-08_14:51_0"
+        ],
+        "generic_token_qa_townfair_releasebase_new_2025-09-08_14:51": [
+            "generic_token_qa_townfair_releasebase_new_2025-09-08_14:51_0"
+        ],
+        "qa_liveop_for_rng_release_2025-08-17_12:15": [
+            "qa_liveop_for_rng_release_2025-08-17_12:15_0"
+        ],
+        "qa_golden_pass_1160_2025-07-14_12:15": [
+            "qa_golden_pass_1160_2025-07-14_12:15_0"
+        ],
+        "qa_travelTogether_for_ReleaseBase_2025-06-15_15:57": [
+            "qa_travelTogether_for_ReleaseBase_2025-06-15_15:57_0"
+        ],
+        "qa_flame_release_base_2025-06-03_11:33": [
+            "qa_flame_release_base_2025-06-03_11:33_0"
+        ],
+        "qa_pets_ReleaseBaseNew_2025-05-31_11:00": [
+            "qa_pets_ReleaseBaseNew_2025-05-31_11:00_0"
+        ],
+        "generic_token_qa_pets_ReleaseBaseNew_2025-05-31_11:00": [
+            "generic_token_qa_pets_ReleaseBaseNew_2025-05-31_11:00_0"
+        ],
+        "qa_achievements_liveop_for_ReleseBase2_2025-05-25_13:56": [
+            "qa_achievements_liveop_for_ReleseBase2_2025-05-25_13:56_0"
+        ],
+        "qa_moer_empty_releasebase_2025-05-11_15:04": [],
+        "qa_moer_green_releasebase_2025-05-11_15:01": [
+            "qa_moer_green_releasebase_2025-05-11_15:01_0"
+        ],
+        "qa_moer_purpletheme_releasebase_2025-05-11_15:01": [
+            "qa_moer_purpletheme_releasebase_2025-05-11_15:01_0"
+        ],
+        "qa_moer_no_theme_releasebase_2025-05-11_14:59": [
+            "qa_moer_no_theme_releasebase_2025-05-11_14:59_0"
+        ],
+        "qa_hiddengame_liveop_releasebase_2025-04-06_13:05": [
+            "qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0"
+        ],
+        "generic_token_qa_hiddengame_liveop_releasebase_2025-04-06_13:05": [
+            "generic_token_qa_hiddengame_liveop_releasebase_2025-04-06_13:05_0"
+        ],
+        "qa_lava_releasebasenew_2025-03-30_16:46": [
+            "qa_lava_releasebasenew_2025-03-30_16:46_0"
+        ],
+        "qa_tournament_ReleaseBase_2024-01-01_11:00": [
+            "qa_tournament_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_partners_releasebasenew_2025-01-14_12:25": [
+            "qa_partners_releasebasenew_2025-01-14_12:25_0"
+        ],
+        "generic_token_qa_partners_releasebasenew_2025-01-14_12:25": [
+            "generic_token_qa_partners_releasebasenew_2025-01-14_12:25_0"
+        ],
+        "qa_tlo_streak_ReleaseBase_2024-01-01_11:00": [
+            "qa_tlo_streak_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_duel_ReleaseBase_2024-01-01_11:00": [
+            "qa_duel_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "playground_release_base_stamp_2024-01-01_11:00": [
+            "playground_release_base_stamp_2024-01-01_11:00_0"
+        ],
+        "playground_release_base_rewardrunway_2024-01-01_11:00": [
+            "playground_release_base_rewardrunway_2024-01-01_11:00_0"
+        ],
+        "qa_release_base_new_topup_2024-01-01_11:00": [
+            "qa_release_base_new_topup_2024-01-01_11:00_0"
+        ],
+        "qa_CardsBoom_release_base_new_2024-01-01_11:00": [
+            "qa_CardsBoom_release_base_new_2024-01-01_11:00_0"
+        ],
+        "qa_board_event_2_0_release_base_2024-01-01_11:00": [
+            "qa_board_event_2_0_release_base_2024-01-01_11:00_0"
+        ],
+        "qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00": [
+            "qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "generic_token_qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00": [
+            "generic_token_qa_paradisedreams_liveop_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_rng_in_event_ReleaseBase_2024-01-01_11:00": [
+            "qa_rng_in_event_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_oer_vanity_release_base_2024-01-01_11:00": [
+            "qa_oer_vanity_release_base_2024-01-01_11:00_0"
+        ],
+        "qa_VanityIsland_halloween_island_ReleaseBase_2024-01-01_11:00": [
+            "qa_VanityIsland_halloween_island_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_special_chain_release_base_2024-01-01_11:00": [
+            "qa_special_chain_release_base_2024-01-01_11:00_0"
+        ],
+        "qa_xprush_ReleaseBase_2024-01-01_11:00": [
+            "qa_xprush_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_invitefriends_ReleaseBase_2024-01-01_11:00": [
+            "qa_invitefriends_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_picking_release_base_2024-01-01_11:00": [
+            "qa_picking_release_base_2024-01-01_11:00_0"
+        ],
+        "qa_tlo_liveop_ReleaseBase_2024-01-01_11:00": [
+            "qa_tlo_liveop_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "qa_gae2_liveop_ReleaseBase_2024-01-01_11:00": [
+            "qa_gae2_liveop_ReleaseBase_2024-01-01_11:00_0"
+        ],
+        "liveop_qa_for_release_journey_2025-08-03_12:00": [
+            "liveop_qa_for_release_journey_2025-08-03_12:00_0"
+        ],
+        "generic_token_liveop_qa_for_release_journey_2025-08-03_12:00": [
+            "generic_token_liveop_qa_for_release_journey_2025-08-03_12:00_0"
+        ]
+    }
+}

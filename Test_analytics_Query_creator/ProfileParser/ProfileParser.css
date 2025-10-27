@@ -2976,29 +2976,38 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-/* бейдж с часами UTC */
+/* отключаем старый бейдж на самой линии — всё перенесём в шапку */
 .pp-cal-now::before {
-    content: attr(data-time);
-    position: sticky;
-    /* <-- теперь бейдж приклеен к верхней границе контейнера */
-    top: 0;
-    left: 50%;
+    content: none;
+}
+
+/* новый бейдж времени в самой верхней шкале часов (sticky) */
+.pp-now-badge {
+    position: absolute;
+    /* ставим в нижнюю часть шкалы часов */
+    bottom: 4px;
+    left: 0;
+    /* X будем задавать из JS */
     transform: translateX(-50%);
-    margin-top: 2px;
-    /* небольшое смещение вниз от верхней границы */
     display: inline-block;
+
     padding: 2px 8px;
     font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
+
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--card);
     color: var(--text);
     box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
     white-space: nowrap;
-    z-index: 6;
+
+    pointer-events: none;
+    z-index: 8;
+    /* выше .pp-cal-scale (z≈2) и контента */
 }
+
 
 
 

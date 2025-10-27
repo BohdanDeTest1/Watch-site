@@ -117,8 +117,8 @@
     // Моки лежат в папке ProfileParser/
     const MOCKS = {
         state: 'ProfileParser/Stage_profile_State.json',
-        liveops: 'ProfileParser/Stage_liveops.json',
-        promos: 'ProfileParser/Stage_Promotions.json',
+        liveops: 'ProfileParser/Stage.json',
+        promos: 'ProfileParser/Stage2.json',
     };
     const USE_MOCKS = true; // оставляем включённым
 
@@ -1057,6 +1057,12 @@
             (function drawNowUTC() {
                 const mainHost = wrapEl.querySelector('.pp-cal-main');
                 if (!mainHost) return;
+
+                // синхронизируем переменную высоты шкалы для корректного позиционирования бейджа
+                const scaleTopEl = wrapEl.querySelector('#ppCalScale');
+                const scaleH = (scaleTopEl?.offsetHeight || 40);
+                mainHost.style.setProperty('--pp-scale-h', scaleH + 'px');
+
 
                 // высота линии: тянем до низа контента (включая все ряды)
                 const nowH = (rowsBox?.scrollHeight || mainHost.scrollHeight || 0);
@@ -3388,21 +3394,48 @@
                 elBody.appendChild(row);
             });
 
+            // индикатор «сейчас» (day/week) + липкий бейдж времени в верхней шкале
+            // убираем предыдущую линию и бейдж
+            elBody.querySelector('.tl-now')?.remove();
 
+            // ищем верхнюю шкалу часов (липкий хедер внутри .pp-cal-main)
+            // elHeader уже есть выше по коду и указывает на заголовок/шапку грида
+            // в нём находится .pp-cal-scale.top
+            const topScale = elHeader?.querySelector('.pp-cal-scale.top') || elHeader;
 
+            // чистим старый бейдж в шапке, если был
+            topScale?.querySelector('.pp-now-badge')?.remove();
 
-            // индикатор «сейчас» (day/week) на тройном окне
-            const oldNow = elBody.querySelector('.tl-now');
-            if (oldNow) oldNow.remove();
             const now = new Date();
+
+            const pad2 = n => String(n).padStart(2, '0');
+            const utcHHmm = (d) => `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}`;
+
             if (state.view !== 'month' && now >= start3 && now <= end3) {
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const x = ((now - start3) / state.colMs) * colW;
+
+                // вертикальная красная линия — остаётся в теле полотна
                 const nowEl = document.createElement('div');
                 nowEl.className = 'tl-now pp-cal-now';
                 nowEl.style.left = `${x}px`;
+                // высоту линии равняем высоте полотна (учтёт верх/низ шкал)
+                nowEl.style.setProperty('--pp-now-h', elBody.scrollHeight + 'px');
+                // прокидываем текст на случай, если где-то ещё используется ::before
+                nowEl.setAttribute('data-time', utcHHmm(now));
                 elBody.appendChild(nowEl);
+
+                // новый липкий бейдж в верхней шкале
+                if (topScale) {
+                    const badge = document.createElement('div');
+                    badge.className = 'pp-now-badge';
+                    badge.textContent = utcHHmm(now);
+                    // позиционируем по той же X-координате, что и линия
+                    badge.style.left = `${x}px`;
+                    topScale.appendChild(badge);
+                }
             }
+
 
             elRes.style.height = 'auto';
             elRes.style.transform = '';
