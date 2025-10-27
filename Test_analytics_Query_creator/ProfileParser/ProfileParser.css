@@ -2985,7 +2985,7 @@ body.theme-dark .pp-cal-tick {
 .pp-now-badge {
     position: absolute;
     /* ставим в нижнюю часть шкалы часов */
-    bottom: 4px;
+    bottom: -3px;
     left: 0;
     /* X будем задавать из JS */
     transform: translateX(-50%);
@@ -2996,11 +2996,14 @@ body.theme-dark .pp-cal-tick {
     font-weight: 600;
     line-height: 1.2;
 
-    border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--card);
-    color: var(--text);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    background: #e53935;
+    /* тот же красный, что у линии now */
+    color: #fff;
+    /* белый текст */
+    border: 1px solid #e53935;
+    /* сливаемся с фоном линии */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
     white-space: nowrap;
 
     pointer-events: none;
