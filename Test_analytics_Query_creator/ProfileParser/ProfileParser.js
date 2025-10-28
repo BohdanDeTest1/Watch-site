@@ -3622,14 +3622,32 @@
             elRes.style.height = `${elBody.clientHeight}px`;
         });
 
-
-
-        // [ANCHOR TL-NOW-TICK] — поддержка «сейчас» без полного ререндера
+        // [ANCHOR TL-NOW-TICK] — поддержка «сейчас» без полного ререндера (UTC, минутная синхронизация)
         (function wireNowTick() {
             let raf = 0;
+            let minuteTimer = null;
+            let resyncTO = null;
+
+            // Создаём/получаем липкий бейдж в верхней шкале
+            function ensureTopBadge() {
+                const topScale = elHeader?.querySelector('.pp-cal-scale.top') || elHeader;
+                if (!topScale) return null;
+                let b = topScale.querySelector('.pp-now-badge');
+                if (!b) {
+                    b = document.createElement('div');
+                    b.className = 'pp-now-badge';
+                    topScale.appendChild(b);
+                }
+                return b;
+            }
+
+            function removeTopBadge() {
+                const topScale = elHeader?.querySelector('.pp-cal-scale.top') || elHeader;
+                topScale?.querySelector('.pp-now-badge')?.remove();
+            }
 
             function updateNow() {
-                const now = new Date(); // UTC-инстант
+                const now = new Date(); // инстант на UTC-линии
 
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
@@ -3640,6 +3658,7 @@
                 let nowEl = elBody.querySelector('.tl-now');
                 if (!(now >= startBase && now <= endBase) || state.view === 'month') {
                     if (nowEl) nowEl.remove();
+                    removeTopBadge();
                     return;
                 }
                 if (!nowEl) {
@@ -3648,57 +3667,71 @@
                     elBody.appendChild(nowEl);
                 }
 
-                // позиция X
+                // X-позиция линии
                 const x = ((now - startBase) / state.colMs) * colW;
                 nowEl.style.left = `${x}px`;
 
-                // высота от самого верха на весь контент
+                // Высота — от верха на весь контент
                 nowEl.style.top = '0px';
                 nowEl.style.bottom = '';
                 nowEl.style.height = elBody.scrollHeight + 'px';
 
-                // ⬅️ ОБНОВЛЯЕМ ВРЕМЯ НА БЕЙДЖЕ (UTC, 24ч)
-                nowEl.setAttribute(
-                    'data-time',
-                    now.toLocaleTimeString('en-GB', {
-                        hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC'
-                    })
-                );
+                // Время (UTC, 24ч)
+                const hh = String(now.getUTCHours()).padStart(2, '0');
+                const mm = String(now.getUTCMinutes()).padStart(2, '0');
+                const label = `${hh}:${mm}`;
+                nowEl.setAttribute('data-time', label);
+
+                // Липкий бейдж в верхней шкале — тот же X и та же подпись
+                const badge = ensureTopBadge();
+                if (badge) {
+                    badge.textContent = label;
+                    badge.style.left = `${x}px`;
+                }
             }
 
-            // Стало: дождёмся применённых стилей/размеров, затем запустим первый апдейт.
-            (function runInitialNow() {
-                // Проверяем, что у нас есть валидные размеры колонок и полотна
-                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW || 0;
-                const ready =
-                    colW > 0 &&
-                    (state && typeof state.colMs === 'number' && state.colMs > 0) &&
-                    elBody.scrollWidth > 0;
+            // Запуск тика, выровненного по границе минуты UTC
+            function startAlignedTick() {
+                if (minuteTimer) { clearInterval(minuteTimer); minuteTimer = null; }
+                if (resyncTO) { clearTimeout(resyncTO); resyncTO = null; }
 
-                if (!ready) {
-                    // Ждём следующий кадр, когда лэйаут стабилизируется (после первого render/вставки в DOM)
-                    requestAnimationFrame(runInitialNow);
-                    return;
-                }
-
-                // Первый апдейт — на ближайшем кадре, чтобы попасть после всех transform/scroll sync
-                requestAnimationFrame(updateNow);
-            })();
-
-            // Дальше — минутный тик как и раньше
-            setInterval(() => {
+                // Мгновенно обновить
                 if (raf) cancelAnimationFrame(raf);
                 raf = requestAnimationFrame(updateNow);
-            }, 60 * 1000);
 
+                // Дождаться ближайшей границы минуты (UTC), чтобы убрать дрейф
+                const now = new Date();
+                const delay = (60 - now.getUTCSeconds()) * 1000 - now.getUTCMilliseconds();
+                resyncTO = setTimeout(() => {
+                    if (raf) cancelAnimationFrame(raf);
+                    raf = requestAnimationFrame(updateNow);
+                    minuteTimer = setInterval(() => {
+                        if (raf) cancelAnimationFrame(raf);
+                        raf = requestAnimationFrame(updateNow);
+                    }, 60 * 1000);
+                }, Math.max(0, delay));
+            }
 
-            // при ресайзе/изменении высоты — обновим высоту линии
+            // Первый запуск — когда лэйаут готов (есть ширины и шаг по времени)
+            (function runWhenReady() {
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW || 0;
+                const ready = colW > 0 && (state && typeof state.colMs === 'number' && state.colMs > 0) && elBody.scrollWidth > 0;
+                if (!ready) { requestAnimationFrame(runWhenReady); return; }
+                startAlignedTick();
+            })();
+
+            // При возвращении вкладки — пересинхронизируемся
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') startAlignedTick();
+            });
+
+            // При ресайзе — поддержим высоту линии
             window.addEventListener('resize', () => {
                 const n = elBody.querySelector('.tl-now');
                 if (n) n.style.height = elBody.scrollHeight + 'px';
             });
 
-            // полезно дёрнуть обновление после каждого render()
+            // После каждого render() — дёрнем апдейт на ближайшем кадре
             const _render = render;
             render = function () {
                 _render();
