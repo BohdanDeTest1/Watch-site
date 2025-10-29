@@ -2547,6 +2547,10 @@ body.theme-dark .pp-cal-tick {
     display: flex;
     gap: 6px;
     padding: 5px;
+    justify-content: center;
+    /* центрируем всю группу кнопок */
+    width: 100%;
+    /* чтобы центрирование работало по всей ширине панели */
 }
 
 #ppCal .tl-right {
@@ -3259,7 +3263,7 @@ body.theme-dark .pp-cal-tick {
 
     position: sticky;
     top: 0;
-    height: 122px;
+    height: 117px;
     z-index: 7;
     /* выше фейда и контента */
     background: var(--cal-left-bg, var(--card-bg)) !important;
