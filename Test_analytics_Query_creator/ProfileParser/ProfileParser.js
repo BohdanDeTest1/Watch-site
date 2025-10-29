@@ -597,11 +597,22 @@
 
     <div class="tl-grid" id="tlGrid">
      <div class="tl-toolbar" id="tlToolbar">
-    <div class="tl-left">
-      <button class="tl-btn" data-nav="prev"  aria-label="Previous">&#x276E;</button>
-       <button class="tl-btn" data-nav="today">today</button>
-      <button class="tl-btn" data-nav="next"  aria-label="Next">&#x276F;</button>
-    </div>
+   <div class="tl-left">
+  <!-- Новая кнопка открытия поповера с календарём -->
+  <button class="tl-btn" data-nav="calendar" aria-haspopup="dialog">Calendar</button>
+
+  <!-- Поповер с выбором даты -->
+  <div class="tl-date-pop" id="tlDatePop" hidden>
+    <label class="tl-date-row">
+         <input id="tlDateInput" class="tl-date-field" type="date">
+    </label>
+      </div>
+
+  <!-- Сдвинули «Назад» после кнопки «Календарь» -->
+  <button class="tl-btn" data-nav="prev" aria-label="Назад">&#x276E;</button>
+  <button class="tl-btn" data-nav="today">today</button>
+  <button class="tl-btn" data-nav="next" aria-label="Вперёд">&#x276F;</button>
+</div>
     <div class="tl-title" id="tlTitle"></div>
       <div class="tl-right">
      
@@ -3127,22 +3138,50 @@
 
 
         const toolbar = document.getElementById('tlToolbar');
+        const datePop = document.getElementById('tlDatePop');
+        const dateInput = document.getElementById('tlDateInput');
+
+        function isoDateUTC(d) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+        }
+
+        function centerOnMidday() {
+            // Центрируем полдень «якорного» дня в видимой области
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+            const dayW = state.colCount * colW;
+            const xMid = halfVisible * dayW + 12 * colW; // середина суток
+            const prev = allowSeamShift;
+            allowSeamShift = false;
+            elBody.scrollLeft = Math.max(0, xMid - elBody.clientWidth / 2);
+            positionDayTags();
+            elBody.dispatchEvent(new Event('scroll'));
+            allowSeamShift = prev;
+        }
+
         toolbar.addEventListener('click', (e) => {
             const b = e.target.closest('button');
             if (!b) return;
 
+            if (b.dataset.nav === 'calendar') {
+                // Подготовить значение поля датой текущего «якоря»
+                const d = new Date(state.anchor);
+                dateInput.value = isoDateUTC(d); // value для <input type="date"> в формате YYYY-MM-DD
+                datePop.hidden = !datePop.hidden;
+                return;
+            }
+
             if (b.dataset.nav === 'today') {
                 state.anchor = startOfLocalDayAsUTC(new Date());
                 render();
-
+                // центрируем актуальное время, как было
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
                 const extra = (state.view === 'day') ? halfVisible * dayW : 0;
-
                 const now = new Date();
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
-
                 const prev = allowSeamShift;
                 allowSeamShift = false;
                 elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
@@ -3154,6 +3193,28 @@
             if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
             if (b.dataset.nav === 'next') { state.anchor = addMs(state.anchor, state.rangeMs); render(); }
         });
+
+        // Изменение даты — прыжок к выбранному дню
+        if (dateInput) {
+            dateInput.addEventListener('change', () => {
+                if (!dateInput.value) return;
+                // Преобразуем выбранную дату (локальную) к началу суток в UTC для якоря
+                const picked = new Date(`${dateInput.value}T00:00:00Z`);
+                state.anchor = startOfLocalDayAsUTC(picked);
+                render();
+                centerOnMidday();
+                datePop.hidden = true;
+            });
+        }
+
+        // Клик вне поповера закрывает его
+        document.addEventListener('click', (e) => {
+            if (!datePop) return;
+            if (datePop.hidden) return;
+            const inside = e.target.closest('#tlDatePop') || e.target.closest('[data-nav="calendar"]');
+            if (!inside) datePop.hidden = true;
+        }, { capture: true });
+
 
 
 

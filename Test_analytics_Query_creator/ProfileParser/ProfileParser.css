@@ -2544,7 +2544,8 @@ body.theme-dark .pp-cal-tick {
 
 #ppCal .tl-left {
     display: flex;
-    gap: 6px
+    gap: 6px;
+    padding: 5px;
 }
 
 #ppCal .tl-right {
@@ -2650,19 +2651,7 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-/* 
-#ppCal .tl-grid-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--tl-border);
-    white-space: nowrap;
-    overflow: visible;
-    padding-top: var(--tl-daybar-h);
-    will-change: transform, width;
-  
-}*/
+
 
 .tl-grid-header {
     position: sticky;
@@ -2680,6 +2669,7 @@ body.theme-dark .pp-cal-tick {
     padding-top: var(--tl-daybar-h);
 
     will-change: transform, width;
+    min-height: 77px;
 }
 
 
