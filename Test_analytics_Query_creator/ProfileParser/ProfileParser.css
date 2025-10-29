@@ -934,7 +934,8 @@
     align-items: center;
     column-gap: 14px;
     grid-template-columns: 110px minmax(180px, 1fr) 200px 250px 250px 100px;
-    /* state | name | type | start | end | info */
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+
 }
 
 /* при открытой панели — 5 колонок (без Info), правые — шире */
@@ -3740,4 +3741,13 @@ html:not(.dark) #ppCal #tlDateInput,
     /* новый «твёрдый» фон без прозрачности только для левой панели/шапки */
     --cal-left-solid: #0f172a;
     /* тёмно-синий без альфы */
+}
+
+:root.theme-dark #ppCal,
+.theme-dark #ppCal,
+[data-theme="dark"] #ppCal,
+.dark #ppCal {
+    /* рамка в тон панели Events */
+    border-color: var(--cal-left-solid, #0f172a) !important;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
 }
