@@ -2595,14 +2595,30 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-/* Иконка + текст «Calendar» — та же ширина, что и у остальных */
+/* Кнопка с иконкой: плотная укладка иконки и текста */
 #ppCal .tl-btn.tl-icon-btn {
-    display: inline-grid;
-    grid-auto-flow: column;
+    display: inline-flex;
+    /* было inline-grid */
     align-items: center;
-    gap: 8px;
+    gap: 2px;
+    /* реальный зазор между иконкой и текстом */
     width: var(--tl-btn-w, 260px);
 }
+
+/* На всякий случай убираем любые внешние отступы у детей */
+#ppCal .tl-btn.tl-icon-btn>* {
+    margin: 0 !important;
+}
+
+/* Сама иконка – фиксированный компактный бокс без внутренних отступов */
+#ppCal .tl-btn.tl-icon-btn .tl-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 
 #ppCal .tl-btn.tl-icon-btn .tl-icon {
     width: 16px;
