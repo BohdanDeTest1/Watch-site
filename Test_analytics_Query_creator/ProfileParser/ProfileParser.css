@@ -13,6 +13,7 @@
     --table-pad-x: 12px;
     --filter-pop-bg: #ffffff;
     --pp-grid-line: rgba(83, 103, 124, 0.22);
+    --border-2: #aab3d25e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -2571,7 +2572,7 @@ body.theme-dark .pp-cal-tick {
     place-items: center;
     height: 30px;
     padding: 0 12px;
-    border: 0.5px solid var(--border);
+    border: 0.5px solid var(--border-2);
     border-radius: 8px;
     background: var(--btn-n-field-bg);
     color: var(--text);
@@ -2600,9 +2601,10 @@ body.theme-dark .pp-cal-tick {
     display: inline-flex;
     /* было inline-grid */
     align-items: center;
-    gap: 2px;
+    gap: 5px;
     /* реальный зазор между иконкой и текстом */
     width: var(--tl-btn-w, 260px);
+    justify-content: center;
 }
 
 /* На всякий случай убираем любые внешние отступы у детей */
