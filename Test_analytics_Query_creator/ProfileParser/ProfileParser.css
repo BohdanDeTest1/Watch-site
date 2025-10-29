@@ -2511,6 +2511,7 @@ body.theme-dark .pp-cal-tick {
     --tl-ev-brc: rgba(0, 0, 0, .22);
     --tl-res-head-h: calc(var(--tl-daybar-h) + 56px);
     /* общая высота шапки (левая и правая) */
+    --tl-btn-w: 260px;
 
 }
 
@@ -2560,23 +2561,56 @@ body.theme-dark .pp-cal-tick {
     text-align: center
 }
 
+/* Кнопки панели таймлайна — одна ширина и тема-зависимые цвета */
 #ppCal .tl-btn {
-    padding: 8px 10px;
-    border: 1.5px solid var(--tl-border);
+    display: inline-grid;
+    place-items: center;
+    height: 30px;
+    padding: 0 12px;
+    border: 0.5px solid var(--border);
     border-radius: 8px;
-    background: #fff;
+    background: var(--btn-n-field-bg);
+    color: var(--text);
     cursor: pointer;
+    width: var(--tl-btn-w, 260px);
 }
 
-/* Уплотняем только кнопку «Calendar» и добавляем иконку */
+#ppCal .tl-left .tl-btn {
+    /* гарантируем одинаковую ширину внутри левой группы */
+    width: var(--tl-btn-w, 260px);
+}
+
+#ppCal .tl-btn:hover {
+    opacity: .9;
+    background: var(--btn-n-field-bg);
+}
+
+#ppCal .tl-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+/* Иконка + текст «Calendar» — та же ширина, что и у остальных */
 #ppCal .tl-btn.tl-icon-btn {
     display: inline-grid;
     grid-auto-flow: column;
     align-items: center;
     gap: 8px;
-    width: auto;
-    /* кнопка больше не «поле» */
+    width: var(--tl-btn-w, 260px);
 }
+
+#ppCal .tl-btn.tl-icon-btn .tl-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#ppCal .tl-btn.tl-icon-btn .tl-icon path {
+    fill: currentColor;
+}
+
 
 #ppCal .tl-btn.tl-icon-btn .tl-icon {
     width: 16px;
@@ -3613,7 +3647,7 @@ body.theme-dark .pp-cal-tick {
 /* Невидимый якорь под кнопкой: здесь будет открываться нативный date-picker */
 #ppCal #tlDateInput {
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + 10px);
     /* прямо под кнопкой */
     left: 0;
     width: 300px;
