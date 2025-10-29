@@ -2359,7 +2359,7 @@
       </div>`;
 
                 segKV.innerHTML = `
-      <span class="pp-k muted">Сегмент</span>
+      <span class="pp-k muted">Segment</span>
       <span class="pp-v">${many ? oneSeg : (() => {
                         const s = lo.segments[0];
                         const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
