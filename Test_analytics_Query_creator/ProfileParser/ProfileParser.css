@@ -3284,7 +3284,7 @@ body.theme-dark .pp-cal-tick {
     height: 117px;
     z-index: 7;
     /* выше фейда и контента */
-    background: var(--cal-left-bg, var(--card-bg)) !important;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
     opacity: 1 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -3292,10 +3292,11 @@ body.theme-dark .pp-cal-tick {
 }
 
 
+
 /* [RESCOL — финальная версия] */
 #ppCal .tl-rescol {
     border-right: 1px solid var(--tl-border);
-    background: var(--cal-left-bg, var(--card-bg));
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg)));
     /* вместо #fff */
     position: relative;
     overflow: hidden;
@@ -3304,7 +3305,6 @@ body.theme-dark .pp-cal-tick {
     z-index: 1;
 }
 
-/* [FADE IN RESCOL — финальная версия] */
 #ppCal .tl-rescol::after {
     content: "";
     position: absolute;
@@ -3319,9 +3319,10 @@ body.theme-dark .pp-cal-tick {
     z-index: 2;
     /* ниже z-index шапки (7) */
     background: linear-gradient(to right,
-            var(--cal-left-bg, var(--card-bg)) 0%,
+            var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) 0%,
             transparent 75%);
 }
+
 
 /* [OVERRIDE TL-EVENT BORDER] — в самом конце файла */
 #ppCal .tl-event {
@@ -3696,4 +3697,18 @@ html:not(.dark) #ppCal #tlDateInput,
 .dark #ppCal #tlDateInput,
 [data-theme="dark"] #ppCal #tlDateInput {
     color-scheme: dark;
+}
+
+#ppCal {
+    --cal-left-bg: var(--card-bg);
+}
+
+:root.theme-dark #ppCal,
+.theme-dark #ppCal,
+[data-theme="dark"] #ppCal,
+.dark #ppCal {
+    --cal-left-bg: var(--card-bg);
+    /* новый «твёрдый» фон без прозрачности только для левой панели/шапки */
+    --cal-left-solid: #0f172a;
+    /* тёмно-синий без альфы */
 }
