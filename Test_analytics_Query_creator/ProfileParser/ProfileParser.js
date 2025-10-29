@@ -600,21 +600,21 @@
    <div class="tl-left">
   <!-- Новая кнопка открытия поповера с календарём -->
   <!-- Кнопка + поповер под ней в локальном контейнере -->
-<div class="tl-cal-wrap">
-  <button class="tl-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false">Calendar</button>
-
-  <div class="tl-date-pop" id="tlDatePop" hidden role="dialog" aria-label="Pick date">
-    <label class="tl-date-row">
-      <input id="tlDateInput" class="tl-date-field" type="date">
-    </label>
-  </div>
-</div>
-
-
-  <!-- Сдвинули «Назад» после кнопки «Календарь» -->
-  <button class="tl-btn" data-nav="prev" aria-label="Назад">&#x276E;</button>
-  <button class="tl-btn" data-nav="today">today</button>
-  <button class="tl-btn" data-nav="next" aria-label="Вперёд">&#x276F;</button>
+<span class="tl-cal-wrap">
+  <button class="tl-btn tl-icon-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false">
+    <span class="tl-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm14 8H3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10zm-2 2v8H5v-8h14z"/>
+      </svg>
+    </span>
+    Calendar
+  </button>
+  <!-- Невидимый, но позиционированный якорь для showPicker -->
+  <input id="tlDateInput" type="date" aria-hidden="true" />
+</span>
+<button class="tl-btn" data-nav="prev" aria-label="Назад">&#x276E;</button>
+<button class="tl-btn" data-nav="today">today</button>
+<button class="tl-btn" data-nav="next" aria-label="Вперёд">&#x276F;</button>
 </div>
     <div class="tl-title" id="tlTitle"></div>
       <div class="tl-right">
@@ -3141,7 +3141,7 @@
 
 
         const toolbar = document.getElementById('tlToolbar');
-        const datePop = document.getElementById('tlDatePop');
+
         const dateInput = document.getElementById('tlDateInput');
 
         function isoDateUTC(d) {
@@ -3169,16 +3169,20 @@
 
             if (b.dataset.nav === 'calendar') {
                 const d = new Date(state.anchor);
+                // значение инпута в формате YYYY-MM-DD (UTC)
                 dateInput.value = isoDateUTC(d);
 
-                // переключаем видимость, не влияя на вёрстку (popover позиционируется абсолютом)
-                const wrap = b.closest('.tl-cal-wrap');
-                const isOpen = !datePop.hidden;
-                datePop.hidden = isOpen;
-                b.setAttribute('aria-expanded', String(!isOpen));
-
+                // открываем нативный date-picker без промежуточного тултипа
+                if (dateInput.showPicker) {
+                    dateInput.showPicker();
+                } else {
+                    // fallback для старых браузеров — просто фокус
+                    dateInput.focus();
+                    dateInput.click();
+                }
                 return;
             }
+
 
 
             if (b.dataset.nav === 'today') {
@@ -3212,44 +3216,9 @@
                 state.anchor = startOfLocalDayAsUTC(picked);
                 render();
                 centerOnMidday();
-                datePop.hidden = true;
+
             });
         }
-
-        // Закрытие поповера по клику вне
-        document.addEventListener('click', (e) => {
-            const inside = e.target.closest('.tl-cal-wrap');
-            if (!inside) {
-                datePop.hidden = true;
-                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
-            }
-        }, true);
-
-        // Закрытие по Esc
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                datePop.hidden = true;
-                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        // Скрывать поповер при горизонтальном скролле таймлайна
-        elBody.addEventListener('scroll', () => {
-            if (!datePop.hidden) {
-                datePop.hidden = true;
-                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
-            }
-        }, { passive: true });
-
-        // Клик вне поповера закрывает его
-        document.addEventListener('click', (e) => {
-            if (!datePop) return;
-            if (datePop.hidden) return;
-            const inside = e.target.closest('#tlDatePop') || e.target.closest('[data-nav="calendar"]');
-            if (!inside) datePop.hidden = true;
-        }, { capture: true });
-
-
 
 
         function setView() {

@@ -2566,32 +2566,30 @@ body.theme-dark .pp-cal-tick {
     border-radius: 8px;
     background: #fff;
     cursor: pointer;
-    width: 300px;
 }
 
-/* Локальный контейнер для кнопки Calendar и её поповера */
-#ppCal .tl-cal-wrap {
-    position: relative;
-    /* якорь для абсолютного позиционирования */
+/* Уплотняем только кнопку «Calendar» и добавляем иконку */
+#ppCal .tl-btn.tl-icon-btn {
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    /* кнопка больше не «поле» */
+}
+
+#ppCal .tl-btn.tl-icon-btn .tl-icon {
+    width: 16px;
+    height: 16px;
     display: inline-block;
+    vertical-align: middle;
 }
 
-/* Поповер-календарь: как тултип под кнопкой, не сдвигает вёрстку */
-#ppCal .tl-date-pop {
-    position: absolute;
-    top: calc(100% + 6px);
-    /* строго под кнопкой */
-    left: 0;
-    /* выравниваем по левому краю кнопки */
-    min-width: 300px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--tl-border, #e5e7eb);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
-    z-index: 3000;
-    /* поверх хедера/часов */
+#ppCal .tl-btn.tl-icon-btn .tl-icon path {
+    fill: currentColor;
+    /* иконка наследует цвет текста кнопки */
 }
+
 
 /* Внешний вид поля даты внутри поповера, в стилистике кнопок/полей */
 #ppCal .tl-date-field {
@@ -2604,6 +2602,7 @@ body.theme-dark .pp-cal-tick {
     font-size: 12px;
     outline: none;
 }
+
 
 
 #ppCal .tl-btn:active {
@@ -3603,4 +3602,42 @@ body.theme-dark .pp-cal-tick {
 /* линия «сейчас», если у неё есть класс pp-cal-now — всегда поверх сетки/баров */
 #ppCal .tl-now.pp-cal-now {
     z-index: 4;
+}
+
+/* Обёртка вокруг кнопки Calendar — якорь для позиционирования пикера */
+#ppCal .tl-cal-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+/* Невидимый якорь под кнопкой: здесь будет открываться нативный date-picker */
+#ppCal #tlDateInput {
+    position: absolute;
+    top: calc(100% + 6px);
+    /* прямо под кнопкой */
+    left: 0;
+    width: 300px;
+    /* ширина примерно как у кнопки */
+    height: 36px;
+    /* формально «поле» для якоря */
+    opacity: 0;
+    /* визуально спрятан */
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+    /* клики идут по кнопке, не по input */
+}
+
+/* Управляем темой нативного пикера через color-scheme */
+:root:not(.theme-dark) #ppCal #tlDateInput,
+html:not(.dark) #ppCal #tlDateInput,
+[data-theme="light"] #ppCal #tlDateInput {
+    color-scheme: light;
+}
+
+:root.theme-dark #ppCal #tlDateInput,
+.theme-dark #ppCal #tlDateInput,
+.dark #ppCal #tlDateInput,
+[data-theme="dark"] #ppCal #tlDateInput {
+    color-scheme: dark;
 }
