@@ -2543,6 +2543,16 @@ body.theme-dark .pp-cal-tick {
     padding: 8px 0px;
 }
 
+:root.theme-dark #ppCal .tl-toolbar,
+.theme-dark #ppCal .tl-toolbar,
+[data-theme="dark"] #ppCal .tl-toolbar,
+.dark #ppCal .tl-toolbar {
+    /* тот же твёрдый фон, что мы уже используем для левой панели/шапки */
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+    border-bottom: 1px solid var(--tl-border);
+}
+
+
 
 #ppCal .tl-left {
     display: flex;
@@ -2579,6 +2589,25 @@ body.theme-dark .pp-cal-tick {
     cursor: pointer;
     width: var(--tl-btn-w, 260px);
 }
+
+:root.theme-dark #ppCal .tl-toolbar .tl-btn,
+.theme-dark #ppCal .tl-toolbar .tl-btn,
+[data-theme="dark"] #ppCal .tl-toolbar .tl-btn,
+.dark #ppCal .tl-toolbar .tl-btn {
+    /* темнее панели — чтобы кнопки были читаемы */
+    background: #0b1325;
+    border-color: var(--tl-border);
+    color: var(--text);
+}
+
+:root.theme-dark #ppCal .tl-toolbar .tl-btn:hover,
+.theme-dark #ppCal .tl-toolbar .tl-btn:hover,
+[data-theme="dark"] #ppCal .tl-toolbar .tl-btn:hover,
+.dark #ppCal .tl-toolbar .tl-btn:hover {
+    /* лёгкая подсветка при наведении */
+    background: #111a2d;
+}
+
 
 #ppCal .tl-left .tl-btn {
     /* гарантируем одинаковую ширину внутри левой группы */
@@ -2716,7 +2745,7 @@ body.theme-dark .pp-cal-tick {
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
-    top: 0px;
+    top: -7px;
     /* плавное изменение высоты левой ячейки */
     transition: height 200ms ease;
     will-change: height;
@@ -3281,7 +3310,7 @@ body.theme-dark .pp-cal-tick {
 
     position: sticky;
     top: 0;
-    height: 117px;
+    height: 125px;
     z-index: 7;
     /* выше фейда и контента */
     background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
