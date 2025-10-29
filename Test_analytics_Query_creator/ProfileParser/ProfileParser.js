@@ -599,14 +599,17 @@
      <div class="tl-toolbar" id="tlToolbar">
    <div class="tl-left">
   <!-- Новая кнопка открытия поповера с календарём -->
-  <button class="tl-btn" data-nav="calendar" aria-haspopup="dialog">Calendar</button>
+  <!-- Кнопка + поповер под ней в локальном контейнере -->
+<div class="tl-cal-wrap">
+  <button class="tl-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false">Calendar</button>
 
-  <!-- Поповер с выбором даты -->
-  <div class="tl-date-pop" id="tlDatePop" hidden>
+  <div class="tl-date-pop" id="tlDatePop" hidden role="dialog" aria-label="Pick date">
     <label class="tl-date-row">
-         <input id="tlDateInput" class="tl-date-field" type="date">
+      <input id="tlDateInput" class="tl-date-field" type="date">
     </label>
-      </div>
+  </div>
+</div>
+
 
   <!-- Сдвинули «Назад» после кнопки «Календарь» -->
   <button class="tl-btn" data-nav="prev" aria-label="Назад">&#x276E;</button>
@@ -3165,12 +3168,18 @@
             if (!b) return;
 
             if (b.dataset.nav === 'calendar') {
-                // Подготовить значение поля датой текущего «якоря»
                 const d = new Date(state.anchor);
-                dateInput.value = isoDateUTC(d); // value для <input type="date"> в формате YYYY-MM-DD
-                datePop.hidden = !datePop.hidden;
+                dateInput.value = isoDateUTC(d);
+
+                // переключаем видимость, не влияя на вёрстку (popover позиционируется абсолютом)
+                const wrap = b.closest('.tl-cal-wrap');
+                const isOpen = !datePop.hidden;
+                datePop.hidden = isOpen;
+                b.setAttribute('aria-expanded', String(!isOpen));
+
                 return;
             }
+
 
             if (b.dataset.nav === 'today') {
                 state.anchor = startOfLocalDayAsUTC(new Date());
@@ -3206,6 +3215,31 @@
                 datePop.hidden = true;
             });
         }
+
+        // Закрытие поповера по клику вне
+        document.addEventListener('click', (e) => {
+            const inside = e.target.closest('.tl-cal-wrap');
+            if (!inside) {
+                datePop.hidden = true;
+                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
+            }
+        }, true);
+
+        // Закрытие по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                datePop.hidden = true;
+                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Скрывать поповер при горизонтальном скролле таймлайна
+        elBody.addEventListener('scroll', () => {
+            if (!datePop.hidden) {
+                datePop.hidden = true;
+                toolbar.querySelector('[data-nav="calendar"]')?.setAttribute('aria-expanded', 'false');
+            }
+        }, { passive: true });
 
         // Клик вне поповера закрывает его
         document.addEventListener('click', (e) => {

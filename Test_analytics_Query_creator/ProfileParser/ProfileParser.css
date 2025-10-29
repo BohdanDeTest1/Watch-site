@@ -2565,8 +2565,46 @@ body.theme-dark .pp-cal-tick {
     border: 1.5px solid var(--tl-border);
     border-radius: 8px;
     background: #fff;
-    cursor: pointer
+    cursor: pointer;
+    width: 300px;
 }
+
+/* Локальный контейнер для кнопки Calendar и её поповера */
+#ppCal .tl-cal-wrap {
+    position: relative;
+    /* якорь для абсолютного позиционирования */
+    display: inline-block;
+}
+
+/* Поповер-календарь: как тултип под кнопкой, не сдвигает вёрстку */
+#ppCal .tl-date-pop {
+    position: absolute;
+    top: calc(100% + 6px);
+    /* строго под кнопкой */
+    left: 0;
+    /* выравниваем по левому краю кнопки */
+    min-width: 300px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--tl-border, #e5e7eb);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
+    z-index: 3000;
+    /* поверх хедера/часов */
+}
+
+/* Внешний вид поля даты внутри поповера, в стилистике кнопок/полей */
+#ppCal .tl-date-field {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--tl-border, #e5e7eb);
+    border-radius: 6px;
+    background: var(--btn-n-field-bg, #fff);
+    color: var(--text, #111827);
+    font-size: 12px;
+    outline: none;
+}
+
 
 #ppCal .tl-btn:active {
     transform: translateY(1px)
@@ -2635,7 +2673,7 @@ body.theme-dark .pp-cal-tick {
     position: absolute;
     left: 12px;
     /* отступ слева оставляем как у текста */
-    right: 10px;
+    right: 20px;
     /* отступ справа: линия НЕ доезжает до края */
     bottom: 0;
     height: 1px;
