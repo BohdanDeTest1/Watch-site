@@ -448,29 +448,85 @@
             const start = it.startDate ?? it.start ?? it.start_time ?? it.start_at ?? it.begin_at;
             const end = it.endDate ?? it.end ?? it.end_time ?? it.end_at ?? it.finish_at;
 
-            // condition.serialized { type: 'min_level', value: N } (или в массиве conditions)
-            const ser = it.condition?.serialized
-                ?? (Array.isArray(it.conditions) ? it.conditions[0]?.serialized : undefined)
-                ?? it.conditions?.serialized;
-
-            const minLevel = (ser && /min.?level/i.test(String(ser.type))) ? (ser.value ?? '—') : (ser?.value ?? '—');
-
-            // соберём ВСЕ conditions → строки вида "level >= 17", "level <= 22", "appVersion >= 2.22.222"
-            const condLines = [];
-            if (Array.isArray(it.conditions)) {
-                for (const c of it.conditions) {
-                    const field = (c.fieldName || c.serialized?.type || '').replace(/min.?level/i, 'level') || 'condition';
-                    const op = c.operator || (/level/i.test(field) ? '>=' : '>=');
-                    const val = (c.value ?? c.serialized?.value ?? '—');
-                    condLines.push(`${field} ${op} ${val}`);
-                }
-            } else if (it.condition?.serialized) {
-                const s = it.condition.serialized;
-                const field = String(s.type || '').replace(/min.?level/i, 'level') || 'condition';
-                const val = (s.value ?? '—');
-                const op = /level/i.test(field) ? '>=' : '>='; // оператора нет — подставим разумный дефолт
-                condLines.push(`${field} ${op} ${val}`);
+            // --- [CONDITIONS] собираем все известные формы в единый список строк ---
+            function normOp(op, field) {
+                const o = String(op || '').trim();
+                if (o) return o;
+                // разумные дефолты
+                if (/level/i.test(field)) return '>=';
+                if (/version/i.test(field)) return '>=';
+                return '>=';
             }
+            function pushCond(lines, fieldRaw, op, val) {
+                const field = String(fieldRaw || '').replace(/min.?level/i, 'level').trim() || 'condition';
+                const value = (val ?? '').toString().trim();
+                if (!value) return;
+                lines.push(`${field} ${normOp(op, field)} ${value}`);
+            }
+            function fromNode(node, out) {
+                if (!node) return;
+                // варианты узлов
+                // 1) { fieldName, operator, value }
+                if (node.fieldName || node.operator || node.value != null) {
+                    pushCond(out, node.fieldName, node.operator, (node.value ?? node.serialized?.value));
+                    return;
+                }
+                // 2) { serialized: { type, value, operator? } }
+                if (node.serialized) {
+                    const s = node.serialized;
+                    pushCond(out, s.type, s.operator, s.value);
+                    return;
+                }
+                // 3) объект-мапа вида { appVersion: {operator, value}, eventLevel: {…} }
+                if (typeof node === 'object' && !Array.isArray(node)) {
+                    for (const [k, v] of Object.entries(node)) {
+                        if (v && (v.value != null || v.serialized?.value != null)) {
+                            pushCond(out, k, v.operator || v.serialized?.operator, (v.value ?? v.serialized?.value));
+                        }
+                    }
+                }
+                // 4) строка уже готовая
+                if (typeof node === 'string') {
+                    const s = node.trim();
+                    if (s) out.push(s);
+                }
+            }
+            const condLines = [];
+
+            // Основные формы:
+            if (Array.isArray(it.conditions)) {
+                it.conditions.forEach(n => fromNode(n, condLines));
+            } else if (it.conditions && typeof it.conditions === 'object') {
+                fromNode(it.conditions, condLines);
+            }
+
+            // Одинарная форма { condition: { serialized } }
+            if (it.condition?.serialized) {
+                fromNode(it.condition, condLines);
+            }
+
+            // Деревья условий: it.condition.conditions = [ ... ] (AND/OR — для нас не принципиально, выводим плоско)
+            if (Array.isArray(it.condition?.conditions)) {
+                it.condition.conditions.forEach(n => fromNode(n, condLines));
+            }
+
+            // Частые альтернативные поля из API (подстраховка)
+            const alt = {
+                eventLevel: it.eventLevel ?? it.level ?? it.minLevel,
+                minLevel: it.minLevel,
+                maxLevel: it.maxLevel,
+                appVersion: it.appVersion ?? it.minAppVersion,
+                minAppVersion: it.minAppVersion,
+                maxAppVersion: it.maxAppVersion
+            };
+            for (const [k, v] of Object.entries(alt)) {
+                if (v != null && v !== '') pushCond(condLines, k, undefined, v);
+            }
+
+            // Дедуп & стабильный порядок
+            const _set = new Set(condLines.map(String));
+            const finalConds = Array.from(_set);
+
 
             // --- ТЕМА ---
             let themeId = null;
@@ -530,7 +586,7 @@
                 endPretty: prettyFromAny(end),
                 startTS: toMsAny(start),
                 endTS: toMsAny(end),
-                conditions: condLines,
+                conditions: finalConds,
                 themeId, themeAssets,
                 displayState, freezeEvent,
                 prereq,
@@ -541,7 +597,6 @@
         });
     }
 
-    // [GROUP] объединяем ивенты с одинаковым name и одинаковым временным окном
     function aggregateByNameWithSegments(list) {
         const map = new Map(); // key = name|startTS|endTS|type
         for (const it of list) {
@@ -549,8 +604,20 @@
             let g = map.get(key);
             if (!g) {
                 g = { ...it, segments: [], externalsBySegment: {} };
+                // гарантируем массив условий
+                g.conditions = Array.isArray(g.conditions) ? g.conditions.slice() : [];
                 map.set(key, g);
+            } else {
+                // МЕРДЖ условий: собираем уникальные строки
+                const a = new Set(Array.isArray(g.conditions) ? g.conditions : []);
+                (Array.isArray(it.conditions) ? it.conditions : []).forEach(s => a.add(String(s)));
+                g.conditions = Array.from(a);
+                // переносим тему/активы, если в новой записи они подробнее
+                if (!g.themeId && it.themeId) g.themeId = it.themeId;
+                if (!g.themeAssets && it.themeAssets) g.themeAssets = it.themeAssets;
+                // freeze/state/прочие поля оставляем как в первом, либо можно уточнять по своему правилу
             }
+
             const seg = (it.segment || '').trim();
             const exts = Array.isArray(it.externalSegments) ? it.externalSegments : [];
             if (seg) {
@@ -560,7 +627,6 @@
                     if (e && !g.externalsBySegment[seg].includes(e)) g.externalsBySegment[seg].push(e);
                 }
             } else if (exts.length) {
-                // редкий случай: внешние есть, сегмент пуст — складываем под меткой «(no segment)»
                 const k = '(no segment)';
                 if (!g.segments.includes(k)) g.segments.push(k);
                 if (!g.externalsBySegment[k]) g.externalsBySegment[k] = [];
@@ -1367,9 +1433,13 @@
                 closeCtxPopup();
                 calState._ctxOpen = true;
 
-                const { title, start, end, segments = [], externalsBySegment = {} } = data || {};
+                const { title, start, end, segments = [], conditions = [], externalsBySegment = {} } = data || {};
                 const pop = document.createElement('div');
                 pop.className = 'pp-ctx';
+                const condHtml = (Array.isArray(conditions) && conditions.length)
+                    ? `<div class="conds">${conditions.map(c => `<div><code>${escapeHtml(String(c))}</code></div>`).join('')}</div>`
+                    : `<span class="muted">—</span>`;
+
                 pop.innerHTML = `
     <div class="pp-ctx-title">${title ? escapeHtml(title) : ''}</div>
     <div class="pp-ctx-row"><span class="k">Start</span><span class="v">${escapeHtml(start || '')}</span></div>
@@ -1379,12 +1449,13 @@
         <div class="v">
           ${segments.map(s => {
                     const exts = externalsBySegment && externalsBySegment[s] ? externalsBySegment[s] : [];
-                    const extsHtml = exts.length ? `<div class="exts">${exts.map(x => `<code>${escapeHtml(x)}</code>`).join(' ')}</div>` : '';
+                    const extsHtml = exts.length ? `<div class="ext">${exts.map(x => `<code>${escapeHtml(x)}</code>`).join(' ')}</div>` : '';
                     return `<div class="seg"><code>${escapeHtml(String(s))}</code>${extsHtml}</div>`;
                 }).join('')}
         </div>
       </div>` : ''
                     }
+    <div class="pp-ctx-row"><span class="k">Conditions</span><span class="v">${condHtml}</span></div>
   `;
 
                 // Позиционируем под курсором внутри .pp-cal-main
@@ -1466,6 +1537,7 @@
                     bar.dataset.startUtc = ev.startPretty || '';
                     bar.dataset.endUtc = ev.endPretty || '';
                     bar.dataset.segments = JSON.stringify(ev.segments || []);
+                    bar.dataset.conditions = JSON.stringify(ev.conditions || []);
                     // externalsBySegment может отсутствовать — норм
                     bar._externalsBySegment = ev.externalsBySegment || {};
 
@@ -1511,6 +1583,7 @@
                             start: bar.dataset.startUtc,
                             end: bar.dataset.endUtc,
                             segments: (() => { try { return JSON.parse(bar.dataset.segments || '[]'); } catch { return []; } })(),
+                            conditions: (() => { try { return JSON.parse(bar.dataset.conditions || '[]'); } catch { return []; } })(),
                             externalsBySegment: bar._externalsBySegment
                         };
                         openCtxPopup(evt, data);
@@ -3132,7 +3205,8 @@
                 start: new Date(x.startTS),
                 end: new Date(x.endTS),
                 segments: Array.isArray(x.segments) ? x.segments : [],
-                externalsBySegment: x.externalsBySegment || {}
+                externalsBySegment: x.externalsBySegment || {},
+                conditions: Array.isArray(x.conditions) ? x.conditions : [] // ← добавили
             }));
 
         // Глобальный неизменный порядок типов (по всему списку событий)
@@ -3439,6 +3513,16 @@
                     badge.dataset.type = ev.type || 'none';
                     badge.dataset.startUtc = fmtUTC(ev.start);
                     badge.dataset.endUtc = fmtUTC(ev.end);
+
+                    // NEW: условия и сегменты в dataset для попапа
+                    try {
+                        badge.dataset.conditions = JSON.stringify(Array.isArray(ev.conditions) ? ev.conditions : []);
+                    } catch { badge.dataset.conditions = '[]'; }
+
+                    try {
+                        badge.dataset.segments = JSON.stringify(Array.isArray(ev.segments) ? ev.segments : []);
+                    } catch { badge.dataset.segments = '[]'; }
+
 
 
 
@@ -3933,14 +4017,22 @@
             pop.style.zIndex = '4000';
             pop.style.pointerEvents = 'auto';
 
+            // читаем conditions из dataset
+            let conds = [];
+            try { conds = JSON.parse(bar.dataset.conditions || '[]'); } catch { conds = []; }
+            const condHtml = conds.length
+                ? conds.map(c => `<div><code>${escapeHtml(String(c))}</code></div>`).join('')
+                : '—';
+
             pop.innerHTML = `
-      <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
-      <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
-        <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
-        <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
-        <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
-      </div>
-    `;
+  <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
+  <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
+    <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
+    <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
+    <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
+    <span class="k" style="color:var(--muted,#9aa0a6)">conditions:</span><span class="v">${condHtml}</span>
+  </div>
+`;
 
             // Позиционируем у точки клика (с учётом скролла тела таймлайна)
             // Позиционируем у точки клика — через portal в <body>, чтобы не клипалось
