@@ -1534,7 +1534,9 @@
 
                     // Данные для контекстного окна (UTC-строки уже подготовлены в ev.startPretty/ev.endPretty)
                     bar.dataset.title = ev.name || '';
+                    bar.dataset.type = band.type || '';
                     bar.dataset.startUtc = ev.startPretty || '';
+
                     bar.dataset.endUtc = ev.endPretty || '';
                     bar.dataset.segments = JSON.stringify(ev.segments || []);
                     bar.dataset.conditions = JSON.stringify(ev.conditions || []);
@@ -3999,9 +4001,12 @@
 
             // Данные
             const title = bar.dataset.title || (bar.querySelector('.txt')?.textContent?.trim()) || '—';
-            const type = (bar.dataset.type || 'none').toLowerCase();
+            // Берём тип с самого бара, а если по какой-то причине его нет — с контейнера строки.
+            // Никакого toLowerCase: хотим как в инфопанели — с заглавными буквами.
+            const type = (bar.dataset.type || bar.closest('.pp-cal-row')?.dataset.type || '—');
             const startU = bar.dataset.startUtc || '—';
             const endU = bar.dataset.endUtc || '—';
+
 
             // Поповер
             const pop = document.createElement('div');
