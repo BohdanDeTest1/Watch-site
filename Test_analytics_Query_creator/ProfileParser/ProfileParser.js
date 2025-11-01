@@ -1444,16 +1444,28 @@
   <div class="pp-ctx-title">
     <span class="txt">${title ? escapeHtml(title) : ''}</span>
     <div class="pp-title-actions">
+            <!-- Open in table (иконка «таблица») -->
       <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0-2a8 8 0 1 0 4.9 14.4l4.35 4.35 1.4-1.4-4.35-4.35A8 8 0 0 0 10 2z"/>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <!-- рамка таблицы -->
+          <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+          <!-- горизонтальные линии -->
+          <path d="M3 10h18M3 15h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <!-- вертикальные линии -->
+          <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
+
+      <!-- Copy (иконка «два листа») -->
       <button class="pp-ico act-copy" data-hint="Copy" aria-label="Copy" title="">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <!-- задний лист -->
+          <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+          <!-- передний лист -->
+          <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
         </svg>
       </button>
+
     </div>
   </div>
 

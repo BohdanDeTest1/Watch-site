@@ -3633,6 +3633,7 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* маленькие иконки в заголовке тултипа */
+/* маленькие иконки-кнопки (только SVG, без квадратиков) */
 .pp-ctx .pp-ico {
     all: unset;
     position: relative;
@@ -3640,13 +3641,20 @@ body.theme-dark .pp-cal-tick {
     place-items: center;
     width: 22px;
     height: 22px;
-    border-radius: 6px;
-    border: 1px solid var(--border, #334155);
-    background: var(--btn-n-field-bg, rgba(0, 0, 0, .04));
-    color: var(--text, #111827);
     cursor: pointer;
     line-height: 1;
+    color: inherit;
+    /* берём цвет текста popup'а -> автоконтраст по теме */
 }
+
+.pp-ctx .pp-ico:hover {
+    opacity: .9;
+}
+
+.pp-ctx .pp-ico svg {
+    display: block;
+}
+
 
 .pp-ctx .pp-ico:hover {
     filter: brightness(0.98);
@@ -3728,11 +3736,25 @@ body.theme-dark .pp-cal-tick {
 }
 
 .tl-info-pop .pp-ico {
+    all: unset;
     position: relative;
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: inherit;
+    /* иконка подстраивается под тему */
 }
+
+.tl-info-pop .pp-ico:hover {
+    opacity: .9;
+}
+
+.tl-info-pop .pp-ico svg {
+    display: block;
+}
+
 
 .tl-info-pop .pp-ico:hover {
     filter: brightness(0.98);
