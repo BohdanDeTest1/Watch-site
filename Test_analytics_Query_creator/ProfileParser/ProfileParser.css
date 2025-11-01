@@ -3576,10 +3576,25 @@ body.theme-dark .pp-cal-tick {
 
 
 .pp-ctx .pp-ctx-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     font-weight: 700;
     margin-bottom: 6px;
     word-break: break-word;
 }
+
+.pp-ctx .pp-ctx-title .txt {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.pp-ctx .pp-title-actions {
+    display: inline-flex;
+    gap: 6px;
+}
+
 
 .pp-ctx .pp-ctx-row {
     display: grid;
@@ -3613,6 +3628,53 @@ body.theme-dark .pp-cal-tick {
 .dark .pp-ctx {
     background: rgba(15, 23, 42, .85);
     /* тёмная «смазанная» подложка */
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+/* маленькие иконки в заголовке тултипа */
+.pp-ctx .pp-ico {
+    all: unset;
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #334155);
+    background: var(--btn-n-field-bg, rgba(0, 0, 0, .04));
+    color: var(--text, #111827);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.pp-ctx .pp-ico:hover {
+    filter: brightness(0.98);
+}
+
+/* hint под кнопкой */
+.pp-ctx .pp-ico[data-hint]:hover::after {
+    content: attr(data-hint);
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    padding: 4px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    z-index: 1;
+}
+
+/* DARK — те же хинты, но тёмные */
+:root.theme-dark .pp-ctx .pp-ico[data-hint]:hover::after,
+.theme-dark .pp-ctx .pp-ico[data-hint]:hover::after,
+[data-theme="dark"] .pp-ctx .pp-ico[data-hint]:hover::after,
+.dark .pp-ctx .pp-ico[data-hint]:hover::after {
+    background: #0f172a;
     color: #e5e7eb;
     border-color: rgba(148, 163, 184, .35);
 }
@@ -3658,6 +3720,51 @@ body.theme-dark .pp-cal-tick {
     z-index: 5000 !important;
     pointer-events: auto;
 }
+
+/* Actions in TL popover */
+.tl-info-pop .pp-title-actions {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.tl-info-pop .pp-ico {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+}
+
+.tl-info-pop .pp-ico:hover {
+    filter: brightness(0.98);
+}
+
+/* light hint */
+.tl-info-pop .pp-ico[data-hint]:hover::after {
+    content: attr(data-hint);
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    padding: 4px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    z-index: 1;
+}
+
+/* dark hint */
+:root.theme-dark .tl-info-pop .pp-ico[data-hint]:hover::after,
+.theme-dark .tl-info-pop .pp-ico[data-hint]:hover::after,
+[data-theme="dark"] .tl-info-pop .pp-ico[data-hint]:hover::after,
+.dark .tl-info-pop .pp-ico[data-hint]:hover::after {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
 
 
 /* [override] позволяем .pp-ctx не клипаться краями .pp-cal-main */

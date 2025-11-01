@@ -1428,7 +1428,6 @@
                 mainEl.querySelectorAll('.pp-ctx').forEach(n => n.remove());
                 calState._ctxOpen = false;
             }
-
             function openCtxPopup(e, data) {
                 closeCtxPopup();
                 calState._ctxOpen = true;
@@ -1436,36 +1435,82 @@
                 const { title, start, end, segments = [], conditions = [], externalsBySegment = {} } = data || {};
                 const pop = document.createElement('div');
                 pop.className = 'pp-ctx';
+
                 const condHtml = (Array.isArray(conditions) && conditions.length)
                     ? `<div class="conds">${conditions.map(c => `<div><code>${escapeHtml(String(c))}</code></div>`).join('')}</div>`
                     : `<span class="muted">—</span>`;
 
                 pop.innerHTML = `
-    <div class="pp-ctx-title">${title ? escapeHtml(title) : ''}</div>
-    <div class="pp-ctx-row"><span class="k">Start</span><span class="v">${escapeHtml(start || '')}</span></div>
-    <div class="pp-ctx-row"><span class="k">End</span><span class="v">${escapeHtml(end || '')}</span></div>
-    ${Array.isArray(segments) && segments.length ? `
-      <div class="pp-ctx-row segs"><span class="k">Segments</span>
-        <div class="v">
-          ${segments.map(s => {
+  <div class="pp-ctx-title">
+    <span class="txt">${title ? escapeHtml(title) : ''}</span>
+    <div class="pp-title-actions">
+      <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0-2a8 8 0 1 0 4.9 14.4l4.35 4.35 1.4-1.4-4.35-4.35A8 8 0 0 0 10 2z"/>
+        </svg>
+      </button>
+      <button class="pp-ico act-copy" data-hint="Copy" aria-label="Copy" title="">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="pp-ctx-row"><span class="k">Start</span><span class="v">${escapeHtml(start || '')}</span></div>
+  <div class="pp-ctx-row"><span class="k">End</span><span class="v">${escapeHtml(end || '')}</span></div>
+  ${Array.isArray(segments) && segments.length ? `
+    <div class="pp-ctx-row segs"><span class="k">Segments</span>
+      <div class="v">
+        ${segments.map(s => {
                     const exts = externalsBySegment && externalsBySegment[s] ? externalsBySegment[s] : [];
                     const extsHtml = exts.length ? `<div class="ext">${exts.map(x => `<code>${escapeHtml(x)}</code>`).join(' ')}</div>` : '';
                     return `<div class="seg"><code>${escapeHtml(String(s))}</code>${extsHtml}</div>`;
                 }).join('')}
-        </div>
-      </div>` : ''
+      </div>
+    </div>` : ''
                     }
-    <div class="pp-ctx-row"><span class="k">Conditions</span><span class="v">${condHtml}</span></div>
-  `;
+  <div class="pp-ctx-row"><span class="k">Conditions</span><span class="v">${condHtml}</span></div>
+`;
 
-                // Позиционируем под курсором внутри .pp-cal-main
-                const rect = mainEl.getBoundingClientRect();
-                const x = e.clientX - rect.left + mainEl.scrollLeft;
-                const y = e.clientY - rect.top + mainEl.scrollTop;
+                // позиционирование попапа — оставить как было
 
-                pop.style.left = x + 'px';
-                pop.style.top = y + 'px';
-                mainEl.appendChild(pop);
+                // привязываем действия к кнопкам
+                const openBtn = pop.querySelector('.act-open');
+                const copyBtn = pop.querySelector('.act-copy');
+
+                // открыть в таблице: сообщаем таблице, что нужно отфильтровать по названию
+                openBtn?.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+
+                    // 1) диспатчим кастомное событие — таблица его поймает и применит фильтр
+                    document.dispatchEvent(new CustomEvent('pp:applyNameFilter', {
+                        detail: { title }
+                    }));
+
+                    // 2) закрываем тултип
+                    closeCtxPopup();
+                });
+
+
+                copyBtn?.addEventListener('click', async (ev) => {
+                    ev.stopPropagation();
+                    try {
+                        await navigator.clipboard.writeText(title || '');
+                        const prev = copyBtn.getAttribute('data-hint');
+                        copyBtn.setAttribute('data-hint', 'Copied!');
+                        setTimeout(() => copyBtn.setAttribute('data-hint', prev || 'Copy'), 900);
+                    } catch {
+                        const ta = document.createElement('textarea');
+                        ta.value = title || '';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                    }
+                });
+
 
                 // Если вылезает за край — сместим влево/вверх
                 const pr = pop.getBoundingClientRect();
@@ -1474,17 +1519,16 @@
                 if (overflowX > 0) pop.style.left = (x - overflowX - 12) + 'px';
                 if (overflowY > 0) pop.style.top = (y - overflowY - 12) + 'px';
 
-                // Закрытие по клику вне и при скролле
+                // Закрытие по клику вне + защита от мгновенного переоткрытия
                 const onDocClick = (evt) => {
                     if (!pop.contains(evt.target)) {
-                        // этот клик использован для закрытия — блокируем открытие на нём же
                         calState._preventOpenOnce = true;
                         closeCtxPopup();
                         document.removeEventListener('click', onDocClick, true);
-                        // разблокируем уже на следующий тик
                         setTimeout(() => { calState._preventOpenOnce = false; }, 0);
                     }
                 };
+
                 document.addEventListener('click', onDocClick, true);
 
                 const onScroll = () => closeCtxPopup();
@@ -2231,6 +2275,18 @@
         btnPrev.addEventListener('click', () => { page = Math.max(1, page - 1); renderRows(); });
         btnNext.addEventListener('click', () => { page = Math.min(Math.ceil(allFilteredSorted.length / pageSize) || 1, page + 1); renderRows(); });
         btnLast.addEventListener('click', () => { page = Math.max(1, Math.ceil(allFilteredSorted.length / pageSize) || 1); renderRows(); });
+
+        // принять запрос на применение фильтра по имени из тултипа календаря
+        document.addEventListener('pp:applyNameFilter', (ev) => {
+            const title = (ev.detail && ev.detail.title) || '';
+            // точное совпадение по имени
+            nameFilter = { rule: 'equals', query: title.trim() };
+            page = 1;
+            renderRows();
+            // прокрутить к таблице и сделать её «в центре» экрана
+            document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
 
         // ---------- рендер шапки сортировки ----------
         function updateSortIndicators() {
@@ -4030,7 +4086,24 @@
                 : '—';
 
             pop.innerHTML = `
-  <div style="font-weight:700;margin-bottom:6px;word-break:break-word;">${escapeHtml(title)}</div>
+  <div class="pop-head" style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700;margin-bottom:6px;word-break:break-word;">
+    <span class="txt" style="flex:1 1 auto;min-width:0;">${escapeHtml(title)}</span>
+    <span class="pp-title-actions" style="display:inline-flex;gap:6px;">
+      <button class="pp-ico js-open-in-table" type="button" data-hint="Open in table" aria-label="Open in table"
+              style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 4h9v9H4V4zm7 7h9v9h-9v-2h7v-7h-7v-0zM4 15h9v5H4v-5z" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </button>
+      <button class="pp-ico js-copy-title" type="button" data-hint="Copy" aria-label="Copy name"
+              style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </span>
+  </div>
+
   <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
     <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
     <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
@@ -4038,6 +4111,7 @@
     <span class="k" style="color:var(--muted,#9aa0a6)">conditions:</span><span class="v">${condHtml}</span>
   </div>
 `;
+
 
             // Позиционируем у точки клика (с учётом скролла тела таймлайна)
             // Позиционируем у точки клика — через portal в <body>, чтобы не клипалось
@@ -4054,6 +4128,38 @@
 
             // было: elBody.appendChild(pop);
             document.body.appendChild(pop);
+            // wire actions (open in table / copy)
+            // wire actions (open in table / copy)
+            const openBtn = pop.querySelector('.js-open-in-table');
+            const copyBtn = pop.querySelector('.js-copy-title');
+
+            // открыть в таблице (через централизованный обработчик таблицы)
+            openBtn?.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                // передаем название события в таблицу и даём ей самой отрисоваться и проскроллить
+                document.dispatchEvent(new CustomEvent('pp:applyNameFilter', {
+                    detail: { title: title || '' }
+                }));
+                closeInfoPops();
+            });
+
+
+            // копировать имя события
+            copyBtn?.addEventListener('click', async (ev) => {
+                ev.preventDefault(); ev.stopPropagation();
+                const text = title || '';
+                try {
+                    await navigator.clipboard.writeText(text);
+                    const prev = copyBtn.getAttribute('data-hint');
+                    copyBtn.setAttribute('data-hint', 'Copied!');
+                    setTimeout(() => copyBtn.setAttribute('data-hint', prev || 'Copy'), 900);
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = text; document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                }
+            });
 
         }
 
