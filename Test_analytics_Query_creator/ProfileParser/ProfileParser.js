@@ -1445,16 +1445,17 @@
     <span class="txt">${title ? escapeHtml(title) : ''}</span>
     <div class="pp-title-actions">
             <!-- Open in table (иконка «таблица») -->
-      <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-          <!-- рамка таблицы -->
-          <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-          <!-- горизонтальные линии -->
-          <path d="M3 10h18M3 15h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <!-- вертикальные линии -->
-          <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
+     <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+    <!-- рамка таблицы -->
+    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"
+          stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <!-- горизонтальные линии -->
+    <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <!-- вертикальные линии -->
+    <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  </svg>
+</button>
 
       <!-- Copy (иконка «два листа») -->
       <button class="pp-ico act-copy" data-hint="Copy" aria-label="Copy" title="">
@@ -4102,11 +4103,17 @@
     <span class="txt" style="flex:1 1 auto;min-width:0;">${escapeHtml(title)}</span>
     <span class="pp-title-actions" style="display:inline-flex;gap:6px;">
       <button class="pp-ico js-open-in-table" type="button" data-hint="Open in table" aria-label="Open in table"
-              style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M4 4h9v9H4V4zm7 7h9v9h-9v-2h7v-7h-7v-0zM4 15h9v5H4v-5z" stroke="currentColor" stroke-width="1.5" />
-        </svg>
-      </button>
+        style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+    <!-- рамка таблицы -->
+    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"
+          stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <!-- горизонтальные линии -->
+    <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
+    <!-- вертикальные линии -->
+    <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  </svg>
+</button>
       <button class="pp-ico js-copy-title" type="button" data-hint="Copy" aria-label="Copy name"
               style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
