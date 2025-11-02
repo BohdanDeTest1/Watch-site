@@ -1502,6 +1502,26 @@
     box-shadow: none;
 }
 
+/* Info button — одинаковый синий во всех темах */
+#pp-root .pp-t-row .pp-info {
+    background: var(--accent);
+    color: var(--btn-n-field-bg);
+    font-weight: 700;
+    border: none;
+    box-shadow: none;
+}
+
+/* Hover такой же, как у Admin */
+#pp-root .pp-t-row .pp-info:hover {
+    opacity: .75;
+}
+
+/* На всякий случай — если где-то сбрасывают цвет текста */
+#pp-root .pp-t-row .pp-info:disabled {
+    opacity: .5;
+}
+
+
 /* hover такое же, как у Admin */
 :root.theme-dark .pp-t-row .pp-info:hover,
 .theme-dark .pp-t-row .pp-info:hover,
@@ -3879,4 +3899,45 @@ html:not(.dark) #ppCal #tlDateInput,
     /* рамка в тон панели Events */
     border-color: var(--cal-left-solid, #0f172a) !important;
     background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+}
+
+/* === Fix Info button color for light theme === */
+body.light-theme .pp-btn.pp-info {
+    background-color: #5a8cff;
+    /* голубой, как в dark theme */
+    color: #fff;
+    /* белый текст */
+    border: none;
+}
+
+body.light-theme .pp-btn.pp-info:hover {
+    background-color: #4a7de6;
+    /* немного темнее при наведении */
+}
+
+/* чтобы в темной теме ничего не сломать */
+body.dark-theme .pp-btn.pp-info {
+    background-color: #5a8cff;
+    color: #fff;
+}
+
+/* === NAME COLUMN FIX === */
+
+/* когда инфопанель закрыта */
+#pp-root .pp-t-row>.cell:nth-child(2) {
+    max-width: 380px;
+    /* немного ограничим ширину */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* когда инфопанель открыта */
+#pp-root.info-open .pp-t-row>.cell:nth-child(2),
+#pp-root .info-open .pp-t-row>.cell:nth-child(2) {
+    max-width: 260px;
+    /* ещё уже при открытой панели */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

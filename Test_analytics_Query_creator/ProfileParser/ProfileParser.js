@@ -117,8 +117,8 @@
     // Моки лежат в папке ProfileParser/
     const MOCKS = {
         state: 'ProfileParser/Stage_profile_State.json',
-        liveops: 'ProfileParser/Stage.json',
-        promos: 'ProfileParser/Stage2.json',
+        liveops: 'ProfileParser/Stage_01_event.json',
+        promos: 'ProfileParser/Stage_01_promo.json',
     };
     const USE_MOCKS = true; // оставляем включённым
 
@@ -210,53 +210,6 @@
         return (s || '').replace(/\s*UTC$/, '');
     }
 
-    // // === Уникальные цвета для типов событий из заданной палитры (без повторов) ===
-    // // Палитра взята из твоего скриншота (дубликаты удалены, порядок сохранён).
-    // const __PP_PALETTE = [
-    //     '#F2F1E6', '#AADED2', '#75BDAD', '#CDFAF0', '#99D1C6', '#96D4C8', '#85D9D3', '#6BBFC5', '#89CCD4', '#5DA3AC',
-    //     '#7BAAB7', '#7AB6CA', '#AEE1F2', '#9ECCDE', '#94B7DD', '#83AAD5', '#99C1F2', '#98B4D7', '#A4C0EF', '#87A0D3',
-    //     '#7591CC', '#7A96D5', '#7F95CC', '#7C89B7', '#8589D4', '#ABA8E7', '#9D9ACE', '#CECBF8', '#B09FDC', '#B9A9D9',
-    //     '#AE86CC', '#DAB8EB', '#D790CC', '#BC7089', '#955766', '#A35667'
-    // ];
-
-    // // Кеш соответствий "тип → цвет" и текущий индекс палитры
-    // const __ppTypeColorCache = new Map();
-    // let __ppPaletteIndex = 0;
-
-    // // Резерв: если типов больше, чем цветов в палитре, создаём новые оттенки по "золотому углу"
-    // let __ppNextHue = 0;
-    // const __PP_GOLDEN_ANGLE = 137.508;
-    // const __PP_SAT = 72;   // %
-    // const __PP_LUM = 56;   // %
-
-    // function __ppNextColorFromPaletteOrHSL() {
-    //     if (__ppPaletteIndex < __PP_PALETTE.length) {
-    //         return __PP_PALETTE[__ppPaletteIndex++];
-    //     }
-    //     const hue = Math.round(__ppNextHue % 360);
-    //     __ppNextHue += __PP_GOLDEN_ANGLE;
-    //     return `hsl(${hue}deg ${__PP_SAT}% ${__PP_LUM}%)`;
-    // }
-
-    // // Публичный хелпер для отладки/перегенерации (опционально вызвать из консоли)
-    // window.__ppResetTypeColors = function () {
-    //     __ppTypeColorCache.clear();
-    //     __ppPaletteIndex = 0;
-    //     __ppNextHue = 0;
-    // };
-
-    // function colorForType(typeRaw) {
-    //     const key = String(typeRaw || '—').trim().toLowerCase();
-    //     if (__ppTypeColorCache.has(key)) return __ppTypeColorCache.get(key);
-    //     const color = __ppNextColorFromPaletteOrHSL();
-    //     __ppTypeColorCache.set(key, color);
-    //     return color;
-    // }
-
-    // === Палитра и генератор цветов/градиентов для типов событий ===
-    // Палитра подобрана по твоему скрину (исключены слишком светлые тона для читабельности текста).
-    // Мы берём только средние/тёмные тона, а фон баров красим вертикальным градиентом:
-    // верх чуть светлее, низ чуть темнее.
 
     // базовые цвета (приближённые к карточкам на скрине), без «сверх-светлых»
     const __PP_BASE_PALETTE = [
