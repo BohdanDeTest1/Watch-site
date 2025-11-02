@@ -2290,15 +2290,36 @@
         btnLast.addEventListener('click', () => { page = Math.max(1, Math.ceil(allFilteredSorted.length / pageSize) || 1); renderRows(); });
 
         // принять запрос на применение фильтра по имени из тултипа календаря
+        // принять запрос на применение фильтра по имени из тултипа календаря
         document.addEventListener('pp:applyNameFilter', (ev) => {
             const title = (ev.detail && ev.detail.title) || '';
-            // точное совпадение по имени
+            // 1) точное совпадение по имени
             nameFilter = { rule: 'equals', query: title.trim() };
             page = 1;
-            renderRows();
-            // прокрутить к таблице и сделать её «в центре» экрана
+            renderRows(); // пересчитать viewRows и перерисовать таблицу
+
+            // 2) найти индекс строки на текущей странице
+            const idx = viewRows.findIndex(r => (r.name || '').toLowerCase() === title.toLowerCase());
+
+            if (idx >= 0) {
+                // 3) открыть правую панель по найденной строке
+                showDetail(idx);
+                wrap.classList.add('info-open');
+                syncRowHeightToOpen?.();
+
+                // 4) подсветить строку и прокрутить к ней
+                const rowEl = bodyEl.querySelector(`.pp-t-row[data-idx="${idx}"]`);
+                if (rowEl) {
+                    bodyEl.querySelectorAll('.pp-t-row.selected').forEach(r => r.classList.remove('selected'));
+                    rowEl.classList.add('selected');
+                    rowEl.scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            // 5) прокрутить область так, чтобы таблица была в центре экрана
             document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
+
 
 
         // ---------- рендер шапки сортировки ----------
