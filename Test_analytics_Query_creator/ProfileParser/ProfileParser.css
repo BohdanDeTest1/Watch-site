@@ -1523,14 +1523,16 @@
 }
 
 /* FINALS: нижняя кнопка — синий */
-#pp-root #ppAdminBtn {
+#pp-root #ppAdminBtn,
+#pp-root #ppResetBtn {
     background: var(--accent);
     color: var(--btn-n-field-bg);
     font-weight: 700;
     border: none;
 }
 
-#pp-root #ppAdminBtn:hover {
+#pp-root #ppAdminBtn:hover,
+#pp-root #ppResetBtn:hover {
     opacity: 0.75;
 }
 
@@ -4061,42 +4063,42 @@ body.dark-theme .pp-btn.pp-info {
 }
 
 /* === Reset Filters — светло-голубая кнопка слева под таблицей === */
-#pp-root #ppResetBtn {
-    /* базовая светлая «инфо»-синяя */
-    background: #3b82f6;
-    color: #fff;
-    border: 1px solid #2563eb;
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 8px 12px;
-    line-height: 1;
-    cursor: pointer;
+/* === Reset Filters — визуально идентична Events in the Admin === */
+/* === Reset Filters — точно как Events in the Admin === */
 
-    /* новая ширина: ~20% от исходной */
+/* Светлая тема */
+#pp-root #ppResetBtn {
     width: 20%;
     max-width: 180px;
     min-width: 120px;
-
-    /* выравниваем по сетке пейджера */
-    display: inline-block;
     text-align: center;
+    border-radius: 4px;
+    padding: 8px 12px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: none;
 }
-
 
 #pp-root #ppResetBtn:hover {
-    opacity: .85;
+    opacity: 0.75;
 }
 
-/* ТЁМНАЯ ТЕМА: та же светло-голубая, но ТЁМНЫЙ ТЕКСТ (по требованию) */
+/* Тёмная тема: обе кнопки — светло-голубые с ЧЁРНЫМ текстом */
+:root.theme-dark #ppAdminBtn,
+.theme-dark #ppAdminBtn,
+[data-theme="dark"] #ppAdminBtn,
+.dark #ppAdminBtn,
 :root.theme-dark #ppResetBtn,
 .theme-dark #ppResetBtn,
 [data-theme="dark"] #ppResetBtn,
 .dark #ppResetBtn {
-    background: #93c5fd;
-    /* blue-300 — светлее на тёмном фоне */
-    border-color: #60a5fa;
-    color: #0f172a;
-    /* тёмный текст в тёмной теме */
+    /* фон берётся из var(--accent), чтобы совпадать по оттенку с правой кнопкой */
+    background: var(--accent) !important;
+    color: #0f172a !important;
+    /* чёрный текст */
+    border: none;
 }
+
+
 
 /* Сброс внешних округлений у внутренних элементов таблицы не ломаем */
