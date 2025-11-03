@@ -389,9 +389,34 @@
     border-bottom: 1px dashed var(--border-table);
 }
 
+.pp-t-head {
+    background: var(--pp-table-head-bg) !important;
+}
+
+.pp-t-body {
+    background: var(--pp-table-inner-bg) !important;
+}
+
+/* базовый фон строки */
+.pp-t-body .pp-t-row {
+    background: var(--pp-row-even) !important;
+}
+
+/* зебра: каждая нечётная темнее/светлее */
+.pp-t-body .pp-t-row:nth-child(odd) {
+    background: var(--pp-row-odd) !important;
+}
+
+/* при выделении перекрываем «зебру» */
+.pp-t-body .pp-t-row.selected {
+    background: rgba(59, 130, 246, .12) !important;
+}
+
 .pp-t-row:last-child {
     border-bottom: none;
 }
+
+
 
 /* статусные «точки» */
 .pp-state {
@@ -939,8 +964,9 @@
     align-items: center;
     column-gap: 14px;
     grid-template-columns: 110px minmax(180px, 1fr) 200px 250px 250px 100px;
-    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
-
+    /* фон задаём ниже отдельными правилами:
+       .pp-t-head — через --pp-table-head-bg,
+       .pp-t-row — через «зебру» */
 }
 
 /* при открытой панели — 5 колонок (без Info), правые — шире */
@@ -3954,4 +3980,77 @@ body.dark-theme .pp-btn.pp-info {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.pp-table {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--pp-table-bg);
+    /* тонкая рамка в тон календаря */
+    box-shadow: 0 0 0 0.1px var(--border, var(--tl-border, rgba(148, 163, 184, .35)));
+}
+
+
+.pp-t-body {
+    background-color: var(--pp-table-inner-bg);
+}
+
+:root {
+    /* контейнер таблицы */
+    --pp-table-bg: #ffffff;
+
+    /* тело таблицы */
+    --pp-table-inner-bg: #ffffff;
+
+    /* «зебра» как в календаре (white / очень светло-серый) */
+    --pp-row-even: #ffffff;
+    --pp-row-odd: #f9f9f9;
+
+    /* ШАПКА: вместо тёмно-серого делаем «еле-серый» (видимо белый с лёгким тоном) */
+    --pp-table-head-bg: #f7f9fc;
+
+    /* Светлые бордеры для строки/корпуса таблицы (light) */
+    --border-table: #e5e7eb;
+    /* разделители строк */
+    --pp-outline: #e5e7eb;
+    /* тонкая обводка корпуса таблицы */
+}
+
+.theme-dark,
+:root.theme-dark,
+.dark,
+[data-theme="dark"] {
+    --pp-table-bg: #0f172a;
+    --pp-table-inner-bg: var(--cal-left-solid, #0f172a);
+
+    /* МЯГКАЯ СИНЕ-ХОЛОДНАЯ ЗЕБРА (менее контрастная, без «серо-горчичных» тонов):
+       подсветка ≈ +2% / +4% небесно-синего на базе фона таблицы */
+    --pp-row-even: color-mix(in srgb, var(--pp-table-inner-bg) 98%, #93c5fd 2%);
+    /* чуть светлее */
+    --pp-row-odd: color-mix(in srgb, var(--pp-table-inner-bg) 96%, #93c5fd 4%);
+    /* ещё на полтона */
+
+    /* Фоллбеки для движков без color-mix — подобраны под тон #0f172a с лёгким «blue tint» */
+    --pp-row-even-fallback: #101c2f;
+    --pp-row-odd-fallback: #12223a;
+
+    --pp-table-head-bg: var(--cal-left-solid, #0f172a);
+
+    /* бордеры в тёмной теме (деликатные, как у календаря) */
+    --border-table: rgba(148, 163, 184, .24);
+    --pp-outline: rgba(148, 163, 184, .24);
+}
+
+
+
+/* автоматически подменяем на фоллбеки там, где color-mix недоступен */
+@supports not (background: color-mix(in srgb, #000, #fff)) {
+
+    :root.theme-dark,
+    .theme-dark,
+    .dark,
+    [data-theme="dark"] {
+        --pp-row-even: var(--pp-row-even-fallback);
+        --pp-row-odd: var(--pp-row-odd-fallback);
+    }
 }
