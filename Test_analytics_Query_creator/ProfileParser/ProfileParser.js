@@ -783,21 +783,27 @@
     </div> <!-- /.pp-liveops -->
 
     <div class="pp-pager" id="ppPager">
-      <span class="pp-label">Rows per page</span>
-      <span class="pp-sel-wrap">
-        <select class="pp-sel" id="ppRows">
-          <option selected>10</option><option>25</option><option>50</option>
-          <option>75</option><option>100</option>
-        </select>
-      </span>
-      <span id="ppRange">0–0 of 0</span>
-      <span class="pp-nav">
-        <button class="pp-icon" id="ppFirst" title="First"><span>|‹</span></button>
-        <button class="pp-icon" id="ppPrev"  title="Previous"><span>‹</span></button>
-        <button class="pp-icon" id="ppNext"  title="Next"><span>›</span></button>
-        <button class="pp-icon" id="ppLast"  title="Last"><span>›|</span></button>
-      </span>
-    </div>
+  <!-- Новая кнопка глобального сброса фильтров -->
+  <button id="ppResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
+    Reset Filters
+  </button>
+
+  <span class="pp-label">Rows per page</span>
+  <span class="pp-sel-wrap">
+    <select class="pp-sel" id="ppRows">
+      <option selected>10</option><option>25</option><option>50</option>
+      <option>75</option><option>100</option>
+    </select>
+  </span>
+  <span id="ppRange">0–0 of 0</span>
+  <span class="pp-nav">
+    <button class="pp-icon" id="ppFirst" title="First"><span>|‹</span></button>
+    <button class="pp-icon" id="ppPrev"  title="Previous"><span>‹</span></button>
+    <button class="pp-icon" id="ppNext"  title="Next"><span>›</span></button>
+    <button class="pp-icon" id="ppLast"  title="Last"><span>›|</span></button>
+  </span>
+</div>
+
   </div> <!-- /.pp-body -->
 `;
 
@@ -2231,6 +2237,68 @@
         const btnPrev = wrap.querySelector('#ppPrev');
         const btnNext = wrap.querySelector('#ppNext');
         const btnLast = wrap.querySelector('#ppLast');
+
+        // Глобальная кнопка сброса фильтров
+        const resetAllBtn = wrap.querySelector('#ppResetBtn');
+
+        function resetAllTableFilters() {
+            // 1) State
+            try {
+                stateFilter.clear();
+                wrap.querySelectorAll('#ppStateList input[type="checkbox"]').forEach(cb => cb.checked = false);
+            } catch { }
+
+            // 2) Name
+            nameFilter = { rule: 'contains', query: '' };
+            const nRuleBtn = wrap.querySelector('#ppNameRuleBtn');
+            const nQuery = wrap.querySelector('#ppNameQuery');
+            if (nRuleBtn) { nRuleBtn.dataset.val = 'contains'; nRuleBtn.querySelector('.txt').textContent = 'Contains'; }
+            if (nQuery) nQuery.value = '';
+
+            // 3) Type (чекбоксы + текстовое правило)
+            typeFilter = new Set();
+            typeTextFilter = { rule: 'contains', query: '' };
+            const tRuleBtn = wrap.querySelector('#ppTypeRuleBtn');
+            const tQuery = wrap.querySelector('#ppTypeQuery');
+            const tSearch = wrap.querySelector('#ppTypeSearch');
+            const tList = wrap.querySelector('#ppTypeList');
+            if (tRuleBtn) { tRuleBtn.dataset.val = 'contains'; tRuleBtn.querySelector('.txt').textContent = 'Contains'; }
+            if (tQuery) tQuery.value = '';
+            if (tSearch) tSearch.value = '';
+            if (tList) {
+                // Перерисуем список типов (все чекбоксы сняты)
+                const arr = allTypes;
+                tList.innerHTML = arr.map(t => `<label class="pp-type-opt"><input type="checkbox" value="${t}"/> <span>${t}</span></label>`).join('') || '<div class="muted small">No types</div>';
+            }
+
+            // 4) Dates (Start/End)
+            startFilter = { rule: 'between', from: '', to: '' };
+            endFilter = { rule: 'between', from: '', to: '' };
+
+            const sRule = wrap.querySelector('#ppStartRuleBtn');
+            const sFrom = wrap.querySelector('#ppStartFrom');
+            const sTo = wrap.querySelector('#ppStartTo');
+            if (sRule) { sRule.dataset.val = 'between'; sRule.querySelector('.txt').textContent = 'Between'; }
+            if (sFrom) sFrom.value = '';
+            if (sTo) sTo.value = '';
+
+            const eRule = wrap.querySelector('#ppEndRuleBtn');
+            const eFrom = wrap.querySelector('#ppEndFrom');
+            const eTo = wrap.querySelector('#ppEndTo');
+            if (eRule) { eRule.dataset.val = 'between'; eRule.querySelector('.txt').textContent = 'Between'; }
+            if (eFrom) eFrom.value = '';
+            if (eTo) eTo.value = '';
+
+            // 5) Закрыть все открытые попапы и меню правил
+            wrap.querySelectorAll('.pp-filter-pop, .pp-select-menu').forEach(p => p.hidden = true);
+
+            // 6) Пагинация — на первую страницу и перерисовать
+            page = 1;
+            renderRows();
+        }
+
+        resetAllBtn?.addEventListener('click', resetAllTableFilters);
+
 
         rowsSel.addEventListener('change', () => {
             pageSize = Number(rowsSel.value);

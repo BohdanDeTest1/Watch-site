@@ -1081,14 +1081,19 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    /* правые элементы остаются справа */
     gap: 18px;
     padding: 10px 12px;
     border-top: 0;
-    /* было: 1px solid var(--border) — давало «двойную» толщину снизу */
-    /* Если нужен едва заметный разделитель — оставь строку ниже; иначе можно удалить */
     box-shadow: inset 0 0.1px 0 var(--border-2);
     background: var(--card-bg);
 }
+
+.pp-pager .pp-reset {
+    margin-right: auto;
+    /* уводим кнопку влево */
+}
+
 
 
 .pp-pager .pp-perpage {
@@ -4054,3 +4059,44 @@ body.dark-theme .pp-btn.pp-info {
         --pp-row-odd: var(--pp-row-odd-fallback);
     }
 }
+
+/* === Reset Filters — светло-голубая кнопка слева под таблицей === */
+#pp-root #ppResetBtn {
+    /* базовая светлая «инфо»-синяя */
+    background: #3b82f6;
+    color: #fff;
+    border: 1px solid #2563eb;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 8px 12px;
+    line-height: 1;
+    cursor: pointer;
+
+    /* новая ширина: ~20% от исходной */
+    width: 20%;
+    max-width: 180px;
+    min-width: 120px;
+
+    /* выравниваем по сетке пейджера */
+    display: inline-block;
+    text-align: center;
+}
+
+
+#pp-root #ppResetBtn:hover {
+    opacity: .85;
+}
+
+/* ТЁМНАЯ ТЕМА: та же светло-голубая, но ТЁМНЫЙ ТЕКСТ (по требованию) */
+:root.theme-dark #ppResetBtn,
+.theme-dark #ppResetBtn,
+[data-theme="dark"] #ppResetBtn,
+.dark #ppResetBtn {
+    background: #93c5fd;
+    /* blue-300 — светлее на тёмном фоне */
+    border-color: #60a5fa;
+    color: #0f172a;
+    /* тёмный текст в тёмной теме */
+}
+
+/* Сброс внешних округлений у внутренних элементов таблицы не ломаем */
