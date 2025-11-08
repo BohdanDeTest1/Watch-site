@@ -2491,6 +2491,7 @@
       <span class="pp-v">${assetsList}</span>
     </div>`;
             }
+
             const prereqHtml = (lo.prereq && lo.prereq.length)
                 ? `<div class="pp-wrap">` + lo.prereq.map(p => {
                     const lines = [];
@@ -2501,8 +2502,20 @@
                 }).join('') + `</div>`
                 : '<div class="muted">None</div>';
 
-
+            // ---- ШАПКА с кнопкой Copy (как в календарном тултипе) ----
             detEl.innerHTML = `
+  <div class="pp-detail-head">
+    <div class="pp-detail-title" title="${lo.name ? lo.name.replace(/"/g, '&quot;') : ''}">${lo.name || ''}</div>
+    <div class="pp-detail-actions">
+      <button id="ppCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+          <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <div class="pp-kvs">
     <div class="pp-kv"><span class="pp-k">Name</span><span class="pp-v">${lo.name}</span></div>
     <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${lo.type || '—'}</span></div>
@@ -2515,8 +2528,8 @@
     <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
     <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v">${themeHtml}</span></div>
     ${assetsKV}
-<div class="pp-kv"><span class="pp-k">LiveOps prerequisites</span><span class="pp-v">${prereqHtml}</span></div>
-</div>
+    <div class="pp-kv"><span class="pp-k">LiveOps prerequisites</span><span class="pp-v">${prereqHtml}</span></div>
+  </div>
 `;
 
             // [SEGMENTS] вставляем KV-блок «Сегмент»
@@ -2524,12 +2537,10 @@
                 const kvs = detEl.querySelector('.pp-kvs');
                 if (!kvs || !lo.segments || !lo.segments.length) return;
 
-                // 1) контейнер строки KV
                 const segKV = document.createElement('div');
                 segKV.className = 'pp-kv';
                 const many = lo.segments.length > 1;
 
-                // 2) содержимое: заголовок + значение
                 const segListId = 'ppSegList';
                 const oneSeg = !many ? `<code>${lo.segments[0]}</code>` : `
       <button id="ppSegShowBtn" class="pp-link" type="button">Show all</button>
@@ -2560,7 +2571,6 @@
     `;
                 kvs.appendChild(segKV);
 
-                // 3) поведение: Show all / Show External Segment
                 const btnAll = detEl.querySelector('#ppSegShowBtn');
                 const listEl = detEl.querySelector('#' + segListId);
                 if (btnAll && listEl) {
@@ -2582,7 +2592,7 @@
                 });
             })();
 
-
+            // переключатель assets
             const tgl = detEl.querySelector('#ppAssetsTgl');
             if (tgl) {
                 const box = detEl.querySelector('#ppAssetsBox');
@@ -2593,13 +2603,177 @@
                     else { box.setAttribute('hidden', ''); chev.textContent = '▾'; }
                 });
             }
-            //удалили крестик
+
+            // КОПИРОВАНИЕ имени (кнопка в шапке инфопанели)
+            const copyBtn = detEl.querySelector('#ppCopyName');
+            copyBtn?.addEventListener('click', async (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                const text = lo.name || '';
+                try {
+                    await navigator.clipboard.writeText(text);
+                    const prev = copyBtn.getAttribute('data-hint');
+                    copyBtn.setAttribute('data-hint', 'Copied!');
+                    setTimeout(() => copyBtn.setAttribute('data-hint', prev || 'Copy to clipboard'), 900);
+                } catch {
+                    const ta = document.createElement('textarea');
+                    ta.value = text; document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                }
+            });
 
             // обработчик для кнопки "Event in the Admin"
             detEl.querySelector('#ppAdminBtn')?.addEventListener('click', () => {
                 window.open('https://www.google.com', '_blank', 'noopener');
             });
         }
+
+
+        // // ---------- детальная панель ----------
+        // function showDetail(idx) {
+        //     const lo = viewRows[idx];
+        //     if (!lo) return;
+
+        //     const condHtml = (lo.conditions && lo.conditions.length)
+        //         ? `<div class="pp-conds">${lo.conditions.map(s => `<div>${s}</div>`).join('')}</div>`
+        //         : '<div class="muted">None</div>';
+
+        //             const hasAssets = !!lo.themeAssets && (lo.themeAssets.android || lo.themeAssets.ios);
+        //             const assetsInside = hasAssets ? `
+        //   <button class="pp-link assets" id="ppAssetsTgl">
+        //     assets <span class="chev" id="ppAssetsChev">▾</span>
+        //   </button>
+        //   <div class="pp-assets" id="ppAssetsBox" hidden>
+        //     ${lo.themeAssets.android ? `<div class="row"><strong>And:</strong> <code>${lo.themeAssets.android}</code></div>` : ''}
+        //     ${lo.themeAssets.ios ? `<div class="row"><strong>iOS:</strong> <code>${lo.themeAssets.ios}</code></div>` : ''}
+        //   </div>` : '';
+
+        //             let themeHtml = (lo.themeId ? `<code>${lo.themeId}</code>` : 'None');
+
+        //             // готовим содержимое строки Assets (если есть что показывать)
+        //             let assetsKV = '';
+        //             if (lo.themeAssets && (lo.themeAssets.android || lo.themeAssets.ios)) {
+        //                 const assetsList = `
+        //     <div class="pp-assets" id="ppAssetsBox">
+        //       ${lo.themeAssets.android ? `<div class="row"><strong>And:</strong> <code>${lo.themeAssets.android}</code></div>` : ''}
+        //       ${lo.themeAssets.ios ? `<div class="row"><strong>iOS:</strong> <code>${lo.themeAssets.ios}</code></div>` : ''}
+        //     </div>
+        //   `;
+        //                 assetsKV = `
+        //     <div class="pp-kv">
+        //       <span class="pp-k">Assets</span>
+        //       <span class="pp-v">${assetsList}</span>
+        //     </div>`;
+        //             }
+        //             const prereqHtml = (lo.prereq && lo.prereq.length)
+        //                 ? `<div class="pp-wrap">` + lo.prereq.map(p => {
+        //                     const lines = [];
+        //                     if (p.eventType) lines.push(`eventType: ${p.eventType}`);
+        //                     if (p.category) lines.push(`category: ${p.category}`);
+        //                     if (p.comboIndex !== '' && p.comboIndex !== undefined) lines.push(`comboIndex: ${p.comboIndex}`);
+        //                     return `<div>${lines.join(`\n`)}</div>`;
+        //                 }).join('') + `</div>`
+        //                 : '<div class="muted">None</div>';
+
+
+        //             detEl.innerHTML = `
+        //   <div class="pp-kvs">
+        //     <div class="pp-kv"><span class="pp-k">Name</span><span class="pp-v">${lo.name}</span></div>
+        //     <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${lo.type || '—'}</span></div>
+        //     <div class="pp-kv"><span class="pp-k">State</span>
+        //       <span class="pp-v"><span class="pp-state ${lo.displayState}"><span class="dot"></span>
+        //       <span class="lbl">${lo.displayState.charAt(0).toUpperCase() + lo.displayState.slice(1)}</span></span></span>
+        //     </div>
+        //     <div class="pp-kv"><span class="pp-k">Start date</span><span class="pp-v">${stripUTC(lo.startPretty)} (UTC)</span></div>
+        //     <div class="pp-kv"><span class="pp-k">End date</span><span class="pp-v">${stripUTC(lo.endPretty)} (UTC)</span></div>
+        //     <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
+        //     <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v">${themeHtml}</span></div>
+        //     ${assetsKV}
+        // <div class="pp-kv"><span class="pp-k">LiveOps prerequisites</span><span class="pp-v">${prereqHtml}</span></div>
+        // </div>
+        // `;
+
+        //             // [SEGMENTS] вставляем KV-блок «Сегмент»
+        //             (function renderSegmentsKV() {
+        //                 const kvs = detEl.querySelector('.pp-kvs');
+        //                 if (!kvs || !lo.segments || !lo.segments.length) return;
+
+        //                 // 1) контейнер строки KV
+        //                 const segKV = document.createElement('div');
+        //                 segKV.className = 'pp-kv';
+        //                 const many = lo.segments.length > 1;
+
+        //             // 2) содержимое: заголовок + значение
+        //             const segListId = 'ppSegList';
+        //             const oneSeg = !many ? `<code>${lo.segments[0]}</code>` : `
+        //   <button id="ppSegShowBtn" class="pp-link" type="button">Show all</button>
+        //   <div id="${segListId}" class="pp-seg-list" hidden>
+        //     ${lo.segments.map((s, i) => {
+        //                 const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
+        //                 const extId = `ppExtList-${i}`;
+        //                 const extBtn = exts.length
+        //                     ? `<button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>`
+        //                     : '';
+        //                 const extList = exts.length
+        //                     ? `<div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`
+        //                     : '';
+        //                 return `<div class="seg-item"><code>${s}</code> ${extBtn}${extList}</div>`;
+        //             }).join('')}
+        //   </div>`;
+
+        //             segKV.innerHTML = `
+        //   <span class="pp-k muted">Segment</span>
+        //   <span class="pp-v">${many ? oneSeg : (() => {
+        //                     const s = lo.segments[0];
+        //                     const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
+        //                     if (!exts.length) return `<code>${s}</code>`;
+        //                     const extId = 'ppExtSingle';
+        //                     return `<code>${s}</code> <button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>
+        //               <div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`;
+        //                 })()}</span>
+        // `;
+        //             kvs.appendChild(segKV);
+
+        //     // 3) поведение: Show all / Show External Segment
+        //     const btnAll = detEl.querySelector('#ppSegShowBtn');
+        //     const listEl = detEl.querySelector('#' + segListId);
+        //     if (btnAll && listEl) {
+        //         btnAll.addEventListener('click', () => {
+        //             const hidden = listEl.hasAttribute('hidden');
+        //             if (hidden) { listEl.removeAttribute('hidden'); btnAll.textContent = 'Hide'; }
+        //             else { listEl.setAttribute('hidden', ''); btnAll.textContent = 'Show all'; }
+        //         });
+        //     }
+        //     detEl.addEventListener('click', (e) => {
+        //         const tgl = e.target.closest('.pp-ext-tgl');
+        //         if (!tgl) return;
+        //         const id = tgl.dataset.ext;
+        //         const box = id && detEl.querySelector('#' + CSS.escape(id));
+        //         if (!box) return;
+        //         const hidden = box.hasAttribute('hidden');
+        //         if (hidden) { box.removeAttribute('hidden'); tgl.textContent = 'Hide External Segment'; }
+        //         else { box.setAttribute('hidden', ''); tgl.textContent = 'Show External Segment'; }
+        //     });
+        // })();
+
+
+        //     const tgl = detEl.querySelector('#ppAssetsTgl');
+        //     if (tgl) {
+        //         const box = detEl.querySelector('#ppAssetsBox');
+        //         const chev = detEl.querySelector('#ppAssetsChev');
+        //         tgl.addEventListener('click', () => {
+        //             const hidden = box.hasAttribute('hidden');
+        //             if (hidden) { box.removeAttribute('hidden'); chev.textContent = '▴'; }
+        //             else { box.setAttribute('hidden', ''); chev.textContent = '▾'; }
+        //         });
+        //     }
+        //     //удалили крестик
+
+        //     // обработчик для кнопки "Event in the Admin"
+        //     detEl.querySelector('#ppAdminBtn')?.addEventListener('click', () => {
+        //         window.open('https://www.google.com', '_blank', 'noopener');
+        //     });
+        // }
 
         // ---------- события ----------
         // сортировка по клику на заголовки

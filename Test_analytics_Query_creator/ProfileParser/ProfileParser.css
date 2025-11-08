@@ -1322,6 +1322,71 @@
     justify-content: flex-start;
 }
 
+/* ── Info panel header ─────────────────────────────────────────────── */
+.pp-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 4px 2px 4px;
+}
+
+.pp-detail-title {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Иконка-кнопка в инфопанели (как в тултипе календаря) */
+.pp-liveops-detail .pp-ico {
+    all: unset;
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: var(--btn-n-field-bg, #fff);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.pp-liveops-detail .pp-ico:hover {
+    opacity: .92;
+}
+
+/* Тултип над иконкой (светлая тема) */
+.pp-liveops-detail .pp-ico[data-hint]:hover::after {
+    content: attr(data-hint);
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    padding: 4px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    z-index: 1;
+}
+
+/* Тултип (тёмная тема) */
+:root.theme-dark .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.theme-dark .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+[data-theme="dark"] .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.dark .pp-liveops-detail .pp-ico[data-hint]:hover::after {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+
 /* плавающий крестик вне панели */
 .pp-close-float {
     position: absolute;
