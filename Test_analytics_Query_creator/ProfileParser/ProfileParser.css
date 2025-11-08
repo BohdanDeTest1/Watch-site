@@ -299,7 +299,7 @@
 
 /* контент Info — ровные колонки без рамки */
 .pp-kvs {
-    padding: 6px 12px;
+    padding: 14px 12px;
 }
 
 .pp-kv {
@@ -1059,7 +1059,7 @@
 .pp-item.info-open .pp-liveops-detail {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 15px;
     /* верх панели = верх таблицы */
     bottom: calc(var(--pp-admin-h) + 16px);
     /* низ панели = выше кнопки */
@@ -1363,6 +1363,20 @@
     flex-wrap: wrap;
     /* если мало места, кнопка уйдёт на следующую строку */
 }
+
+.pp-liveops-detail .pp-kv-name .pp-v {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    /* если мало места, кнопка уйдёт на следующую строку */
+}
+
+/* кнопка копирования «уезжает» вправо от названия */
+.pp-liveops-detail .pp-kv-name .pp-ico {
+    margin-left: auto;
+}
+
 
 .pp-liveops-detail .pp-name-text {
     white-space: normal;
