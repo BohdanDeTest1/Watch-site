@@ -2988,6 +2988,20 @@
             fromInp?.addEventListener('input', sync);
             toInp?.addEventListener('input', sync);
 
+            [fromInp, toInp].forEach((el) => {
+                el?.addEventListener('focus', () => { if (ruleMenu) ruleMenu.hidden = true; }, true);
+                el?.addEventListener('mousedown', () => { if (ruleMenu) ruleMenu.hidden = true; }, true);
+                el?.addEventListener('click', () => { if (ruleMenu) ruleMenu.hidden = true; }, true);
+            });
+
+            // на всякий случай — любой клик внутри попапа по input[type="date"]
+            // тоже закрывает меню правил
+            pop?.addEventListener('mousedown', (e) => {
+                if (e.target?.closest('input[type="date"]')) {
+                    if (ruleMenu) ruleMenu.hidden = true;
+                }
+            }, true);
+
             resetBtn?.addEventListener('click', () => {
                 set({ rule: 'between', from: '', to: '' });
                 if (fromInp) fromInp.value = '';
@@ -3002,13 +3016,28 @@
                 renderRows();
             });
 
-            // клик вне — закрыть попап (и меню правил)
+            // клик вне — закрыть попап (и меню правил).
+            // Дополнительно: если кликнули ВНУТРИ попапа по полю даты — лишь прячем меню правил.
             document.addEventListener('click', (e) => {
                 if (!document.body.contains(pop) || pop.hidden) return;
-                if (e.target.closest(popSel) || e.target.closest(btnSel)) return;
+
+                // внутри самого попапа
+                if (e.target.closest(popSel)) {
+                    // если попали в date-инпут — закрыть только меню правил
+                    if (e.target.closest('input[type="date"]')) {
+                        if (ruleMenu) ruleMenu.hidden = true;
+                    }
+                    return; // сам попап не закрываем
+                }
+
+                // клик по кнопке открытия — игнор
+                if (e.target.closest(btnSel)) return;
+
+                // вне попапа — закрываем всё
                 pop.hidden = true;
-                ruleMenu && (ruleMenu.hidden = true);
+                if (ruleMenu) ruleMenu.hidden = true;
             });
+
         }
 
         // Подключаем оба дата-фильтра
