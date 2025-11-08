@@ -2850,12 +2850,17 @@
         }
 
         function syncTypeConfirmState() {
-            const rule = typeRuleBtn?.dataset.val || 'contains';
+            // Контролы правила могут отсутствовать в разметке Type-попапа.
+            const rule = typeRuleBtn?.dataset?.val || 'contains';
             const needText = rule !== 'blank';
-            if (typeQueryInput) typeQueryInput.disabled = !needText;
-            if (!needText && typeQueryInput) typeQueryInput.value = '';
-            // подтверждать можно всегда — применение делаем одной кнопкой
-            typeApplyBtn && (typeApplyBtn.disabled = false);
+
+            if (typeQueryInput) {
+                typeQueryInput.disabled = !needText;
+                if (!needText) typeQueryInput.value = '';
+            }
+
+            // Кнопку подтверждения не блокируем: пользователь всегда может применить чекбоксы.
+            if (typeApplyBtn) typeApplyBtn.disabled = false;
         }
 
         // открыть/закрыть и инициализировать черновики
@@ -2863,33 +2868,39 @@
             e.stopPropagation();
             const willOpen = typePop.hidden;
 
-            // 1) ВСЕГДА закрываем оба меню правил
+            // 1) закрыть меню правил других фильтров и сами попапы
             wrap.querySelector('#ppNameRuleMenu')?.setAttribute('hidden', '');
             wrap.querySelector('#ppTypeRuleMenu')?.setAttribute('hidden', '');
-
-            // 2) закрываем Name-попап (если открыт)
-            const nPop = wrap.querySelector('#ppNamePop');
-            if (nPop) nPop.hidden = true;
-
+            wrap.querySelector('#ppNamePop')?.setAttribute('hidden', '');
             wrap.querySelector('#ppStatePop')?.setAttribute('hidden', '');
             wrap.querySelector('#ppStartPop')?.setAttribute('hidden', '');
             wrap.querySelector('#ppEndPop')?.setAttribute('hidden', '');
 
-
-            // 3) открываем/закрываем Type-попап
+            // 2) открыть/закрыть текущий
             typePop.hidden = !typePop.hidden;
+
+            // 3) при открытии — подтянуть текущее «боевое» состояние в черновик и отрисовать
             if (willOpen) {
-                // твоя инициализация Type остаётся без изменений
                 typeDraft = new Set(typeFilter);
-                typeTextDraft = { ...typeTextFilter };
-                typeSearch && (typeSearch.value = '');
-                typeQueryInput && (typeQueryInput.value = typeTextDraft.query || '');
+                // безопасная инициализация черновика текстового правила (может отсутствовать в UI)
+                typeTextDraft = (typeTextFilter && typeof typeTextFilter === 'object')
+                    ? { rule: typeTextFilter.rule || 'contains', query: typeTextFilter.query || '' }
+                    : { rule: 'contains', query: '' };
+
+                if (typeSearch) typeSearch.value = '';
+                if (typeQueryInput) typeQueryInput.value = typeTextDraft.query || '';
+
                 if (typeRuleBtn) {
                     typeRuleBtn.dataset.val = typeTextDraft.rule || 'contains';
                     typeRuleBtn.querySelector('.txt').textContent = ({
-                        contains: 'Contains', notcontains: 'Not contains', starts: 'Starts with', equals: 'Equals to', blank: 'Blank'
+                        contains: 'Contains',
+                        notcontains: 'Not contains',
+                        starts: 'Starts with',
+                        equals: 'Equals to',
+                        blank: 'Blank'
                     })[typeRuleBtn.dataset.val] || 'Contains';
                 }
+
                 buildTypeList('');
                 syncTypeConfirmState();
                 typeSearch?.focus();
@@ -3100,9 +3111,23 @@
         });
 
 
+        // APPLY: применить выбранные типы (и, если есть, текстовое правило)
         typeApplyBtn?.addEventListener('click', () => {
+            // 1) чекбоксы → боевое состояние
             typeFilter = new Set(typeDraft);
-            typeTextFilter = { rule: typeRuleBtn.dataset.val, query: (typeQueryInput?.value || '').trim() };
+
+            // 2) текстовое правило: в текущей разметке его может не быть (только список типов).
+            // Не ломаемся, аккуратно читаем, если элементы существуют.
+            const rule = (typeRuleBtn?.dataset?.val) || 'contains';
+            const query = (typeQueryInput?.value || '').trim();
+
+            // Если контролов правила нет — просто отключаем текстовый фильтр,
+            // чтобы работал только набор чекбоксов.
+            typeTextFilter = (typeRuleBtn || typeQueryInput)
+                ? { rule, query }
+                : null;
+
+            // 3) закрыть попап и перерисовать таблицу
             typePop.hidden = true;
             renderRows();
         });
