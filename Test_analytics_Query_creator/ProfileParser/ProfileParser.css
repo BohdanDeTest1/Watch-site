@@ -685,9 +685,19 @@
 
 .pp-pager .pp-sel-wrap {
     position: relative;
+    display: inline-flex;
+    /* даём высоту контейнеру */
+    align-items: center;
+    flex: 0 0 auto;
+    /* не сжимать в ноль внутри .pp-perpage */
+    min-height: 36px;
+    /* видимая высота «кнопки» */
+    min-width: 88px;
+    /* чтобы влезало «25» и др. */
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 2px 18px;
+    padding: 0 34px 0 12px;
+    /* справа место под стрелку, слева — под текст */
     background: var(--card-bg);
 }
 
@@ -697,7 +707,10 @@
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 12px;
+    font-size: 20px;
+    /* больше стрелка */
+    line-height: 1;
+    font-weight: 800;
     color: #111827;
     pointer-events: none;
 }
@@ -747,13 +760,27 @@
 
 
 .pp-pager .pp-sel {
-    padding: 6px 8px;
+    position: absolute;
+    inset: 0;
+    /* кликабельно по всей плашке */
+    width: 100%;
+    height: 100%;
+    padding: 0 34px 0 12px;
+    /* синхронно с .pp-sel-wrap */
     border: 0;
     outline: 0;
     background: transparent;
-    font-weight: 600;
-    padding: 6px 0;
+    font-weight: 700;
+    font-size: 14px;
+    /* читабельный размер значения */
+    line-height: 1;
+    /* без лишних «просадок» по высоте */
+    -webkit-appearance: none;
+    appearance: none;
+    /* убираем нативную стрелку */
+    cursor: pointer;
 }
+
 
 .pp-pager .pp-nav {
     display: inline-flex;
@@ -791,6 +818,16 @@
 
 .pp-pager .pp-sel-wrap {
     order: 2;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-height: 36px;
+    min-width: 88px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0 34px 0 12px;
+    background: var(--card-bg);
+    position: relative;
 }
 
 .pp-pager .pp-nav {

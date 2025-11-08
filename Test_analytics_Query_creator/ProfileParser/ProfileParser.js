@@ -789,12 +789,12 @@
   </button>
 
   <span class="pp-label">Rows per page</span>
-  <span class="pp-sel-wrap">
-    <select class="pp-sel" id="ppRows">
-      <option selected>10</option><option>25</option><option>50</option>
-      <option>75</option><option>100</option>
-    </select>
-  </span>
+<span class="pp-sel-wrap">
+  <select class="pp-sel" id="ppRows">
+    <option>10</option><option selected>25</option><option>50</option>
+    <option>75</option><option>100</option>
+  </select>
+</span>
   <span id="ppRange">0–0 of 0</span>
   <span class="pp-nav">
     <button class="pp-icon" id="ppFirst" title="First"><span>|‹</span></button>
@@ -2207,7 +2207,7 @@
         let endFilter = { rule: 'between', from: '', to: '' };
         let viewRows = [];
         let allFilteredSorted = [];        // полный набор после фильтра/сортировки
-        let pageSize = 10;
+        let pageSize = 25;
         let page = 1;
         let nameFilter = { rule: 'contains', query: '' }; // <— новое состояние
         const FIXED_ROWS = 10;
