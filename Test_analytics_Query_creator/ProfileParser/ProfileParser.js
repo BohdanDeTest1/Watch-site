@@ -2200,7 +2200,7 @@
         let sortKey = 'name';
         let sortDir = 'asc';
         let typeFilter = new Set(); // пустой = показываем всё
-        const stateFilter = new Set();
+        let stateFilter = new Set();
         const allTypes = Array.from(new Set(items.map(i => i.type).filter(Boolean))).sort();
         let typeTextFilter = { rule: 'contains', query: '' }; // текстовое правило для Type
         let startFilter = { rule: 'between', from: '', to: '' };
