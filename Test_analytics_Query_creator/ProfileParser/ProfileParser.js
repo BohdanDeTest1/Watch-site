@@ -2462,7 +2462,7 @@
 
             const condHtml = (lo.conditions && lo.conditions.length)
                 ? `<div class="pp-conds">${lo.conditions.map(s => `<div>${s}</div>`).join('')}</div>`
-                : '<div class="muted">—</div>';
+                : '<div class="muted">None</div>';
 
             const hasAssets = !!lo.themeAssets && (lo.themeAssets.android || lo.themeAssets.ios);
             const assetsInside = hasAssets ? `
@@ -2474,7 +2474,7 @@
     ${lo.themeAssets.ios ? `<div class="row"><strong>iOS:</strong> <code>${lo.themeAssets.ios}</code></div>` : ''}
   </div>` : '';
 
-            let themeHtml = (lo.themeId ? `<code>${lo.themeId}</code>` : '—');
+            let themeHtml = (lo.themeId ? `<code>${lo.themeId}</code>` : 'None');
 
             // готовим содержимое строки Assets (если есть что показывать)
             let assetsKV = '';
@@ -2499,7 +2499,7 @@
                     if (p.comboIndex !== '' && p.comboIndex !== undefined) lines.push(`comboIndex: ${p.comboIndex}`);
                     return `<div>${lines.join(`\n`)}</div>`;
                 }).join('') + `</div>`
-                : '<div class="muted">—</div>';
+                : '<div class="muted">None</div>';
 
 
             detEl.innerHTML = `
