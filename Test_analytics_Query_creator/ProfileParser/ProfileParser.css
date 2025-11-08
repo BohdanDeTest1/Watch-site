@@ -687,7 +687,7 @@
     position: relative;
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 2px 8px;
+    padding: 2px 18px;
     background: var(--card-bg);
 }
 
@@ -2663,7 +2663,7 @@ body.theme-dark .pp-cal-tick {
 [data-theme="dark"] #ppCal .tl-toolbar .tl-btn,
 .dark #ppCal .tl-toolbar .tl-btn {
     /* темнее панели — чтобы кнопки были читаемы */
-    background: #0b1325;
+    background: #1f2b46;
     border-color: var(--tl-border);
     color: var(--text);
 }
