@@ -2504,20 +2504,23 @@
 
             // ---- ШАПКА с кнопкой Copy (как в календарном тултипе) ----
             detEl.innerHTML = `
-  <div class="pp-detail-head">
-    <div class="pp-detail-title" title="${lo.name ? lo.name.replace(/"/g, '&quot;') : ''}">${lo.name || ''}</div>
-    <div class="pp-detail-actions">
-      <button id="ppCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
-          <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
-          <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-      </button>
-    </div>
-  </div>
 
   <div class="pp-kvs">
-    <div class="pp-kv"><span class="pp-k">Name</span><span class="pp-v">${lo.name}</span></div>
+    <!-- Name: кнопка теперь внутри значения и стоит справа от текста -->
+    <div class="pp-kv pp-kv-name">
+      <span class="pp-k">Name</span>
+      <span class="pp-v">
+        <span class="pp-name-text">${lo.name}</span>
+        <button id="ppCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
+          <!-- та же иконка, что в календарном тултипе -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+            <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </span>
+    </div>
+
     <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${lo.type || '—'}</span></div>
     <div class="pp-kv"><span class="pp-k">State</span>
       <span class="pp-v"><span class="pp-state ${lo.displayState}"><span class="dot"></span>
@@ -2525,7 +2528,8 @@
     </div>
     <div class="pp-kv"><span class="pp-k">Start date</span><span class="pp-v">${stripUTC(lo.startPretty)} (UTC)</span></div>
     <div class="pp-kv"><span class="pp-k">End date</span><span class="pp-v">${stripUTC(lo.endPretty)} (UTC)</span></div>
-    <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
+    
+  <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
     <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v">${themeHtml}</span></div>
     ${assetsKV}
     <div class="pp-kv"><span class="pp-k">LiveOps prerequisites</span><span class="pp-v">${prereqHtml}</span></div>

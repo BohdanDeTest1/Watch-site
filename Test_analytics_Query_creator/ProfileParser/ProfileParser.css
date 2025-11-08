@@ -1355,6 +1355,35 @@
     cursor: pointer;
 }
 
+/* Name row: текст переносится, кнопка по центру по вертикали */
+.pp-liveops-detail .pp-kv-name .pp-v {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    /* если мало места, кнопка уйдёт на следующую строку */
+}
+
+.pp-liveops-detail .pp-name-text {
+    white-space: normal;
+    /* разрешаем многострочность */
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-word;
+    /* длинные токены не ломают сетку */
+}
+
+/* Тёмная тема: подсказка над иконкой */
+:root.theme-dark .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.theme-dark .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+[data-theme="dark"] .pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.dark .pp-liveops-detail .pp-ico[data-hint]:hover::after {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+
 .pp-liveops-detail .pp-ico:hover {
     opacity: .92;
 }
