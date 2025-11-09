@@ -577,8 +577,11 @@
                 if (!g.segments.includes(seg)) g.segments.push(seg);
                 if (!g.externalsBySegment[seg]) g.externalsBySegment[seg] = [];
                 for (const e of exts) {
-                    if (e && !g.externalsBySegment[seg].includes(e)) g.externalsBySegment[seg].push(e);
+                    const val = String(e).trim();
+                    if (val && !g.externalsBySegment[seg].includes(val)) g.externalsBySegment[seg].push(val);
                 }
+
+
             } else if (exts.length) {
                 const k = '(no segment)';
                 if (!g.segments.includes(k)) g.segments.push(k);
@@ -2549,8 +2552,11 @@
                 const oneSeg = !many ? `<code>${lo.segments[0]}</code>` : `
       <button id="ppSegShowBtn" class="pp-link" type="button">Show all</button>
       <div id="${segListId}" class="pp-seg-list" hidden>
-        ${lo.segments.map((s, i) => {
-                    const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
+       
+      ${lo.segments.map((s, i) => {
+                    const key = String(s).trim();
+                    const rawExts = (lo.externalsBySegment && lo.externalsBySegment[key]) ? lo.externalsBySegment[key] : [];
+                    const exts = Array.isArray(rawExts) ? rawExts.map(e => String(e).trim()).filter(Boolean) : [];
                     const extId = `ppExtList-${i}`;
                     const extBtn = exts.length
                         ? `<button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>`
@@ -2558,20 +2564,25 @@
                     const extList = exts.length
                         ? `<div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`
                         : '';
-                    return `<div class="seg-item"><code>${s}</code> ${extBtn}${extList}</div>`;
+                    return `<div class="seg-item"><code>${key}</code> ${extBtn}${extList}</div>`;
                 }).join('')}
+
       </div>`;
 
                 segKV.innerHTML = `
       <span class="pp-k muted">Segment</span>
+      
       <span class="pp-v">${many ? oneSeg : (() => {
                         const s = lo.segments[0];
-                        const exts = (lo.externalsBySegment && lo.externalsBySegment[s]) ? lo.externalsBySegment[s] : [];
-                        if (!exts.length) return `<code>${s}</code>`;
+                        const key = String(s).trim();
+                        const rawExts = (lo.externalsBySegment && lo.externalsBySegment[key]) ? lo.externalsBySegment[key] : [];
+                        const exts = Array.isArray(rawExts) ? rawExts.map(e => String(e).trim()).filter(Boolean) : [];
+                        if (!exts.length) return `<code>${key}</code>`;
                         const extId = 'ppExtSingle';
-                        return `<code>${s}</code> <button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>
-                  <div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`;
+                        return `<code>${key}</code> <button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>
+      <div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`;
                     })()}</span>
+
     `;
                 kvs.appendChild(segKV);
 
