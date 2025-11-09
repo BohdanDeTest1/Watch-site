@@ -2516,10 +2516,9 @@
         <span class="pp-name-text">${lo.name}</span>
         <button id="ppCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
           <!-- та же иконка, что в календарном тултипе -->
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-            <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-            <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-          </svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
         </button>
       </span>
     </div>

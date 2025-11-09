@@ -1340,7 +1340,7 @@
     white-space: nowrap;
 }
 
-/* Иконка-кнопка в инфопанели (как в тултипе календаря) */
+/* Иконка-кнопка в инфопанели — как в контекстном тултипе календаря */
 .pp-liveops-detail .pp-ico {
     all: unset;
     position: relative;
@@ -1353,6 +1353,17 @@
     background: var(--btn-n-field-bg, #fff);
     color: var(--text);
     cursor: pointer;
+}
+
+/* поведение и отрисовка SVG такие же, как в тултипе */
+.pp-liveops-detail .pp-ico svg {
+    display: block;
+}
+
+/* ховер — как в .pp-ctx */
+.pp-liveops-detail .pp-ico:hover {
+    opacity: .9;
+    filter: brightness(0.98);
 }
 
 /* Name row: текст переносится, кнопка по центру по вертикали */
