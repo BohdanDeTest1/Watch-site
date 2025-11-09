@@ -1387,7 +1387,8 @@
             const mainElPos = mainEl.getBoundingClientRect();
 
             function closeCtxPopup() {
-                mainEl.querySelectorAll('.pp-ctx').forEach(n => n.remove());
+                // закрываем независимо от места вставки
+                document.querySelectorAll('.pp-ctx').forEach(n => n.remove());
                 calState._ctxOpen = false;
             }
             function openCtxPopup(e, data) {
@@ -1406,32 +1407,21 @@
   <div class="pp-ctx-title">
     <span class="txt">${title ? escapeHtml(title) : ''}</span>
     <div class="pp-title-actions">
-            <!-- Open in table (иконка «таблица») -->
-     <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
-    <!-- рамка таблицы -->
-    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"
-          stroke="currentColor" stroke-width="1.5" fill="none"/>
-    <!-- горизонтальные линии -->
-    <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
-    <!-- вертикальные линии -->
-    <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
-  </svg>
-</button>
-
-      <!-- Copy (иконка «два листа») -->
+      <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
       <button class="pp-ico act-copy" data-hint="Copy" aria-label="Copy" title="">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-          <!-- задний лист -->
           <rect x="4" y="7" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-          <!-- передний лист -->
           <rect x="9" y="4" width="11" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
         </svg>
       </button>
-
     </div>
   </div>
-
   <div class="pp-ctx-row"><span class="k">Start</span><span class="v">${escapeHtml(start || '')}</span></div>
   <div class="pp-ctx-row"><span class="k">End</span><span class="v">${escapeHtml(end || '')}</span></div>
   ${Array.isArray(segments) && segments.length ? `
@@ -1448,26 +1438,39 @@
   <div class="pp-ctx-row"><span class="k">Conditions</span><span class="v">${condHtml}</span></div>
 `;
 
-                // позиционирование попапа — оставить как было
+                // === позиционирование: фикс relative к вьюпорту, по координатам клика ===
+                // вставляем в <body>, чтобы ни scroll ни transform родителей не влияли
+                document.body.appendChild(pop);
 
-                // привязываем действия к кнопкам
+                // небольшой отступ от курсора
+                const GAP = 12;
+
+                // измеряем и укладываем в видимую область
+                requestAnimationFrame(() => {
+                    const r = pop.getBoundingClientRect();
+                    const vw = window.innerWidth, vh = window.innerHeight;
+
+                    let left = e.clientX + GAP;
+                    let top = e.clientY + GAP;
+
+                    // не выезжать за правый/нижний край
+                    if (left + r.width > vw - 8) left = Math.max(8, vw - r.width - 8);
+                    if (top + r.height > vh - 8) top = Math.max(8, vh - r.height - 8);
+
+                    pop.style.left = left + 'px';
+                    pop.style.top = top + 'px';
+                });
+
+                // действия
                 const openBtn = pop.querySelector('.act-open');
                 const copyBtn = pop.querySelector('.act-copy');
 
-                // открыть в таблице: сообщаем таблице, что нужно отфильтровать по названию
                 openBtn?.addEventListener('click', (ev) => {
                     ev.preventDefault();
                     ev.stopPropagation();
-
-                    // 1) диспатчим кастомное событие — таблица его поймает и применит фильтр
-                    document.dispatchEvent(new CustomEvent('pp:applyNameFilter', {
-                        detail: { title }
-                    }));
-
-                    // 2) закрываем тултип
+                    document.dispatchEvent(new CustomEvent('pp:applyNameFilter', { detail: { title } }));
                     closeCtxPopup();
                 });
-
 
                 copyBtn?.addEventListener('click', async (ev) => {
                     ev.stopPropagation();
@@ -1506,9 +1509,6 @@
 
                 document.addEventListener('click', onDocClick, true);
 
-                const onScroll = () => closeCtxPopup();
-                // Скрываем при любом горизонтальном/вертикальном скролле внутри основного полотна
-                mainEl.addEventListener('scroll', onScroll, { once: true });
             }
 
 
@@ -4219,7 +4219,8 @@
             // Поповер
             const pop = document.createElement('div');
             pop.className = 'tl-info-pop';
-            pop.style.position = 'absolute';
+            // фиксируем относительно вьюпорта
+            pop.style.position = 'fixed';
             pop.style.minWidth = '240px';
             pop.style.maxWidth = '420px';
             pop.style.padding = '10px 12px';
@@ -4227,10 +4228,10 @@
             pop.style.borderRadius = '10px';
             pop.style.background = 'var(--btn-n-field-bg, rgba(20,20,20,.92))';
             pop.style.boxShadow = '0 10px 28px rgba(0,0,0,.35)';
-            pop.style.zIndex = '4000';
+            pop.style.zIndex = '5000';
             pop.style.pointerEvents = 'auto';
+            pop.style.visibility = 'hidden';
 
-            // читаем conditions из dataset
             let conds = [];
             try { conds = JSON.parse(bar.dataset.conditions || '[]'); } catch { conds = []; }
             const condHtml = conds.length
@@ -4243,18 +4244,14 @@
     <span class="pp-title-actions" style="display:inline-flex;gap:6px;">
       <button class="pp-ico js-open-in-table" type="button" data-hint="Open in table" aria-label="Open in table"
         style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
-  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
-    <!-- рамка таблицы -->
-    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"
-          stroke="currentColor" stroke-width="1.5" fill="none"/>
-    <!-- горизонтальные линии -->
-    <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
-    <!-- вертикальные линии -->
-    <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
-  </svg>
-</button>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
+      </button>
       <button class="pp-ico js-copy-title" type="button" data-hint="Copy" aria-label="Copy name"
-              style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
+        style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
         </svg>
@@ -4262,7 +4259,7 @@
     </span>
   </div>
 
-  <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
+ <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:12px;line-height:1.25;">
     <span class="k" style="color:var(--muted,#9aa0a6)">type:</span><span class="v">${escapeHtml(type)}</span>
     <span class="k" style="color:var(--muted,#9aa0a6)">start (UTC):</span><span class="v">${escapeHtml(startU)}</span>
     <span class="k" style="color:var(--muted,#9aa0a6)">end (UTC):</span><span class="v">${escapeHtml(endU)}</span>
@@ -4271,39 +4268,47 @@
 `;
 
 
-            // Позиционируем у точки клика (с учётом скролла тела таймлайна)
-            // Позиционируем у точки клика — через portal в <body>, чтобы не клипалось
-            pop.style.position = 'fixed';
-            pop.style.zIndex = '5000';        // чуть выше всего календаря
-            pop.style.pointerEvents = 'auto';
-
-            // clientX/Y уже в экранных координатах — скроллы не нужны
-            const x = (e.clientX || 0) + 8;
-            const y = (e.clientY || 0) + 12;
-
-            pop.style.left = x + 'px';
-            pop.style.top = y + 'px';
-
-            // было: elBody.appendChild(pop);
+            // Монтируем в body и считаем позицию относительно БАРА,
+            // зажимая попап в границы видимой части календаря
             document.body.appendChild(pop);
-            // wire actions (open in table / copy)
-            // wire actions (open in table / copy)
+            const GAP = 10; // держим 5–15px от бара
+            const barRect = bar.getBoundingClientRect();
+            const calRect = elBody.getBoundingClientRect(); // основное полотно календаря
+            const popRect0 = pop.getBoundingClientRect();
+
+            // Горизонталь: стремимся к центру бара, но в рамках календ. контейнера
+            let left = barRect.left + (barRect.width - popRect0.width) / 2;
+            left = Math.max(left, calRect.left + GAP);
+            left = Math.min(left, calRect.right - popRect0.width - GAP);
+
+            // Вертикаль: предпочтительно под баром; если не влазит — над баром
+            const canBelow = barRect.bottom + GAP + popRect0.height <= calRect.bottom - GAP;
+            const canAbove = barRect.top - GAP - popRect0.height >= calRect.top + GAP;
+            const placeAbove = !canBelow && canAbove
+                ? true
+                : (canBelow && !canAbove ? false : (barRect.bottom > (calRect.top + calRect.height / 2)));
+
+
+            let top = placeAbove
+                ? Math.max(barRect.top - GAP - popRect0.height, calRect.top + GAP)                  // над баром
+                : Math.min(barRect.bottom + GAP, calRect.bottom - popRect0.height - GAP); // под баром
+
+            // Применяем координаты
+            pop.style.left = Math.round(left) + 'px';
+            pop.style.top = Math.round(top) + 'px';
+            pop.style.visibility = 'visible';
+
+            // --- actions ---
             const openBtn = pop.querySelector('.js-open-in-table');
             const copyBtn = pop.querySelector('.js-copy-title');
-
             // открыть в таблице (через централизованный обработчик таблицы)
             openBtn?.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
-                // передаем название события в таблицу и даём ей самой отрисоваться и проскроллить
-                document.dispatchEvent(new CustomEvent('pp:applyNameFilter', {
-                    detail: { title: title || '' }
-                }));
+                document.dispatchEvent(new CustomEvent('pp:applyNameFilter', { detail: { title: title || '' } }));
                 closeInfoPops();
             });
 
-
-            // копировать имя события
             copyBtn?.addEventListener('click', async (ev) => {
                 ev.preventDefault(); ev.stopPropagation();
                 const text = title || '';

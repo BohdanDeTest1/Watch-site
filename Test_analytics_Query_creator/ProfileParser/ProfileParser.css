@@ -3781,7 +3781,9 @@ body.theme-dark .pp-cal-tick {
 /* на всякий случай — уже есть в файле, но зафиксируем контекст позиционирования */
 
 .pp-ctx {
-    position: absolute;
+    /* важно: фиксируем относительно вьюпорта, чтобы не «ездило» при скролле страницы */
+    position: fixed !important;
+    /* размеры и оформление без изменений */
     min-width: 260px;
     max-width: 420px;
     padding: 10px 12px;
@@ -3792,12 +3794,12 @@ body.theme-dark .pp-cal-tick {
     color: #111827;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    transform: translateY(6px);
-    z-index: 4000 !important;
-    /* поверх сетки/баров/хедера */
+    /* убираем сдвиг, чтобы точка позиционирования соответствовала месту клика */
+    transform: none;
+    z-index: 5000 !important;
+    /* поверх календаря */
     pointer-events: auto;
 }
-
 
 .pp-ctx .pp-ctx-title {
     display: flex;
@@ -3944,16 +3946,20 @@ body.theme-dark .pp-cal-tick {
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
-/* [CTX POPUP — hard override at EOF] */
-.pp-ctx {
-    position: absolute;
-    z-index: 4000 !important;
-    /* выше сетки/баров/хедера */
+/* [CTX POPUP — hard override at EOF]
+   Закрепляем всплывашки во вьюпорте, чтобы не прокручивались со страницей.
+   Оставляем высокий z-index и кликабельность. */
+.pp-ctx,
+.tl-info-pop {
+    position: fixed !important;
+    z-index: 5000 !important;
     pointer-events: auto;
 }
 
+
 /* [TL-INFO-POP — portal в <body>, фиксированное позиционирование] */
 .tl-info-pop {
+    /* фиксируем относительно вьюпорта — попап не «уезжает» при вертикальном скролле страницы */
     position: fixed !important;
     z-index: 5000 !important;
     pointer-events: auto;
@@ -3966,15 +3972,14 @@ body.theme-dark .pp-cal-tick {
 [data-theme="dark"] .tl-info-pop,
 .dark .tl-info-pop {
     background: var(--cal-left-solid, #0d162ce0) !important;
-    /* перебиваем inline */
     color: #e5e7eb !important;
 
     background-image: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     box-shadow: 0 10px 28px rgba(0, 0, 0, .35) !important;
-    /* оставляем мягкую тень */
 }
+
 
 
 /* Actions in TL popover */
@@ -4280,6 +4285,18 @@ body.dark-theme .pp-btn.pp-info {
     border: none;
 }
 
+/* [PIN-POPUP] — фиксируем всплывашки при вертикальном скролле.
+   Причина: у #ppCal .tl-res-list есть transform: translateZ(0),
+   который делает его содержащим блоком для position: fixed у потомков.
+   Когда открыт попап — отключаем transform, чтобы fixed снова был к вьюпорту. */
+#ppCal:has(.pp-ctx) .tl-res-list,
+#ppCal:has(.tl-info-pop) .tl-res-list {
+    transform: none !important;
+    will-change: auto;
+}
 
-
-/* Сброс внешних округлений у внутренних элементов таблицы не ломаем */
+/* На всякий случай снимаем лишнее "will-change" с шапки сетки, когда открыт попап */
+#ppCal:has(.pp-ctx) .tl-grid-header,
+#ppCal:has(.tl-info-pop) .tl-grid-header {
+    will-change: auto;
+}
