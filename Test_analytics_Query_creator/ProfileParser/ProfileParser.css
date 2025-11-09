@@ -3850,11 +3850,17 @@ body.theme-dark .pp-cal-tick {
 .theme-dark .pp-ctx,
 [data-theme="dark"] .pp-ctx,
 .dark .pp-ctx {
-    background: rgba(15, 23, 42, .85);
-    /* тёмная «смазанная» подложка */
+    /* такой же сплошной тёмно-синий, как в шапке/табличных заголовках */
+    background: var(--cal-left-solid, #0f172a) !important;
+    background-image: none !important;
     color: #e5e7eb;
     border-color: rgba(148, 163, 184, .35);
+
+    /* убираем «стеклянность», чтобы не казалось чёрным из-за подложки */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
+
 
 /* маленькие иконки в заголовке тултипа */
 /* маленькие иконки-кнопки (только SVG, без квадратиков) */
@@ -3951,7 +3957,25 @@ body.theme-dark .pp-cal-tick {
     position: fixed !important;
     z-index: 5000 !important;
     pointer-events: auto;
+    background: var(--cal-left-solid, #f6f8ffe8) !important;
 }
+
+/* DARK override: делаем фон поповера таким же тёмно-синим, как у шапки/таблицы */
+:root.theme-dark .tl-info-pop,
+.theme-dark .tl-info-pop,
+[data-theme="dark"] .tl-info-pop,
+.dark .tl-info-pop {
+    background: var(--cal-left-solid, #0d162ce0) !important;
+    /* перебиваем inline */
+    color: #e5e7eb !important;
+
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .35) !important;
+    /* оставляем мягкую тень */
+}
+
 
 /* Actions in TL popover */
 .tl-info-pop .pp-title-actions {
