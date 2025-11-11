@@ -3949,18 +3949,22 @@ body.theme-dark .pp-cal-tick {
 /* [CTX POPUP — hard override at EOF]
    Закрепляем всплывашки во вьюпорте, чтобы не прокручивались со страницей.
    Оставляем высокий z-index и кликабельность. */
-.pp-ctx,
-.tl-info-pop {
+.pp-ctx {
     position: fixed !important;
     z-index: 5000 !important;
     pointer-events: auto;
 }
 
 
-/* [TL-INFO-POP — portal в <body>, фиксированное позиционирование] */
+/* [TL-INFO-POP — позиционирование внутри тела таймлайна] */
+#tlBody {
+    /* гарантируем контекст позиционирования для absolute */
+    position: relative;
+}
+
 .tl-info-pop {
-    /* фиксируем относительно вьюпорта — попап не «уезжает» при вертикальном скролле страницы */
-    position: fixed !important;
+    /* теперь попап едет вместе с календарём */
+    position: absolute !important;
     z-index: 5000 !important;
     pointer-events: auto;
     background: var(--cal-left-solid, #f6f8ffe8) !important;
@@ -3979,6 +3983,7 @@ body.theme-dark .pp-cal-tick {
     -webkit-backdrop-filter: none !important;
     box-shadow: 0 10px 28px rgba(0, 0, 0, .35) !important;
 }
+
 
 
 
@@ -4298,5 +4303,14 @@ body.dark-theme .pp-btn.pp-info {
 /* На всякий случай снимаем лишнее "will-change" с шапки сетки, когда открыт попап */
 #ppCal:has(.pp-ctx) .tl-grid-header,
 #ppCal:has(.tl-info-pop) .tl-grid-header {
+    will-change: auto;
+}
+
+body.pp-has-pop #ppCal .tl-res-list {
+    transform: none !important;
+    will-change: auto;
+}
+
+body.pp-has-pop #ppCal .tl-grid-header {
     will-change: auto;
 }

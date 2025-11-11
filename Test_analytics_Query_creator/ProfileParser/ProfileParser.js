@@ -4219,8 +4219,8 @@
             // Поповер
             const pop = document.createElement('div');
             pop.className = 'tl-info-pop';
-            // фиксируем относительно вьюпорта
-            pop.style.position = 'fixed';
+            /* позиционируем относительно контейнера таймлайна */
+            pop.style.position = 'absolute';
             pop.style.minWidth = '240px';
             pop.style.maxWidth = '420px';
             pop.style.padding = '10px 12px';
@@ -4270,16 +4270,23 @@
 
             // Монтируем в body и считаем позицию относительно БАРА,
             // зажимая попап в границы видимой части календаря
-            document.body.appendChild(pop);
+
+            // Монтируем в тело таймлайна и считаем позицию относительно БАРА,
+            // зажимая попап в границы видимой части календаря
+            if (getComputedStyle(elBody).position === 'static') {
+                elBody.style.position = 'relative'; // на всякий случай
+            }
+            elBody.appendChild(pop);
+
             const GAP = 10; // держим 5–15px от бара
             const barRect = bar.getBoundingClientRect();
-            const calRect = elBody.getBoundingClientRect(); // основное полотно календаря
+            const calRect = elBody.getBoundingClientRect(); // контейнер таймлайна
             const popRect0 = pop.getBoundingClientRect();
 
             // Горизонталь: стремимся к центру бара, но в рамках календ. контейнера
-            let left = barRect.left + (barRect.width - popRect0.width) / 2;
-            left = Math.max(left, calRect.left + GAP);
-            left = Math.min(left, calRect.right - popRect0.width - GAP);
+            let leftVp = barRect.left + (barRect.width - popRect0.width) / 2;
+            leftVp = Math.max(leftVp, calRect.left + GAP);
+            leftVp = Math.min(leftVp, calRect.right - popRect0.width - GAP);
 
             // Вертикаль: предпочтительно под баром; если не влазит — над баром
             const canBelow = barRect.bottom + GAP + popRect0.height <= calRect.bottom - GAP;
@@ -4288,15 +4295,19 @@
                 ? true
                 : (canBelow && !canAbove ? false : (barRect.bottom > (calRect.top + calRect.height / 2)));
 
-
-            let top = placeAbove
+            let topVp = placeAbove
                 ? Math.max(barRect.top - GAP - popRect0.height, calRect.top + GAP)                  // над баром
-                : Math.min(barRect.bottom + GAP, calRect.bottom - popRect0.height - GAP); // под баром
+                : Math.min(barRect.bottom + GAP, calRect.bottom - popRect0.height - GAP);           // под баром
 
-            // Применяем координаты
-            pop.style.left = Math.round(left) + 'px';
-            pop.style.top = Math.round(top) + 'px';
+            // Перевод из координат вьюпорта в координаты контейнера (#tlBody)
+            const left = Math.round(leftVp - calRect.left + elBody.scrollLeft);
+            const top = Math.round(topVp - calRect.top + elBody.scrollTop);
+
+            // Применяем координаты (внутри #tlBody у .tl-info-pop — position:absolute)
+            pop.style.left = left + 'px';
+            pop.style.top = top + 'px';
             pop.style.visibility = 'visible';
+
 
             // --- actions ---
             const openBtn = pop.querySelector('.js-open-in-table');
