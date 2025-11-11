@@ -4220,7 +4220,7 @@
             const pop = document.createElement('div');
             pop.className = 'tl-info-pop';
             /* позиционируем относительно контейнера таймлайна */
-            pop.style.position = 'absolute';
+            pop.style.position = 'fixed';
             pop.style.minWidth = '240px';
             pop.style.maxWidth = '420px';
             pop.style.padding = '10px 12px';
@@ -4273,10 +4273,7 @@
 
             // Монтируем в тело таймлайна и считаем позицию относительно БАРА,
             // зажимая попап в границы видимой части календаря
-            if (getComputedStyle(elBody).position === 'static') {
-                elBody.style.position = 'relative'; // на всякий случай
-            }
-            elBody.appendChild(pop);
+            document.body.appendChild(pop);
 
             const GAP = 10; // держим 5–15px от бара
             const barRect = bar.getBoundingClientRect();
@@ -4300,10 +4297,10 @@
                 : Math.min(barRect.bottom + GAP, calRect.bottom - popRect0.height - GAP);           // под баром
 
             // Перевод из координат вьюпорта в координаты контейнера (#tlBody)
-            const left = Math.round(leftVp - calRect.left + elBody.scrollLeft);
-            const top = Math.round(topVp - calRect.top + elBody.scrollTop);
+            const left = Math.round(leftVp);
+            const top = Math.round(topVp);
 
-            // Применяем координаты (внутри #tlBody у .tl-info-pop — position:absolute)
+            // Применяем координаты (position:fixed у .tl-info-pop)
             pop.style.left = left + 'px';
             pop.style.top = top + 'px';
             pop.style.visibility = 'visible';
