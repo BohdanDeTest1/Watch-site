@@ -4274,31 +4274,39 @@
             // Монтируем в тело таймлайна и считаем позицию относительно БАРА,
             // зажимая попап в границы видимой части календаря
             // Монтируем во <body> и ставим ПО КООРДИНАТАМ КЛИКА
+            // Монтируем в body и ставим ПО КООРДИНАТАМ СТРАНИЦЫ,
+            // чтобы попап оставался в том же месте при скролле
             document.body.appendChild(pop);
 
-            const GAP = 12; // небольшой отступ от курсора
+            const GAP = 12;
 
-            // Дожидаемся размеров попапа и укладываем его в видимую часть окна
             requestAnimationFrame(() => {
+                // габариты попапа
                 const r = pop.getBoundingClientRect();
-                const vw = window.innerWidth;
-                const vh = window.innerHeight;
 
-                let left = e.clientX + GAP;
-                let top = e.clientY + GAP;
+                // текущие границы видимого вьюпорта в координатах страницы
+                const vpLeft = window.pageXOffset;
+                const vpTop = window.pageYOffset;
+                const vpRight = vpLeft + window.innerWidth;
+                const vpBottom = vpTop + window.innerHeight;
 
-                // Не выходить за правый/нижний край экрана
-                if (left + r.width > vw - 8) left = Math.max(8, vw - r.width - 8);
-                if (top + r.height > vh - 8) top = Math.max(8, vh - r.height - 8);
+                // базовые координаты — от точки клика в КООРДИНАТАХ СТРАНИЦЫ
+                let left = e.pageX + GAP;
+                let top = e.pageY + GAP;
 
-                // Не прилипать к левому/верхнему краю
-                left = Math.max(8, left);
-                top = Math.max(8, top);
+                // при открытии — не вылезать за край текущего вьюпорта
+                if (left + r.width > vpRight - 8) left = Math.max(vpLeft + 8, vpRight - r.width - 8);
+                if (top + r.height > vpBottom - 8) top = Math.max(vpTop + 8, vpBottom - r.height - 8);
 
-                pop.style.left = Math.round(left) + 'px';
+                // минимальные отступы от левого/верхнего краёв видимой области
+                left = Math.max(vpLeft + 8, left);
+                top = Math.max(vpTop + 8, top);
+
+                pop.style.left = Math.round(left) + 'px'; // абсолютные координаты документа
                 pop.style.top = Math.round(top) + 'px';
                 pop.style.visibility = 'visible';
             });
+
 
 
 

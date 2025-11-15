@@ -3963,11 +3963,12 @@ body.theme-dark .pp-cal-tick {
 }
 
 .tl-info-pop {
-    /* фиксируем ко вьюпорту, чтобы ставить точно у клика */
-    position: fixed !important;
+    /* ABSOLUTE — попап привязан к документу и "скроллится" вместе со страницей */
+    position: absolute !important;
     z-index: 5000 !important;
     pointer-events: auto;
     background: var(--cal-left-solid, #f6f8ffe8) !important;
+    will-change: left, top;
 }
 
 /* DARK override: делаем фон поповера таким же тёмно-синим, как у шапки/таблицы */
