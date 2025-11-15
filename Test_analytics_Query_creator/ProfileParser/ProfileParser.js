@@ -4273,37 +4273,33 @@
 
             // Монтируем в тело таймлайна и считаем позицию относительно БАРА,
             // зажимая попап в границы видимой части календаря
+            // Монтируем во <body> и ставим ПО КООРДИНАТАМ КЛИКА
             document.body.appendChild(pop);
 
-            const GAP = 10; // держим 5–15px от бара
-            const barRect = bar.getBoundingClientRect();
-            const calRect = elBody.getBoundingClientRect(); // контейнер таймлайна
-            const popRect0 = pop.getBoundingClientRect();
+            const GAP = 12; // небольшой отступ от курсора
 
-            // Горизонталь: стремимся к центру бара, но в рамках календ. контейнера
-            let leftVp = barRect.left + (barRect.width - popRect0.width) / 2;
-            leftVp = Math.max(leftVp, calRect.left + GAP);
-            leftVp = Math.min(leftVp, calRect.right - popRect0.width - GAP);
+            // Дожидаемся размеров попапа и укладываем его в видимую часть окна
+            requestAnimationFrame(() => {
+                const r = pop.getBoundingClientRect();
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
 
-            // Вертикаль: предпочтительно под баром; если не влазит — над баром
-            const canBelow = barRect.bottom + GAP + popRect0.height <= calRect.bottom - GAP;
-            const canAbove = barRect.top - GAP - popRect0.height >= calRect.top + GAP;
-            const placeAbove = !canBelow && canAbove
-                ? true
-                : (canBelow && !canAbove ? false : (barRect.bottom > (calRect.top + calRect.height / 2)));
+                let left = e.clientX + GAP;
+                let top = e.clientY + GAP;
 
-            let topVp = placeAbove
-                ? Math.max(barRect.top - GAP - popRect0.height, calRect.top + GAP)                  // над баром
-                : Math.min(barRect.bottom + GAP, calRect.bottom - popRect0.height - GAP);           // под баром
+                // Не выходить за правый/нижний край экрана
+                if (left + r.width > vw - 8) left = Math.max(8, vw - r.width - 8);
+                if (top + r.height > vh - 8) top = Math.max(8, vh - r.height - 8);
 
-            // Перевод из координат вьюпорта в координаты контейнера (#tlBody)
-            const left = Math.round(leftVp);
-            const top = Math.round(topVp);
+                // Не прилипать к левому/верхнему краю
+                left = Math.max(8, left);
+                top = Math.max(8, top);
 
-            // Применяем координаты (position:fixed у .tl-info-pop)
-            pop.style.left = left + 'px';
-            pop.style.top = top + 'px';
-            pop.style.visibility = 'visible';
+                pop.style.left = Math.round(left) + 'px';
+                pop.style.top = Math.round(top) + 'px';
+                pop.style.visibility = 'visible';
+            });
+
 
 
             // --- actions ---

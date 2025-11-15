@@ -3963,8 +3963,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 .tl-info-pop {
-    /* теперь попап едет вместе с календарём */
-    position: absolute !important;
+    /* фиксируем ко вьюпорту, чтобы ставить точно у клика */
+    position: fixed !important;
     z-index: 5000 !important;
     pointer-events: auto;
     background: var(--cal-left-solid, #f6f8ffe8) !important;
