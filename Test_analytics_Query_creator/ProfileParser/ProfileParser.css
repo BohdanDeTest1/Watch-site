@@ -4085,6 +4085,16 @@ body.theme-dark .pp-cal-tick {
     display: inline-block;
 }
 
+#tlToolbar,
+#ppCal .tl-toolbar {
+    position: relative;
+    z-index: 200000;
+    /* ↑ гарантированно выше левой панели */
+    isolation: isolate;
+}
+
+
+
 /* Невидимый якорь под кнопкой: здесь будет открываться нативный date-picker */
 #ppCal #tlDateInput {
     position: absolute;
@@ -4102,6 +4112,184 @@ body.theme-dark .pp-cal-tick {
     pointer-events: none;
     /* клики идут по кнопке, не по input */
 }
+
+/* === Date+Time popover возле кнопки Calendar ===================== */
+#tlDateTimePop.tl-dtp {
+    position: absolute;
+    /* остаётся «под» кнопкой */
+    right: 0;
+    top: calc(100% + 6px);
+    min-width: 280px;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #334155);
+    border-radius: 10px;
+    background: var(--btn-n-field-bg, #111827);
+    color: var(--text, #e5e7eb);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .35);
+    z-index: 200010 !important;
+    /* ↑ перебьём любые соседи */
+    pointer-events: auto;
+}
+
+
+
+
+#tlDateTimePop[hidden] {
+    display: none !important;
+}
+
+.tl-dtp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.tl-dtp-col .lbl {
+    display: block;
+    font-size: 12px;
+    color: var(--muted, #94a3b8);
+    margin-bottom: 4px;
+}
+
+.tl-dtp .fld {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--border, #334155);
+    border-radius: 8px;
+    background: var(--card, #0f172a);
+    color: var(--text, #e5e7eb);
+
+    /* Подсказываем браузеру активную тему для нативных индикаторов */
+    color-scheme: var(--pp-color-scheme, light);
+    accent-color: var(--accent, #3b82f6);
+}
+
+/* В зависимости от темы прокидываем color-scheme */
+body.theme-dark .tl-dtp .fld {
+    --pp-color-scheme: dark;
+}
+
+body.theme-light .tl-dtp .fld {
+    --pp-color-scheme: light;
+}
+
+/* В зависимости от темы прокидываем color-scheme (все варианты класса тёмной темы) */
+:root.theme-dark .tl-dtp .fld,
+.theme-dark .tl-dtp .fld,
+[data-theme="dark"] .tl-dtp .fld,
+.dark .tl-dtp .fld {
+    --pp-color-scheme: dark;
+    color-scheme: dark;
+    /* помогает нативным иконкам на Chromium/WebKit */
+}
+
+/* Светлая тема явно */
+:root:not(.theme-dark) .tl-dtp .fld,
+html:not(.dark) .tl-dtp .fld,
+body.theme-light .tl-dtp .fld {
+    --pp-color-scheme: light;
+    color-scheme: light;
+}
+
+/* WebKit: делаем индикаторы видимыми в тёмной теме (календарь/часы/спиннеры) */
+:root.theme-dark .tl-dtp .fld::-webkit-calendar-picker-indicator,
+:root.theme-dark .tl-dtp .fld::-webkit-clear-button,
+:root.theme-dark .tl-dtp .fld::-webkit-inner-spin-button,
+:root.theme-dark .tl-dtp .fld::-webkit-time-picker-indicator,
+.theme-dark .tl-dtp .fld::-webkit-calendar-picker-indicator,
+.theme-dark .tl-dtp .fld::-webkit-clear-button,
+.theme-dark .tl-dtp .fld::-webkit-inner-spin-button,
+.theme-dark .tl-dtp .fld::-webkit-time-picker-indicator,
+[data-theme="dark"] .tl-dtp .fld::-webkit-calendar-picker-indicator,
+[data-theme="dark"] .tl-dtp .fld::-webkit-clear-button,
+[data-theme="dark"] .tl-dtp .fld::-webkit-inner-spin-button,
+[data-theme="dark"] .tl-dtp .fld::-webkit-time-picker-indicator,
+.dark .tl-dtp .fld::-webkit-calendar-picker-indicator,
+.dark .tl-dtp .fld::-webkit-clear-button,
+.dark .tl-dtp .fld::-webkit-inner-spin-button,
+.dark .tl-dtp .fld::-webkit-time-picker-indicator {
+    filter: invert(1) brightness(1.15) contrast(1.05);
+    opacity: .95;
+}
+
+
+
+/* Подсказываем браузеру, какая тема сейчас активна,
+   чтобы индикаторы календаря/часов подбирали корректные цвета */
+body.theme-dark .tl-dtp .fld {
+    --pp-color-scheme: dark;
+}
+
+body.theme-light .tl-dtp .fld {
+    --pp-color-scheme: light;
+}
+
+/* Страховка для WebKit: осветляем пикеры-иконки в тёмной теме */
+body.theme-dark .tl-dtp .fld::-webkit-calendar-picker-indicator,
+body.theme-dark .tl-dtp .fld::-webkit-clear-button,
+body.theme-dark .tl-dtp .fld::-webkit-inner-spin-button,
+body.theme-dark .tl-dtp .fld::-webkit-time-picker-indicator {
+    filter: invert(1) brightness(1.1);
+    opacity: .9;
+}
+
+
+
+.tl-dtp-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.tl-dtp-actions button {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border, #334155);
+    background: var(--btn-n-field-bg, #111827);
+    color: var(--text, #e5e7eb);
+    cursor: pointer;
+}
+
+.tl-dtp-actions .ok {
+    background: #3b82f6;
+    border-color: #2563eb;
+    color: #fff;
+}
+
+/* === Линия и бейдж выбранного времени (Picked) =================== */
+.tl-picked {
+    position: absolute;
+    top: 0;
+    height: var(--pp-pick-h, 100%);
+    width: 2px;
+    background: #60a5fa;
+    /* голубая — отличается от красной now */
+    opacity: .95;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.pp-picked-badge {
+    position: sticky;
+    top: 0;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 66px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e5e7eb;
+    border: 1px solid rgba(148, 163, 184, .35);
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 
 /* Управляем темой нативного пикера через color-scheme */
 :root:not(.theme-dark) #ppCal #tlDateInput,
@@ -4315,3 +4503,176 @@ body.pp-has-pop #ppCal .tl-res-list {
 body.pp-has-pop #ppCal .tl-grid-header {
     will-change: auto;
 }
+
+/* ===== DateTime picker (календарь + часы/минуты) ===== */
+.pp-date-pop .pp-dtp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pp-dtp-head {
+    display: flex;
+    gap: 8px;
+}
+
+.pp-dtp-tab {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.pp-dtp-tab.active {
+    background: var(--accent-weak);
+    border-color: var(--accent-weak);
+    color: var(--text-strong);
+}
+
+.pp-dtp-body {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.pp-mini-cal {
+    width: 260px;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: var(--panel-bg-2);
+    padding: 10px;
+}
+
+.pp-mini-cal .pp-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.pp-cal-title {
+    font-weight: 600;
+}
+
+.pp-cal-nav {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.pp-cal-nav:hover {
+    background: var(--hover);
+}
+
+.pp-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.pp-cal-day {
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: var(--panel-bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.pp-cal-day:hover {
+    border-color: var(--accent-weak);
+}
+
+.pp-cal-day.selected {
+    background: var(--accent-weak);
+    color: var(--text-strong);
+    border-color: var(--accent-weak);
+}
+
+.pp-cal-day.blank {
+    visibility: hidden;
+}
+
+.pp-time {
+    display: flex;
+    gap: 8px;
+}
+
+.pp-time-col {
+    width: 64px;
+    height: 220px;
+    overflow: auto;
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    background: var(--panel-bg-2);
+    scroll-behavior: smooth;
+}
+
+.pp-time-item {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+    border-radius: 8px;
+    background: var(--panel-bg);
+    user-select: none;
+    cursor: pointer;
+}
+
+.pp-time-item.selected {
+    background: var(--accent-weak);
+    color: var(--text-strong);
+}
+
+.pp-time-col::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pp-time-col::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: 8px;
+}
+
+/* === DTP ICONS DARK — жёсткие оверрайды под тёмную тему === */
+:root.theme-dark #tlDateTimePop input[type="date"],
+.theme-dark #tlDateTimePop input[type="date"],
+[data-theme="dark"] #tlDateTimePop input[type="date"],
+.dark #tlDateTimePop input[type="date"],
+:root.theme-dark #tlDateTimePop input[type="time"],
+.theme-dark #tlDateTimePop input[type="time"],
+[data-theme="dark"] #tlDateTimePop input[type="time"],
+.dark #tlDateTimePop input[type="time"] {
+    color-scheme: dark !important;
+    /* даём браузеру «тёмный» нативный набор */
+}
+
+/* WebKit: осветляем пиктограммы календаря/часов/спиннеров */
+:root.theme-dark #tlDateTimePop input[type="date"]::-webkit-calendar-picker-indicator,
+:root.theme-dark #tlDateTimePop input[type="date"]::-webkit-clear-button,
+:root.theme-dark #tlDateTimePop input[type="date"]::-webkit-inner-spin-button,
+:root.theme-dark #tlDateTimePop input[type="time"]::-webkit-time-picker-indicator,
+.theme-dark #tlDateTimePop input[type="date"]::-webkit-calendar-picker-indicator,
+.theme-dark #tlDateTimePop input[type="date"]::-webkit-clear-button,
+.theme-dark #tlDateTimePop input[type="date"]::-webkit-inner-spin-button,
+.theme-dark #tlDateTimePop input[type="time"]::-webkit-time-picker-indicator,
+[data-theme="dark"] #tlDateTimePop input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] #tlDateTimePop input[type="date"]::-webkit-clear-button,
+[data-theme="dark"] #tlDateTimePop input[type="date"]::-webkit-inner-spin-button,
+[data-theme="dark"] #tlDateTimePop input[type="time"]::-webkit-time-picker-indicator,
+.dark #tlDateTimePop input[type="date"]::-webkit-calendar-picker-indicator,
+.dark #tlDateTimePop input[type="date"]::-webkit-clear-button,
+.dark #tlDateTimePop input[type="date"]::-webkit-inner-spin-button,
+.dark #tlDateTimePop input[type="time"]::-webkit-time-picker-indicator {
+    filter: invert(1) brightness(1.2) contrast(1.05) !important;
+    opacity: .98 !important;
+    /* реально белые и видимые */
+}
+
+/* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */
