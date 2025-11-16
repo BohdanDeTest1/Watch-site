@@ -3786,6 +3786,24 @@
         `;
                     wrap.appendChild(pop);
 
+                    /* клик по ЛЮБОЙ области карточек Date/Time открывает нативный пикер */
+                    pop.querySelectorAll('.tl-dtp-col').forEach(col => {
+                        col.addEventListener('click', (ev) => {
+                            const inp = col.querySelector('input');
+                            if (!inp) return;
+                            ev.stopPropagation();                      // чтобы не закрывался поп-ап
+                            inp.focus({ preventScroll: true });        // сначала фокус
+                            if (typeof inp.showPicker === 'function') {
+                                try { inp.showPicker(); } catch { }
+                            } else {
+                                // fallback для браузеров без showPicker
+                                const evt = new MouseEvent('mousedown', { bubbles: true });
+                                inp.dispatchEvent(evt);
+                            }
+                        });
+                    });
+
+
                     // Закрытие по клику вне
                     document.addEventListener('click', (ev) => {
                         if (!pop.hasAttribute('hidden') && !pop.contains(ev.target) && !b.contains(ev.target)) {
