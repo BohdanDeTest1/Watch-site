@@ -4120,19 +4120,39 @@ body.theme-dark .pp-cal-tick {
     top: calc(100% + 6px);
     min-width: 280px !important;
     padding: 12px 14px;
-    border: 1px solid #1e3a8a;
-    /* насыщённый тёмно-синий */
+
+    /* используем переменные темы */
+    border: 1px solid var(--dtp-border, #1e3a8a);
     border-radius: 12px;
-    background: #0f172a;
-    /* глубокий тёмно-синий фон */
-    color: #e5e7eb;
-    box-shadow: 0 12px 32px rgba(2, 6, 23, .6);
-    /* синеватая тень */
+    background: var(--dtp-bg, #0f172a);
+    color: var(--dtp-fg, #e5e7eb);
+    box-shadow: var(--dtp-shadow, 0 12px 32px rgba(2, 6, 23, .6));
+
     z-index: 200010 !important;
     pointer-events: auto;
 }
 
 
+/* ТЁМНАЯ ТЕМА: глубокий тёмно-синий */
+:root.theme-dark #tlDateTimePop.tl-dtp,
+.theme-dark #tlDateTimePop.tl-dtp,
+[data-theme="dark"] #tlDateTimePop.tl-dtp,
+.dark #tlDateTimePop.tl-dtp {
+    --dtp-bg: #0f172a;
+    --dtp-fg: #e5e7eb;
+    --dtp-border: #1e3a8a;
+    --dtp-shadow: 0 12px 32px rgba(2, 6, 23, .6);
+}
+
+/* СВЕТЛАЯ ТЕМА: белая карточка с тёмным текстом */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) #tlDateTimePop.tl-dtp,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) #tlDateTimePop.tl-dtp,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #tlDateTimePop.tl-dtp {
+    --dtp-bg: #ffffff;
+    --dtp-fg: #111827;
+    --dtp-border: #d1d5db;
+    --dtp-shadow: 0 12px 28px rgba(0, 0, 0, .15);
+}
 
 
 
@@ -4170,6 +4190,25 @@ body.theme-dark .pp-cal-tick {
     color-scheme: var(--pp-color-scheme, dark);
     accent-color: #3b82f6;
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+/* Светлая тема для полей внутри DTP */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp .fld,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp .fld,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp .fld {
+    background: #ffffff;
+    color: #111827;
+    border-color: #d1d5db;
+}
+
+/* Тёмная тема — оставляем текущие цвета (страховка) */
+:root.theme-dark .tl-dtp .fld,
+.theme-dark .tl-dtp .fld,
+[data-theme="dark"] .tl-dtp .fld,
+.dark .tl-dtp .fld {
+    background: #0b1220;
+    color: #e5e7eb;
+    border-color: #334155;
 }
 
 .tl-dtp .fld:hover {
@@ -4270,6 +4309,24 @@ body.theme-dark .tl-dtp .fld::-webkit-time-picker-indicator {
     color: #e5e7eb;
     cursor: pointer;
     transition: border-color .15s ease, background .15s ease;
+}
+
+/* Светлая тема: кнопки действий в поповере */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions button,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions button,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions button {
+    border-color: #d1d5db;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* OK в светлой теме остаётся синей */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
+    background: #3b82f6;
+    border-color: #2563eb;
+    color: #fff;
 }
 
 .tl-dtp-actions button:hover {
