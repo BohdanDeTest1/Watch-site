@@ -3850,13 +3850,10 @@
                 }
 
                 // Заполним текущими значениями и покажем
-                const d = new Date(state.anchor);
-                pop.querySelector('#tlDtDate').value = isoDateUTC(d);
-                // по умолчанию — текущее UTC-время (часы:минуты)
                 const now = new Date();
+                pop.querySelector('#tlDtDate').value = isoDateUTC(now);
                 const pad = n => String(n).padStart(2, '0');
                 pop.querySelector('#tlDtTime').value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
-
                 pop.removeAttribute('hidden');
                 return;
             }
@@ -4793,8 +4790,9 @@
         function startOfLocalDayAsUTC(now = new Date()) {
             // локальная полночь:
             const localMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            // сделать инстант, эквивалентный этой локальной полуночи, в UTC-линией времени:
-            return new Date(localMidnight.getTime() - now.getTimezoneOffset() * 60000);
+            // getTimezoneOffset() — минуты, которые нужно ДОБАВИТЬ к локальному времени, чтобы получить UTC
+            // => используем "+", иначе будет сдвиг на сутки в некоторых таймзонах.
+            return new Date(localMidnight.getTime() + now.getTimezoneOffset() * 60000);
         }
 
 
