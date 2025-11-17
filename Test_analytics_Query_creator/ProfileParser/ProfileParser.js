@@ -3839,18 +3839,38 @@
                 }
 
                 // Заполним текущими значениями и покажем
-                // Заполним текущими значениями и покажем (дата — из текущего anchor в UTC)
+                // Дата: фактический день, который сейчас виден в центре таймлайна (UTC)
                 const now = new Date();
                 const pad = n => String(n).padStart(2, '0');
-                // берём день, который сейчас показан календарём
-                const anchorUtc = (state && state.anchor instanceof Date)
-                    ? state.anchor
-                    : startOfUTCDay(new Date());
+
+                let baseDate;
+
+                try {
+                    // start3 мы сохраняем в render() как state._start3
+                    const start3 = (state && state._start3 instanceof Date) ? state._start3 : state.anchor;
+                    if (start3 instanceof Date) {
+                        // вычисляем дату, которая находится по центру текущего viewport
+                        baseDate = getViewportCenterDate(start3);
+                    }
+                } catch {
+                    // если что-то пошло не так — уйдём в запасной сценарий ниже
+                }
+
+                // запасной вариант: опираемся на anchor / текущий день по UTC
+                if (!(baseDate instanceof Date)) {
+                    baseDate = (state && state.anchor instanceof Date)
+                        ? state.anchor
+                        : startOfUTCDay(new Date());
+                }
+
+                // нам нужна именно полночь суток по UTC
+                const anchorUtc = startOfUTCDay(baseDate);
 
                 pop.querySelector('#tlDtDate').value = isoDateUTC(anchorUtc);
                 pop.querySelector('#tlDtTime').value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
                 pop.removeAttribute('hidden');
                 return;
+
 
             }
 
