@@ -943,10 +943,12 @@
             canvasEndMs: null,
             gridMs: null,
             view: 'day',          // 'month' | 'week' | 'day'
-            anchorMs: startOfLocalDayAsUTCms(),
-            // ← фикс
+            // ВАЖНО: берём ТЕКУЩЕЕ UTC-время как якорь,
+            // а границы суток считаем в computeRange → от UTC-полуночи
+            anchorMs: Date.now(),
             ticks: 0
         };
+
 
 
         function pickGridMs(msPerPx) {
@@ -1204,17 +1206,18 @@
 
 
                     // [AUTO-CENTER-NOW] — один раз при первом рендере прокручиваем, чтобы «сейчас» попало в видимую область
+                    // [AUTO-CENTER-NOW] — центрируем «сейчас» один раз после первого рендера
                     if (!calState._didCenterNow) {
                         const viewW = mainHost.clientWidth || 0;
-                        const scroll = mainHost.scrollLeft || 0;
-
-                        // если линия «сейчас» вне текущего окна — подвинем так, чтобы она была в центре
-                        if (viewW > 0 && (x < scroll || x > (scroll + viewW))) {
-                            const target = Math.max(0, Math.round(x - viewW / 2));
-                            mainHost.scrollLeft = target;
+                        if (viewW > 0) {
+                            const desired = Math.round(x - viewW / 2);
+                            const maxScroll = Math.max(0, mainHost.scrollWidth - mainHost.clientWidth);
+                            mainHost.scrollLeft = Math.max(0, Math.min(desired, maxScroll));
                         }
-                        calState._didCenterNow = true; // больше не автоцентрируем, чтобы не мешать пользователю
+                        calState._didCenterNow = true;
                     }
+
+
                 } else {
                     nowEl.hidden = true;
                 }
@@ -1377,49 +1380,9 @@
             mainEl?.style.setProperty('--pp-grid-off', off + 'px');
             mainEl?.style.setProperty('--pp-dayw', cellW + 'px');
 
-            // // --- первичное центрирование на локальном «сегодня» (один раз) ---
-            // if (!calState._centeredOnce && Number.isFinite(calState.canvasStartMs)) {
-            //     const todayMs = startOfLocalDayAsUTC(new Date()).getTime();
-            //     const A0 = calState.canvasStartMs;
-            //     const B0 = calState.canvasEndMs;
-            //     const msPerPx0 = calState.msPerPx || 1;
-            //     const vw0 = mainEl.clientWidth || 0;
-
-            //     // если «сегодня» попадает в нашу канву — центрируем по нему; иначе — по центру канвы
-            //     const target = (todayMs >= A0 && todayMs <= B0) ? todayMs : (A0 + (B0 - A0) / 2);
-            //     const left = Math.max(0, (target - A0) / msPerPx0 - vw0 / 2);
-
-            //     mainEl.scrollLeft = left;
-            //     calState._centeredOnce = true;
-            // }
 
             // --- первичное центрирование на локальном «сегодня» (один раз) ---
-            if (!calState._centeredOnce && Number.isFinite(calState.canvasStartMs)) {
-                const todayMs = startOfLocalDayAsUTC(new Date()).getTime();
-                const A0 = calState.canvasStartMs;
-                const B0 = calState.canvasEndMs;
-                const msPerPx0 = calState.msPerPx || 1;
-                const vw0 = mainEl.clientWidth || 0;
 
-                const target = (todayMs >= A0 && todayMs <= B0) ? todayMs : (A0 + (B0 - A0) / 2);
-                const left = Math.max(0, (target - A0) / msPerPx0 - vw0 / 2);
-
-                // [NEW] временно отключим seam-shift/ребейз
-                const prevRebaseTimer = calState._rebaseTimer;
-                clearTimeout(calState._rebaseTimer);
-                calState._rebaseTimer = 0;
-
-                mainEl.scrollLeft = left;
-
-                // форс-синхронизация сетки и шкал после программного скролла
-                const off = -(mainEl.scrollLeft % (calState.gridMs / msPerPx0));
-                mainEl.style.setProperty('--pp-grid-off', off + 'px');
-
-                calState._centeredOnce = true;
-
-                // вернём право на последующие ребейзы
-                calState._rebaseTimer = prevRebaseTimer;
-            }
 
 
             // левая панель типов
@@ -1998,12 +1961,26 @@
             });
 
 
-            wrap.querySelector('#ppCalToday')?.addEventListener('click', () => {
-                // остаёмся в текущем режиме и диапазоне, просто крутим scrollLeft
+            // wireCalendarUI()
+
+            // Кнопка Today в тулбаре — центрируем «сейчас» (UTC) строго по центру
+            const todayBtn = wrap.querySelector('.tl-toolbar [data-nav="today"]');
+            todayBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
                 const main = wrap.querySelector('.pp-cal-main');
-                const xNow = (Date.now() - calState.canvasStartMs) / calState.msPerPx; // пиксели от начала диапазона
-                main.scrollLeft = Math.max(0, xNow - main.clientWidth / 2);
+                if (!main || !Number.isFinite(calState.canvasStartMs) || !calState.msPerPx) return;
+
+                const xNow = (Date.now() - calState.canvasStartMs) / (calState.msPerPx || 1);
+                const desired = Math.round(xNow - main.clientWidth / 2);
+                const maxScroll = Math.max(0, main.scrollWidth - main.clientWidth);
+                main.scrollLeft = Math.max(0, Math.min(desired, maxScroll));
+
+                const cellW = (calState.gridMs || 1) / (calState.msPerPx || 1);
+                const off = -(main.scrollLeft % cellW);
+                main.style.setProperty('--pp-grid-off', off + 'px');
             });
+
+
 
 
 
@@ -3632,14 +3609,14 @@
         // ---- state
         // ---- state
         const state = {
-            view: 'day',            // 'day' | 'week' | 'month'
-            anchor: startOfLocalDayAsUTC(new Date()), // локальная полночь как UTC-инстант
-            colMs: 3600_000,        // длительность колонки
-            rangeMs: 24 * 3600_000,   // длительность всей полосы
-            colCount: 24,           // количество колонок
+            view: 'day',
+            anchor: startOfUTCDay(new Date()), // начало суток по UTC — без смещений
+            colMs: 3600_000,
+            rangeMs: 24 * 3600_000,
+            colCount: 24,
             rowH: 44,
             colW: 80,
-            pickedMs: null,         // <<< выбранный пользователем момент (UTC, ms)
+            pickedMs: null,
             _preventInfoOpen: false
         };
 
@@ -3743,18 +3720,23 @@
         }
 
         function centerOnMidday() {
-            // Центрируем полдень «якорного» дня в видимой области
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
             const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
             const dayW = state.colCount * colW;
-            const xMid = halfVisible * dayW + 12 * colW; // середина суток
+            const xMid = halfVisible * dayW + 12 * colW;
+
+            const desired = xMid - elBody.clientWidth / 2;
+            const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+            const target = Math.max(0, Math.min(desired, maxScroll));
+
             const prev = allowSeamShift;
             allowSeamShift = false;
-            elBody.scrollLeft = Math.max(0, xMid - elBody.clientWidth / 2);
+            elBody.scrollLeft = target;
             positionDayTags();
             elBody.dispatchEvent(new Event('scroll'));
             allowSeamShift = prev;
         }
+
 
         toolbar.addEventListener('click', (e) => {
             const b = e.target.closest('button');
@@ -3821,11 +3803,13 @@
                         const picked = new Date(`${dStr}T${tStr}:00Z`);
 
                         // 1) якорь = полночь выбранного дня (UTC) → перерисуем
-                        state.anchor = startOfLocalDayAsUTC(picked);
+                        state.anchor = startOfUTCDay(picked);
                         // 2) запомним сам выбранный момент (UTC ms) для линии «Picked»
                         state.pickedMs = picked.getTime();
 
                         render();
+
+                        // 3) отцентрируем выбранное время по центру тройного холста
 
                         // 3) отцентрируем выбранное время по центру тройного холста
                         const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
@@ -3834,12 +3818,17 @@
                         const extra = halfVisible * dayW;
                         const xPicked = extra + ((picked - state.anchor) / state.colMs) * colW;
 
+                        const desired = xPicked - elBody.clientWidth / 2;
+                        const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                        const target = Math.max(0, Math.min(desired, maxScroll));
+
                         const prev = allowSeamShift;
                         allowSeamShift = false;
-                        elBody.scrollLeft = Math.max(0, xPicked - elBody.clientWidth / 2);
+                        elBody.scrollLeft = target;
                         positionDayTags();
                         elBody.dispatchEvent(new Event('scroll'));
                         allowSeamShift = prev;
+
 
                         pop.setAttribute('hidden', '');
                     });
@@ -3850,34 +3839,47 @@
                 }
 
                 // Заполним текущими значениями и покажем
+                // Заполним текущими значениями и покажем (дата — из текущего anchor в UTC)
                 const now = new Date();
-                pop.querySelector('#tlDtDate').value = isoDateUTC(now);
                 const pad = n => String(n).padStart(2, '0');
+                // берём день, который сейчас показан календарём
+                const anchorUtc = (state && state.anchor instanceof Date)
+                    ? state.anchor
+                    : startOfUTCDay(new Date());
+
+                pop.querySelector('#tlDtDate').value = isoDateUTC(anchorUtc);
                 pop.querySelector('#tlDtTime').value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
                 pop.removeAttribute('hidden');
                 return;
+
             }
 
 
 
-
             if (b.dataset.nav === 'today') {
-                state.anchor = startOfLocalDayAsUTC(new Date());
+                state.anchor = startOfUTCDay(new Date());
                 render();
-                // центрируем актуальное время, как было
+
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
                 const extra = (state.view === 'day') ? halfVisible * dayW : 0;
                 const now = new Date();
                 const xNow = ((now - state.anchor) / state.colMs) * colW + extra;
+
+                const desired = xNow - elBody.clientWidth / 2;
+                const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                const target = Math.max(0, Math.min(desired, maxScroll));
+
                 const prev = allowSeamShift;
                 allowSeamShift = false;
-                elBody.scrollLeft = Math.max(0, xNow - elBody.clientWidth / 2);
+                elBody.scrollLeft = target;
                 positionDayTags();
                 elBody.dispatchEvent(new Event('scroll'));
                 allowSeamShift = prev;
             }
+
+
 
             if (b.dataset.nav === 'prev') { state.anchor = addMs(state.anchor, -state.rangeMs); render(); }
             if (b.dataset.nav === 'next') { state.anchor = addMs(state.anchor, state.rangeMs); render(); }
@@ -3889,7 +3891,7 @@
                 if (!dateInput.value) return;
                 // Преобразуем выбранную дату (локальную) к началу суток в UTC для якоря
                 const picked = new Date(`${dateInput.value}T00:00:00Z`);
-                state.anchor = startOfLocalDayAsUTC(picked);
+                state.anchor = startOfUTCDay(picked);
                 render();
                 centerOnMidday();
 
@@ -4349,61 +4351,53 @@
 
 
         // [ANCHOR TL-CENTER-DAY] — центрируем «сейчас» (UTC) при первом входе (надёжно, после лейаута)
+        // [ANCHOR TL-CENTER-DAY] — центрируем «сейчас» (UTC) при первом входе (надёжно, после лейаута)
         if (!state._centeredOnce && state.view === 'day') {
             const doCenter = () => {
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
-                if (colW <= 0 || elBody.clientWidth === 0) return false; // рано — нет размеров
+                if (colW <= 0 || elBody.clientWidth === 0) return false;
 
-                // UTC: «якорь» — полночь UTC текущего дня
-                const now = new Date(); // инстант (UTC-линия), корректно для разницы во времени
+                const now = new Date();
                 const xFromStart = ((now - state.anchor) / state.colMs) * colW;
 
-                // тройной буфер: слева «вчера», по центру — «сегодня»
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
                 const dayW = state.colCount * colW;
                 const offsetToMiddle = halfVisible * dayW;
 
-
-                // целевая позиция так, чтобы «сейчас» оказалось по центру вьюпорта
-                const xTarget = Math.max(0, offsetToMiddle + xFromStart - elBody.clientWidth / 2);
+                // целевой scrollLeft, ЗАКЛЕМПЛЕННЫЙ в [0 .. maxScroll]
+                const desired = offsetToMiddle + xFromStart - elBody.clientWidth / 2;
+                const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                const xTarget = Math.max(0, Math.min(desired, maxScroll));
 
                 const prev = allowSeamShift;
-                allowSeamShift = false;          // чтобы «шов» не сдвигал якорь при программном скролле
+                allowSeamShift = false;
                 elBody.scrollLeft = xTarget;
                 state._centeredOnce = true;
 
-                // синхронизируем шапку и подписи
                 elHeader.style.width = elBody.scrollWidth + 'px';
                 elHeader.style.transform = `translateX(${-elBody.scrollLeft}px)`;
                 updateGridOffset();
                 positionDayTags();
 
-
-
                 allowSeamShift = prev;
-                // некоторые браузеры не шлют scroll-событие на программный сдвиг — пнём вручную
                 elBody.dispatchEvent(new Event('scroll'));
-
-                // ВАЖНО: после первичного центрирования разрешаем «шов»
                 allowSeamShift = true;
 
                 return true;
             };
-
-            // 1) Пытаемся сразу (после текущего render)
+            // 1) Пытаемся сразу...
             if (!doCenter()) {
-                // 2) На первый кадр — когда стили применились
                 requestAnimationFrame(() => {
                     if (!doCenter()) {
-                        // 3) Если контейнер ещё без размеров (скрытая вкладка и т.п.) — ждём ResizeObserver
-                        const ro = new ResizeObserver(() => {
-                            if (doCenter()) ro.disconnect();
-                        });
+                        const ro = new ResizeObserver(() => { if (doCenter()) ro.disconnect(); });
                         ro.observe(elBody);
                     }
                 });
             }
         }
+
+
+
 
 
 
@@ -4788,11 +4782,13 @@
 
         // локальная полночь (текущего пользователя), приведённая к UTC-инстанту
         function startOfLocalDayAsUTC(now = new Date()) {
-            // локальная полночь:
             const localMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            // getTimezoneOffset() — минуты, которые нужно ДОБАВИТЬ к локальному времени, чтобы получить UTC
-            // => используем "+", иначе будет сдвиг на сутки в некоторых таймзонах.
             return new Date(localMidnight.getTime() + now.getTimezoneOffset() * 60000);
+        }
+
+        // НАЧАЛО СУТОК ПО UTC (правильный якорь для календаря)
+        function startOfUTCDay(d = new Date()) {
+            return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
         }
 
 
