@@ -2251,12 +2251,17 @@
         let typeTextFilter = { rule: 'contains', query: '' }; // текстовое правило для Type
         let startFilter = { rule: 'between', from: '', to: '' };
         let endFilter = { rule: 'between', from: '', to: '' };
+        // момент времени, по которому фильтруем «активные сейчас» события (UTC ms) — null = фильтра нет
+        let activeTimeFilterTs = null;
+
         let viewRows = [];
         let allFilteredSorted = [];        // полный набор после фильтра/сортировки
         let pageSize = 25;
         let page = 1;
         let nameFilter = { rule: 'contains', query: '' }; // <— новое состояние
         const FIXED_ROWS = 10;
+
+
         let openRowH = null;
 
         function setBodyHeightByRow() {
@@ -2286,6 +2291,7 @@
 
         // Глобальная кнопка сброса фильтров
         const resetAllBtn = wrap.querySelector('#ppResetBtn');
+
 
         function resetAllTableFilters() {
             // 1) State
@@ -2335,6 +2341,9 @@
             if (eFrom) eFrom.value = '';
             if (eTo) eTo.value = '';
 
+            // 4.5) Снять фильтр «Active at picked time»
+            activeTimeFilterTs = null;
+
             // 5) Закрыть все открытые попапы и меню правил
             wrap.querySelectorAll('.pp-filter-pop, .pp-select-menu').forEach(p => p.hidden = true);
 
@@ -2342,6 +2351,7 @@
             page = 1;
             renderRows();
         }
+
 
         resetAllBtn?.addEventListener('click', resetAllTableFilters);
 
@@ -2355,6 +2365,7 @@
         btnPrev.addEventListener('click', () => { page = Math.max(1, page - 1); renderRows(); });
         btnNext.addEventListener('click', () => { page = Math.min(Math.ceil(allFilteredSorted.length / pageSize) || 1, page + 1); renderRows(); });
         btnLast.addEventListener('click', () => { page = Math.max(1, Math.ceil(allFilteredSorted.length / pageSize) || 1); renderRows(); });
+
 
         // принять запрос на применение фильтра по имени из тултипа календаря
         // принять запрос на применение фильтра по имени из тултипа календаря
@@ -2387,10 +2398,25 @@
             document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
+        // принять запрос на фильтрацию таблицы по моменту времени (кнопка над синей линией Picked)
+        document.addEventListener('pp:filterByTime', (ev) => {
+            const ts = ev.detail && Number(ev.detail.ts);
+            if (!Number.isFinite(ts)) return;
+
+            activeTimeFilterTs = ts;
+            page = 1;
+            renderRows();
+
+            // прокручиваем страницу к таблице, чтобы пользователь сразу видел результат
+            document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
 
 
         // ---------- рендер шапки сортировки ----------
         function updateSortIndicators() {
+
+
             headEl.querySelectorAll('.pp-sort').forEach(s => {
                 s.classList.remove('asc', 'desc');
                 if (s.dataset.key === sortKey) s.classList.add(sortDir);
@@ -2425,11 +2451,12 @@
                 });
             }
 
+            // фильтр по состоянию State
             if (stateFilter.size) {
                 rows = rows.filter(r => stateFilter.has(r.displayState));
             }
 
-            // фильтр по типам
+            // фильтр по типам (чекбоксы)
             if (typeFilter.size) {
                 rows = rows.filter(r => typeFilter.has(r.type));
             }
@@ -2450,6 +2477,18 @@
                 });
             }
 
+            // фильтр «активные в выбранный момент времени» (по startTS/endTS)
+            if (Number.isFinite(activeTimeFilterTs)) {
+                const ts = activeTimeFilterTs;
+                rows = rows.filter(r => {
+                    if (Number.isFinite(r.startTS) && Number.isFinite(r.endTS)) {
+                        return r.startTS <= ts && ts <= r.endTS;
+                    }
+                    // если по какой-то причине нет сырого TS — не режем такие строки
+                    return true;
+                });
+            }
+
             // --- Start / End date filters ---
             rows = rows.filter(r =>
                 passDateRule(r.startPretty, startFilter) &&
@@ -2458,6 +2497,7 @@
 
             // сортировка
             rows.sort((a, b) => (sortDir === 'asc' ? 1 : -1) * cmp(a, b, sortKey));
+
 
             // сохраняем «весь набор» для пагинации
             allFilteredSorted = rows;
@@ -4222,6 +4262,7 @@
             // Удалим прошлые элементы, если есть
             elBody.querySelector('.tl-picked')?.remove();
             topScale?.querySelector('.pp-picked-badge')?.remove();
+            topScale?.querySelector('.pp-picked-btn')?.remove();
 
             if (Number.isFinite(state.pickedMs)) {
                 const picked = new Date(state.pickedMs);
@@ -4231,6 +4272,7 @@
                     const colW2 = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                     const xPick = ((picked - start3) / state.colMs) * colW2;
 
+                    // вертикальная голубая линия во всём теле таймлайна
                     const pickEl = document.createElement('div');
                     pickEl.className = 'tl-picked';
                     pickEl.style.left = `${xPick}px`;
@@ -4242,11 +4284,33 @@
                     if (topScale) {
                         const hh = String(picked.getUTCHours()).padStart(2, '0');
                         const mm = String(picked.getUTCMinutes()).padStart(2, '0');
+
                         const badge = document.createElement('div');
                         badge.className = 'pp-picked-badge';
                         badge.textContent = `${hh}:${mm} UTC`;
                         badge.style.left = `${xPick}px`;
                         topScale.appendChild(badge);
+
+                        // круглая синяя кнопка «табличка» над выбранной линией
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'pp-picked-btn';
+                        btn.title = 'Show active events in the table';
+                        btn.style.left = `${xPick}px`;
+
+                        // кликом по кнопке фильтруем таблицу по выбранному моменту
+                        btn.addEventListener('click', (ev) => {
+                            ev.preventDefault();
+                            ev.stopPropagation();
+                            const ts = state.pickedMs;
+                            if (!Number.isFinite(ts)) return;
+
+                            document.dispatchEvent(new CustomEvent('pp:filterByTime', {
+                                detail: { ts }
+                            }));
+                        });
+
+                        topScale.appendChild(btn);
                     }
                 }
             }
@@ -4254,6 +4318,7 @@
 
             // [ANCHOR TL-HEADER-WIDTH:SYNC] — шапку делаем ровно ширине фактического полотна
             elHeader.style.width = elBody.scrollWidth + 'px';
+
 
             // высота верхней шкалы — для позиционирования бейджа (см. CSS var(--pp-scale-h))
             elBody.style.setProperty('--pp-scale-h', (elHeader?.clientHeight || 32) + 'px');

@@ -4376,6 +4376,87 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     pointer-events: none;
 }
 
+/* === Линия и бейдж выбранного времени (Picked) =================== */
+.tl-picked {
+    position: absolute;
+    top: 0;
+    height: var(--pp-pick-h, 100%);
+    width: 2px;
+    background: #60a5fa;
+    /* голубая — отличается от красной now */
+    opacity: .95;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.pp-picked-badge {
+    position: sticky;
+    top: 0;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 66px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e5e7eb;
+    border: 1px solid rgba(148, 163, 184, .35);
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* круглая синяя кнопка с иконкой таблицы над синей линией Picked */
+.pp-picked-btn {
+    /* фиксируем относительно верхней шкалы часов */
+    position: absolute;
+    /* чуть ниже нижней кромки шкалы, чтобы не перекрываться с цифрами */
+    bottom: -18px;
+    left: 0;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+
+    /* делаем кнопку явно заметной */
+    background: #3b82f6;
+    color: #0b1120;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, .7), 0 4px 10px rgba(15, 23, 42, .8);
+}
+
+.pp-picked-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 0 0 2px rgba(191, 219, 254, .9), 0 6px 14px rgba(15, 23, 42, .9);
+}
+
+
+/* светлая тема — фон под цвет шапки */
+:root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn,
+html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn,
+body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
+    background: #ffffff;
+}
+
+/* иконка-таблица через mask, цвет берётся из currentColor (голубой) */
+.pp-picked-btn::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 4h18v16H3zM3 9h18v1H3zM3 14h18v1H3zM9 4h1v16H9zM15 4h1v16h-1z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 4h18v16H3zM3 9h18v1H3zM3 14h18v1H3zM9 4h1v16H9zM15 4h1v16h-1z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
 
 /* Управляем темой нативного пикера через color-scheme */
 :root:not(.theme-dark) #ppCal #tlDateInput,
