@@ -1240,14 +1240,47 @@
 
 
             // --- Центровка на «сейчас» при первом входе (UTC) ---
+            // Делаем выравнивание по «красной палочке» один раз после того,
+            // как у .pp-cal-main появились реальные размеры.
             if (!calState._centeredOnce) {
                 const main = wrapEl.querySelector('.pp-cal-main');
-                if (main && Number.isFinite(A) && calState.msPerPx) {
-                    const xNow = (Date.now() - A) / calState.msPerPx; // px от начала диапазона
-                    main.scrollLeft = Math.max(0, xNow - main.clientWidth / 2);
+
+                const centerOnce = () => {
+                    if (!main || !Number.isFinite(calState.canvasStartMs) || !calState.msPerPx) return false;
+
+                    const viewW = main.clientWidth || 0;
+                    if (viewW <= 0 || main.scrollWidth === 0) return false;
+
+                    // позиция «сейчас» в пикселях от начала канвы
+                    const xNow = (Date.now() - calState.canvasStartMs) / (calState.msPerPx || 1);
+
+                    const desired = Math.round(xNow - viewW / 2);
+                    const maxScroll = Math.max(0, main.scrollWidth - viewW);
+                    main.scrollLeft = Math.max(0, Math.min(desired, maxScroll));
+
+                    // обновляем сдвиг фон-сетки, чтобы линии совпадали
+                    const cellW = (calState.gridMs || 1) / (calState.msPerPx || 1);
+                    const off = -(main.scrollLeft % cellW);
+                    main.style.setProperty('--pp-grid-off', off + 'px');
+
                     calState._centeredOnce = true;
+                    return true;
+                };
+
+                // Пытаемся сразу, если лэйаут уже готов
+                if (!centerOnce()) {
+                    // Если ещё 0 ширина — дожидаемся следующего кадра / ресайза
+                    requestAnimationFrame(() => {
+                        if (!centerOnce() && typeof ResizeObserver === 'function' && main) {
+                            const ro = new ResizeObserver(() => {
+                                if (centerOnce()) ro.disconnect();
+                            });
+                            ro.observe(main);
+                        }
+                    });
                 }
             }
+
 
 
             // [FIX] вертикальный скролл и синхронное смещение event-type колонок
@@ -4292,10 +4325,13 @@
                         topScale.appendChild(badge);
 
                         // круглая синяя кнопка «табличка» над выбранной линией
+                        // круглая синяя кнопка «табличка» над выбранной линией
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'pp-picked-btn';
-                        btn.title = 'Show active events in the table';
+                        // используем data-hint вместо title, чтобы подсказка показывалась мгновенно
+                        btn.setAttribute('data-hint', 'Show active events in the table');
+                        btn.setAttribute('aria-label', 'Show active events in the table');
                         btn.style.left = `${xPick}px`;
 
                         // кликом по кнопке фильтруем таблицу по выбранному моменту
@@ -4311,6 +4347,7 @@
                         });
 
                         topScale.appendChild(btn);
+
                     }
                 }
             }

@@ -4413,15 +4413,15 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     /* фиксируем относительно верхней шкалы часов */
     position: absolute;
     /* чуть ниже нижней кромки шкалы, чтобы не перекрываться с цифрами */
-    bottom: -18px;
+    bottom: -7px;
     left: 0;
-    transform: translateX(-50%);
+    transform: translateX(-46%);
     width: 26px;
     height: 26px;
     border-radius: 999px;
 
     /* делаем кнопку явно заметной */
-    background: #3b82f6;
+    background: #60a1f4;
     color: #0b1120;
     border: 0;
     display: inline-flex;
@@ -4444,8 +4444,51 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
 :root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn,
 html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn,
 body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
-    background: #ffffff;
+    color: #ffffff;
+    background: #60a1f4;
 }
+
+/* тултип для круглой кнопки Picked (data-hint) — появляется мгновенно */
+/* тултип для круглой кнопки Picked (data-hint) — появляется мгновенно */
+.pp-picked-btn[data-hint]::after {
+    content: attr(data-hint);
+    position: absolute;
+    /* выравниваем по центру кнопки по вертикали */
+    top: 50%;
+    /* смещаем вправо от кнопки */
+    left: calc(100% + 8px);
+    transform: translateY(-50%);
+    padding: 4px 6px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .08s ease-out;
+    z-index: 30;
+}
+
+
+.pp-picked-btn[data-hint]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* тёмная тема для тултипа Picked */
+:root.theme-dark .pp-picked-btn[data-hint]::after,
+.theme-dark .pp-picked-btn[data-hint]::after,
+[data-theme="dark"] .pp-picked-btn[data-hint]::after,
+.dark .pp-picked-btn[data-hint]::after {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
 
 /* иконка-таблица через mask, цвет берётся из currentColor (голубой) */
 .pp-picked-btn::before {
