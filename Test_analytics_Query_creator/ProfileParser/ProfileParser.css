@@ -4174,12 +4174,10 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* === Date+Time popover возле кнопки Calendar ===================== */
-/* Делаем поп-ап фиксированным во вьюпорте, чтобы он не клипался
-   родителями с overflow:hidden и всегда был поверх таблицы */
 #tlDateTimePop.tl-dtp {
-    position: fixed;
-    /* вместо absolute */
-    /* координаты задаём из JS через style.left/top */
+    position: absolute;
+    right: -31px !important;
+    top: calc(100% + 6px);
     min-width: 280px !important;
     padding: 12px 14px;
 
@@ -4191,10 +4189,8 @@ body.theme-dark .pp-cal-tick {
     box-shadow: var(--dtp-shadow, 0 12px 32px rgba(2, 6, 23, .6));
 
     z-index: 200010 !important;
-    /* очень высокий слой */
     pointer-events: auto;
 }
-
 
 
 /* ТЁМНАЯ ТЕМА: глубокий тёмно-синий */
