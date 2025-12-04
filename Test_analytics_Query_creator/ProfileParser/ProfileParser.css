@@ -2870,14 +2870,17 @@ body.theme-dark .pp-cal-tick {
     /* компактный «чип», как у тултипа "Show active events in the table" */
     padding: 4px 10px;
     font-size: 14px;
-    border-radius: 999px;
 
-    border: 1px solid rgba(148, 163, 184, .35);
-    background: #111827;
-    color: #e5e7eb;
+    /* меньшее скругление углов, чтобы не было «полукруга» */
+    border-radius: 8px;
+
+    /* светлая тема по умолчанию */
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
 
     white-space: nowrap;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
     pointer-events: none;
 
     opacity: 0;
@@ -2885,6 +2888,7 @@ body.theme-dark .pp-cal-tick {
     z-index: 500000;
     /* гарантированно выше любых элементов календаря */
 }
+
 
 .tl-toolbar-tooltip[data-show="1"] {
     opacity: 1;
