@@ -3914,6 +3914,87 @@
                     }, true);
 
                     // OK / Cancel
+                    // pop.querySelector('.ok')?.addEventListener('click', () => {
+                    //     const dStr = pop.querySelector('#tlDtDate')?.value || '';
+                    //     const tStr = pop.querySelector('#tlDtTime')?.value || '00:00';
+                    //     if (!dStr) return; // нет даты — ничего не делаем
+
+                    //     // Собираем UTC-дату вида YYYY-MM-DDTHH:mm:00Z
+                    //     const picked = new Date(`${dStr}T${tStr}:00Z`);
+
+                    //     // 1) якорь = полночь выбранного дня (UTC) → перерисуем
+                    //     state.anchor = startOfUTCDay(picked);
+                    //     // 2) запомним сам выбранный момент (UTC ms) для линии «Picked»
+                    //     state.pickedMs = picked.getTime();
+
+                    //     render();
+
+                    //     // 3) отцентрируем выбранное время по центру тройного холста
+
+                    //     // 3) отцентрируем выбранное время по центру тройного холста
+                    //     const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                    //     const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+                    //     const dayW = state.colCount * colW;
+                    //     const extra = halfVisible * dayW;
+                    //     const xPicked = extra + ((picked - state.anchor) / state.colMs) * colW;
+
+                    //     const desired = xPicked - elBody.clientWidth / 2;
+                    //     const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                    //     const target = Math.max(0, Math.min(desired, maxScroll));
+
+                    //         const prev = allowSeamShift;
+                    //         allowSeamShift = false;
+                    //         elBody.scrollLeft = target;
+                    //         positionDayTags();
+                    //         elBody.dispatchEvent(new Event('scroll'));
+                    //         allowSeamShift = prev;
+
+
+                    //         pop.setAttribute('hidden', '');
+                    //     });
+
+                    //     pop.querySelector('.cancel')?.addEventListener('click', () => {
+                    //         pop.setAttribute('hidden', '');
+                    //     });
+                    // }
+
+                    // // Заполним текущими значениями и покажем
+                    // // Дата: фактический день, который сейчас виден в центре таймлайна (UTC)
+                    // const now = new Date();
+                    // const pad = n => String(n).padStart(2, '0');
+
+                    // let baseDate;
+
+                    //     try {
+                    //         // start3 мы сохраняем в render() как state._start3
+                    //         const start3 = (state && state._start3 instanceof Date) ? state._start3 : state.anchor;
+                    //         if (start3 instanceof Date) {
+                    //             // вычисляем дату, которая находится по центру текущего viewport
+                    //             baseDate = getViewportCenterDate(start3);
+                    //         }
+                    //     } catch {
+                    //         // если что-то пошло не так — уйдём в запасной сценарий ниже
+                    //     }
+
+                    //     // запасной вариант: опираемся на anchor / текущий день по UTC
+                    //     if (!(baseDate instanceof Date)) {
+                    //         baseDate = (state && state.anchor instanceof Date)
+                    //             ? state.anchor
+                    //             : startOfUTCDay(new Date());
+                    //     }
+
+                    //     // нам нужна именно полночь суток по UTC
+                    //     const anchorUtc = startOfUTCDay(baseDate);
+
+                    //     pop.querySelector('#tlDtDate').value = isoDateUTC(anchorUtc);
+                    //     pop.querySelector('#tlDtTime').value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+                    //     pop.removeAttribute('hidden');
+                    //     return;
+
+
+                    // }
+
+                    // OK / Cancel
                     pop.querySelector('.ok')?.addEventListener('click', () => {
                         const dStr = pop.querySelector('#tlDtDate')?.value || '';
                         const tStr = pop.querySelector('#tlDtTime')?.value || '00:00';
@@ -3928,8 +4009,6 @@
                         state.pickedMs = picked.getTime();
 
                         render();
-
-                        // 3) отцентрируем выбранное время по центру тройного холста
 
                         // 3) отцентрируем выбранное время по центру тройного холста
                         const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
@@ -3948,7 +4027,6 @@
                         positionDayTags();
                         elBody.dispatchEvent(new Event('scroll'));
                         allowSeamShift = prev;
-
 
                         pop.setAttribute('hidden', '');
                     });
@@ -3986,14 +4064,39 @@
                 // нам нужна именно полночь суток по UTC
                 const anchorUtc = startOfUTCDay(baseDate);
 
-                pop.querySelector('#tlDtDate').value = isoDateUTC(anchorUtc);
-                pop.querySelector('#tlDtTime').value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+                const dateInp = pop.querySelector('#tlDtDate');
+                const timeInp = pop.querySelector('#tlDtTime');
+
+                if (dateInp) {
+                    dateInp.value = isoDateUTC(anchorUtc);
+                }
+                if (timeInp) {
+                    timeInp.value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+                }
+
+                // --- Позиционирование поп-апа во вьюпорте ---
+                // берём геометрию кнопки Calendar
+                const btnRect = b.getBoundingClientRect();
+                const viewportW = window.innerWidth || document.documentElement.clientWidth;
+                const margin = 12;
+                // ширину попапа можно оценить по offsetWidth, либо взять дефолт 280
+                const popupWidth = pop.offsetWidth || 280;
+
+                // выравниваем по правому краю кнопки, но не даём уйти за левый край экрана
+                let left = btnRect.right - popupWidth;
+                if (left < margin) left = margin;
+                // топ — сразу под кнопкой
+                const top = btnRect.bottom + 6;
+
+                pop.style.position = 'fixed';
+                pop.style.left = `${Math.round(left)}px`;
+                pop.style.top = `${Math.round(top)}px`;
+                pop.style.right = 'auto';
+
                 pop.removeAttribute('hidden');
                 return;
 
-
             }
-
 
 
             if (b.dataset.nav === 'today') {
