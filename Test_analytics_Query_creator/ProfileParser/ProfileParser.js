@@ -3805,6 +3805,7 @@
                 hintEl.style.left = `${left}px`;
             };
 
+
             const showHint = (btn) => {
                 const text = btn.getAttribute('data-hint');
                 if (!text) return;
@@ -3833,11 +3834,213 @@
             }, { passive: true });
         }
 
+
+
         function isoDateUTC(d) {
             const pad = n => String(n).padStart(2, '0');
             return `${d.getUTCFullYear()}-${pad(
                 d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
         }
+
+        // [TL-GRID-HOVER-PICK] — подсказка + выбор времени по клику по сетке таймлайна
+        const GRID_HOVER_DELAY = 3000; // 3 секунды
+        let gridHintEl = null;
+        let gridHoverTimer = null;
+        let gridHoverX = 0;
+        let gridHoverY = 0;
+
+        function ensureGridHint() {
+            if (!gridHintEl) {
+                gridHintEl = document.createElement('div');
+                gridHintEl.className = 'tl-grid-tooltip';
+                // более естественный текст для подсказки
+                gridHintEl.textContent = 'Pick this time';
+                document.body.appendChild(gridHintEl);
+            }
+            return gridHintEl;
+        }
+
+
+        function hideGridHint() {
+            if (gridHoverTimer) {
+                clearTimeout(gridHoverTimer);
+                gridHoverTimer = null;
+            }
+            if (gridHintEl) {
+                gridHintEl.removeAttribute('data-show');
+            }
+        }
+
+        function scheduleGridHint(ev) {
+            if (!elBody) return;
+            gridHoverX = ev.clientX;
+            gridHoverY = ev.clientY;
+            if (gridHoverTimer) clearTimeout(gridHoverTimer);
+
+            gridHoverTimer = setTimeout(() => {
+                const tip = ensureGridHint();
+                tip.style.left = `${gridHoverX}px`;
+                tip.style.top = `${gridHoverY + 16}px`; // чуть ниже курсора
+                tip.setAttribute('data-show', '1');
+            }, GRID_HOVER_DELAY);
+        }
+
+        // Преобразуем X-координату клика в UTC-время и ставим «picked»-линию
+        function pickTimeFromClientX(clientX) {
+            if (!elBody) return;
+
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            if (!colW || colW <= 0) return;
+
+            const rect = elBody.getBoundingClientRect();
+            const contentX = (clientX - rect.left) + elBody.scrollLeft;
+
+            // start3 мы сохраняем в render() как state._start3
+            const start3 = (state && state._start3 instanceof Date) ? state._start3 : state.anchor;
+            if (!(start3 instanceof Date)) return;
+
+            const pickedMs = start3.getTime() + (contentX / colW) * state.colMs;
+            const picked = new Date(pickedMs);
+
+            // 1) якорь — полночь выбранного дня по UTC
+            state.anchor = startOfUTCDay(picked);
+            // 2) запоминаем момент времени для линии «Picked»
+            state.pickedMs = picked.getTime();
+
+            render();
+
+            // 3) центрируем выбранное время по центру тройного холста
+            const colW2 = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+            const dayW = state.colCount * colW2;
+            const extra = halfVisible * dayW;
+            const xPicked = extra + ((picked - state.anchor) / state.colMs) * colW2;
+
+            const desired = xPicked - elBody.clientWidth / 2;
+            const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+            const target = Math.max(0, Math.min(desired, maxScroll));
+
+            const prev = allowSeamShift;
+            allowSeamShift = false;
+            elBody.scrollLeft = target;
+            positionDayTags();
+            elBody.dispatchEvent(new Event('scroll'));
+            allowSeamShift = prev;
+        }
+
+        // // Ховеры и клики по сетке таймлайна
+        // if (elBody) {
+        //     // запуск таймера тултипа при заходе курсора
+        //     elBody.addEventListener('mouseenter', (ev) => {
+        //         scheduleGridHint(ev);
+        //     });
+
+        //     // если курсор сдвинулся — перезапускаем таймер и переносим точку
+        //     elBody.addEventListener('mousemove', (ev) => {
+        //         const dx = Math.abs(ev.clientX - gridHoverX);
+        //         const dy = Math.abs(ev.clientY - gridHoverY);
+        //         if (dx > 4 || dy > 4) {
+        //             hideGridHint();
+        //             scheduleGridHint(ev);
+        //         }
+        //     });
+
+        //     elBody.addEventListener('mouseleave', () => {
+        //         hideGridHint();
+        //     });
+
+        //     // при скролле сетки — прячем тултип
+        //     elBody.addEventListener('scroll', () => {
+        //         hideGridHint();
+        //     }, { passive: true });
+
+        //     // клик по пустой сетке — ставим шпильку «picked» в эту точку
+        //     elBody.addEventListener('click', (ev) => {
+        //         // Не трогаем клики по барам событий — там отдельный поповер
+        //         if (ev.target && ev.target.closest('.tl-event')) {
+        //             hideGridHint();
+        //             return;
+        //         }
+
+        //         const rect = elBody.getBoundingClientRect();
+        //         if (ev.clientX < rect.left || ev.clientX > rect.right) return;
+        //         if (ev.clientY < rect.top || ev.clientY > rect.bottom) return;
+
+        //         hideGridHint();
+        //         pickTimeFromClientX(ev.clientX);
+        //     });
+        // }
+
+        // Ховеры и клики по сетке таймлайна (тело + верхняя шкала часов)
+        const gridHoverTargets = [];
+        if (elBody) gridHoverTargets.push(elBody);
+        if (elHeader) gridHoverTargets.push(elHeader);
+
+        if (gridHoverTargets.length) {
+            gridHoverTargets.forEach((target) => {
+                // запуск таймера тултипа при заходе курсора
+                target.addEventListener('mouseenter', (ev) => {
+                    scheduleGridHint(ev);
+                });
+
+                // если курсор сдвинулся — перезапускаем таймер и переносим точку
+                target.addEventListener('mousemove', (ev) => {
+                    const dx = Math.abs(ev.clientX - gridHoverX);
+                    const dy = Math.abs(ev.clientY - gridHoverY);
+                    if (dx > 4 || dy > 4) {
+                        hideGridHint();
+                        scheduleGridHint(ev);
+                    }
+                });
+
+                target.addEventListener('mouseleave', () => {
+                    hideGridHint();
+                });
+            });
+
+            // при скролле сетки — прячем тултип (только тело)
+            if (elBody) {
+                elBody.addEventListener('scroll', () => {
+                    hideGridHint();
+                }, { passive: true });
+
+                // клик по пустой сетке тела — ставим шпильку «picked»
+                elBody.addEventListener('click', (ev) => {
+                    // Не трогаем клики по барам событий — там отдельный поповер
+                    if (ev.target && ev.target.closest('.tl-event')) {
+                        hideGridHint();
+                        return;
+                    }
+
+                    const rect = elBody.getBoundingClientRect();
+                    if (ev.clientX < rect.left || ev.clientX > rect.right) return;
+                    if (ev.clientY < rect.top || ev.clientY > rect.bottom) return;
+
+                    hideGridHint();
+                    pickTimeFromClientX(ev.clientX);
+                });
+            }
+
+            // клик по верхней шкале часов — то же самое: выбираем время под курсором
+            if (elHeader) {
+                elHeader.addEventListener('click', (ev) => {
+                    const rect = elHeader.getBoundingClientRect();
+                    if (ev.clientX < rect.left || ev.clientX > rect.right) return;
+                    if (ev.clientY < rect.top || ev.clientY > rect.bottom) return;
+
+                    hideGridHint();
+                    pickTimeFromClientX(ev.clientX);
+                });
+            }
+        }
+
+
+        function isoDateUTC(d) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getUTCFullYear()}-${pad(
+                d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+        }
+
 
         function centerOnMidday() {
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;

@@ -2905,6 +2905,49 @@ body.theme-dark .pp-cal-tick {
     border-color: rgba(148, 163, 184, .35);
 }
 
+/* Tooltip над сеткой таймлайна при наведении курсора */
+.tl-grid-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, 0);
+
+    /* маленький компактный чип */
+    padding: 3px 8px;
+    font-size: 12px;
+
+    /* такое же скругление, как у тултипов панели */
+    border-radius: 8px;
+
+    /* светлая тема по умолчанию */
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+    z-index: 500000;
+    /* выше всего календаря */
+}
+
+.tl-grid-tooltip[data-show="1"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* тёмная тема для тултипа над сеткой */
+:root.theme-dark .tl-grid-tooltip,
+.theme-dark .tl-grid-tooltip,
+[data-theme="dark"] .tl-grid-tooltip,
+.dark .tl-grid-tooltip {
+    background: var(--cal-left-solid, #0f172a);
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
 
 
 
