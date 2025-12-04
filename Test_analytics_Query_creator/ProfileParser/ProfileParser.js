@@ -635,8 +635,9 @@
   <!-- Новая кнопка открытия поповера с календарём -->
   <!-- Кнопка + поповер под ней в локальном контейнере -->
 <span class="tl-cal-wrap">
-  <button class="tl-btn tl-icon-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false">
-    <span class="tl-icon" aria-hidden="true">
+  <button class="tl-btn tl-icon-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false" data-hint="Pick a date">
+
+  <span class="tl-icon" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
         <path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm14 8H3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10zm-2 2v8H5v-8h14z"/>
       </svg>
@@ -646,9 +647,9 @@
   <!-- Невидимый, но позиционированный якорь для showPicker -->
   <input id="tlDateInput" type="date" aria-hidden="true" />
 </span>
-<button class="tl-btn" data-nav="prev" aria-label="Назад">&#x276E;</button>
-<button class="tl-btn" data-nav="today">today</button>
-<button class="tl-btn" data-nav="next" aria-label="Вперёд">&#x276F;</button>
+<button class="tl-btn" data-nav="prev" aria-label="Назад" data-hint="Go to previous day">&#x276E;</button>
+<button class="tl-btn" data-nav="today" data-hint="Jump to today">today</button>
+<button class="tl-btn" data-nav="next" aria-label="Вперёд" data-hint="Go to next day">&#x276F;</button>
 </div>
     <div class="tl-title" id="tlTitle"></div>
       <div class="tl-right">
@@ -3787,9 +3788,55 @@
 
         const dateInput = document.getElementById('tlDateInput');
 
+        // [TL-TOOLBAR-TOOLTIPS] — всплывающие подсказки для кнопок верхней панели
+        if (toolbar) {
+            const hintEl = document.createElement('div');
+            hintEl.className = 'tl-toolbar-tooltip';
+            document.body.appendChild(hintEl);
+
+            const hintButtons = toolbar.querySelectorAll('.tl-btn[data-hint]');
+            let currentHintBtn = null;
+
+            const updateHintPosition = (btn) => {
+                const rect = btn.getBoundingClientRect();
+                const top = rect.bottom + 6; // чуть ниже кнопки
+                const left = rect.left + rect.width / 2;
+                hintEl.style.top = `${top}px`;
+                hintEl.style.left = `${left}px`;
+            };
+
+            const showHint = (btn) => {
+                const text = btn.getAttribute('data-hint');
+                if (!text) return;
+                currentHintBtn = btn;
+                hintEl.textContent = text;
+                updateHintPosition(btn);
+                hintEl.setAttribute('data-show', '1');
+            };
+
+            const hideHint = () => {
+                currentHintBtn = null;
+                hintEl.removeAttribute('data-show');
+            };
+
+            hintButtons.forEach((btn) => {
+                btn.addEventListener('mouseenter', () => showHint(btn));
+                btn.addEventListener('mouseleave', hideHint);
+                btn.addEventListener('focus', () => showHint(btn));
+                btn.addEventListener('blur', hideHint);
+            });
+
+            // при скролле страницы/контента обновляем позицию подсказки
+            window.addEventListener('scroll', () => {
+                if (!currentHintBtn || !hintEl.hasAttribute('data-show')) return;
+                updateHintPosition(currentHintBtn);
+            }, { passive: true });
+        }
+
         function isoDateUTC(d) {
             const pad = n => String(n).padStart(2, '0');
-            return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+            return `${d.getUTCFullYear()}-${pad(
+                d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
         }
 
         function centerOnMidday() {

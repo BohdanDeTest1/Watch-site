@@ -1711,6 +1711,7 @@
     background: var(--accent);
     color: var(--btn-n-field-bg);
     font-weight: 700;
+    border-radius: 4px !important;
     border: none;
     box-shadow: none;
 }
@@ -2766,6 +2767,10 @@ body.theme-dark .pp-cal-tick {
     align-items: center;
     gap: 8px;
     padding: 8px 0px;
+
+    /* Делаем тулбар отдельным слоем поверх шапки таймлайна (дней) */
+    position: relative;
+    z-index: 300020;
 }
 
 :root.theme-dark #ppCal .tl-toolbar,
@@ -2802,7 +2807,10 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* Кнопки панели таймлайна — одна ширина и тема-зависимые цвета */
+/* Кнопки панели таймлайна — одна ширина и тема-зависимые цвета */
 #ppCal .tl-btn {
+    position: relative;
+    /* якорь для всплывающей подсказки */
     display: inline-grid;
     place-items: center;
     height: 30px;
@@ -2814,6 +2822,7 @@ body.theme-dark .pp-cal-tick {
     cursor: pointer;
     width: var(--tl-btn-w, 260px);
 }
+
 
 :root.theme-dark #ppCal .tl-toolbar .tl-btn,
 .theme-dark #ppCal .tl-toolbar .tl-btn,
@@ -2849,9 +2858,57 @@ body.theme-dark .pp-cal-tick {
     outline-offset: 2px;
 }
 
+/* ToolTips для кнопок панели таймлайна
+   Отдельный fixed-div, который позиционируется JS —
+   чтобы не клипаться и не уходить под строку дней. */
+.tl-toolbar-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, 0);
+
+    /* компактный «чип», как у тултипа "Show active events in the table" */
+    padding: 4px 10px;
+    font-size: 14px;
+    border-radius: 999px;
+
+    border: 1px solid rgba(148, 163, 184, .35);
+    background: #111827;
+    color: #e5e7eb;
+
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+    z-index: 500000;
+    /* гарантированно выше любых элементов календаря */
+}
+
+.tl-toolbar-tooltip[data-show="1"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* тёмная тема для ToolTips — тот же стиль, но через переменные */
+:root.theme-dark .tl-toolbar-tooltip,
+.theme-dark .tl-toolbar-tooltip,
+[data-theme="dark"] .tl-toolbar-tooltip,
+.dark .tl-toolbar-tooltip {
+    background: var(--cal-left-solid, #0f172a);
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+
+
+
+
 
 /* Кнопка с иконкой: плотная укладка иконки и текста */
 #ppCal .tl-btn.tl-icon-btn {
+
     display: inline-flex;
     /* было inline-grid */
     align-items: center;
@@ -4088,10 +4145,13 @@ body.theme-dark .pp-cal-tick {
 #tlToolbar,
 #ppCal .tl-toolbar {
     position: relative;
-    z-index: 200000;
-    /* ↑ гарантированно выше левой панели */
+    /* панель всегда выше всех элементов таймлайна */
+    z-index: 300000;
     isolation: isolate;
+    /* гарантируем, что ничего не будет клипаться внутри панели */
+    overflow: visible;
 }
+
 
 
 
@@ -4114,10 +4174,12 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* === Date+Time popover возле кнопки Calendar ===================== */
+/* Делаем поп-ап фиксированным во вьюпорте, чтобы он не клипался
+   родителями с overflow:hidden и всегда был поверх таблицы */
 #tlDateTimePop.tl-dtp {
-    position: absolute;
-    right: -31px !important;
-    top: calc(100% + 6px);
+    position: fixed;
+    /* вместо absolute */
+    /* координаты задаём из JS через style.left/top */
     min-width: 280px !important;
     padding: 12px 14px;
 
@@ -4129,8 +4191,10 @@ body.theme-dark .pp-cal-tick {
     box-shadow: var(--dtp-shadow, 0 12px 32px rgba(2, 6, 23, .6));
 
     z-index: 200010 !important;
+    /* очень высокий слой */
     pointer-events: auto;
 }
+
 
 
 /* ТЁМНАЯ ТЕМА: глубокий тёмно-синий */
