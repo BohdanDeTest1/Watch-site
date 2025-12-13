@@ -190,6 +190,8 @@
         });
     }
 
+    window.wireCollapser = wireCollapser;
+
     // --- LiveOps helpers ---
     // seconds/ms → "YYYY-MM-DD HH:mm:ss UTC"
     function formatUnix(unixLike) {
@@ -3649,8 +3651,23 @@
             // 3. Promotions
             {
                 const t = await fetchJsonText(buildUrl('promos', name));
-                appendPromotionsSection(first10(t), t.length);
+
+                // Если модуль подгрузился — рендерим “как LiveOps” (календарь + таблица).
+                // Иначе оставляем текущий fallback (мета-строка).
+                if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
+                    const json = JSON.parse(t);
+                    const promoItems = window.PP_Promotions.extract(json);
+
+                    if (!promoItems.length) {
+                        appendKVResult('Promotions', [['Status', 'No items found']]);
+                    } else {
+                        window.PP_Promotions.appendPromotionsUI(promoItems);
+                    }
+                } else {
+                    appendPromotionsSection(first10(t), t.length);
+                }
             }
+
 
         } catch (e) {
             const item = document.createElement('div');
@@ -3996,6 +4013,92 @@
             allowSeamShift = prev;
         }
 
+        // function beginPickedDrag(ev, ui) {
+        //     // ui: { pickEl, btnEl, badgeEl, start3, xPick }
+        //     if (!ui || !ui.start3) return;
+        //     if (!Number.isFinite(state.pickedMs)) return;
+
+        //     ev.preventDefault();
+        //     ev.stopPropagation();
+
+        //     const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+        //     if (!colW || colW <= 0) return;
+
+        //     const startX = ev.clientX;
+        //     const startPickedMs = state.pickedMs;
+
+        //     // текущая “левая” позиция шпильки (в px) на момент старта
+        //     let startLeftPx = ui.xPick;
+        //     if (!Number.isFinite(startLeftPx)) {
+        //         startLeftPx = ((startPickedMs - ui.start3.getTime()) / state.colMs) * colW;
+        //     }
+
+        //     let moved = false;
+        //     let lastMs = startPickedMs;
+
+        //     // чтобы клик по кнопке не срабатывал после drag
+        //     if (ui.btnEl) ui.btnEl._suppressClick = false;
+
+        //     try { ev.target.setPointerCapture?.(ev.pointerId); } catch { }
+
+        // const onMove = (e) => {
+        //     const dx = (e.clientX - startX);
+        //     if (!moved && Math.abs(dx) > 3) moved = true;
+
+        //     const newLeft = startLeftPx + dx;
+
+        //     // пересчёт px -> ms (через start3)
+        //     const ms = ui.start3.getTime() + (newLeft / colW) * state.colMs;
+
+        //     lastMs = ms;
+        //     state.pickedMs = ms;
+
+        //     // живое движение без render()
+        //     if (ui.pickEl) ui.pickEl.style.left = `${newLeft}px`;
+        //     if (ui.btnEl) ui.btnEl.style.left = `${newLeft}px`;
+        //     if (ui.badgeEl) ui.badgeEl.style.left = `${newLeft}px`;
+
+        //     if (ui.badgeEl) {
+        //         const d = new Date(ms);
+        //         const hh = String(d.getUTCHours()).padStart(2, '0');
+        //         const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        //         ui.badgeEl.textContent = `${hh}:${mm} UTC`;
+        //     }
+        // };
+
+        // const onUp = () => {
+        //     document.removeEventListener('pointermove', onMove, true);
+        //     document.removeEventListener('pointerup', onUp, true);
+        //     document.removeEventListener('pointercancel', onUp, true);
+
+        //     // если реально тянули — подавляем click по кнопке
+        //     if (ui.btnEl && moved) ui.btnEl._suppressClick = true;
+
+        //     // если это был “клик” без движения — откатываем pickedMs и выходим
+        //     if (!moved) {
+        //         state.pickedMs = startPickedMs;
+        //         return;
+        //     }
+
+        //         // финализация: якорь суток = день, в который попали (UTC), затем render и центрирование
+        //         const finalMs = lastMs;
+        //         state.pickedMs = finalMs;
+
+        //         const d = new Date(finalMs);
+        //         state.anchor = startOfUTCDay(d);
+
+        //         render();
+
+        //         requestAnimationFrame(() => {
+        //             centerPickedMs(finalMs, true);
+        //         });
+        //     };
+
+        //     document.addEventListener('pointermove', onMove, true);
+        //     document.addEventListener('pointerup', onUp, true);
+        //     document.addEventListener('pointercancel', onUp, true);
+        // }
+
         function beginPickedDrag(ev, ui) {
             // ui: { pickEl, btnEl, badgeEl, start3, xPick }
             if (!ui || !ui.start3) return;
@@ -4007,14 +4110,23 @@
             const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
             if (!colW || colW <= 0) return;
 
-            const startX = ev.clientX;
             const startPickedMs = state.pickedMs;
 
-            // текущая “левая” позиция шпильки (в px) на момент старта
+            // текущая “левая” позиция шпильки (в px) на момент старта (координаты контента)
             let startLeftPx = ui.xPick;
             if (!Number.isFinite(startLeftPx)) {
                 startLeftPx = ((startPickedMs - ui.start3.getTime()) / state.colMs) * colW;
             }
+
+            // --- [AUTO-SCROLL + CORRECT DRAG] ---
+            // Считаем позицию курсора в координатах контента (scrollLeft + x внутри вьюпорта),
+            // чтобы drag не ломался, когда контейнер сам скроллится.
+            const EDGE_PX = 20;     // последние 20px у края — включаем авто-скролл
+            const MAX_STEP = 24;    // максимум px за один pointermove (подбирается по ощущениям)
+
+            const bodyRect0 = elBody.getBoundingClientRect();
+            const startContentX = elBody.scrollLeft + (ev.clientX - bodyRect0.left);
+            const grabOffset = startContentX - startLeftPx; // где внутри шпильки мы её "схватили"
 
             let moved = false;
             let lastMs = startPickedMs;
@@ -4025,12 +4137,42 @@
             try { ev.target.setPointerCapture?.(ev.pointerId); } catch { }
 
             const onMove = (e) => {
-                const dx = (e.clientX - startX);
-                if (!moved && Math.abs(dx) > 3) moved = true;
+                // позиция курсора внутри видимого окна elBody
+                const r = elBody.getBoundingClientRect();
+                const localX = (e.clientX - r.left);
 
-                const newLeft = startLeftPx + dx;
+                // 1) авто-скролл, если упёрлись в края
+                let scrollDelta = 0;
+                if (localX < EDGE_PX) {
+                    const k = (EDGE_PX - localX) / EDGE_PX;               // 0..1
+                    scrollDelta = -Math.ceil(MAX_STEP * Math.min(1, k));
+                } else if (localX > (r.width - EDGE_PX)) {
+                    const k = (localX - (r.width - EDGE_PX)) / EDGE_PX;   // 0..1
+                    scrollDelta = Math.ceil(MAX_STEP * Math.min(1, k));
+                }
 
-                // пересчёт px -> ms (через start3)
+                if (scrollDelta) {
+                    const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+                    const next = clamp(elBody.scrollLeft + scrollDelta, 0, maxScroll);
+                    if (next !== elBody.scrollLeft) {
+                        elBody.scrollLeft = next;
+
+                        // синхронизация шапки/дней/сеток через существующий scroll-обработчик
+                        elBody.dispatchEvent(new Event('scroll'));
+                    }
+                }
+
+                // 2) позиция курсора в координатах контента после возможного скролла
+                const r2 = elBody.getBoundingClientRect();
+                const contentX = elBody.scrollLeft + (e.clientX - r2.left);
+
+                // 3) новая позиция шпильки в координатах контента
+                const newLeft = contentX - grabOffset;
+
+                // детект движения (чтобы отличить click от drag)
+                if (!moved && Math.abs(newLeft - startLeftPx) > 3) moved = true;
+
+                // px -> ms (через start3)
                 const ms = ui.start3.getTime() + (newLeft / colW) * state.colMs;
 
                 lastMs = ms;
@@ -5176,7 +5318,6 @@
                         topScale.appendChild(btn);
                     }
 
-
                 }
             }
 
@@ -5849,9 +5990,48 @@
         sessionStorage.removeItem('pp-unlocked');
 
         await ensureMarkup(container);
+
+        // --- [PROMOTIONS MODULES] load JS+CSS once (since ProfileParser.html is cloned, scripts inside won't auto-run)
+        await (async function ensurePromotionsModules() {
+            // CSS
+            const cssHref = 'ProfilePromotions.css';
+            const cssHrefAlt = 'ProfileParser/ProfilePromotions.css';
+
+            const hasCss = [...document.styleSheets].some(ss => (ss.href || '').includes('ProfilePromotions.css'));
+            if (!hasCss) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssHref;
+                link.onerror = () => { link.href = cssHrefAlt; };
+                document.head.appendChild(link);
+            }
+
+            // JS
+            if (window.PP_Promotions && typeof window.PP_Promotions.appendPromotionsUI === 'function') return;
+
+            await new Promise((resolve) => {
+                const s = document.createElement('script');
+                s.src = 'ProfilePromotions.js';
+                s.async = true;
+                s.onload = resolve;
+                s.onerror = () => {
+                    // fallback path
+                    s.remove();
+                    const s2 = document.createElement('script');
+                    s2.src = 'ProfileParser/ProfilePromotions.js';
+                    s2.async = true;
+                    s2.onload = resolve;
+                    s2.onerror = resolve; // не падаем — просто промо-секция останется метой
+                    document.head.appendChild(s2);
+                };
+                document.head.appendChild(s);
+            });
+        })();
+
         wireGate(); // навесим обработчики на форму
         wireUI();   // <— подключаем обработчик submit (preventDefault + запуск моков)
     }
+
 
     // вызывается при активации вкладки (см. правку switchTab в Main.js)
     function onActivate() {

@@ -2742,6 +2742,143 @@ body.theme-dark .pp-cal-tick {
 
 }
 
+/* ===================== [TIMELINE] Pure CSS (PROMOTIONS CLONE) ===================== */
+/* Клон ключевых правил #ppCal -> #ppPromoCal, чтобы Promotions выглядел 1-в-1 */
+
+#ppPromoCal {
+    --tl-row-h: 44px;
+    --tl-col-w: 80px;
+    --tl-border: #e5e7eb;
+    --tl-accent: #111827;
+    --tl-muted: #6b7280;
+    --tl-daybar-h: 28px;
+    --tl-visible-rows: 13;
+    --tl-ev-brw: 1px;
+    --tl-ev-brc: rgba(0, 0, 0, .22);
+    --tl-res-head-h: calc(var(--tl-daybar-h) + 56px);
+    --tl-btn-w: 260px;
+
+    --cal-left-bg: #12151e;
+}
+
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
+    --cal-left-bg: #12151e;
+    --tl-ev-brc: rgba(255, 255, 255, .22);
+}
+
+#ppPromoCal .tl-toolbar {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0px;
+    position: relative;
+    z-index: 300020;
+}
+
+:root.theme-dark #ppPromoCal .tl-toolbar,
+.theme-dark #ppPromoCal .tl-toolbar,
+[data-theme="dark"] #ppPromoCal .tl-toolbar,
+.dark #ppPromoCal .tl-toolbar {
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+    border-bottom: 1px solid var(--tl-border);
+}
+
+#ppPromoCal .tl-left {
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    justify-content: center;
+    width: 100%;
+}
+
+#ppPromoCal .tl-right {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end
+}
+
+#ppPromoCal .tl-title {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center
+}
+
+/* Левая колонка (Events/Types) */
+#ppPromoCal .tl-res-header {
+    height: var(--tl-res-head-h);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--tl-border);
+    box-sizing: border-box;
+
+    position: sticky;
+    top: 0;
+    height: 125px;
+    z-index: 7;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    isolation: isolate;
+}
+
+#ppPromoCal .tl-rescol {
+    border-right: 1px solid var(--tl-border);
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg)));
+    position: relative;
+    overflow: hidden;
+    contain: paint;
+    z-index: 1;
+}
+
+#ppPromoCal .tl-rescol::after {
+    content: "";
+    position: absolute;
+    top: var(--tl-res-head-h);
+    bottom: 0;
+    right: 0;
+    width: 28px;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(to right,
+            var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) 0%,
+            transparent 75%);
+}
+
+/* Блоки событий */
+#ppPromoCal .tl-event {
+    box-shadow: inset 0 0 0 var(--tl-ev-brw) var(--tl-ev-brc);
+}
+
+#ppPromoCal .tl-event {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: visible !important;
+}
+
+/* Липкий текст внутри бара */
+#ppPromoCal .tl-event .txt {
+    position: sticky;
+    left: 0;
+    padding: 0 6px 0 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: inherit;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+
 /* фоновый цвет именно левой панели (сплошной) */
 #ppCal {
     --cal-left-bg: #12151e;

@@ -1,0 +1,195 @@
+/* ProfilePromotions.css
+   Promotions UI styles (scoped)
+*/
+
+#pp-root .pp-promos {
+    display: grid;
+    gap: 14px;
+}
+
+/* --- calendar --- */
+#pp-root .pp-promos-cal {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    padding: 12px;
+}
+
+#pp-root .pp-promos-cal__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#pp-root .pp-promos-cal__grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+}
+
+#pp-root .pp-promos-cal__left {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card);
+}
+
+#pp-root .pp-promos-cal__left-head {
+    padding: 10px 12px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+}
+
+#pp-root .pp-promos-cal__left-body {
+    max-height: 260px;
+    overflow: auto;
+}
+
+#pp-root .pp-promos-cal__left-row {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(127, 127, 127, .15);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#pp-root .pp-promos-cal__right {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card);
+}
+
+#pp-root .pp-promos-cal__hours {
+    display: grid;
+    grid-template-columns: repeat(24, minmax(60px, 1fr));
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+}
+
+#pp-root .pp-promos-cal__hour {
+    padding: 10px 6px;
+    font-size: 12px;
+    color: var(--muted);
+    border-right: 1px solid rgba(127, 127, 127, .15);
+    text-align: center;
+}
+
+#pp-root .pp-promos-cal__rows {
+    display: grid;
+    grid-auto-rows: 44px;
+}
+
+#pp-root .pp-promos-cal__row {
+    position: relative;
+    border-bottom: 1px solid rgba(127, 127, 127, .15);
+    background-image: repeating-linear-gradient(to right,
+            rgba(127, 127, 127, .10) 0,
+            rgba(127, 127, 127, .10) 1px,
+            transparent 1px,
+            transparent calc(100% / 24));
+}
+
+#pp-root .pp-promos-cal__bar {
+    position: absolute;
+    top: 7px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(to bottom, rgba(99, 102, 241, .95), rgba(79, 70, 229, .95));
+    border: 1px solid rgba(0, 0, 0, .12);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, .18);
+    overflow: hidden;
+    cursor: default;
+}
+
+#pp-root .pp-promos-cal__bar .txt {
+    display: block;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- tooltip --- */
+.pp-promos-tip {
+    position: fixed;
+    z-index: 999999;
+    min-width: 260px;
+    max-width: 360px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .45);
+    padding: 10px 12px;
+}
+
+.pp-promos-tip__t {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.pp-promos-tip__r {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.3;
+    margin-top: 4px;
+}
+
+.pp-promos-tip__r .k {
+    color: var(--muted);
+}
+
+.pp-promos-tip__r .v {
+    word-break: break-word;
+}
+
+/* --- table --- */
+#pp-root .pp-promos__table-head,
+#pp-root .pp-promos__row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.3fr 1.3fr;
+    gap: 10px;
+    align-items: center;
+}
+
+#pp-root .pp-promos__table-head {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-weight: 700;
+}
+
+#pp-root .pp-promos__table-body {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card);
+}
+
+#pp-root .pp-promos__row {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(127, 127, 127, .15);
+}
+
+#pp-root .pp-promos__row:last-child {
+    border-bottom: 0;
+}
+
+#pp-root .pp-promos__cell {
+    font-size: 13px;
+}
+
+#pp-root .pp-promos__cell.name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
