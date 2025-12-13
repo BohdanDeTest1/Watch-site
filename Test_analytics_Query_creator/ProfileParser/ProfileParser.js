@@ -3695,7 +3695,12 @@
         };
 
         const DAY_SPAN = 50;
-        const VISIBLE_DAY_SPAN = 2;
+
+        // Было 2 (и из-за этого центрирование шпильки иногда упиралось в границу полотна,
+        // после чего включался «рефрейм» и ты видел скачок на дни/недели вперёд).
+        // Делаем широкий буфер: 11 диапазонов (5 назад | текущий | 5 вперёд).
+        // Это даёт возможность тянуть шпильку много дней без перескоков.
+        const VISIBLE_DAY_SPAN = 11;
 
         // окно типов = 24 часа: 12 назад + 12 вперёд от текущего центра
         const WINDOW_HALF_HOURS = 18
@@ -3928,48 +3933,449 @@
             allowSeamShift = prev;
         }
 
-        // // Ховеры и клики по сетке таймлайна
-        // if (elBody) {
-        //     // запуск таймера тултипа при заходе курсора
-        //     elBody.addEventListener('mouseenter', (ev) => {
-        //         scheduleGridHint(ev);
-        //     });
+        // === [PICKED DRAG] — перетаскивание синей шпильки =========================
 
-        //     // если курсор сдвинулся — перезапускаем таймер и переносим точку
-        //     elBody.addEventListener('mousemove', (ev) => {
-        //         const dx = Math.abs(ev.clientX - gridHoverX);
-        //         const dy = Math.abs(ev.clientY - gridHoverY);
-        //         if (dx > 4 || dy > 4) {
-        //             hideGridHint();
-        //             scheduleGridHint(ev);
-        //         }
-        //     });
+        function updatePickedLineAndBadge() {
+            if (!Number.isFinite(state.pickedMs)) return;
+            if (!elBody) return;
 
-        //     elBody.addEventListener('mouseleave', () => {
-        //         hideGridHint();
-        //     });
+            const start3 = (state && state._start3 instanceof Date) ? state._start3 : state.anchor;
+            if (!(start3 instanceof Date)) return;
 
-        //     // при скролле сетки — прячем тултип
-        //     elBody.addEventListener('scroll', () => {
-        //         hideGridHint();
-        //     }, { passive: true });
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            if (!colW || colW <= 0) return;
 
-        //     // клик по пустой сетке — ставим шпильку «picked» в эту точку
-        //     elBody.addEventListener('click', (ev) => {
-        //         // Не трогаем клики по барам событий — там отдельный поповер
-        //         if (ev.target && ev.target.closest('.tl-event')) {
-        //             hideGridHint();
-        //             return;
-        //         }
+            const x = ((state.pickedMs - start3.getTime()) / state.colMs) * colW;
 
-        //         const rect = elBody.getBoundingClientRect();
-        //         if (ev.clientX < rect.left || ev.clientX > rect.right) return;
-        //         if (ev.clientY < rect.top || ev.clientY > rect.bottom) return;
+            const pickEl = elBody.querySelector('.tl-picked');
+            if (pickEl) pickEl.style.left = `${x}px`;
 
-        //         hideGridHint();
-        //         pickTimeFromClientX(ev.clientX);
-        //     });
+            const topScale = elHeader?.querySelector('.pp-cal-scale.top') || elHeader;
+            const badgeEl = topScale?.querySelector('.pp-picked-badge');
+            if (badgeEl) badgeEl.style.left = `${x}px`;
+
+            const btnEl = topScale?.querySelector('.pp-picked-btn');
+            if (btnEl) btnEl.style.left = `${x}px`;
+
+            // обновляем текст времени на бейдже
+            if (badgeEl) {
+                const d = new Date(state.pickedMs);
+                const hh = String(d.getUTCHours()).padStart(2, '0');
+                const mm = String(d.getUTCMinutes()).padStart(2, '0');
+                badgeEl.textContent = `${hh}:${mm} UTC`;
+            }
+        }
+
+        function centerPickedMs(ms, smooth = true) {
+            if (!Number.isFinite(ms)) return;
+            if (!elBody) return;
+
+            const start3 = (state && state._start3 instanceof Date) ? state._start3 : state.anchor;
+            if (!(start3 instanceof Date)) return;
+
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            if (!colW || colW <= 0) return;
+
+            const xPicked = ((ms - start3.getTime()) / state.colMs) * colW;
+
+            const desired = xPicked - elBody.clientWidth / 2;
+            const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+            const target = Math.max(0, Math.min(desired, maxScroll));
+
+            const prev = allowSeamShift;
+            allowSeamShift = false;
+
+            if (smooth && typeof elBody.scrollTo === 'function') {
+                elBody.scrollTo({ left: target, behavior: 'smooth' });
+            } else {
+                elBody.scrollLeft = target;
+            }
+
+            positionDayTags();
+            elBody.dispatchEvent(new Event('scroll'));
+            allowSeamShift = prev;
+        }
+
+        function beginPickedDrag(ev, ui) {
+            // ui: { pickEl, btnEl, badgeEl, start3, xPick }
+            if (!ui || !ui.start3) return;
+            if (!Number.isFinite(state.pickedMs)) return;
+
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            if (!colW || colW <= 0) return;
+
+            const startX = ev.clientX;
+            const startPickedMs = state.pickedMs;
+
+            // текущая “левая” позиция шпильки (в px) на момент старта
+            let startLeftPx = ui.xPick;
+            if (!Number.isFinite(startLeftPx)) {
+                startLeftPx = ((startPickedMs - ui.start3.getTime()) / state.colMs) * colW;
+            }
+
+            let moved = false;
+            let lastMs = startPickedMs;
+
+            // чтобы клик по кнопке не срабатывал после drag
+            if (ui.btnEl) ui.btnEl._suppressClick = false;
+
+            try { ev.target.setPointerCapture?.(ev.pointerId); } catch { }
+
+            const onMove = (e) => {
+                const dx = (e.clientX - startX);
+                if (!moved && Math.abs(dx) > 3) moved = true;
+
+                const newLeft = startLeftPx + dx;
+
+                // пересчёт px -> ms (через start3)
+                const ms = ui.start3.getTime() + (newLeft / colW) * state.colMs;
+
+                lastMs = ms;
+                state.pickedMs = ms;
+
+                // живое движение без render()
+                if (ui.pickEl) ui.pickEl.style.left = `${newLeft}px`;
+                if (ui.btnEl) ui.btnEl.style.left = `${newLeft}px`;
+                if (ui.badgeEl) ui.badgeEl.style.left = `${newLeft}px`;
+
+                if (ui.badgeEl) {
+                    const d = new Date(ms);
+                    const hh = String(d.getUTCHours()).padStart(2, '0');
+                    const mm = String(d.getUTCMinutes()).padStart(2, '0');
+                    ui.badgeEl.textContent = `${hh}:${mm} UTC`;
+                }
+            };
+
+            const onUp = () => {
+                document.removeEventListener('pointermove', onMove, true);
+                document.removeEventListener('pointerup', onUp, true);
+                document.removeEventListener('pointercancel', onUp, true);
+
+                // если реально тянули — подавляем click по кнопке
+                if (ui.btnEl && moved) ui.btnEl._suppressClick = true;
+
+                // если это был “клик” без движения — откатываем pickedMs и выходим
+                if (!moved) {
+                    state.pickedMs = startPickedMs;
+                    return;
+                }
+
+                // финализация: якорь суток = день, в который попали (UTC), затем render и центрирование
+                const finalMs = lastMs;
+                state.pickedMs = finalMs;
+
+                const d = new Date(finalMs);
+                state.anchor = startOfUTCDay(d);
+
+                render();
+
+                requestAnimationFrame(() => {
+                    centerPickedMs(finalMs, true);
+                });
+            };
+
+            document.addEventListener('pointermove', onMove, true);
+            document.addEventListener('pointerup', onUp, true);
+            document.addEventListener('pointercancel', onUp, true);
+        }
+
+
+        // === [PICKED DRAG] перетаскивание синей шпильки + плавное центрирование ===
+        function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+        // function smoothScrollLeftTo(targetLeft, ms = 220) {
+        //     if (!elBody) return;
+        //     const start = elBody.scrollLeft;
+        //     const diff = targetLeft - start;
+        //     if (Math.abs(diff) < 1) return;
+
+        //     const t0 = performance.now();
+        //     const prev = allowSeamShift;
+        //     allowSeamShift = false;
+
+        //     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        //     function step(now) {
+        //         const p = clamp((now - t0) / ms, 0, 1);
+        //         const v = start + diff * easeOutCubic(p);
+        //         elBody.scrollLeft = v;
+
+        //         // синхронизируем шапку/дни/сетку как обычно
+        //         positionDayTags();
+        //         elBody.dispatchEvent(new Event('scroll'));
+
+        //         if (p < 1) requestAnimationFrame(step);
+        //         else allowSeamShift = prev;
+        //     }
+        //     requestAnimationFrame(step);
         // }
+
+        // function centerPickedMs(pickedMs, smooth = true) {
+        //     if (!elBody || !Number.isFinite(pickedMs)) return;
+
+        //     const picked = new Date(pickedMs);
+
+        //     const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+        //     const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+        //     const dayW = state.colCount * colW;
+        //     const extra = halfVisible * dayW;
+
+        //     const xPicked = extra + ((picked - state.anchor) / state.colMs) * colW;
+
+        //     const desired = xPicked - elBody.clientWidth / 2;
+        //     const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+        //     const target = Math.max(0, Math.min(desired, maxScroll));
+
+        //     if (smooth) smoothScrollLeftTo(target, 240);
+        //     else {
+        //         const prev = allowSeamShift;
+        //         allowSeamShift = false;
+        //         elBody.scrollLeft = target;
+        //         positionDayTags();
+        //         elBody.dispatchEvent(new Event('scroll'));
+        //         allowSeamShift = prev;
+        //     }
+        // }
+
+        function smoothScrollLeftTo(targetLeft, ms = 220) {
+            if (!elBody) return;
+
+            const start = elBody.scrollLeft;
+            const diff = targetLeft - start;
+            if (Math.abs(diff) < 1) return;
+
+            const t0 = performance.now();
+
+            // ВАЖНО:
+            // allowSeamShift НЕ выключаем, иначе у края не сработает “бесконечный” подшов (re-render + смещение anchor)
+            // и ты упираешься в край 3-дневного полотна.
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+            function step(now) {
+                const p = clamp((now - t0) / ms, 0, 1);
+                const v = start + diff * easeOutCubic(p);
+                elBody.scrollLeft = v;
+
+                // синхронизируем шапку/дни/сетку как обычно
+                positionDayTags();
+                elBody.dispatchEvent(new Event('scroll'));
+
+                if (p < 1) requestAnimationFrame(step);
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function centerPickedMs(pickedMs, smooth = true) {
+            if (!elBody || !Number.isFinite(pickedMs)) return;
+
+            // Подстраховка: если после drag/click шпилька оказалась “слишком у края” и центрирование
+            // упирается в maxScroll, мы “перешиваем” anchor на +range/-range и делаем render(),
+            // чтобы шпилька снова могла стать по центру (и чтобы подхватились следующие сутки).
+            const tryRebaseToMakeCenterPossible = () => {
+                const picked = new Date(pickedMs);
+
+                const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+                if (!colW || colW <= 0) return { ok: false, target: 0 };
+
+                const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
+                const dayW = state.colCount * colW;
+                const extra = halfVisible * dayW;
+
+                const xPicked = extra + ((picked - state.anchor) / state.colMs) * colW;
+
+                const desired = xPicked - elBody.clientWidth / 2;
+                const maxScroll = Math.max(0, elBody.scrollWidth - elBody.clientWidth);
+
+                // если desired выходит за границы — это и есть “упёрлись в край полотна”
+                if (desired > maxScroll + 1) return { ok: false, dir: +1, desired, maxScroll };
+                if (desired < -1) return { ok: false, dir: -1, desired, maxScroll };
+
+                // уже можно центрировать без ребейза
+                const target = Math.max(0, Math.min(desired, maxScroll));
+                return { ok: true, target };
+            };
+
+            // максимум несколько шагов ребейза, чтобы не зациклиться
+            for (let i = 0; i < 4; i++) {
+                const r = tryRebaseToMakeCenterPossible();
+                if (r.ok) {
+                    if (smooth) smoothScrollLeftTo(r.target, 240);
+                    else {
+                        elBody.scrollLeft = r.target;
+                        positionDayTags();
+                        elBody.dispatchEvent(new Event('scroll'));
+                    }
+                    return;
+                }
+
+                // сдвигаем anchor на один базовый диапазон (сутки) в сторону нехватки скролла
+                // и перерисовываем полотно — это “подгрузит” нужные сутки в тройном окне.
+                state.anchor = addMs(state.anchor, (r.dir || 0) * state.rangeMs);
+                render();
+            }
+
+            // если вдруг не удалось (крайний случай) — просто дернём рендер
+            render();
+        }
+
+        // function beginPickedDrag(ev, ui) {
+        //     // ВАЖНО: если это клик по кнопке на шпильке — НЕ запускаем drag,
+        //     // иначе браузер часто не генерит click и кнопка "не работает".
+        //     if (ev?.target?.closest?.('.pp-picked-btn')) return;
+
+        //     // Не гасим click лишний раз. Дадим драг включаться только при реальном движении.
+        //     let moved = false;
+
+        //     const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+
+        //     const startClientX = ev.clientX;
+        //     const startScrollLeft = elBody.scrollLeft;
+
+        //     const startPickedMs = state.pickedMs;
+        //     let lastMs = startPickedMs;
+
+        // // Чтобы не было текст-селекшена при реальном перетягивании
+        // // (но только когда мы уже реально «поехали»)
+        // const DRAG_THRESHOLD_PX = 3;
+
+        // const onMove = (e) => {
+        //     const dx = e.clientX - startClientX;
+
+        //     if (!moved && Math.abs(dx) >= DRAG_THRESHOLD_PX) {
+        //         moved = true;
+        //         try { e.preventDefault(); } catch { }
+        //     }
+        //     if (!moved) return;
+
+        //     // визуально двигаем шпильку: считаем смещение по px → ms
+        //     const px = (startScrollLeft - dx);
+        //     const start3 = state._start3 || addMs(state.anchor, -Math.floor(VISIBLE_DAY_SPAN / 2) * state.rangeMs);
+        //     const ms = start3.getTime() + (px / colW) * state.colMs;
+
+        //     lastMs = ms;
+        //     state.pickedMs = ms;
+
+        //     // обновляем только позицию (без полного рендера)
+        //     updatePickedLineAndBadge();
+        // };
+
+        // const onUp = (e) => {
+        //     document.removeEventListener('pointermove', onMove, true);
+        //     document.removeEventListener('pointerup', onUp, true);
+
+        //     // Если движения почти не было — это был обычный клик по линии (не ломаем ничего)
+        //     if (!moved) {
+        //         state.pickedMs = startPickedMs;
+        //         return;
+        //     }
+
+        //         // Фиксируем шпильку в новый день (UTC)
+        //         const finalMs = lastMs;
+        //         state.pickedMs = finalMs;
+
+        //         const d = new Date(finalMs);
+        //         state.anchor = startOfUTCDay(d);
+
+        //         // Перерисовываем полотно уже вокруг нового anchor (с большим буфером),
+        //         // а центрирование делаем В СЛЕДУЮЩЕМ кадре, чтобы scrollWidth/границы успели обновиться.
+        //         render();
+
+        //         requestAnimationFrame(() => {
+        //             centerPickedMs(finalMs, true);
+        //         });
+        //     };
+
+        //     document.addEventListener('pointermove', onMove, true);
+        //     document.addEventListener('pointerup', onUp, true);
+        // }
+
+        function beginPickedDrag(ev, ui) {
+            if (!ui || !ui.pickEl) return;
+            if (!Number.isFinite(state.pickedMs)) return;
+
+            // Стартовали с кнопки или с линии — разрешаем drag в обоих случаях.
+            const startedOnBtn = !!ev?.target?.closest?.('.pp-picked-btn');
+
+            // Drag включаем только после небольшого движения (чтобы click по кнопке/линии не ломать)
+            let moved = false;
+            const DRAG_THRESHOLD_PX = 3;
+
+            const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
+            if (!colW || colW <= 0) return;
+
+            const startClientX = ev.clientX;
+
+            // Текущая позиция линии (важно: xPick из ui может быть устаревшим после updatePickedLineAndBadge)
+            const startLeftPx =
+                (ui.pickEl.style.left ? parseFloat(ui.pickEl.style.left) : NaN);
+            const startLeft = Number.isFinite(startLeftPx) ? startLeftPx : (ui.xPick || 0);
+
+            // Важно: берем start3 “сейчас” один раз, чтобы во время drag не было дерганий
+            const start3 = state._start3 || addMs(state.anchor, -Math.floor(VISIBLE_DAY_SPAN / 2) * state.rangeMs);
+            const start3ms = start3.getTime();
+
+            const startPickedMs = state.pickedMs;
+            let lastMs = startPickedMs;
+
+            // pointer capture, чтобы не терять drag
+            try { ev.target?.setPointerCapture?.(ev.pointerId); } catch { }
+
+            const onMove = (e) => {
+                const dx = e.clientX - startClientX;
+
+                if (!moved && Math.abs(dx) >= DRAG_THRESHOLD_PX) {
+                    moved = true;
+                    // Только когда реально поехали — гасим дефолт (иначе click будет стабильнее)
+                    try { e.preventDefault(); } catch { }
+                }
+                if (!moved) return;
+
+                const newLeft = startLeft + dx;
+
+                // px -> ms (правильная математика: от start3 + (left/colW)*colMs)
+                const ms = start3ms + (newLeft / colW) * state.colMs;
+
+                lastMs = ms;
+                state.pickedMs = ms;
+
+                // обновляем только позицию (без полного render)
+                updatePickedLineAndBadge();
+            };
+
+            const onUp = () => {
+                document.removeEventListener('pointermove', onMove, true);
+                document.removeEventListener('pointerup', onUp, true);
+
+                // Не двигали — оставляем как было (клик по линии/кнопке)
+                if (!moved) {
+                    state.pickedMs = startPickedMs;
+                    return;
+                }
+
+                // Если драг начался на кнопке — следующий click надо “поглотить” (иначе он сработает после drag)
+                if (startedOnBtn && ui.btnEl) {
+                    ui.btnEl._ppSuppressClickOnce = true;
+                }
+
+                const finalMs = lastMs;
+                state.pickedMs = finalMs;
+
+                // якорим по дню выбранного момента
+                state.anchor = startOfUTCDay(new Date(finalMs));
+
+                // перерисовать и мягко вернуть шпильку в центр
+                render();
+                requestAnimationFrame(() => centerPickedMs(finalMs, true));
+            };
+
+            document.addEventListener('pointermove', onMove, true);
+            document.addEventListener('pointerup', onUp, true);
+        }
+
 
         // Ховеры и клики по сетке таймлайна (тело + верхняя шкала часов)
         const gridHoverTargets = [];
@@ -4659,6 +5065,63 @@
                     const xPick = ((picked - start3) / state.colMs) * colW2;
 
                     // вертикальная голубая линия во всём теле таймлайна
+                    // const pickEl = document.createElement('div');
+                    // pickEl.className = 'tl-picked';
+                    // pickEl.style.left = `${xPick}px`;
+                    // // высота линии = вся прокручиваемая высота тела
+                    // pickEl.style.setProperty('--pp-pick-h', elBody.scrollHeight + 'px');
+                    // elBody.appendChild(pickEl);
+
+                    // // липкий бейдж в верхней шкале
+                    // if (topScale) {
+                    //     const hh = String(picked.getUTCHours()).padStart(2, '0');
+                    //     const mm = String(picked.getUTCMinutes()).padStart(2, '0');
+
+                    //     const badge = document.createElement('div');
+                    //     badge.className = 'pp-picked-badge';
+                    //     badge.textContent = `${hh}:${mm} UTC`;
+                    //     badge.style.left = `${xPick}px`;
+                    //     topScale.appendChild(badge);
+
+                    //     // круглая синяя кнопка «табличка» над выбранной линией
+                    //     const btn = document.createElement('button');
+                    //     btn.type = 'button';
+                    //     btn.className = 'pp-picked-btn';
+                    //     // используем data-hint вместо title, чтобы подсказка показывалась мгновенно
+                    //     btn.setAttribute('data-hint', 'Show active events in the table');
+                    //     btn.setAttribute('aria-label', 'Show active events in the table');
+                    //     btn.style.left = `${xPick}px`;
+
+                    //     // --- DRAG: тянем и линию, и кнопку (визуально двигаем; потом центрируем) ---
+                    //     const ui = { pickEl, btnEl: btn, badgeEl: badge, start3, xPick };
+                    //     btn.addEventListener('pointerdown', (ev) => beginPickedDrag(ev, ui));
+                    //     pickEl.addEventListener('pointerdown', (ev) => beginPickedDrag(ev, ui));
+
+                    //     // кликом по кнопке фильтруем таблицу по выбранному моменту
+                    //     btn.addEventListener('click', (ev) => {
+                    //         // если это “эхо-клик” после drag — гасим один раз
+                    //         if (btn._ppSuppressClickOnce) {
+                    //             btn._ppSuppressClickOnce = false;
+                    //             ev.preventDefault();
+                    //             ev.stopPropagation();
+                    //             return;
+                    //         }
+
+                    //         ev.preventDefault();
+                    //         ev.stopPropagation();
+
+                    //         const ts = state.pickedMs;
+                    //         if (!Number.isFinite(ts)) return;
+
+                    //         document.dispatchEvent(new CustomEvent('pp:filterByTime', { detail: { ts } }));
+                    //     });
+
+
+                    //     topScale.appendChild(btn);
+                    // }
+
+
+                    // вертикальная голубая линия во всём теле таймлайна
                     const pickEl = document.createElement('div');
                     pickEl.className = 'tl-picked';
                     pickEl.style.left = `${xPick}px`;
@@ -4678,7 +5141,6 @@
                         topScale.appendChild(badge);
 
                         // круглая синяя кнопка «табличка» над выбранной линией
-                        // круглая синяя кнопка «табличка» над выбранной линией
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'pp-picked-btn';
@@ -4687,8 +5149,20 @@
                         btn.setAttribute('aria-label', 'Show active events in the table');
                         btn.style.left = `${xPick}px`;
 
+                        // общий контекст для drag
+                        const ui = { pickEl, btnEl: btn, badgeEl: badge, start3, xPick };
+
+                        // drag по кнопке
+                        btn.addEventListener('pointerdown', (ev) => beginPickedDrag(ev, ui), true);
+
+                        // drag по линии
+                        pickEl.addEventListener('pointerdown', (ev) => beginPickedDrag(ev, ui), true);
+
                         // кликом по кнопке фильтруем таблицу по выбранному моменту
                         btn.addEventListener('click', (ev) => {
+                            // если это “клик” после drag — игнорируем один раз
+                            if (btn._suppressClick) { btn._suppressClick = false; return; }
+
                             ev.preventDefault();
                             ev.stopPropagation();
                             const ts = state.pickedMs;
@@ -4700,8 +5174,9 @@
                         });
 
                         topScale.appendChild(btn);
-
                     }
+
+
                 }
             }
 
@@ -4917,14 +5392,21 @@
                 const now = Date.now();
 
                 // подготовим границы текущего видимого интервала
-                const VISIBLE_DAY_SPAN = 3; // у тебя уже есть эти константы в контексте — оставляю как было
-                const DAY_SPAN = 3;
-
+                // подготовим границы текущего видимого интервала (берём ГЛОБАЛЬНЫЙ буфер)
                 const colW = parseFloat(getComputedStyle(elBody).getPropertyValue('--tl-col-w')) || state.colW;
                 const halfVisible = Math.floor(VISIBLE_DAY_SPAN / 2);
-                const startBase = (state.view === 'day') ? addMs(state.anchor, -halfVisible * state.rangeMs) : state.anchor;
-                const totalMs = (state.view === 'day') ? state.rangeMs * DAY_SPAN : state.rangeMs;
+
+                // Мы реально рендерим start3..end3 длиной state.rangeMs * VISIBLE_DAY_SPAN
+                const startBase = (state.view === 'day')
+                    ? addMs(state.anchor, -halfVisible * state.rangeMs)
+                    : state.anchor;
+
+                const totalMs = (state.view === 'day')
+                    ? state.rangeMs * VISIBLE_DAY_SPAN
+                    : state.rangeMs;
+
                 const endBase = addMs(startBase, totalMs);
+
 
                 let nowEl = elBody.querySelector('.tl-now');
                 if (!(now >= startBase && now <= endBase) || state.view === 'month') {

@@ -4465,9 +4465,24 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     background: #60a5fa;
     /* голубая — отличается от красной now */
     opacity: .95;
-    pointer-events: none;
+
+    /* КЛЮЧ: линия должна ловить pointerdown для drag */
+    pointer-events: auto;
+    cursor: grab;
+
+    /* чтобы не было выделения/скролла страницы во время drag */
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+
     z-index: 4;
 }
+
+
+.tl-picked:active {
+    cursor: grabbing;
+}
+
 
 .pp-picked-badge {
     position: sticky;
@@ -4488,37 +4503,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     pointer-events: none;
 }
 
-/* === Линия и бейдж выбранного времени (Picked) =================== */
-.tl-picked {
-    position: absolute;
-    top: 0;
-    height: var(--pp-pick-h, 100%);
-    width: 2px;
-    background: #60a5fa;
-    /* голубая — отличается от красной now */
-    opacity: .95;
-    pointer-events: none;
-    z-index: 4;
-}
 
-.pp-picked-badge {
-    position: sticky;
-    top: 0;
-    transform: translateX(-50%);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 66px;
-    height: 22px;
-    padding: 0 6px;
-    border-radius: 6px;
-    background: #0f172a;
-    color: #e5e7eb;
-    border: 1px solid rgba(148, 163, 184, .35);
-    z-index: 5;
-    white-space: nowrap;
-    pointer-events: none;
-}
 
 /* круглая синяя кнопка с иконкой таблицы над синей линией Picked */
 .pp-picked-btn {
@@ -4541,10 +4526,20 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     justify-content: center;
     font-size: 16px;
     line-height: 1;
-    cursor: pointer;
+    cursor: grab;
     z-index: 20;
     box-shadow: 0 0 0 2px rgba(15, 23, 42, .7), 0 4px 10px rgba(15, 23, 42, .8);
+
+    /* важно для перетаскивания (особенно touch/trackpad) */
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
 }
+
+.pp-picked-btn:active {
+    cursor: grabbing;
+}
+
 
 .pp-picked-btn:hover {
     transform: translateX(-50%) scale(1.05);
