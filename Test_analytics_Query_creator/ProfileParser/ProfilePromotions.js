@@ -178,8 +178,8 @@
     <div class="tl-right"></div>
   </div>
 
-  <div class="tl-header" id="promoTlHeader"></div>
-  <div class="tl-body" id="promoTlBody"></div>
+   <div class="tl-grid-header" id="promoTlHeader"></div>
+  <div class="tl-grid-body" id="promoTlBody"></div>
 </div>
 
 </div>
@@ -265,194 +265,26 @@
         });
     }
 
-    // ---------- Timeline (Promotions day-view, LiveOps-like DOM) ----------
     function initPromoTimeline(items, wrap) {
-        const elTitle = wrap.querySelector('#promoTlTitle');
-        const elHeader = wrap.querySelector('#promoTlHeader');
-        const elBody = wrap.querySelector('#promoTlBody');
-
-        // current time marker (UTC now) — как в LiveOps
-        const nowLine = document.createElement('div');
-        nowLine.className = 'tl-now';
-        elBody.appendChild(nowLine);
-
-        const elRes = wrap.querySelector('#promoTlResList');
-        const elDate = wrap.querySelector('#promoTlDateInput');
-
-        // vertical scroll sync (like LiveOps)
-        let syncLock = false;
-
-        elBody.addEventListener('scroll', () => {
-            if (syncLock) return;
-            syncLock = true;
-            elRes.scrollTop = elBody.scrollTop;
-            syncLock = false;
-        });
-
-        elRes.addEventListener('scroll', () => {
-            if (syncLock) return;
-            syncLock = true;
-            elBody.scrollTop = elRes.scrollTop;
-            syncLock = false;
-        });
-
-
-        if (!elTitle || !elHeader || !elBody || !elRes) return;
-
-        const all = (items || []).slice();
-        if (!all.length) {
-            elTitle.textContent = 'No promotions';
+        // Promotions календарь = тот же движок, что и у LiveOps (ProfileParser.js),
+        // только с другими id (promoTl*)
+        if (typeof window.initTimelineCalendar === 'function') {
+            window.initTimelineCalendar(items, {
+                title: 'promoTlTitle',
+                header: 'promoTlHeader',
+                body: 'promoTlBody',
+                res: 'promoTlResList',
+                grid: 'promoTlGrid',
+                toolbar: 'promoTlToolbar',
+                dateInput: 'promoTlDateInput',
+            });
             return;
         }
 
-        // rows = types (как Events в LiveOps)
-        const types = Array.from(new Set(all.map(x => (x.type || '—').trim() || '—'))).sort((a, b) => a.localeCompare(b));
-        const byType = new Map(types.map(t => [t, []]));
-        for (const it of all) {
-            const t = (it.type || '—').trim() || '—';
-            if (!byType.has(t)) byType.set(t, []);
-            byType.get(t).push(it);
-        }
-
-        // anchor day: берём min startTS, как было у твоего старого Promotions
-        let anchorMs = Math.min(...all.map(x => x.startTS));
-        anchorMs = startOfUTCDayMs(anchorMs);
-
-        // 24 часа сетка
-        const COLS = 24;
-        const HOUR_MS = 3600_000;
-
-        // [FIX] Wheel sync like LiveOps — вешаем ОДИН раз (не внутри render),
-        // иначе при каждом render() будет множиться число обработчиков.
-        if (!elRes.dataset.wheelSync) {
-            elRes.dataset.wheelSync = '1';
-            elRes.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                elBody.scrollTop += e.deltaY;
-            }, { passive: false });
-        }
-
-
-        function render() {
-            const dayStart = startOfUTCDayMs(anchorMs);
-            const dayEnd = dayStart + 24 * HOUR_MS;
-
-            // title
-            const d = new Date(dayStart);
-            const yyyy = d.getUTCFullYear();
-            const MM = String(d.getUTCMonth() + 1).padStart(2, '0');
-            const DD = String(d.getUTCDate()).padStart(2, '0');
-            elTitle.textContent = `${DD}.${MM}.${yyyy}`;
-
-            // header (hours)
-            elHeader.innerHTML = `
-<div class="tl-daybar">
-  ${Array.from({ length: COLS }).map((_, h) => `<div class="tl-day">${String(h).padStart(2, '0')}:00</div>`).join('')}
-</div>
-`;
-
-            // left (types)
-            elRes.innerHTML = types.map(t => `<div class="tl-res" title="${escapeHtml(t)}">${escapeHtml(t)}</div>`).join('');
-
-            // body (rows)
-            elBody.innerHTML = types.map((t, rowIdx) => {
-                const list = (byType.get(t) || []).slice().sort((a, b) => a.startTS - b.startTS);
-
-                // bars clipped to day
-                const bars = list.map(ev => {
-                    const a = Math.max(ev.startTS, dayStart);
-                    const b = Math.min(ev.endTS, dayEnd);
-                    if (b <= a) return '';
-
-                    const leftPct = ((a - dayStart) / (dayEnd - dayStart)) * 100;
-                    const widthPct = ((b - a) / (dayEnd - dayStart)) * 100;
-
-                    return `
-<div class="tl-event" style="left:${leftPct}%;width:${Math.max(0.5, widthPct)}%;" title="${escapeHtml(ev.name)}">
-  <span class="txt">${escapeHtml(ev.name)}</span>
-</div>`;
-                }).join('');
-
-                return `<div class="tl-row" data-row="${rowIdx}">${bars}</div>`;
-            }).join('');
-
-            // sync scroll (wheel) is wired once outside render()
-
-
-            // date input reflects day
-            if (elDate) {
-                elDate.value = `${yyyy}-${MM}-${DD}`;
-            }
-            // update NOW line position
-            const now = Date.now();
-            if (now >= dayStart && now <= dayEnd) {
-                const pct = ((now - dayStart) / (dayEnd - dayStart)) * 100;
-                nowLine.style.left = pct + '%';
-                nowLine.style.display = 'block';
-            } else {
-                nowLine.style.display = 'none';
-            }
-        }
-
-        function startOfUTCDayMs(ms) {
-            const d = new Date(ms);
-            d.setUTCHours(0, 0, 0, 0);
-            return d.getTime();
-        }
-
-        // toolbar
-        wrap.querySelector('#promoTlToolbar')?.addEventListener('click', (e) => {
-            const btn = e.target.closest('button[data-nav]');
-            if (!btn) return;
-            const nav = btn.dataset.nav;
-
-            if (nav === 'prev') {
-                anchorMs = startOfUTCDayMs(anchorMs - 24 * HOUR_MS);
-                render();
-                return;
-            }
-
-            if (nav === 'next') {
-                anchorMs = startOfUTCDayMs(anchorMs + 24 * HOUR_MS);
-                render();
-                return;
-            }
-
-            if (nav === 'today') {
-                const now = Date.now();
-                anchorMs = startOfUTCDayMs(now);
-                render();
-
-                // center current time like LiveOps (безопасно — только для Promotions)
-                requestAnimationFrame(() => {
-                    const bodyWidth = elBody.scrollWidth;
-                    const viewWidth = elBody.clientWidth;
-                    const pct = (now - anchorMs) / (24 * HOUR_MS);
-                    const x = bodyWidth * pct - viewWidth / 2;
-                    elBody.scrollLeft = Math.max(0, x);
-                });
-                return;
-            }
-
-            if (nav === 'calendar') {
-                if (elDate?.showPicker) elDate.showPicker();
-                else elDate?.focus();
-            }
-        });
-
-
-        elDate?.addEventListener('change', () => {
-            const v = (elDate.value || '').trim(); // YYYY-MM-DD
-            if (!v) return;
-            const ms = Date.parse(`${v}T00:00:00Z`);
-            if (Number.isFinite(ms)) {
-                anchorMs = ms;
-                render();
-            }
-        });
-
-        render();
+        // fallback: если по какой-то причине LiveOps календарь недоступен
+        console.warn('[Promotions] initTimelineCalendar not found. Promotions timeline is not initialized.');
     }
+
 
     // ---------- public api ----------
     window.PP_Promotions = {

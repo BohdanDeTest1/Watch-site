@@ -4969,16 +4969,24 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
 /* Управляем темой нативного пикера через color-scheme */
 :root:not(.theme-dark) #ppCal #tlDateInput,
 html:not(.dark) #ppCal #tlDateInput,
-[data-theme="light"] #ppCal #tlDateInput {
+[data-theme="light"] #ppCal #tlDateInput,
+:root:not(.theme-dark) #ppPromoCal #promoTlDateInput,
+html:not(.dark) #ppPromoCal #promoTlDateInput,
+[data-theme="light"] #ppPromoCal #promoTlDateInput {
     color-scheme: light;
 }
 
 :root.theme-dark #ppCal #tlDateInput,
 .theme-dark #ppCal #tlDateInput,
 .dark #ppCal #tlDateInput,
-[data-theme="dark"] #ppCal #tlDateInput {
+[data-theme="dark"] #ppCal #tlDateInput,
+:root.theme-dark #ppPromoCal #promoTlDateInput,
+.theme-dark #ppPromoCal #promoTlDateInput,
+.dark #ppPromoCal #promoTlDateInput,
+[data-theme="dark"] #ppPromoCal #promoTlDateInput {
     color-scheme: dark;
 }
+
 
 #ppCal,
 #ppPromoCal {

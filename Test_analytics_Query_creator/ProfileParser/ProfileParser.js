@@ -3736,12 +3736,25 @@
     }
 
     // ===================== [TIMELINE] Pure JS =====================
-    function initTimelineCalendar(items) {
-        const elTitle = document.getElementById('tlTitle');
-        const elHeader = document.getElementById('tlHeader');
-        const elBody = document.getElementById('tlBody');
-        const elRes = document.getElementById('tlResList');
-        const elGrid = document.getElementById('tlGrid');
+    function initTimelineCalendar(items, ids = {}) {
+        const ID = {
+            title: ids.title || 'tlTitle',
+            header: ids.header || 'tlHeader',
+            body: ids.body || 'tlBody',
+            res: ids.res || 'tlResList',
+            grid: ids.grid || 'tlGrid',
+            toolbar: ids.toolbar || 'tlToolbar',
+            dateInput: ids.dateInput || 'tlDateInput',
+        };
+
+        const elTitle = document.getElementById(ID.title);
+        const elHeader = document.getElementById(ID.header);
+        const elBody = document.getElementById(ID.body);
+        const elRes = document.getElementById(ID.res);
+        const elGrid = document.getElementById(ID.grid);
+        const elToolbar = document.getElementById(ID.toolbar);
+        const elDateInput = document.getElementById(ID.dateInput);
+
         if (!elTitle || !elHeader || !elBody || !elRes || !elGrid) return;
 
         // [ANCHOR TL-WHEEL-SYNC] — колесо над левой колонкой двигает правое тело
@@ -3861,9 +3874,9 @@
 
 
 
-        const toolbar = document.getElementById('tlToolbar');
+        const toolbar = elToolbar;
 
-        const dateInput = document.getElementById('tlDateInput');
+        const dateInput = elDateInput;
 
         // [TL-TOOLBAR-TOOLTIPS] — всплывающие подсказки для кнопок верхней панели
         if (toolbar) {
@@ -6018,6 +6031,11 @@
 
 
     }
+
+    // Promotions календарь (ProfilePromotions.js) пытается вызвать window.initTimelineCalendar(...).
+    // В LiveOps он есть как функция в скоупе ProfileParser.js, но без экспорта на window — поэтому Promotions остаётся пустым.
+    window.initTimelineCalendar = initTimelineCalendar;
+
     // =================== [/TIMELINE] ===================
 
 
