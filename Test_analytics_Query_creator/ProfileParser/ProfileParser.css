@@ -2725,7 +2725,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* ===================== [TIMELINE] Pure CSS ===================== */
-#ppCal {
+#ppCal,
+#ppPromoCal {
     --tl-row-h: 44px;
     --tl-col-w: 80px;
     --tl-border: #e5e7eb;
@@ -2880,7 +2881,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* фоновый цвет именно левой панели (сплошной) */
-#ppCal {
+#ppCal,
+#ppPromoCal {
     --cal-left-bg: #12151e;
 }
 
@@ -2888,6 +2890,14 @@ body.theme-dark .pp-cal-tick {
 .theme-dark #ppCal,
 [data-theme="dark"] #ppCal,
 .dark #ppCal {
+    --cal-left-bg: #12151e;
+    --tl-ev-brc: rgba(255, 255, 255, .22);
+}
+
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
     --cal-left-bg: #12151e;
     --tl-ev-brc: rgba(255, 255, 255, .22);
 }
@@ -3091,7 +3101,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* Кнопка с иконкой: плотная укладка иконки и текста */
-#ppCal .tl-btn.tl-icon-btn {
+#ppCal .tl-btn.tl-icon-btn,
+#ppPromoCal .tl-btn.tl-icon-btn {
 
     display: inline-flex;
     /* было inline-grid */
@@ -3107,8 +3118,13 @@ body.theme-dark .pp-cal-tick {
     margin: 0 !important;
 }
 
+#ppPromoCal .tl-btn.tl-icon-btn>* {
+    margin: 0 !important;
+}
+
 /* Сама иконка – фиксированный компактный бокс без внутренних отступов */
-#ppCal .tl-btn.tl-icon-btn .tl-icon {
+#ppCal .tl-btn.tl-icon-btn .tl-icon,
+#ppPromoCal .tl-btn.tl-icon-btn .tl-icon {
     width: 16px;
     height: 16px;
     display: inline-block;
@@ -3117,33 +3133,38 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-#ppCal .tl-btn.tl-icon-btn .tl-icon {
+#ppCal .tl-btn.tl-icon-btn .tl-icon,
+#ppPromoCal .tl-btn.tl-icon-btn .tl-icon {
     width: 16px;
     height: 16px;
     display: inline-block;
     vertical-align: middle;
 }
 
-#ppCal .tl-btn.tl-icon-btn .tl-icon path {
+#ppCal .tl-btn.tl-icon-btn .tl-icon path,
+#ppPromoCal .tl-btn.tl-icon-btn .tl-icon path {
     fill: currentColor;
 }
 
 
-#ppCal .tl-btn.tl-icon-btn .tl-icon {
+#ppCal .tl-btn.tl-icon-btn .tl-icon,
+#ppPromoCal .tl-btn.tl-icon-btn .tl-icon {
     width: 16px;
     height: 16px;
     display: inline-block;
     vertical-align: middle;
 }
 
-#ppCal .tl-btn.tl-icon-btn .tl-icon path {
+#ppCal .tl-btn.tl-icon-btn .tl-icon path,
+#ppPromoCal .tl-btn.tl-icon-btn .tl-icon path {
     fill: currentColor;
     /* иконка наследует цвет текста кнопки */
 }
 
 
 /* Внешний вид поля даты внутри поповера, в стилистике кнопок/полей */
-#ppCal .tl-date-field {
+#ppCal .tl-date-field,
+#ppPromoCal .tl-date-field {
     width: 100%;
     padding: 8px 10px;
     border: 1px solid var(--tl-border, #e5e7eb);
@@ -3160,11 +3181,16 @@ body.theme-dark .pp-cal-tick {
     transform: translateY(1px)
 }
 
+#ppPromoCal .tl-btn:active {
+    transform: translateY(1px)
+}
+
 /* === DROPDOWN (day/week/month) === */
 
 
 
-#ppCal .tl-wrap {
+#ppCal .tl-wrap,
+#ppPromoCal .tl-wrap {
     display: grid;
     grid-template-columns: 260px 1fr;
     border-top: 1px solid var(--tl-border);
@@ -3172,7 +3198,8 @@ body.theme-dark .pp-cal-tick {
 
 
 
-#ppCal .tl-rescol {
+#ppCal .tl-rescol,
+#ppPromoCal .tl-rescol {
     border-right: 1px solid var(--tl-border);
     background: var(--cal-left-bg, var(--card-bg));
     /* вместо #fff */
@@ -3185,12 +3212,14 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-#ppCal .tl-res-list {
+#ppCal .tl-res-list,
+#ppPromoCal .tl-res-list {
     display: block;
 }
 
 /* [FIX TL-RES-PERF] — плавный сдвиг трансформом, без артефактов */
-#ppCal .tl-res-list {
+#ppCal .tl-res-list,
+#ppPromoCal .tl-res-list {
     will-change: transform;
     transform: translateZ(0);
     /* выделяем композитный слой */
@@ -3198,7 +3227,8 @@ body.theme-dark .pp-cal-tick {
 
 /* [ANCHOR TL-RES-ITEM] — высота как у строки сетки + тот же разделитель */
 /* [ANCHOR TL-RES-ITEM] — короткий разделитель вместо прямого бордера */
-#ppCal .tl-res-item {
+#ppCal .tl-res-item,
+#ppPromoCal .tl-res-item {
     height: var(--tl-row-h);
     display: flex;
     align-items: center;
@@ -3231,8 +3261,22 @@ body.theme-dark .pp-cal-tick {
     pointer-events: none;
 }
 
+#ppPromoCal .tl-res-item::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    /* отступ слева оставляем как у текста */
+    right: 20px;
+    /* отступ справа: линия НЕ доезжает до края */
+    bottom: 0;
+    height: 1px;
+    background: var(--tl-border);
+    pointer-events: none;
+}
 
-#ppCal .tl-grid {
+
+#ppCal .tl-grid,
+#ppPromoCal .tl-grid {
     position: relative;
     overflow: hidden;
     z-index: 1;
@@ -3269,7 +3313,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [ANCHOR TL-HEADER-COLS] — шапка без бордеров, вертикали — тем же тайлом и смещением */
-#ppCal .tl-grid-header .tl-col {
+#ppCal .tl-grid-header .tl-col,
+#ppPromoCal .tl-grid-header .tl-col {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -3313,7 +3358,8 @@ body.theme-dark .pp-cal-tick {
 
 /* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
 /* [ANCHOR TL-GRID-LINES] — вертикальная сетка фоном строки, выравнивание по часам */
-#ppCal .tl-grid-body .tl-row {
+#ppCal .tl-grid-body .tl-row,
+#ppPromoCal .tl-grid-body .tl-row {
     position: relative;
     height: var(--tl-row-h);
     box-shadow: none;
@@ -3329,7 +3375,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [ANCHOR TL-GRID-LINES:CONTAINER] — тайловая сетка + зебра часов */
-#ppCal .tl-grid-body {
+#ppCal .tl-grid-body,
+#ppPromoCal .tl-grid-body {
     position: relative;
     white-space: nowrap;
     overflow-x: auto;
@@ -3352,7 +3399,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* === TL scrollbars (локально к календарю) === */
-#ppCal .tl-grid-body {
+#ppCal .tl-grid-body,
+#ppPromoCal .tl-grid-body {
     /* всегда резервируем место под полосы, чтобы не пропадали */
     scrollbar-gutter: stable both-edges;
 
@@ -3383,6 +3431,28 @@ body.theme-dark .pp-cal-tick {
     background-color: transparent;
 }
 
+/* WebKit (Chrome/Edge/Safari): размеры обеих осей */
+#ppPromoCal .tl-grid-body::-webkit-scrollbar {
+    width: 8px;
+    /* вертикальная */
+    height: 8px;
+    /* горизонтальная */
+}
+
+#ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 39, .35);
+    border-radius: 8px;
+}
+
+#ppPromoCal .tl-grid-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* уголок между полосами */
+#ppPromoCal .tl-grid-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
 /* === ТЁМНАЯ ТЕМА: делаем цвета светлее на тёмном фоне === */
 :root.theme-dark #ppCal .tl-grid-body,
 .theme-dark #ppCal .tl-grid-body,
@@ -3403,6 +3473,31 @@ body.theme-dark .pp-cal-tick {
 .theme-dark #ppCal .tl-grid-body::-webkit-scrollbar-corner,
 [data-theme="dark"] #ppCal .tl-grid-body::-webkit-scrollbar-corner,
 .dark #ppCal .tl-grid-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+    /* или var(--card-bg) если нужен сплошной */
+}
+
+
+/* === ТЁМНАЯ ТЕМА: делаем цвета светлее на тёмном фоне === */
+:root.theme-dark #ppPromoCal .tl-grid-body,
+.theme-dark #ppPromoCal .tl-grid-body,
+[data-theme="dark"] #ppPromoCal .tl-grid-body,
+.dark #ppPromoCal .tl-grid-body {
+    scrollbar-color: rgba(255, 255, 255, .28) transparent;
+    /* Firefox */
+}
+
+:root.theme-dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb,
+.theme-dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb,
+[data-theme="dark"] #ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb,
+.dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, .28);
+}
+
+:root.theme-dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-corner,
+.theme-dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-corner,
+[data-theme="dark"] #ppPromoCal .tl-grid-body::-webkit-scrollbar-corner,
+.dark #ppPromoCal .tl-grid-body::-webkit-scrollbar-corner {
     background-color: transparent;
     /* или var(--card-bg) если нужен сплошной */
 }
@@ -3429,8 +3524,29 @@ body.theme-dark .pp-cal-tick {
 
 
 
+/* DARK: зебра в темных оттенках для тела таймлайна */
+:root.theme-dark #ppPromoCal .tl-grid-body,
+.theme-dark #ppPromoCal .tl-grid-body,
+[data-theme="dark"] #ppPromoCal .tl-grid-body,
+.dark #ppPromoCal .tl-grid-body {
+    /* вместо white/#f9f9f9 — еле заметные светлые полосы */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(255, 255, 255, .055) 0,
+            rgba(255, 255, 255, .055) var(--tl-col-w),
+            transparent var(--tl-col-w),
+            transparent calc(var(--tl-col-w) * 2));
+    background-size: calc(var(--tl-col-w) * 2) 100%;
+    background-position: calc(var(--tl-grid-off, 0px)) 0;
+    background-repeat: repeat;
+    background-attachment: local;
+    background-origin: content-box;
+}
+
+
 /* линии рисуем НЕ бордером ячеек, чтобы не было двойных линий и обрывов */
-#ppCal .tl-grid-body .tl-cell {
+#ppCal .tl-grid-body .tl-cell,
+#ppPromoCal .tl-grid-body .tl-cell {
     display: inline-block;
     vertical-align: top;
     height: 100%;
@@ -3442,13 +3558,16 @@ body.theme-dark .pp-cal-tick {
 
 /* [ANCHOR TL-CSS-WIDTH] — ширина не ограничивается, иначе обрывается сетка */
 #ppCal .tl-grid-header,
-#ppCal .tl-grid-body {
+#ppCal .tl-grid-body,
+#ppPromoCal .tl-grid-header,
+#ppPromoCal.tl-grid-body {
     max-width: none !important;
 
 }
 
 /* строка дня поверх часов */
-#ppCal .tl-daybar {
+#ppCal .tl-daybar,
+#ppPromoCal .tl-daybar {
     position: absolute;
     top: 0;
     left: 0;
@@ -3458,7 +3577,8 @@ body.theme-dark .pp-cal-tick {
     z-index: 3;
 }
 
-#ppCal .tl-daytag {
+#ppCal .tl-daytag,
+#ppPromoCal .tl-daytag {
     position: absolute;
     top: 0;
     line-height: var(--tl-daybar-h);
@@ -3468,7 +3588,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [TL-EVENT — lane-based layout, no row-tied height] */
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     position: absolute;
     /* каждая «дорожка» = 23px (21px бар + 2px зазор) */
     top: calc(var(--lane, 0) * 23px);
@@ -3486,24 +3607,29 @@ body.theme-dark .pp-cal-tick {
 
 
 
-#ppCal .tl-event.type-0 {
+#ppCal .tl-event.type-0,
+#ppPromoCal .tl-event.type-0 {
     background: #3b82f6
 }
 
-#ppCal .tl-event.type-1 {
+#ppCal .tl-event.type-1,
+#ppPromoCal .tl-event.type-1 {
     background: #ef4444
 }
 
-#ppCal .tl-event.type-2 {
+#ppCal .tl-event.type-2,
+#ppPromoCal .tl-event.type-2 {
     background: #22c55e
 }
 
-#ppCal .tl-event.type-3 {
+#ppCal .tl-event.type-3,
+#ppPromoCal .tl-event.type-3 {
     background: #f59e0b
 }
 
 /* красная линия "сейчас" в старшем таймлайне */
-#ppCal .tl-now {
+#ppCal .tl-now,
+#ppPromoCal .tl-now {
     position: absolute;
     top: 0;
     /* тянем сверху */
@@ -3520,11 +3646,14 @@ body.theme-dark .pp-cal-tick {
 
 
 @media (max-width:900px) {
-    #ppCal {
+
+    #ppCal,
+    #ppPromoCal {
         --tl-col-w: 64px;
     }
 
-    #ppCal .tl-wrap {
+    #ppCal .tl-wrap,
+    #ppPromoCal .tl-wrap {
         grid-template-columns: 200px 1fr
     }
 }
@@ -3535,6 +3664,16 @@ body.theme-dark .pp-cal-tick {
 }
 
 #ppCal .tl-grid-body::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px
+}
+
+
+#ppPromoCal .tl-grid-body::-webkit-scrollbar {
+    height: 10px
+}
+
+#ppPromoCal .tl-grid-body::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 10px
 }
@@ -3595,7 +3734,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* === [TIMELINE] Day box inside header === */
-#ppCal .tl-daybar {
+#ppCal .tl-daybar,
+#ppPromoCal .tl-daybar {
     position: absolute;
     top: 0;
     left: 0;
@@ -3618,7 +3758,8 @@ body.theme-dark .pp-cal-tick {
     z-index: 2;
 }
 
-#ppCal .tl-daybox {
+#ppCal .tl-daybox,
+#ppPromoCal .tl-daybox {
     position: absolute;
     top: 4px;
     height: calc(var(--tl-daybar-h) - 8px);
@@ -3660,8 +3801,30 @@ body.theme-dark .pp-cal-tick {
     /* приглушённый текст */
 }
 
+:root.theme-dark #ppPromoCal .tl-daybox,
+.theme-dark #ppPromoCal .tl-daybox,
+[data-theme="dark"] #ppCal .tl-daybox,
+.dark #ppPromoCal .tl-daybox {
+    background: #0f172a;
+    border-color: var(--tl-border);
+}
+
+/* Темная тема для таймлайна */
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
+    --tl-border: var(--border);
+    /* системная линия */
+    --tl-accent: var(--text);
+    /* акцентные надписи */
+    --tl-muted: var(--muted);
+    /* приглушённый текст */
+}
+
 /* фон левой колонки/хедера в темной и светлой темах */
-#ppCal {
+#ppCal,
+#ppPromoCal {
     --cal-left-bg: var(--card-bg);
 }
 
@@ -3672,8 +3835,16 @@ body.theme-dark .pp-cal-tick {
     --cal-left-bg: var(--card-bg);
 }
 
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
+    --cal-left-bg: var(--card-bg);
+}
 
-#ppCal .tl-daytag {
+
+#ppCal .tl-daytag,
+#ppPromoCal .tl-daytag {
     position: absolute;
     top: 0;
     line-height: var(--tl-daybar-h);
@@ -3764,7 +3935,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [HEADER SOLID — финальная версия] */
-#ppCal .tl-res-header {
+#ppCal .tl-res-header,
+#ppPromoCal .tl-res-header {
     height: var(--tl-res-head-h);
     display: flex;
     align-items: center;
@@ -3789,7 +3961,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* [RESCOL — финальная версия] */
-#ppCal .tl-rescol {
+#ppCal .tl-rescol,
+#ppPromoCal .tl-rescol {
     border-right: 1px solid var(--tl-border);
     background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg)));
     /* вместо #fff */
@@ -3818,21 +3991,42 @@ body.theme-dark .pp-cal-tick {
             transparent 75%);
 }
 
+#ppPromoCal .tl-rescol::after {
+    content: "";
+    position: absolute;
+    top: var(--tl-res-head-h);
+    /* ниже шапки Events */
+    bottom: 0;
+    right: 0;
+    /* фейд остаётся внутри панели */
+    width: 28px;
+    /* подстрой: 20–36 */
+    pointer-events: none;
+    z-index: 2;
+    /* ниже z-index шапки (7) */
+    background: linear-gradient(to right,
+            var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) 0%,
+            transparent 75%);
+}
+
 
 /* [OVERRIDE TL-EVENT BORDER] — в самом конце файла */
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     box-shadow: inset 0 0 0 var(--tl-ev-brw) var(--tl-ev-brc);
 }
 
 /* [ANCHOR TL-LANE-CSS] — позиционирование события по «дорожке» */
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     /* делаем высоту бара 21px и добавляем 2px зазор между лайнами */
     top: calc(var(--lane, 0) * (21px + 2px));
     height: 21px;
 }
 
 /* [CTX POPUP — clickable TL bars] */
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     cursor: pointer;
     /* визуальная подсказка, что по бару можно кликать */
     overflow: visible;
@@ -3841,7 +4035,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* [ANCHOR TL-STICKY-TITLE] — липкий текст внутри события таймлайна */
-#ppCal .tl-event .txt {
+#ppCal .tl-event .txt,
+#ppPromoCal .tl-event .txt {
     position: sticky;
     left: 0;
     padding: 0 6px 0 8px;
@@ -3862,7 +4057,8 @@ body.theme-dark .pp-cal-tick {
     mask-image: none;
 }
 
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -3870,7 +4066,8 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-#ppCal .tl-event .tl-info {
+#ppCal .tl-event .tl-info,
+#ppPromoCal .tl-event .tl-info {
     display: none !important;
     pointer-events: none !important;
 }
@@ -3879,6 +4076,9 @@ body.theme-dark .pp-cal-tick {
     opacity: 1
 }
 
+#ppPromoCal .tl-event .tl-info:hover {
+    opacity: 1
+}
 
 .pp-seg-btn {
     flex: 1 1 auto;
@@ -3975,7 +4175,8 @@ body.theme-dark .pp-cal-tick {
 
 
 /* TL event: без резерва под кнопку */
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     padding-right: 8px;
     /* было 26px под кнопку — больше не нужно */
     overflow: visible;
@@ -3988,13 +4189,15 @@ body.theme-dark .pp-cal-tick {
     text-overflow: clip;
 }
 
-#ppCal .tl-grid-header {
+#ppCal .tl-grid-header,
+#ppPromoCal .tl-grid-header {
     will-change: transform, width;
     /* <— ДОБАВИЛИ */
 }
 
 /* цветной маркер типа в левой колонке */
-#ppCal .tl-res-item .tl-dot {
+#ppCal .tl-res-item .tl-dot,
+#ppPromoCal .tl-res-item .tl-dot {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -4003,7 +4206,8 @@ body.theme-dark .pp-cal-tick {
     vertical-align: middle;
 }
 
-#ppCal .tl-event {
+#ppCal .tl-event,
+#ppPromoCal .tl-event {
     color: #fff;
 }
 
@@ -4316,18 +4520,21 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* линия «сейчас», если у неё есть класс pp-cal-now — всегда поверх сетки/баров */
-#ppCal .tl-now.pp-cal-now {
+#ppCal .tl-now.pp-cal-now,
+#ppPromoCal .tl-now.pp-cal-now {
     z-index: 4;
 }
 
 /* Обёртка вокруг кнопки Calendar — якорь для позиционирования пикера */
-#ppCal .tl-cal-wrap {
+#ppCal .tl-cal-wrap,
+#ppPromoCal .tl-cal-wrap {
     position: relative;
     display: inline-block;
 }
 
 #tlToolbar,
-#ppCal .tl-toolbar {
+#ppCal .tl-toolbar,
+#ppPromoCal .tl-toolbar {
     position: relative;
     /* панель всегда выше всех элементов таймлайна */
     z-index: 300000;
@@ -4356,6 +4563,20 @@ body.theme-dark .pp-cal-tick {
     pointer-events: none;
     /* клики идут по кнопке, не по input */
 }
+
+/* Promotions: невидимый date input якорь */
+#ppPromoCal #promoTlDateInput {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 300px;
+    height: 36px;
+    opacity: 0;
+    border: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
 
 /* === Date+Time popover возле кнопки Calendar ===================== */
 /* Делаем поп-ап фиксированным во вьюпорте, чтобы он не клипался
@@ -4759,7 +4980,8 @@ html:not(.dark) #ppCal #tlDateInput,
     color-scheme: dark;
 }
 
-#ppCal {
+#ppCal,
+#ppPromoCal {
     --cal-left-bg: var(--card-bg);
 }
 
@@ -4777,6 +4999,25 @@ html:not(.dark) #ppCal #tlDateInput,
 .theme-dark #ppCal,
 [data-theme="dark"] #ppCal,
 .dark #ppCal {
+    /* рамка в тон панели Events */
+    border-color: var(--cal-left-solid, #0f172a) !important;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
+}
+
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
+    --cal-left-bg: var(--card-bg);
+    /* новый «твёрдый» фон без прозрачности только для левой панели/шапки */
+    --cal-left-solid: #0f172a;
+    /* тёмно-синий без альфы */
+}
+
+:root.theme-dark #ppPromoCal,
+.theme-dark #ppPromoCal,
+[data-theme="dark"] #ppPromoCal,
+.dark #ppPromoCal {
     /* рамка в тон панели Events */
     border-color: var(--cal-left-solid, #0f172a) !important;
     background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
@@ -4938,14 +5179,18 @@ body.dark-theme .pp-btn.pp-info {
    который делает его содержащим блоком для position: fixed у потомков.
    Когда открыт попап — отключаем transform, чтобы fixed снова был к вьюпорту. */
 #ppCal:has(.pp-ctx) .tl-res-list,
-#ppCal:has(.tl-info-pop) .tl-res-list {
+#ppCal:has(.tl-info-pop) .tl-res-list,
+#ppPromoCal:has(.pp-ctx) .tl-res-list,
+#ppPromoCal:has(.tl-info-pop) .tl-res-list {
     transform: none !important;
     will-change: auto;
 }
 
 /* На всякий случай снимаем лишнее "will-change" с шапки сетки, когда открыт попап */
 #ppCal:has(.pp-ctx) .tl-grid-header,
-#ppCal:has(.tl-info-pop) .tl-grid-header {
+#ppCal:has(.tl-info-pop) .tl-grid-header,
+#ppPromoCal:has(.pp-ctx) .tl-grid-header,
+#ppPromoCal:has(.tl-info-pop) .tl-grid-header {
     will-change: auto;
 }
 
@@ -4955,6 +5200,15 @@ body.pp-has-pop #ppCal .tl-res-list {
 }
 
 body.pp-has-pop #ppCal .tl-grid-header {
+    will-change: auto;
+}
+
+body.pp-has-pop #ppPromoCal .tl-res-list {
+    transform: none !important;
+    will-change: auto;
+}
+
+body.pp-has-pop #ppPromoCal .tl-grid-header {
     will-change: auto;
 }
 
@@ -5128,5 +5382,30 @@ body.pp-has-pop #ppCal .tl-grid-header {
     opacity: .98 !important;
     /* реально белые и видимые */
 }
+
+/* NOW marker (LiveOps & Promotions) */
+#ppCal .tl-now,
+#ppPromoCal .tl-now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #60a5fa;
+    z-index: 4;
+    pointer-events: none;
+}
+
+/* NOW marker (LiveOps & Promotions) */
+#ppCal .tl-now,
+#ppPromoCal .tl-now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #60a5fa;
+    z-index: 4;
+    pointer-events: none;
+}
+
 
 /* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */

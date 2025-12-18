@@ -1,6 +1,15 @@
 /* ProfilePromotions.css
-   Promotions UI styles (scoped)
+   Promotions UI styles — теперь Promotions использует те же классы/разметку, что LiveOps.
+   Поэтому тут оставляем только минимальные scoped-добавки (если нужно).
 */
+
+/* Никаких pp-promos-cal / pp-promos__table — всё идёт через .tl-* и .pp-t* (как в LiveOps) */
+
+/* Мелкая правка: чтобы Promotions-секция не “прилипала” к предыдущей */
+#pp-root #ppPromoCal {
+    margin-top: 6px;
+}
+
 
 #pp-root .pp-promos {
     display: grid;

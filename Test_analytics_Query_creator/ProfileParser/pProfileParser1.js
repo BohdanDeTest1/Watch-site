@@ -135,45 +135,6 @@
         try { JSON.parse(text); } catch (e) { throw new Error('Invalid JSON'); }
         return text;
     }
-    // ---------- Safe dynamic script loader (Promotions only) ----------
-    // Самый безопасный вариант: не трогаем LiveOps, а для Promotions подгружаем модуль при необходимости.
-    const __ppScriptLoadCache = new Map();
-
-    function __ppLoadScriptOnce(src) {
-        if (__ppScriptLoadCache.has(src)) return __ppScriptLoadCache.get(src);
-
-        const p = new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = src;
-            s.async = true;
-            s.onload = () => resolve(true);
-            s.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-            document.head.appendChild(s);
-        });
-
-        __ppScriptLoadCache.set(src, p);
-        return p;
-    }
-
-    async function __ppEnsureGlobal(globalName, srcCandidates) {
-        if (window[globalName]) return true;
-
-        const list = Array.isArray(srcCandidates) ? srcCandidates : [srcCandidates];
-        for (const src of list) {
-            try {
-                await __ppLoadScriptOnce(src);
-
-                // даём браузеру “тик”, чтобы window.* успел проставиться
-                await new Promise(r => setTimeout(r, 0));
-
-                if (window[globalName]) return true;
-            } catch (e) {
-                // пробуем следующий candidate
-            }
-        }
-        return Boolean(window[globalName]);
-    }
-
     function first10(str) {
         const t = (str || '').replace(/^\s+/, '');
         return t.slice(0, 10);
@@ -3688,24 +3649,11 @@
 
 
             // 3. Promotions
-            // 3. Promotions
-            // 3. Promotions
-            // 3. Promotions
             {
                 const t = await fetchJsonText(buildUrl('promos', name));
 
-                // Самый безопасный вариант А:
-                // если Promotions-модуль не подгрузился (путь/порядок скриптов) — подгружаем его на лету.
-                // Это НЕ влияет на LiveOps, т.к. работает только внутри Promotions-блока.
-                await __ppEnsureGlobal('PP_Promotions', [
-                    'ProfilePromotions.js',
-                    './ProfilePromotions.js',
-                    'ProfileParser/ProfilePromotions.js',
-                    './ProfileParser/ProfilePromotions.js',
-                ]);
-
-                // Если модуль подгрузился — рендерим календарь+таблицу.
-                // Иначе — честный fallback (мета-строка), чтобы ничего не ломать.
+                // Если модуль подгрузился — рендерим “как LiveOps” (календарь + таблица).
+                // Иначе оставляем текущий fallback (мета-строка).
                 if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
                     const json = JSON.parse(t);
                     const promoItems = window.PP_Promotions.extract(json);
@@ -3719,9 +3667,6 @@
                     appendPromotionsSection(first10(t), t.length);
                 }
             }
-
-
-
 
 
         } catch (e) {

@@ -1,82 +1,104 @@
-/* ProfilePromotions.js
-   Promotions: parse + calendar + table (scoped, no conflicts with LiveOps)
-*/
-(function () {
-    // ---------- utils ----------
-    function el(q) { return document.querySelector(q); }
+(() => {
+    'use strict';
 
-    function toMsAny(v) {
-        if (v == null || v === '') return NaN;
-        if (typeof v === 'number' && Number.isFinite(v)) return v < 1e12 ? v * 1000 : v;
-        if (typeof v === 'string' && /^[0-9]+$/.test(v)) {
-            const n = Number(v);
-            return n < 1e12 ? n * 1000 : n;
-        }
-        const t = Date.parse(String(v));
-        return Number.isFinite(t) ? t : NaN;
+    function el(q, root = document) { return root.querySelector(q); }
+
+    function escapeHtml(s) {
+        return String(s ?? '')
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
     function fmtUtc(ms) {
         if (!Number.isFinite(ms)) return '—';
         const d = new Date(ms);
-        const pad = n => String(n).padStart(2, '0');
-        return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+        const yyyy = d.getUTCFullYear();
+        const MM = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const DD = String(d.getUTCDate()).padStart(2, '0');
+        const hh = String(d.getUTCHours()).padStart(2, '0');
+        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        const ss = String(d.getUTCSeconds()).padStart(2, '0');
+        return `${yyyy}-${MM}-${DD} ${hh}:${mm}:${ss} UTC`;
     }
 
-    function escapeHtml(s) {
-        return String(s ?? '')
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;')
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", '&#039;');
-    }
+    function toMsAny(v) {
+        if (v == null) return NaN;
 
-    function uniq(arr) {
-        const out = [];
-        const set = new Set();
-        for (const x of (arr || [])) {
-            const k = String(x ?? '').trim();
-            if (!k || set.has(k)) continue;
-            set.add(k);
-            out.push(k);
+        // --- numbers / numeric strings ---
+        const asNum = (typeof v === 'number')
+            ? v
+            : (typeof v === 'string' && v.trim() !== '' && /^-?\d+(\.\d+)?$/.test(v.trim()))
+                ? Number(v.trim())
+                : NaN;
+
+        if (Number.isFinite(asNum)) {
+            let n = asNum;
+
+            // Нормализация масштаба:
+            // seconds  ~ 1e9
+            // millis   ~ 1e12
+            // micros   ~ 1e15
+            // nanos    ~ 1e18
+            if (Math.abs(n) >= 1e18) return Math.round(n / 1e6);  // ns -> ms
+            if (Math.abs(n) >= 1e15) return Math.round(n / 1e3);  // µs -> ms
+            if (Math.abs(n) >= 1e12) return Math.round(n);        // ms
+            if (Math.abs(n) >= 1e9) return Math.round(n * 1000); // s -> ms
+
+            // слишком маленькое число — не дата
+            return NaN;
         }
-        return out;
+
+        // --- strings: ISO / "YYYY-MM-DD HH:mm:ss UTC" / similar ---
+        if (typeof v === 'string') {
+            const s = v.trim();
+            if (!s) return NaN;
+
+            // 1) ISO / parseable
+            const isoMs = Date.parse(s);
+            if (Number.isFinite(isoMs)) return isoMs;
+
+            // 2) "YYYY-MM-DD HH:mm:ss UTC" (твой кейс)
+            const m = s.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})\s*UTC$/i);
+            if (m) {
+                const ms = Date.parse(`${m[1]}T${m[2]}Z`);
+                if (Number.isFinite(ms)) return ms;
+            }
+
+            // 3) "YYYY-MM-DD HH:mm:ss" (без UTC) — считаем как UTC
+            const m2 = s.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})$/);
+            if (m2) {
+                const ms = Date.parse(`${m2[1]}T${m2[2]}Z`);
+                if (Number.isFinite(ms)) return ms;
+            }
+        }
+
+        return NaN;
     }
 
-    // ---------- parser (tolerant) ----------
-    // NOTE: структура promosScheduleNew может отличаться — поэтому делаем “поиск кандидатов” как в LiveOps.
+
+    // ---------- extract ----------
     function extractPromotions(json) {
-        const candidates = [
-            json?.data?.promotionsScheduleNew,
-            json?.data?.promotions,
-            json?.data?.items,
-            json?.promotionsScheduleNew,
-            json?.promotions,
-            json?.items
-        ].filter(Boolean);
+        // Максимально “пластичный” экстрактор: под разные формы моков
+        const arr =
+            json?.data?.promotions ??
+            json?.data?.items ??
+            json?.data ??
+            json?.promotions ??
+            json?.items ??
+            [];
 
-        let raw = candidates.find(x => Array.isArray(x) || typeof x === 'object');
-        if (!raw) return [];
+        const list = Array.isArray(arr) ? arr : [];
 
-        let arr = [];
-        if (Array.isArray(raw)) {
-            arr = raw;
-        } else {
-            // объект с ключами-идентификаторами
-            arr = Object.entries(raw).map(([id, v]) => ({ id, ...v }));
-        }
-
-        // Нормализуем к единому виду: { id, name, type, startTS, endTS, startPretty, endPretty }
-        return arr.map((it, idx) => {
-            const id = it.id ?? it.ID ?? idx;
+        return list.map((it, idx) => {
+            const id = it.id ?? it._id ?? it.key ?? `promo_${idx}`;
 
             const name =
                 it.name ??
                 it.title ??
                 it.promoName ??
                 it.promotionName ??
-                `Promotion ${idx + 1}`;
+                String(id);
 
             const type =
                 it.type ??
@@ -97,7 +119,7 @@
             const endTS = toMsAny(end);
 
             return {
-                id,
+                id: String(id),
                 name: String(name),
                 type: String(type),
                 startTS,
@@ -109,30 +131,82 @@
         }).filter(x => Number.isFinite(x.startTS) && Number.isFinite(x.endTS) && x.endTS > x.startTS);
     }
 
-    // ---------- UI: section + calendar + table ----------
+    // ---------- UI ----------
     function appendPromotionsUI(items) {
         const wrap = document.createElement('div');
         wrap.className = 'pp-item collapsible collapsed';
+
+        // Promotions использует те же классы/компоновку, что LiveOps,
+        // но id — уникальные (promoTl*)
         wrap.innerHTML = `
-      <div class="pp-title">
-        <button class="pp-collapser" type="button">
-          Promotions <span class="chev">▾</span>
+<div class="pp-title">
+  <button class="pp-collapser" type="button">
+    Promotions <span class="chev">▾</span>
+  </button>
+</div>
+
+<div class="pp-body">
+  <!-- [CAL] Timeline (Promotions, LiveOps-like) -->
+  <section class="pp-cal" id="ppPromoCal">
+   <div class="tl-wrap">
+    <div class="tl-rescol">
+        <div class="tl-res-header">Types</div>
+        <div class="tl-res-list" id="promoTlResList"></div>
+    </div>
+
+   <div class="tl-grid" id="promoTlGrid">
+  <div class="tl-toolbar" id="promoTlToolbar">
+    <div class="tl-left">
+      <span class="tl-cal-wrap">
+        <button class="tl-btn tl-icon-btn" data-nav="calendar" aria-haspopup="dialog" aria-expanded="false" data-hint="Pick a date">
+          <span class="tl-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm14 8H3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10zm-2 2v8H5v-8h14z"/>
+            </svg>
+          </span>
+          Calendar
         </button>
-      </div>
+        <input id="promoTlDateInput" type="date" aria-hidden="true" />
+      </span>
 
-      <div class="pp-body">
-        <section class="pp-promos" id="ppPromos">
-          <div class="pp-promos__cal" id="ppPromosCal"></div>
-          <div class="pp-promos__table" id="ppPromosTable"></div>
-        </section>
-      </div>
-    `;
+      <button class="tl-btn" data-nav="prev" aria-label="Back" data-hint="Go to previous day">&#x276E;</button>
+      <button class="tl-btn" data-nav="today" data-hint="Jump to today">today</button>
+      <button class="tl-btn" data-nav="next" aria-label="Next" data-hint="Go to next day">&#x276F;</button>
+    </div>
 
-        // collapsible logic (используем уже существующий wireCollapser из ProfileParser.js, если он есть)
+    <div class="tl-title" id="promoTlTitle"></div>
+    <div class="tl-right"></div>
+  </div>
+
+  <div class="tl-header" id="promoTlHeader"></div>
+  <div class="tl-body" id="promoTlBody"></div>
+</div>
+
+</div>
+  </section>
+
+  <!-- [TABLE] LiveOps-like compact table -->
+  <section class="pp-lo" style="margin-top:10px;">
+    <div class="pp-lo-table" id="ppPromoTable">
+      <div class="pp-t-head">
+        <div class="pp-t-row">
+          <div class="pp-t-cell col-name">Name</div>
+          <div class="pp-t-cell col-type">Type</div>
+          <div class="pp-t-cell col-start">Start Date</div>
+          <div class="pp-t-cell col-end">End Date</div>
+          <div class="pp-t-cell col-info"></div>
+        </div>
+      </div>
+      <div class="pp-t-body" id="ppPromoTBody"></div>
+    </div>
+  </section>
+</div>
+`;
+
+        // collapsible (используем общий wireCollapser если есть)
         if (typeof window.wireCollapser === 'function') {
             window.wireCollapser(wrap);
         } else {
-            // fallback: простое сворачивание
             const btn = wrap.querySelector('.pp-collapser');
             const body = wrap.querySelector('.pp-body');
             const chev = btn?.querySelector('.chev');
@@ -147,167 +221,237 @@
 
         el('#ppResults')?.appendChild(wrap);
 
-        // render calendar + table
-        renderCalendar(items, wrap.querySelector('#ppPromosCal'));
-        renderTable(items, wrap.querySelector('#ppPromosTable'));
+        try {
+            initPromoTimeline(items, wrap);
+        } catch (e) {
+            console.error('[Promotions] initPromoTimeline failed:', e);
+        }
+
+        try {
+            renderPromoTable(items, wrap);
+        } catch (e) {
+            console.error('[Promotions] renderPromoTable failed:', e);
+        }
     }
 
-    function renderTable(items, mount) {
-        if (!mount) return;
+    function renderPromoTable(items, wrap) {
+        const body = wrap.querySelector('#ppPromoTBody');
+        if (!body) return;
 
-        if (!items || !items.length) {
-            mount.innerHTML = `<div class="pp-meta">No promotions found</div>`;
+        const rows = (items || []).slice().sort((a, b) => a.startTS - b.startTS);
+
+        body.innerHTML = rows.map(r => `
+<div class="pp-t-row">
+  <div class="pp-t-cell col-name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</div>
+  <div class="pp-t-cell col-type" title="${escapeHtml(r.type)}">${escapeHtml(r.type)}</div>
+  <div class="pp-t-cell col-start">${escapeHtml(r.startPretty)}</div>
+  <div class="pp-t-cell col-end">${escapeHtml(r.endPretty)}</div>
+  <div class="pp-t-cell col-info">
+    <button class="pp-btn pp-btn-sm" type="button" data-raw="${escapeHtml(JSON.stringify(r.raw))}">Info</button>
+  </div>
+</div>
+`).join('');
+
+        // простой Info (alert) — чтобы поведение было “как минимум” похоже
+        body.addEventListener('click', (e) => {
+            const b = e.target.closest('button[data-raw]');
+            if (!b) return;
+            try {
+                const raw = JSON.parse(b.dataset.raw || '{}');
+                alert(JSON.stringify(raw, null, 2));
+            } catch {
+                alert(b.dataset.raw || '');
+            }
+        });
+    }
+
+    // ---------- Timeline (Promotions day-view, LiveOps-like DOM) ----------
+    function initPromoTimeline(items, wrap) {
+        const elTitle = wrap.querySelector('#promoTlTitle');
+        const elHeader = wrap.querySelector('#promoTlHeader');
+        const elBody = wrap.querySelector('#promoTlBody');
+
+        // current time marker (UTC now) — как в LiveOps
+        const nowLine = document.createElement('div');
+        nowLine.className = 'tl-now';
+        elBody.appendChild(nowLine);
+
+        const elRes = wrap.querySelector('#promoTlResList');
+        const elDate = wrap.querySelector('#promoTlDateInput');
+
+        // vertical scroll sync (like LiveOps)
+        let syncLock = false;
+
+        elBody.addEventListener('scroll', () => {
+            if (syncLock) return;
+            syncLock = true;
+            elRes.scrollTop = elBody.scrollTop;
+            syncLock = false;
+        });
+
+        elRes.addEventListener('scroll', () => {
+            if (syncLock) return;
+            syncLock = true;
+            elBody.scrollTop = elRes.scrollTop;
+            syncLock = false;
+        });
+
+
+        if (!elTitle || !elHeader || !elBody || !elRes) return;
+
+        const all = (items || []).slice();
+        if (!all.length) {
+            elTitle.textContent = 'No promotions';
             return;
         }
 
-        // простой сорт: start asc
-        const rows = items.slice().sort((a, b) => a.startTS - b.startTS);
-
-        mount.innerHTML = `
-      <div class="pp-promos__table-head">
-        <div class="pp-promos__h">Name</div>
-        <div class="pp-promos__h">Type</div>
-        <div class="pp-promos__h">Start</div>
-        <div class="pp-promos__h">End</div>
-      </div>
-      <div class="pp-promos__table-body">
-        ${rows.map(r => `
-          <div class="pp-promos__row" data-id="${escapeHtml(r.id)}">
-            <div class="pp-promos__cell name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</div>
-            <div class="pp-promos__cell type">${escapeHtml(r.type)}</div>
-            <div class="pp-promos__cell">${escapeHtml(r.startPretty)}</div>
-            <div class="pp-promos__cell">${escapeHtml(r.endPretty)}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-    }
-
-    // лёгкий календарь: “день” с 24 часами (как твой текущий TL), rows по Type
-    function renderCalendar(items, mount) {
-        if (!mount) return;
-
-        if (!items || !items.length) {
-            mount.innerHTML = `<div class="pp-meta">No promotions found</div>`;
-            return;
-        }
-
-        // группируем по type
-        const byType = new Map();
-        for (const it of items) {
+        // rows = types (как Events в LiveOps)
+        const types = Array.from(new Set(all.map(x => (x.type || '—').trim() || '—'))).sort((a, b) => a.localeCompare(b));
+        const byType = new Map(types.map(t => [t, []]));
+        for (const it of all) {
             const t = (it.type || '—').trim() || '—';
             if (!byType.has(t)) byType.set(t, []);
             byType.get(t).push(it);
         }
-        const types = [...byType.keys()].sort((a, b) => a.localeCompare(b));
 
-        // якорный день: берём min start, и показываем день start (UTC)
-        const minStart = Math.min(...items.map(x => x.startTS));
-        const anchorDay = new Date(minStart);
-        const dayStart = Date.parse(`${anchorDay.getUTCFullYear()}-${String(anchorDay.getUTCMonth() + 1).padStart(2, '0')}-${String(anchorDay.getUTCDate()).padStart(2, '0')}T00:00:00Z`);
-        const dayEnd = dayStart + 24 * 3600_000;
+        // anchor day: берём min startTS, как было у твоего старого Promotions
+        let anchorMs = Math.min(...all.map(x => x.startTS));
+        anchorMs = startOfUTCDayMs(anchorMs);
 
-        // layout
-        mount.innerHTML = `
-      <div class="pp-promos-cal">
-        <div class="pp-promos-cal__top">
-          <div class="pp-promos-cal__title">
-            UTC day: <b>${escapeHtml(fmtUtc(dayStart).slice(0, 10))}</b>
-            <span class="muted small"> (auto-picked from data)</span>
-          </div>
-        </div>
+        // 24 часа сетка
+        const COLS = 24;
+        const HOUR_MS = 3600_000;
 
-        <div class="pp-promos-cal__grid">
-          <div class="pp-promos-cal__left">
-            <div class="pp-promos-cal__left-head">Types</div>
-            <div class="pp-promos-cal__left-body">
-              ${types.map(t => `<div class="pp-promos-cal__left-row" title="${escapeHtml(t)}">${escapeHtml(t)}</div>`).join('')}
-            </div>
-          </div>
-
-          <div class="pp-promos-cal__right">
-            <div class="pp-promos-cal__hours">
-              ${Array.from({ length: 24 }).map((_, h) => `<div class="pp-promos-cal__hour">${String(h).padStart(2, '0')}:00</div>`).join('')}
-            </div>
-
-            <div class="pp-promos-cal__rows">
-              ${types.map((t, idx) => {
-            const list = (byType.get(t) || []).slice()
-                .map(ev => {
-                    const a = Math.max(ev.startTS, dayStart);
-                    const b = Math.min(ev.endTS, dayEnd);
-                    if (b <= a) return null;
-                    return { a, b, ev };
-                })
-                .filter(Boolean)
-                .sort((x, y) => x.a - y.a);
-
-            return `
-                  <div class="pp-promos-cal__row" data-type="${escapeHtml(t)}" data-row="${idx}">
-                    ${list.map(({ a, b, ev }) => {
-                const leftPct = ((a - dayStart) / (24 * 3600_000)) * 100;
-                const widthPct = ((b - a) / (24 * 3600_000)) * 100;
-                return `
-                        <div class="pp-promos-cal__bar"
-                             style="left:${leftPct}%; width:${Math.max(widthPct, 0.5)}%;"
-                             data-name="${escapeHtml(ev.name)}"
-                             data-start="${escapeHtml(ev.startPretty)}"
-                             data-end="${escapeHtml(ev.endPretty)}"
-                             title="">
-                          <span class="txt">${escapeHtml(ev.name)}</span>
-                        </div>
-                      `;
-            }).join('')}
-                  </div>
-                `;
-        }).join('')}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-        // кастомный tooltip (минимальный) — чтобы не зависеть от title
-        const root = mount.querySelector('.pp-promos-cal');
-        const tip = document.createElement('div');
-        tip.className = 'pp-promos-tip';
-        tip.hidden = true;
-        document.body.appendChild(tip);
-
-        function hideTip() { tip.hidden = true; }
-        function showTip(e, bar) {
-            const name = bar.dataset.name || '';
-            const start = bar.dataset.start || '';
-            const end = bar.dataset.end || '';
-            tip.innerHTML = `
-        <div class="pp-promos-tip__t">${escapeHtml(name)}</div>
-        <div class="pp-promos-tip__r"><span class="k">Start</span><span class="v">${escapeHtml(start)}</span></div>
-        <div class="pp-promos-tip__r"><span class="k">End</span><span class="v">${escapeHtml(end)}</span></div>
-      `;
-            tip.hidden = false;
-
-            const r = tip.getBoundingClientRect();
-            const vw = window.innerWidth, vh = window.innerHeight;
-            const GAP = 10;
-
-            let left = e.clientX + GAP;
-            let top = e.clientY + GAP;
-
-            if (left + r.width > vw - 8) left = Math.max(8, vw - r.width - 8);
-            if (top + r.height > vh - 8) top = Math.max(8, vh - r.height - 8);
-
-            tip.style.left = left + 'px';
-            tip.style.top = top + 'px';
+        // [FIX] Wheel sync like LiveOps — вешаем ОДИН раз (не внутри render),
+        // иначе при каждом render() будет множиться число обработчиков.
+        if (!elRes.dataset.wheelSync) {
+            elRes.dataset.wheelSync = '1';
+            elRes.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                elBody.scrollTop += e.deltaY;
+            }, { passive: false });
         }
 
-        root.addEventListener('mousemove', (e) => {
-            const bar = e.target.closest('.pp-promos-cal__bar');
-            if (!bar) return hideTip();
-            showTip(e, bar);
-        }, { passive: true });
 
-        root.addEventListener('mouseleave', hideTip, { passive: true });
-        window.addEventListener('scroll', hideTip, { passive: true });
+        function render() {
+            const dayStart = startOfUTCDayMs(anchorMs);
+            const dayEnd = dayStart + 24 * HOUR_MS;
+
+            // title
+            const d = new Date(dayStart);
+            const yyyy = d.getUTCFullYear();
+            const MM = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const DD = String(d.getUTCDate()).padStart(2, '0');
+            elTitle.textContent = `${DD}.${MM}.${yyyy}`;
+
+            // header (hours)
+            elHeader.innerHTML = `
+<div class="tl-daybar">
+  ${Array.from({ length: COLS }).map((_, h) => `<div class="tl-day">${String(h).padStart(2, '0')}:00</div>`).join('')}
+</div>
+`;
+
+            // left (types)
+            elRes.innerHTML = types.map(t => `<div class="tl-res" title="${escapeHtml(t)}">${escapeHtml(t)}</div>`).join('');
+
+            // body (rows)
+            elBody.innerHTML = types.map((t, rowIdx) => {
+                const list = (byType.get(t) || []).slice().sort((a, b) => a.startTS - b.startTS);
+
+                // bars clipped to day
+                const bars = list.map(ev => {
+                    const a = Math.max(ev.startTS, dayStart);
+                    const b = Math.min(ev.endTS, dayEnd);
+                    if (b <= a) return '';
+
+                    const leftPct = ((a - dayStart) / (dayEnd - dayStart)) * 100;
+                    const widthPct = ((b - a) / (dayEnd - dayStart)) * 100;
+
+                    return `
+<div class="tl-event" style="left:${leftPct}%;width:${Math.max(0.5, widthPct)}%;" title="${escapeHtml(ev.name)}">
+  <span class="txt">${escapeHtml(ev.name)}</span>
+</div>`;
+                }).join('');
+
+                return `<div class="tl-row" data-row="${rowIdx}">${bars}</div>`;
+            }).join('');
+
+            // sync scroll (wheel) is wired once outside render()
+
+
+            // date input reflects day
+            if (elDate) {
+                elDate.value = `${yyyy}-${MM}-${DD}`;
+            }
+            // update NOW line position
+            const now = Date.now();
+            if (now >= dayStart && now <= dayEnd) {
+                const pct = ((now - dayStart) / (dayEnd - dayStart)) * 100;
+                nowLine.style.left = pct + '%';
+                nowLine.style.display = 'block';
+            } else {
+                nowLine.style.display = 'none';
+            }
+        }
+
+        function startOfUTCDayMs(ms) {
+            const d = new Date(ms);
+            d.setUTCHours(0, 0, 0, 0);
+            return d.getTime();
+        }
+
+        // toolbar
+        wrap.querySelector('#promoTlToolbar')?.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-nav]');
+            if (!btn) return;
+            const nav = btn.dataset.nav;
+
+            if (nav === 'prev') {
+                anchorMs = startOfUTCDayMs(anchorMs - 24 * HOUR_MS);
+                render();
+                return;
+            }
+
+            if (nav === 'next') {
+                anchorMs = startOfUTCDayMs(anchorMs + 24 * HOUR_MS);
+                render();
+                return;
+            }
+
+            if (nav === 'today') {
+                const now = Date.now();
+                anchorMs = startOfUTCDayMs(now);
+                render();
+
+                // center current time like LiveOps (безопасно — только для Promotions)
+                requestAnimationFrame(() => {
+                    const bodyWidth = elBody.scrollWidth;
+                    const viewWidth = elBody.clientWidth;
+                    const pct = (now - anchorMs) / (24 * HOUR_MS);
+                    const x = bodyWidth * pct - viewWidth / 2;
+                    elBody.scrollLeft = Math.max(0, x);
+                });
+                return;
+            }
+
+            if (nav === 'calendar') {
+                if (elDate?.showPicker) elDate.showPicker();
+                else elDate?.focus();
+            }
+        });
+
+
+        elDate?.addEventListener('change', () => {
+            const v = (elDate.value || '').trim(); // YYYY-MM-DD
+            if (!v) return;
+            const ms = Date.parse(`${v}T00:00:00Z`);
+            if (Number.isFinite(ms)) {
+                anchorMs = ms;
+                render();
+            }
+        });
+
+        render();
     }
 
     // ---------- public api ----------
