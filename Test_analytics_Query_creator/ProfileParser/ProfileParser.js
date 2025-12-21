@@ -3943,7 +3943,7 @@
         }
 
         // [TL-GRID-HOVER-PICK] — подсказка + выбор времени по клику по сетке таймлайна
-        const GRID_HOVER_DELAY = 3000; // 3 секунды
+        const GRID_HOVER_DELAY = 1500; // 3 секунды
         let gridHintEl = null;
         let gridHoverTimer = null;
         let gridHoverX = 0;
@@ -3972,7 +3972,10 @@
         }
 
         function scheduleGridHint(ev) {
-            if (!elBody) return;
+            // НЕ показываем "Pick this time" при наведении на верхнюю кнопку/шпильку (и её элементы)
+            const t = ev?.target;
+            if (t?.closest?.('.pp-picked-btn, .pp-picked-badge, .tl-picked')) return;
+
             gridHoverX = ev.clientX;
             gridHoverY = ev.clientY;
             if (gridHoverTimer) clearTimeout(gridHoverTimer);
@@ -3984,6 +3987,7 @@
                 tip.setAttribute('data-show', '1');
             }, GRID_HOVER_DELAY);
         }
+
 
         // Преобразуем X-координату клика в UTC-время и ставим «picked»-линию
         function pickTimeFromClientX(clientX) {
@@ -4598,9 +4602,16 @@
 
 
         // Ховеры и клики по сетке таймлайна (тело + верхняя шкала часов)
+        // Ховеры и клики по сетке таймлайна (ТОЛЬКО линейка часов)
         const gridHoverTargets = [];
-        if (elBody) gridHoverTargets.push(elBody);
-        if (elHeader) gridHoverTargets.push(elHeader);
+
+        // целимся именно в «линейку часов», где курсор = pointer
+        const hoursRulerEl =
+            elHeader?.querySelector?.('.pp-cal-scale.top') ||
+            elHeader?.querySelector?.('.tl-grid-header') ||
+            elHeader;
+
+        if (hoursRulerEl) gridHoverTargets.push(hoursRulerEl);
 
         if (gridHoverTargets.length) {
             gridHoverTargets.forEach((target) => {
@@ -4609,7 +4620,7 @@
                     scheduleGridHint(ev);
                 });
 
-                // если курсор сдвинулся — перезапускаем таймер и переносим точку
+                // если курсор сдвинулся — сбрасываем таймер; покажем снова только после "зависания"
                 target.addEventListener('mousemove', (ev) => {
                     const dx = Math.abs(ev.clientX - gridHoverX);
                     const dy = Math.abs(ev.clientY - gridHoverY);
@@ -4623,6 +4634,7 @@
                     hideGridHint();
                 });
             });
+
 
             // при скролле сетки — прячем тултип (только тело)
             if (elBody) {
