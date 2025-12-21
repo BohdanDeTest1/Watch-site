@@ -150,7 +150,7 @@
   <section class="pp-cal" id="ppPromoCal">
    <div class="tl-wrap">
     <div class="tl-rescol">
-        <div class="tl-res-header">Types</div>
+        <div class="tl-res-header">Promotion types</div>
         <div class="tl-res-list" id="promoTlResList"></div>
     </div>
 
@@ -290,47 +290,6 @@
                 dateInput: 'promoTlDateInput',
             });
 
-            // 2) PLAN B++: после рендера принудительно восстанавливаем текст на барах
-            // (у тебя title виден в поповере => bar.dataset.title корректный)
-            // const forceTitles = () => {
-            //     const root = document.getElementById('ppPromoCal');
-            //     if (!root) return;
-
-            //     const bars = root.querySelectorAll('.tl-event');
-            //     bars.forEach(bar => {
-            //         const title = (bar.dataset.title || '').trim();
-            //         if (!title) return;
-
-            //         let txt = bar.querySelector('.txt');
-            //         if (!txt) {
-            //             txt = document.createElement('span');
-            //             txt.className = 'txt';
-            //             // вставляем самым первым, чтобы не перекрывалось сегментами/кнопками
-            //             bar.insertBefore(txt, bar.firstChild);
-            //         }
-
-            //         // если пусто — заполняем
-            //         if (!txt.textContent || !txt.textContent.trim()) {
-            //             txt.textContent = title;
-            //         }
-
-            //         // страховка видимости (инлайном, чтобы перебить любые CSS)
-            //         txt.style.display = 'block';
-            //         txt.style.opacity = '1';
-            //         txt.style.visibility = 'visible';
-            //         txt.style.color = '#fff';
-            //         txt.style.webkitTextFillColor = '#fff';
-            //         txt.style.position = 'sticky';
-            //         txt.style.left = '0';
-            //         txt.style.zIndex = '2';
-            //         txt.style.padding = '0 6px 0 8px';
-            //         txt.style.whiteSpace = 'nowrap';
-            //         txt.style.overflow = 'hidden';
-            //         txt.style.textOverflow = 'ellipsis';
-            //         txt.style.minWidth = '0';
-            //         txt.style.flex = '1 1 auto';
-            //     });
-            // };
 
 
             const forceTitles = () => {
@@ -338,10 +297,10 @@
                 if (!root) return;
 
                 const promoBody = document.getElementById('promoTlBody');
-                const scrollLeft = promoBody ? promoBody.scrollLeft : 0;
+                const bodyRect = promoBody ? promoBody.getBoundingClientRect() : null;
 
-                // Движок может рисовать бары как .pp-cal-bar или .tl-event
-                const bars = root.querySelectorAll('.pp-cal-bar, .tl-event');
+                // Promotions может рендерить бары как .tl-event и/или .pp-cal-bar (на разных режимах)
+                const bars = root.querySelectorAll('.tl-event, .pp-cal-bar');
 
                 bars.forEach(bar => {
                     const title = (bar.dataset.title || '').trim();
@@ -354,30 +313,48 @@
                         bar.insertBefore(txt, bar.firstChild);
                     }
 
-                    // всегда восстанавливаем текст (не только если пусто)
+                    // Всегда восстанавливаем текст (не только если пусто)
                     txt.textContent = title;
 
-                    // ---- РУЧНАЯ "ЛИПКОСТЬ" ----
-                    // Идея как у sticky:
-                    // когда bar.offsetLeft < scrollLeft (бар начинается левее видимой области),
-                    // мы сдвигаем текст вправо на (scrollLeft - bar.offsetLeft),
-                    // чтобы он оставался на левом краю viewport.
-                    //
-                    // Но ограничиваем shift, чтобы текст не уехал за правый край бара.
-                    const barLeft = bar.offsetLeft || 0;
-                    const barW = bar.offsetWidth || 0;
+                    // Визуальная страховка
+                    txt.style.display = 'block';
+                    txt.style.opacity = '1';
+                    txt.style.visibility = 'visible';
+                    txt.style.color = '#fff';
+                    txt.style.webkitTextFillColor = '#fff';
+                    txt.style.zIndex = '10';
+                    txt.style.pointerEvents = 'none';
 
-                    let shift = scrollLeft - barLeft;
+                    // ВАЖНО: уходим от sticky (он у тебя и даёт “плавание” под нагрузкой)
+                    // Делаем текст абсолютным и компенсируем scroll вручную через translate3d.
+                    txt.style.position = 'absolute';
+                    txt.style.left = '0';
+                    txt.style.top = '0';
+                    txt.style.bottom = '0';
+                    txt.style.padding = '0 6px 0 8px';
+                    txt.style.whiteSpace = 'nowrap';
+                    txt.style.overflow = 'hidden';
+                    txt.style.textOverflow = 'ellipsis';
+                    txt.style.willChange = 'transform';
+
+                    // ---- ручная "липкость" по реальным координатам (без offsetLeft) ----
+                    if (!bodyRect) {
+                        txt.style.transform = 'translate3d(0px,0,0)';
+                        return;
+                    }
+
+                    const barRect = bar.getBoundingClientRect();
+
+                    // сколько бар ушёл левее видимой области
+                    let shift = bodyRect.left - barRect.left;
                     if (!Number.isFinite(shift)) shift = 0;
                     if (shift < 0) shift = 0;
 
-                    // “правая граница” — оставляем хотя бы 16px под паддинги
-                    const maxShift = Math.max(0, barW - 16);
+                    // не даём тексту уехать правее ширины бара
+                    const maxShift = Math.max(0, barRect.width - 16);
                     if (shift > maxShift) shift = maxShift;
 
-                    txt.style.transform = `translateX(${shift}px)`;
-                    txt.style.willChange = 'transform';
-                    txt.style.pointerEvents = 'none';
+                    txt.style.transform = `translate3d(${Math.round(shift)}px,0,0)`;
                 });
             };
 
@@ -396,22 +373,39 @@
             // 1) слушаем scroll на правом полотне
             // 2) слушаем любые мутации DOM (render пересоздаёт ноды)
             // и всегда мягко восстанавливаем .txt из bar.dataset.title
-            const scheduleForceTitles = (() => {
+            // rAF-петля во время активного скролла:
+            // обновляем позиции текста каждый кадр => нет "плавания" и "догона" после остановки
+            const bindSmoothScrollTitles = (() => {
                 let raf = 0;
+                let lastScrollTs = 0;
+
+                const tick = () => {
+                    raf = 0;
+                    forceTitles();
+
+                    // если скролл был совсем недавно — продолжаем крутить кадры
+                    if (Date.now() - lastScrollTs < 140) {
+                        raf = requestAnimationFrame(tick);
+                    }
+                };
+
                 return () => {
-                    if (raf) return;
-                    raf = requestAnimationFrame(() => {
-                        raf = 0;
-                        forceTitles();
-                    });
+                    const promoBody = document.getElementById('promoTlBody');
+                    if (!promoBody) return;
+
+                    promoBody.addEventListener(
+                        'scroll',
+                        () => {
+                            lastScrollTs = Date.now();
+                            if (!raf) raf = requestAnimationFrame(tick);
+                        },
+                        { passive: true }
+                    );
                 };
             })();
 
-            // 1) на любой scroll (гор/верт) — страховка
-            const promoBody = document.getElementById('promoTlBody');
-            if (promoBody) {
-                promoBody.addEventListener('scroll', scheduleForceTitles, { passive: true });
-            }
+            bindSmoothScrollTitles();
+
 
             // 2) на любой DOM-перерендер внутри календаря — страховка
             const moRoot = document.getElementById('ppPromoCal');

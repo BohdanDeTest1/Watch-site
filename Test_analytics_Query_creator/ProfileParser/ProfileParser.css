@@ -2995,6 +2995,46 @@ body.theme-dark .pp-cal-tick {
     width: var(--tl-btn-w, 260px);
 }
 
+/* === Promotions toolbar buttons — clone of LiveOps (#ppCal) === */
+#ppPromoCal .tl-btn {
+    position: relative;
+    /* якорь для всплывающей подсказки */
+    display: inline-grid;
+    place-items: center;
+    height: 30px;
+    padding: 0 12px;
+    border: 0.5px solid var(--border-2);
+    border-radius: 8px;
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    cursor: pointer;
+    width: var(--tl-btn-w, 260px);
+}
+
+:root.theme-dark #ppPromoCal .tl-toolbar .tl-btn,
+.theme-dark #ppPromoCal .tl-toolbar .tl-btn,
+[data-theme="dark"] #ppPromoCal .tl-toolbar .tl-btn,
+.dark #ppPromoCal .tl-toolbar .tl-btn {
+    /* темнее панели — чтобы кнопки были читаемы */
+    background: #1f2b46;
+    border-color: var(--tl-border);
+    color: var(--text);
+}
+
+:root.theme-dark #ppPromoCal .tl-toolbar .tl-btn:hover,
+.theme-dark #ppPromoCal .tl-toolbar .tl-btn:hover,
+[data-theme="dark"] #ppPromoCal .tl-toolbar .tl-btn:hover,
+.dark #ppPromoCal .tl-toolbar .tl-btn:hover {
+    /* лёгкая подсветка при наведении */
+    background: #111a2d;
+}
+
+#ppPromoCal .tl-left .tl-btn {
+    /* гарантируем одинаковую ширину внутри левой группы */
+    width: var(--tl-btn-w, 260px);
+}
+
+
 #ppCal .tl-btn:hover {
     opacity: .9;
     background: var(--btn-n-field-bg);
@@ -3682,17 +3722,25 @@ body.theme-dark .pp-cal-tick {
 
 
 /* вертикальная линия «сейчас» */
+/* вертикальная линия «сейчас / today» — поверх баров */
 .pp-cal-now {
     position: absolute;
     top: 0;
     height: var(--pp-now-h, 100%);
-    width: 2px;
-    background: #ef4444;
-    opacity: .95;
+
+    /* чуть толще и ярче */
+    width: 3px;
+    background: #ff2d2d;
+    opacity: 1;
+
     pointer-events: none;
-    z-index: 4;
+
+    /* КЛЮЧ: выше баров (у баров в Promotions z-index:6) */
+    z-index: 20;
+
     will-change: transform;
 }
+
 
 
 /* отключаем старый бейдж на самой линии — всё перенесём в шапку */
@@ -3935,8 +3983,7 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* [HEADER SOLID — финальная версия] */
-#ppCal .tl-res-header,
-#ppPromoCal .tl-res-header {
+#ppCal .tl-res-header {
     height: var(--tl-res-head-h);
     display: flex;
     align-items: center;
@@ -4523,10 +4570,18 @@ body.theme-dark .pp-cal-tick {
 }
 
 /* линия «сейчас», если у неё есть класс pp-cal-now — всегда поверх сетки/баров */
+/* линия «сейчас / today», если у неё есть класс pp-cal-now — всегда поверх баров */
 #ppCal .tl-now.pp-cal-now,
 #ppPromoCal .tl-now.pp-cal-now {
-    z-index: 4;
+    z-index: 20;
+    /* выше баров (6) */
+    background: #ff2d2d;
+    /* на случай, если .tl-now перебивает цвет */
+    opacity: 1;
+    width: 3px;
+    /* на случай, если .tl-now задаёт width */
 }
+
 
 /* Обёртка вокруг кнопки Calendar — якорь для позиционирования пикера */
 #ppCal .tl-cal-wrap,
@@ -4889,7 +4944,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp-actions .ok {
     line-height: 1;
     cursor: grab;
     z-index: 20;
-    box-shadow: 0 0 0 2px rgba(15, 23, 42, .7), 0 4px 10px rgba(15, 23, 42, .8);
+    box-shadow: 0 0 0 2px rgb(43 93 213 / 59%), 0px 0px 11px rgb(27 86 229 / 89%);
 
     /* важно для перетаскивания (особенно touch/trackpad) */
     user-select: none;

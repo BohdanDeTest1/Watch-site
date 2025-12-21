@@ -10,6 +10,20 @@
     margin-top: 6px;
 }
 
+/* [FIX] Promotions: синяя линия Picked (которую двигаем) должна быть поверх баров.
+   В базовом CSS у .tl-picked z-index: 4, а у промо-баров z-index: 6 — поэтому линия "под" барами. */
+#ppPromoCal .tl-picked {
+    z-index: 25 !important;
+    /* выше баров */
+}
+
+/* страховка: если линия/оверлей приходит с другим классом */
+#ppPromoCal .pp-cal-picked,
+#ppPromoCal .pp-picked-line {
+    z-index: 25 !important;
+}
+
+
 
 #pp-root .pp-promos {
     display: grid;
@@ -248,4 +262,42 @@
     /* transform будет проставляться JS’ом (ручная sticky-логика) */
     transform: translateX(0px);
     will-change: transform;
+}
+
+#ppPromoCal .tl-res-header {
+    height: 140px;
+}
+
+/* [FIX] Promotions: picked-pin (badge + round button) должен быть поверх баров.
+   Сейчас бары (#ppPromoCal .tl-event/.pp-cal-bar) имеют высокий z-index и перекрывают header.
+   Поднимаем слой header + верхней шкалы. */
+#ppPromoCal .tl-grid-header {
+    position: sticky !important;
+    top: 0;
+    z-index: 60 !important;
+    /* выше баров (у них z-index:6) */
+    overflow: visible !important;
+    /* чтобы кругляш/бейдж не клипались */
+}
+
+/* страховка: верхняя шкала часов — тоже на верхнем слое */
+#ppPromoCal .pp-cal-scale.top {
+    position: relative;
+    z-index: 61;
+    overflow: visible;
+}
+
+/* ещё одна страховка: сами элементы picked поверх всего внутри header */
+#ppPromoCal .pp-picked-badge {
+    z-index: 70 !important;
+}
+
+#ppPromoCal .pp-picked-btn {
+    z-index: 71 !important;
+}
+
+/* тело грида оставляем ниже шапки */
+#ppPromoCal .tl-grid-body {
+    position: relative;
+    z-index: 1;
 }
