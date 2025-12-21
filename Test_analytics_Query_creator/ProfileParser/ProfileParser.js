@@ -5383,8 +5383,8 @@
                         btn.type = 'button';
                         btn.className = 'pp-picked-btn';
                         // используем data-hint вместо title, чтобы подсказка показывалась мгновенно
-                        btn.setAttribute('data-hint', 'Show active events in the table');
-                        btn.setAttribute('aria-label', 'Show active events in the table');
+                        btn.setAttribute('data-hint', 'Show active promotions in the table');
+                        btn.setAttribute('aria-label', 'Show active promotions in the table');
                         btn.style.left = `${xPick}px`;
 
                         // общий контекст для drag

@@ -265,7 +265,7 @@
 }
 
 #ppPromoCal .tl-res-header {
-    height: 140px;
+    height: 133px;
 }
 
 /* [FIX] Promotions: picked-pin (badge + round button) должен быть поверх баров.
@@ -286,6 +286,15 @@
     z-index: 61;
     overflow: visible;
 }
+
+/* [HOURS-RULER POINTER PROMO] — линейка часов в Promotions всегда "pointer" */
+#ppPromoCal .tl-grid-header,
+#ppPromoCal .tl-grid-header .tl-col,
+#ppPromoCal .pp-cal-scale,
+#ppPromoCal .pp-cal-tick {
+    cursor: pointer !important;
+}
+
 
 /* ещё одна страховка: сами элементы picked поверх всего внутри header */
 #ppPromoCal .pp-picked-badge {

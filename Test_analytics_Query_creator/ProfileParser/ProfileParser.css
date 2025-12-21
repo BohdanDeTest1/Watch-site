@@ -3383,6 +3383,17 @@ body.theme-dark .pp-cal-tick {
 
 }
 
+/* [HOURS-RULER POINTER] — курсор "pointer" при наведении на линейку часов (LiveOps + Promotions) */
+#ppCal .tl-grid-header,
+#ppPromoCal .tl-grid-header,
+#ppCal .tl-grid-header .tl-col,
+#ppPromoCal .tl-grid-header .tl-col,
+#ppCal .pp-cal-scale,
+#ppPromoCal .pp-cal-scale,
+#ppCal .pp-cal-tick,
+#ppPromoCal .pp-cal-tick {
+    cursor: pointer;
+}
 
 
 /* тело таймлайна — разрешаем элементам выходить вверх, чтобы бейдж ::before был видим */
