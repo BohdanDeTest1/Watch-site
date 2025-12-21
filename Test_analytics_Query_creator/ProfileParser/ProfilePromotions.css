@@ -202,3 +202,63 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Липкое название внутри промо-бара (как в LiveOps) */
+.pp-cal-bar .txt {
+    position: sticky;
+    left: 0;
+
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+
+    pointer-events: none;
+    /* чтобы клики шли по бару */
+}
+
+/* [PLAN B] В промо-таймлайне бары — это .tl-event (движок из ProfileParser.css).
+   У тебя title виден в поповере => текст есть, но визуально “пропадает”.
+   Принудительно делаем txt видимым именно внутри #ppPromoCal. */
+#ppPromoCal .tl-event .txt {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    /* на случай, если где-то применяется text-fill/mask */
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+
+    /* чтобы текст был поверх внутренних элементов/оверлеев */
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+/* [PLAN B - REAL BARS] Promotions рисуется .pp-cal-bar, поэтому усиливаем txt именно там */
+#ppPromoCal .pp-cal-bar .txt {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+
+    position: sticky;
+    left: 0;
+    z-index: 4;
+
+    pointer-events: none;
+}
+
+
+/* иногда помогает, если в баре есть внутренние элементы, которые перекрывают txt */
+#ppPromoCal .tl-event {
+    position: absolute;
+    /* на всякий — вдруг перебито */
+    overflow: visible;
+}

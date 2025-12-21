@@ -1643,7 +1643,16 @@
                     const bar = document.createElement('div');
                     bar.dataset.a = String(a);        // ← добавить
                     bar.dataset.b = String(bEnd);     // ← добавить
+
                     bar.className = 'pp-cal-bar';
+
+                    // === НАЗВАНИЕ СОБЫТИЯ/ПРОМО (липкий текст как в LiveOps) ===
+                    const txt = document.createElement('div');
+                    txt.className = 'txt';
+                    txt.textContent = (ev?.title ?? ev?.name ?? ev?.id ?? '—');
+
+                    bar.appendChild(txt);
+
                     bar.style.left = leftPx + 'px';
                     bar.style.width = widthPx + 'px';
 

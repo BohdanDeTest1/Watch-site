@@ -4019,6 +4019,9 @@ body.theme-dark .pp-cal-tick {
 /* [ANCHOR TL-LANE-CSS] — позиционирование события по «дорожке» */
 #ppCal .tl-event,
 #ppPromoCal .tl-event {
+    /* ВАЖНО: без absolute значение left/width (которые ты задаёшь инлайном) не работает как задумано */
+    position: absolute;
+
     /* делаем высоту бара 21px и добавляем 2px зазор между лайнами */
     top: calc(var(--lane, 0) * (21px + 2px));
     height: 21px;

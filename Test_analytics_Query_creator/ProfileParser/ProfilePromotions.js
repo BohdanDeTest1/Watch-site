@@ -269,7 +269,18 @@
         // Promotions календарь = тот же движок, что и у LiveOps (ProfileParser.js),
         // только с другими id (promoTl*)
         if (typeof window.initTimelineCalendar === 'function') {
-            window.initTimelineCalendar(items, {
+
+            // 1) Нормализуем, чтобы движок точно получил name (он мапит title из x.name)
+            const normalized = (items || []).map((it) => {
+                const t = (it?.name ?? it?.title ?? it?.id ?? '').toString();
+                return {
+                    ...it,
+                    name: (it?.name ?? t),
+                    title: (it?.title ?? t),
+                };
+            });
+
+            window.initTimelineCalendar(normalized, {
                 title: 'promoTlTitle',
                 header: 'promoTlHeader',
                 body: 'promoTlBody',
@@ -278,12 +289,152 @@
                 toolbar: 'promoTlToolbar',
                 dateInput: 'promoTlDateInput',
             });
+
+            // 2) PLAN B++: после рендера принудительно восстанавливаем текст на барах
+            // (у тебя title виден в поповере => bar.dataset.title корректный)
+            // const forceTitles = () => {
+            //     const root = document.getElementById('ppPromoCal');
+            //     if (!root) return;
+
+            //     const bars = root.querySelectorAll('.tl-event');
+            //     bars.forEach(bar => {
+            //         const title = (bar.dataset.title || '').trim();
+            //         if (!title) return;
+
+            //         let txt = bar.querySelector('.txt');
+            //         if (!txt) {
+            //             txt = document.createElement('span');
+            //             txt.className = 'txt';
+            //             // вставляем самым первым, чтобы не перекрывалось сегментами/кнопками
+            //             bar.insertBefore(txt, bar.firstChild);
+            //         }
+
+            //         // если пусто — заполняем
+            //         if (!txt.textContent || !txt.textContent.trim()) {
+            //             txt.textContent = title;
+            //         }
+
+            //         // страховка видимости (инлайном, чтобы перебить любые CSS)
+            //         txt.style.display = 'block';
+            //         txt.style.opacity = '1';
+            //         txt.style.visibility = 'visible';
+            //         txt.style.color = '#fff';
+            //         txt.style.webkitTextFillColor = '#fff';
+            //         txt.style.position = 'sticky';
+            //         txt.style.left = '0';
+            //         txt.style.zIndex = '2';
+            //         txt.style.padding = '0 6px 0 8px';
+            //         txt.style.whiteSpace = 'nowrap';
+            //         txt.style.overflow = 'hidden';
+            //         txt.style.textOverflow = 'ellipsis';
+            //         txt.style.minWidth = '0';
+            //         txt.style.flex = '1 1 auto';
+            //     });
+            // };
+
+            const forceTitles = () => {
+                const root = document.getElementById('ppPromoCal');
+                if (!root) return;
+
+                // ВАЖНО:
+                // Движок рисует бары как .pp-cal-bar (основной вариант).
+                // .tl-event оставляем как совместимость/страховку, если где-то появится старый рендер.
+                const bars = root.querySelectorAll('.pp-cal-bar, .tl-event');
+
+                bars.forEach(bar => {
+                    const title = (bar.dataset.title || '').trim();
+                    if (!title) return;
+
+                    let txt = bar.querySelector('.txt');
+                    if (!txt) {
+                        txt = document.createElement('span');
+                        txt.className = 'txt';
+                        // вставляем самым первым, чтобы не перекрывалось сегментами/кнопками
+                        bar.insertBefore(txt, bar.firstChild);
+                    }
+
+                    // если пусто — заполняем
+                    if (!txt.textContent || !txt.textContent.trim()) {
+                        txt.textContent = title;
+                    }
+
+                    // страховка видимости (инлайном, чтобы перебить любые CSS)
+                    txt.style.display = 'block';
+                    txt.style.opacity = '1';
+                    txt.style.visibility = 'visible';
+                    txt.style.color = '#fff';
+                    txt.style.webkitTextFillColor = '#fff';
+
+                    // sticky-эффект на горизонтальном скролле
+                    txt.style.position = 'sticky';
+                    txt.style.left = '0';
+
+                    // держим текст поверх внутренних элементов
+                    txt.style.zIndex = '4';
+
+                    txt.style.padding = '0 6px 0 8px';
+                    txt.style.whiteSpace = 'nowrap';
+                    txt.style.overflow = 'hidden';
+                    txt.style.textOverflow = 'ellipsis';
+                    txt.style.minWidth = '0';
+                    txt.style.flex = '1 1 auto';
+
+                    // чтобы клики всегда шли в бар (а не в текст)
+                    txt.style.pointerEvents = 'none';
+                });
+            };
+
+
+            // два тика, потому что таймлайн иногда дорисовывает строки после первого кадра
+            // два тика, потому что таймлайн иногда дорисовывает строки после первого кадра
+            requestAnimationFrame(() => {
+                forceTitles();
+                requestAnimationFrame(forceTitles);
+            });
+
+            // === PLAN B+++: Promotions таймлайн при скролле/сдвиге якоря делает render(),
+            // который пересоздаёт бары => .txt может снова пропадать.
+            // Поэтому:
+            // 1) слушаем scroll на правом полотне
+            // 2) слушаем любые мутации DOM (render пересоздаёт ноды)
+            // и всегда мягко восстанавливаем .txt из bar.dataset.title
+            const scheduleForceTitles = (() => {
+                let raf = 0;
+                return () => {
+                    if (raf) return;
+                    raf = requestAnimationFrame(() => {
+                        raf = 0;
+                        forceTitles();
+                    });
+                };
+            })();
+
+            // 1) на любой scroll (гор/верт) — страховка
+            const promoBody = document.getElementById('promoTlBody');
+            if (promoBody) {
+                promoBody.addEventListener('scroll', scheduleForceTitles, { passive: true });
+            }
+
+            // 2) на любой DOM-перерендер внутри календаря — страховка
+            const moRoot = document.getElementById('ppPromoCal');
+            if (moRoot && typeof MutationObserver !== 'undefined') {
+                const mo = new MutationObserver(() => scheduleForceTitles());
+                mo.observe(moRoot, { childList: true, subtree: true });
+            }
+
+            // 3) один дополнительный тик — на случай поздних дорисовок после resize/first paint
+            setTimeout(forceTitles, 0);
+
             return;
+
         }
 
         // fallback: если по какой-то причине LiveOps календарь недоступен
         console.warn('[Promotions] initTimelineCalendar not found. Promotions timeline is not initialized.');
     }
+
+
+
 
 
     // ---------- public api ----------
