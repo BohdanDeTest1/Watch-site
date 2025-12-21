@@ -285,7 +285,35 @@
     position: relative;
     z-index: 61;
     overflow: visible;
+
 }
+
+/* ===========================
+   Promotions table: ID aliases
+   (чтобы выглядело 1-в-1 как LiveEvents)
+   =========================== */
+
+#ppPromoPager #ppPromoRange {
+    min-width: 120px;
+    text-align: center;
+    color: var(--muted-ink, #546e7a);
+    font-weight: 400;
+}
+
+#ppPromoResetBtn {
+    /* как .pp-pager .pp-reset в ProfileParser.css */
+    margin-right: auto;
+}
+
+#ppPromoPager .pp-icon:hover {
+    background: #f5f7fb;
+}
+
+/* подстраховка: когда открыта инфо-панель — сдвигаем pager так же */
+.pp-item.info-open #ppPromoPager {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
 
 /* [HOURS-RULER POINTER PROMO] — линейка часов в Promotions всегда "pointer" */
 #ppPromoCal .tl-grid-header,
