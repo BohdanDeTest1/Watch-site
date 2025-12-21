@@ -203,43 +203,25 @@
     text-overflow: ellipsis;
 }
 
-/* Липкое название внутри промо-бара (как в LiveOps) */
-.pp-cal-bar .txt {
-    position: sticky;
-    left: 0;
+/* Липкое название внутри промо-бара — делаем “как LiveOps”, но sticky-эффект будет
+   реализован JS’ом через transform (см. ProfilePromotions.js).
+   Так мы не зависим от того, как таймлайн двигает контент (scroll/transform/перерисовки). */
 
-    padding: 0 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    font-size: 12px;
-    font-weight: 600;
-    color: #fff;
-
-    pointer-events: none;
-    /* чтобы клики шли по бару */
+/* Не трогаем глобально .pp-cal-bar .txt — только в Promotions */
+#ppPromoCal .tl-event,
+#ppPromoCal .pp-cal-bar {
+    isolation: isolate;
+    z-index: 6;
 }
 
-/* [PLAN B] В промо-таймлайне бары — это .tl-event (движок из ProfileParser.css).
-   У тебя title виден в поповере => текст есть, но визуально “пропадает”.
-   Принудительно делаем txt видимым именно внутри #ppPromoCal. */
-#ppPromoCal .tl-event .txt {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-
-    /* на случай, если где-то применяется text-fill/mask */
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
-
-    /* чтобы текст был поверх внутренних элементов/оверлеев */
-    position: sticky;
-    left: 0;
-    z-index: 2;
+/* ВАЖНО: чтобы текст отсекался по правому краю бара */
+#ppPromoCal .tl-event,
+#ppPromoCal .pp-cal-bar {
+    overflow: hidden !important;
 }
 
-/* [PLAN B - REAL BARS] Promotions рисуется .pp-cal-bar, поэтому усиливаем txt именно там */
+/* Базовый вид текста (а “липкость” даст JS через translateX) */
+#ppPromoCal .tl-event .txt,
 #ppPromoCal .pp-cal-bar .txt {
     display: block !important;
     opacity: 1 !important;
@@ -248,17 +230,22 @@
     color: #fff !important;
     -webkit-text-fill-color: #fff !important;
 
-    position: sticky;
+    position: absolute !important;
     left: 0;
-    z-index: 4;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+
+    padding: 0 8px;
+    line-height: inherit;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     pointer-events: none;
-}
 
-
-/* иногда помогает, если в баре есть внутренние элементы, которые перекрывают txt */
-#ppPromoCal .tl-event {
-    position: absolute;
-    /* на всякий — вдруг перебито */
-    overflow: visible;
+    /* transform будет проставляться JS’ом (ручная sticky-логика) */
+    transform: translateX(0px);
+    will-change: transform;
 }

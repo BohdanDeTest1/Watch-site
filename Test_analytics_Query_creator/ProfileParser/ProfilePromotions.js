@@ -332,13 +332,15 @@
             //     });
             // };
 
+
             const forceTitles = () => {
                 const root = document.getElementById('ppPromoCal');
                 if (!root) return;
 
-                // ВАЖНО:
-                // Движок рисует бары как .pp-cal-bar (основной вариант).
-                // .tl-event оставляем как совместимость/страховку, если где-то появится старый рендер.
+                const promoBody = document.getElementById('promoTlBody');
+                const scrollLeft = promoBody ? promoBody.scrollLeft : 0;
+
+                // Движок может рисовать бары как .pp-cal-bar или .tl-event
                 const bars = root.querySelectorAll('.pp-cal-bar, .tl-event');
 
                 bars.forEach(bar => {
@@ -349,40 +351,36 @@
                     if (!txt) {
                         txt = document.createElement('span');
                         txt.className = 'txt';
-                        // вставляем самым первым, чтобы не перекрывалось сегментами/кнопками
                         bar.insertBefore(txt, bar.firstChild);
                     }
 
-                    // если пусто — заполняем
-                    if (!txt.textContent || !txt.textContent.trim()) {
-                        txt.textContent = title;
-                    }
+                    // всегда восстанавливаем текст (не только если пусто)
+                    txt.textContent = title;
 
-                    // страховка видимости (инлайном, чтобы перебить любые CSS)
-                    txt.style.display = 'block';
-                    txt.style.opacity = '1';
-                    txt.style.visibility = 'visible';
-                    txt.style.color = '#fff';
-                    txt.style.webkitTextFillColor = '#fff';
+                    // ---- РУЧНАЯ "ЛИПКОСТЬ" ----
+                    // Идея как у sticky:
+                    // когда bar.offsetLeft < scrollLeft (бар начинается левее видимой области),
+                    // мы сдвигаем текст вправо на (scrollLeft - bar.offsetLeft),
+                    // чтобы он оставался на левом краю viewport.
+                    //
+                    // Но ограничиваем shift, чтобы текст не уехал за правый край бара.
+                    const barLeft = bar.offsetLeft || 0;
+                    const barW = bar.offsetWidth || 0;
 
-                    // sticky-эффект на горизонтальном скролле
-                    txt.style.position = 'sticky';
-                    txt.style.left = '0';
+                    let shift = scrollLeft - barLeft;
+                    if (!Number.isFinite(shift)) shift = 0;
+                    if (shift < 0) shift = 0;
 
-                    // держим текст поверх внутренних элементов
-                    txt.style.zIndex = '4';
+                    // “правая граница” — оставляем хотя бы 16px под паддинги
+                    const maxShift = Math.max(0, barW - 16);
+                    if (shift > maxShift) shift = maxShift;
 
-                    txt.style.padding = '0 6px 0 8px';
-                    txt.style.whiteSpace = 'nowrap';
-                    txt.style.overflow = 'hidden';
-                    txt.style.textOverflow = 'ellipsis';
-                    txt.style.minWidth = '0';
-                    txt.style.flex = '1 1 auto';
-
-                    // чтобы клики всегда шли в бар (а не в текст)
+                    txt.style.transform = `translateX(${shift}px)`;
+                    txt.style.willChange = 'transform';
                     txt.style.pointerEvents = 'none';
                 });
             };
+
 
 
             // два тика, потому что таймлайн иногда дорисовывает строки после первого кадра
@@ -425,7 +423,38 @@
             // 3) один дополнительный тик — на случай поздних дорисовок после resize/first paint
             setTimeout(forceTitles, 0);
 
+            // 4) ГАРАНТИЯ: движок таймлайна может пересоздать DOM уже ПОСЛЕ rAF/setTimeout(0)
+            // (что у тебя и видно: текст появляется только когда ты начинаешь скроллить).
+            // Поэтому "дожимаем" восстановление заголовков коротким интервалом ~2 секунды.
+            // Останавливаемся раньше, если у всех баров уже есть непустой .txt.
+            const hasAllTitles = () => {
+                const root = document.getElementById('ppPromoCal');
+                if (!root) return false;
+                const bars = root.querySelectorAll('.pp-cal-bar, .tl-event');
+                if (!bars.length) return false;
+
+                for (const bar of bars) {
+                    const title = (bar.dataset.title || '').trim();
+                    if (!title) continue; // если у бара нет title — пропускаем, он не критерий
+                    const txt = bar.querySelector('.txt');
+                    if (!txt || !txt.textContent || !txt.textContent.trim()) return false;
+                }
+                return true;
+            };
+
+            let tries = 0;
+            const maxTries = 20;      // 20 * 100ms = ~2 секунды
+            const interval = setInterval(() => {
+                forceTitles();
+
+                tries++;
+                if (tries >= maxTries || hasAllTitles()) {
+                    clearInterval(interval);
+                }
+            }, 100);
+
             return;
+
 
         }
 

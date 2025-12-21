@@ -1689,7 +1689,8 @@
   </div>
 ` : '';
 
-                    bar.innerHTML = `<span class="txt">${ev.name}</span>${popHtml}`;
+                    // [TITLE SAFETY] — всегда экранируем + форсим видимость текста
+                    bar.innerHTML = `<span class="txt" style="display:block;opacity:1;visibility:visible;color:#fff;-webkit-text-fill-color:#fff;position:sticky;left:0;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(ev.name || '')}</span>${popHtml}`;
                     rowEl.appendChild(bar);
 
                     // Клик по ЛЮБОЙ части бара — показать контекстное окно в точке клика
@@ -5180,7 +5181,25 @@
                     // текст должен уметь сжиматься внутри flex-контейнера бара
                     if (txtEl) {
                         txtEl.style.minWidth = '0';
+
+                        // [PROMO/LIVEOPS TITLE SAFETY]
+                        // В Promotions по багу иногда "исчезает" текст в баре,
+                        // хотя dataset.title и поповер показывают его корректно.
+                        // Жёстко восстанавливаем текст и делаем его видимым инлайном.
+                        txtEl.textContent = (ev.title || '').toString();
+                        txtEl.style.display = 'block';
+                        txtEl.style.opacity = '1';
+                        txtEl.style.visibility = 'visible';
+                        txtEl.style.color = '#fff';
+                        txtEl.style.webkitTextFillColor = '#fff';
+                        txtEl.style.position = 'sticky';
+                        txtEl.style.left = '0';
+                        txtEl.style.zIndex = '2';
+                        txtEl.style.whiteSpace = 'nowrap';
+                        txtEl.style.overflow = 'hidden';
+                        txtEl.style.textOverflow = 'ellipsis';
                     }
+
 
 
                     // ⬇️ прокинем данные для поповера (UTC)
