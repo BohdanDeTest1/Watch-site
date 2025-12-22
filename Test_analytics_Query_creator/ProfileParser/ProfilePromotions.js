@@ -186,29 +186,29 @@
   </section>
 
   <!-- [TABLE] Promotions table (LiveEvents-like: filters/sort/pager/info) -->
-  <section class="pp-lo" style="margin-top:10px;">
+  
+<section class="pp-lo" style="margin-top:10px;">
     <div class="pp-liveops" id="ppPromoLiveops">
 
       <button class="pp-close-float" id="ppPromoLoClose" type="button" aria-label="Close">×</button>
 
       <div class="pp-table pp-lo-table" id="ppPromoLoTable">
         <div class="pp-t-head">
-          <div class="pp-t-row">
 
             <!-- State -->
             <div class="pp-th state">
               <button class="pp-th-btn" id="ppPromoStateBtn" type="button" aria-haspopup="true">
-                <span class="txt">State</span><span class="arr">▾</span>
-              </button>
+  <span class="txt">State</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+</button>
               <div class="pp-filter-pop" id="ppPromoStatePop" hidden>
                 <div class="pp-filter-actions">
                   <button class="pp-mini" id="ppPromoStateAll" type="button">All</button>
                   <button class="pp-mini" id="ppPromoStateNone" type="button">None</button>
                 </div>
                 <div class="pp-filter-list" id="ppPromoStateList"></div>
-                <div class="pp-filter-footer">
-                  <button class="pp-mini" id="ppPromoStateReset" type="button">Reset</button>
-                  <button class="pp-btn pp-btn-sm" id="ppPromoStateApply" type="button">Apply</button>
+                <div class="pp-filter-actions">
+                  <button id="ppPromoStateReset" class="pp-link-btn" type="button">RESET</button>
+                  <button id="ppPromoStateApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
               </div>
             </div>
@@ -216,8 +216,8 @@
             <!-- Name -->
             <div class="pp-th name">
               <button class="pp-th-btn" id="ppPromoNameBtn" type="button" aria-haspopup="true">
-                <span class="txt">Name</span><span class="arr">▾</span>
-              </button>
+  <span class="txt">Name</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+</button>
               <div class="pp-filter-pop" id="ppPromoNamePop" hidden>
                 <div class="pp-filter-row">
                   <button class="pp-rule-btn" id="ppPromoNameRuleBtn" type="button" data-val="contains">
@@ -225,15 +225,16 @@
                   </button>
                   <input class="pp-filter-inp" id="ppPromoNameQuery" placeholder="Name..." />
                 </div>
-                <div class="pp-filter-footer">
-                  <button class="pp-mini" id="ppPromoNameReset" type="button">Reset</button>
-                  <button class="pp-btn pp-btn-sm" id="ppPromoNameApply" type="button">Apply</button>
+                <div class="pp-filter-actions">
+                  <button id="ppPromoNameReset" class="pp-link-btn" type="button">RESET</button>
+                  <button id="ppPromoNameApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
-                <div class="pp-menu" id="ppPromoNameRuleMenu" hidden>
+
+                <div class="pp-rule-pop" id="ppPromoNameRuleMenu" hidden>
                   <button type="button" data-val="contains">Contains</button>
-                  <button type="button" data-val="notcontains">Not contains</button>
+                  <button type="button" data-val="eq">Equals</button>
                   <button type="button" data-val="starts">Starts with</button>
-                  <button type="button" data-val="equals">Equals</button>
+                  <button type="button" data-val="ends">Ends with</button>
                   <button type="button" data-val="blank">Is blank</button>
                 </div>
               </div>
@@ -242,120 +243,83 @@
             <!-- Type -->
             <div class="pp-th type">
               <button class="pp-th-btn" id="ppPromoTypeBtn" type="button" aria-haspopup="true">
-                <span class="txt">Type</span><span class="arr">▾</span>
-              </button>
-
+  <span class="txt">Type</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+</button>
               <div class="pp-filter-pop" id="ppPromoTypePop" hidden>
-                <input class="pp-filter-inp" id="ppPromoTypeSearch" placeholder="Search type..." />
-
-                <div class="pp-filter-actions">
-                  <button class="pp-mini" id="ppPromoTypeAll" type="button">All</button>
-                  <button class="pp-mini" id="ppPromoTypeNone" type="button">None</button>
-                </div>
-
-                <div class="pp-filter-list" id="ppPromoTypeList"></div>
-
-                <div class="pp-filter-row" style="margin-top:10px;">
+                <div class="pp-filter-row">
                   <button class="pp-rule-btn" id="ppPromoTypeRuleBtn" type="button" data-val="contains">
                     <span class="txt">Contains</span><span class="arr">▾</span>
                   </button>
-                  <input class="pp-filter-inp" id="ppPromoTypeQuery" placeholder="Type query..." />
+                  <input class="pp-filter-inp" id="ppPromoTypeQuery" placeholder="Type..." />
+                </div>
+                <div class="pp-filter-actions">
+                  <button id="ppPromoTypeReset" class="pp-link-btn" type="button">RESET</button>
+                  <button id="ppPromoTypeApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
 
-                <div class="pp-filter-footer">
-                  <button class="pp-mini" id="ppPromoTypeReset" type="button">Reset</button>
-                  <button class="pp-btn pp-btn-sm" id="ppPromoTypeApply" type="button">Apply</button>
-                </div>
-
-                <div class="pp-menu" id="ppPromoTypeRuleMenu" hidden>
+                <div class="pp-rule-pop" id="ppPromoTypeRuleMenu" hidden>
                   <button type="button" data-val="contains">Contains</button>
-                  <button type="button" data-val="notcontains">Not contains</button>
+                  <button type="button" data-val="eq">Equals</button>
                   <button type="button" data-val="starts">Starts with</button>
-                  <button type="button" data-val="equals">Equals</button>
+                  <button type="button" data-val="ends">Ends with</button>
                   <button type="button" data-val="blank">Is blank</button>
                 </div>
               </div>
             </div>
 
-            <!-- Start -->
+            <!-- Start Date -->
             <div class="pp-th start">
-              <button class="pp-th-btn" id="ppPromoStartBtn" type="button" aria-haspopup="true">
-                <span class="txt">Start Date</span><span class="arr">▾</span>
-              </button>
-              <div class="pp-filter-pop" id="ppPromoStartPop" hidden>
-                <div class="pp-filter-row">
-                  <button class="pp-rule-btn" id="ppPromoStartRuleBtn" type="button" data-val="between">
-                    <span class="txt">Between</span><span class="arr">▾</span>
-                  </button>
+             <button class="pp-th-btn" id="ppPromoStartBtn" type="button" aria-haspopup="true">
+  <span class="txt">Start Date</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+</button>
+              <div class="pp-filter-pop pp-cal-pop" id="ppPromoStartPop" hidden>
+                <div class="pp-cal-top">
+                  <select class="pp-sel" id="ppPromoStartRule">
+                    <option value="between">Between</option>
+                    <option value="gte">After (>=)</option>
+                    <option value="lte">Before (<=)</option>
+                    <option value="blank">Is blank</option>
+                  </select>
                 </div>
-
-                <div class="pp-dtp" data-active="from" style="margin-top:8px;">
-                  <div class="pp-dtp-tabs">
-                    <button class="pp-dtp-tab" type="button" data-bind="from">From</button>
-                    <button class="pp-dtp-tab" type="button" data-bind="to">To</button>
-                  </div>
-                  <div class="pp-dtp-body">
-                    <input class="pp-filter-inp" id="ppPromoStartFrom" placeholder="YYYY-MM-DD [HH:mm]" />
-                    <input class="pp-filter-inp" id="ppPromoStartTo" placeholder="YYYY-MM-DD [HH:mm]" />
-                  </div>
+                <div class="pp-cal-inputs" id="ppPromoStartInputs">
+                  <input class="pp-filter-inp" id="ppPromoStartFrom" placeholder="YYYY-MM-DD [HH:mm]" />
+                  <input class="pp-filter-inp" id="ppPromoStartTo" placeholder="YYYY-MM-DD [HH:mm]" />
                 </div>
-
-                <div class="pp-filter-footer">
-                  <button class="pp-mini" id="ppPromoStartReset" type="button">Reset</button>
-                  <button class="pp-btn pp-btn-sm" id="ppPromoStartApply" type="button">Apply</button>
-                </div>
-
-                <div class="pp-menu" id="ppPromoStartRuleMenu" hidden>
-                  <button type="button" data-val="between">Between</button>
-                  <button type="button" data-val="before">Before</button>
-                  <button type="button" data-val="after">After</button>
-                  <button type="button" data-val="today">Today</button>
-                  <button type="button" data-val="blank">Is blank</button>
+                <div class="pp-filter-actions">
+                  <button id="ppPromoStartReset" class="pp-link-btn" type="button">RESET</button>
+                  <button id="ppPromoStartApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
               </div>
             </div>
 
-            <!-- End -->
+            <!-- End Date -->
             <div class="pp-th end">
               <button class="pp-th-btn" id="ppPromoEndBtn" type="button" aria-haspopup="true">
-                <span class="txt">End Date</span><span class="arr">▾</span>
-              </button>
-              <div class="pp-filter-pop" id="ppPromoEndPop" hidden>
-                <div class="pp-filter-row">
-                  <button class="pp-rule-btn" id="ppPromoEndRuleBtn" type="button" data-val="between">
-                    <span class="txt">Between</span><span class="arr">▾</span>
-                  </button>
+  <span class="txt">End Date</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+</button>
+              <div class="pp-filter-pop pp-cal-pop" id="ppPromoEndPop" hidden>
+                <div class="pp-cal-top">
+                  <select class="pp-sel" id="ppPromoEndRule">
+                    <option value="between">Between</option>
+                    <option value="gte">After (>=)</option>
+                    <option value="lte">Before (<=)</option>
+                    <option value="blank">Is blank</option>
+                  </select>
                 </div>
-
-                <div class="pp-dtp" data-active="from" style="margin-top:8px;">
-                  <div class="pp-dtp-tabs">
-                    <button class="pp-dtp-tab" type="button" data-bind="from">From</button>
-                    <button class="pp-dtp-tab" type="button" data-bind="to">To</button>
-                  </div>
-                  <div class="pp-dtp-body">
-                    <input class="pp-filter-inp" id="ppPromoEndFrom" placeholder="YYYY-MM-DD [HH:mm]" />
-                    <input class="pp-filter-inp" id="ppPromoEndTo" placeholder="YYYY-MM-DD [HH:mm]" />
-                  </div>
+                <div class="pp-cal-inputs" id="ppPromoEndInputs">
+                  <input class="pp-filter-inp" id="ppPromoEndFrom" placeholder="YYYY-MM-DD [HH:mm]" />
+                  <input class="pp-filter-inp" id="ppPromoEndTo" placeholder="YYYY-MM-DD [HH:mm]" />
                 </div>
-
-                <div class="pp-filter-footer">
-                  <button class="pp-mini" id="ppPromoEndReset" type="button">Reset</button>
-                  <button class="pp-btn pp-btn-sm" id="ppPromoEndApply" type="button">Apply</button>
-                </div>
-
-                <div class="pp-menu" id="ppPromoEndRuleMenu" hidden>
-                  <button type="button" data-val="between">Between</button>
-                  <button type="button" data-val="before">Before</button>
-                  <button type="button" data-val="after">After</button>
-                  <button type="button" data-val="today">Today</button>
-                  <button type="button" data-val="blank">Is blank</button>
+                <div class="pp-filter-actions">
+                  <button id="ppPromoEndReset" class="pp-link-btn" type="button">RESET</button>
+                  <button id="ppPromoEndApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
               </div>
             </div>
 
             <!-- Info col -->
             <div class="pp-th info"></div>
-          </div>
+
         </div>
 
         <div class="pp-t-body" id="ppPromoTBody"></div>
@@ -364,36 +328,37 @@
       <!-- right info panel -->
       <aside class="pp-liveops-detail" id="ppPromoLoDetail" aria-hidden="true"></aside>
 
-      <!-- admin button -->
-      <div class="pp-admin">
-        <button class="pp-admin-btn" id="ppPromoAdminBtn" type="button">Promotions in the Admin</button>
-      </div>
-
-      <!-- pager -->
-      <div class="pp-pager" id="ppPromoPager">
-        <button class="pp-reset" id="ppPromoResetBtn" type="button">Reset Filters</button>
-
-        <div class="pp-perpage">
-          <span>Rows per page</span>
-          <select id="ppPromoRows">
-            <option value="10">10</option>
-            <option value="25" selected>25</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-
-        <div id="ppPromoRange">—</div>
-
-        <div class="pp-nav">
-          <button class="pp-icon" id="ppPromoFirst" type="button" aria-label="First">|◀</button>
-          <button class="pp-icon" id="ppPromoPrev" type="button" aria-label="Prev">◀</button>
-          <button class="pp-icon" id="ppPromoNext" type="button" aria-label="Next">▶</button>
-          <button class="pp-icon" id="ppPromoLast" type="button" aria-label="Last">▶|</button>
-        </div>
-      </div>
-
     </div>
+
+    <div class="pp-pager" id="ppPromoPager">
+      <button id="ppPromoResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
+        Reset Filters
+      </button>
+
+      <span class="pp-label">Rows per page</span>
+      <span class="pp-sel-wrap">
+        <select class="pp-sel" id="ppPromoRows">
+          <option>10</option>
+          <option selected>25</option>
+          <option>50</option>
+          <option>75</option>
+          <option>100</option>
+        </select>
+      </span>
+
+      <span id="ppPromoRange">0–0 of 0</span>
+
+      <span class="pp-nav">
+        <button class="pp-icon" id="ppPromoFirst" title="First"><span>|‹</span></button>
+        <button class="pp-icon" id="ppPromoPrev" title="Prev"><span>‹</span></button>
+        <button class="pp-icon" id="ppPromoNext" title="Next"><span>›</span></button>
+        <button class="pp-icon" id="ppPromoLast" title="Last"><span>›|</span></button>
+      </span>
+    </div>
+
   </section>
+
+
 </div>
 `;
 
@@ -440,11 +405,7 @@
 
         closeBtn?.addEventListener('click', () => wrap.classList.remove('info-open'));
 
-        // (не ломаем — просто заглушка, как в LiveEvents)
-        const adminBtn = wrap.querySelector('#ppPromoAdminBtn');
-        adminBtn?.addEventListener('click', () => {
-            window.open('https://www.google.com', '_blank', 'noopener');
-        });
+
 
         // --- helpers (локально, чтобы не зависеть от ProfileParser.js) ---
         function stripUTC(s) { return String(s || '').replace(/\s*UTC\s*$/i, '').trim(); }
@@ -649,42 +610,66 @@
             const safeType = escapeHtml(row.type);
             const safeStart = escapeHtml(row.startPretty);
             const safeEnd = escapeHtml(row.endPretty);
+            const adminUrl = 'https://www.google.com/search?q=' + encodeURIComponent(row.name);
 
             let rawPretty = '';
             try { rawPretty = escapeHtml(JSON.stringify(row.raw ?? {}, null, 2)); }
             catch { rawPretty = escapeHtml(String(row.raw ?? '')); }
 
             detEl.innerHTML = `
-              <button class="pp-close" type="button" aria-label="Close" onclick="this.closest('.pp-item')?.classList.remove('info-open')">×</button>
 
               <div class="pp-kvs">
-                <div class="pp-detail-head">
-                  <div class="pp-detail-title">${safeName}</div>
+                <div class="pp-kv">
+                  <div class="k">Name</div>
+                  <div class="v">
+                    <span class="pp-kv-name">${safeName}</span>
+                    <button class="pp-copy" type="button" title="Copy name" data-copy="${safeName}">⧉</button>
+                  </div>
                 </div>
 
-                <div class="pp-kv pp-kv-name"><div class="pp-k">Name</div><div class="pp-v"><span class="pp-name-text">${safeName}</span></div></div>
-                <div class="pp-kv"><div class="pp-k">Type</div><div class="pp-v">${safeType}</div></div>
-                <div class="pp-kv"><div class="pp-k">Start</div><div class="pp-v">${safeStart}</div></div>
-                <div class="pp-kv"><div class="pp-k">End</div><div class="pp-v">${safeEnd}</div></div>
-
-                <div class="pp-detail-actions">
-                  <button class="pp-btn pp-btn-sm" type="button" data-copy-name="${escapeHtml(row.name)}">Copy name</button>
+                <div class="pp-kv">
+                  <div class="k">Type</div>
+                  <div class="v">${safeType}</div>
                 </div>
 
-                <div class="pp-assets" style="margin-top:12px;">
-                  <div class="pp-k" style="margin-bottom:6px;">Raw</div>
-                  <pre class="pp-wrap"><code>${rawPretty}</code></pre>
+                <div class="pp-kv">
+                  <div class="k">Start</div>
+                  <div class="v">${safeStart}</div>
+                </div>
+
+                <div class="pp-kv">
+                  <div class="k">End</div>
+                  <div class="v">${safeEnd}</div>
+                </div>
+
+                <div class="pp-kv">
+                  <div class="k">Raw</div>
+                  <div class="v">
+                    <pre class="pp-raw">${rawPretty}</pre>
+                  </div>
                 </div>
               </div>
+
+              <button class="pp-admin-btn" type="button" data-admin-url="${adminUrl}">Promotions in the Admin</button>
             `;
 
             wrap.classList.add('info-open');
         }
 
+
         // copy name inside detail
+        // actions inside detail (admin + copy name)
         detEl.addEventListener('click', async (e) => {
+            const admin = e.target.closest('button[data-admin-url]');
+            if (admin) {
+                const url = admin.getAttribute('data-admin-url') || '';
+                if (url) window.open(url, '_blank', 'noopener');
+                return;
+            }
+
             const b = e.target.closest('button[data-copy-name]');
             if (!b) return;
+
             const text = b.getAttribute('data-copy-name') || '';
             try {
                 await navigator.clipboard.writeText(text);
@@ -701,6 +686,7 @@
             }
         });
 
+
         // --- pagination controls ---
         const rowsSel = wrap.querySelector('#ppPromoRows');
         const rangeEl = wrap.querySelector('#ppPromoRange');
@@ -714,6 +700,9 @@
         function wireSort(btnId, key) {
             const b = wrap.querySelector(btnId);
             b?.addEventListener('click', (e) => {
+                // если кликнули по иконке фильтра — НЕ сортируем
+                if (e.target.closest('.pp-filter-ico')) return;
+
                 e.stopPropagation();
                 if (sortKey === key) sortDir = (sortDir === 'asc') ? 'desc' : 'asc';
                 else { sortKey = key; sortDir = 'asc'; }
@@ -840,6 +829,9 @@
             }
 
             btn.addEventListener('click', (e) => {
+                // открываем фильтр ТОЛЬКО по клику на funnel-иконку
+                if (!e.target.closest('.pp-filter-ico')) return;
+
                 e.stopPropagation();
                 // close others
                 wrap.querySelector('#ppPromoNamePop')?.setAttribute('hidden', '');
@@ -891,6 +883,9 @@
             }
 
             btn.addEventListener('click', (e) => {
+                // открываем фильтр ТОЛЬКО по клику на funnel-иконку
+                if (!e.target.closest('.pp-filter-ico')) return;
+
                 e.stopPropagation();
 
                 wrap.querySelector('#ppPromoStatePop')?.setAttribute('hidden', '');
@@ -909,6 +904,7 @@
                     queryInput.focus();
                 }
             });
+
 
             ruleBtn?.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -989,6 +985,7 @@
             }
 
             btn.addEventListener('click', (e) => {
+                if (!e.target.closest('.pp-filter-ico')) return;
                 e.stopPropagation();
 
                 wrap.querySelector('#ppPromoStatePop')?.setAttribute('hidden', '');
@@ -1084,6 +1081,7 @@
             if (!btn || !pop) return;
 
             btn.addEventListener('click', (e) => {
+                if (!e.target.closest('.pp-filter-ico')) return;
                 e.stopPropagation();
 
                 wrap.querySelector('#ppPromoStatePop')?.setAttribute('hidden', '');

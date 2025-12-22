@@ -502,6 +502,32 @@
     opacity: .8;
 }
 
+/* Promotions table uses .pp-th-btn for header filter buttons.
+   Make it look identical to .pp-sort in LiveOps table header. */
+.pp-th-btn {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+}
+
+.pp-th-btn .arr {
+    opacity: .4;
+    font-weight: 400;
+}
+
+.pp-th-btn:hover .arr {
+    opacity: .7;
+}
+
+
 /* кнопки в таблице */
 .pp-btn {
     padding: 6px 10px;

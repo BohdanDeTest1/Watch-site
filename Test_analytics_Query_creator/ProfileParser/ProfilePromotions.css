@@ -289,30 +289,18 @@
 }
 
 /* ===========================
-   Promotions table: ID aliases
-   (чтобы выглядело 1-в-1 как LiveEvents)
+   Promotions table: pager = 1-в-1 как LiveEvents
    =========================== */
 
 #ppPromoPager #ppPromoRange {
     min-width: 120px;
-    text-align: center;
-    color: var(--muted-ink, #546e7a);
-    font-weight: 400;
 }
 
-#ppPromoResetBtn {
-    /* как .pp-pager .pp-reset в ProfileParser.css */
-    margin-right: auto;
-}
-
-#ppPromoPager .pp-icon:hover {
-    background: #f5f7fb;
-}
-
-/* подстраховка: когда открыта инфо-панель — сдвигаем pager так же */
+/* Подстраховка: когда открыта инфо-панель — сдвигаем pager так же */
 .pp-item.info-open #ppPromoPager {
     margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
 }
+
 
 
 /* [HOURS-RULER POINTER PROMO] — линейка часов в Promotions всегда "pointer" */
@@ -337,4 +325,46 @@
 #ppPromoCal .tl-grid-body {
     position: relative;
     z-index: 1;
+}
+
+/* ===== Promotions table: filter funnel icon like LiveOps ===== */
+#pp-root .pp-th-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#pp-root .pp-th-btn .pp-filter-ico {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    background: currentColor;
+    opacity: .65;
+    cursor: pointer;
+
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 5h18l-7 8v6l-4 2v-8L3 5z'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 5h18l-7 8v6l-4 2v-8L3 5z'/></svg>") no-repeat center / contain;
+}
+
+#pp-root .pp-th-btn .pp-filter-ico:hover {
+    opacity: 1;
+}
+
+/* ===== Promotions pager: make it behave like LiveOps (ppRange vs ppPromoRange) ===== */
+#pp-root #ppPromoPager #ppPromoRange {
+    /* в LiveOps эти правила приходят на #ppRange, поэтому промо выпадало из layout */
+    order: 3;
+}
+
+#pp-root #ppPromoPager .pp-nav {
+    order: 4;
+}
+
+#pp-root #ppPromoPager #ppPromoResetBtn {
+    order: 1;
+}
+
+#pp-root #ppPromoPager .pp-label,
+#pp-root #ppPromoPager .pp-sel-wrap {
+    order: 2;
 }
