@@ -332,6 +332,9 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+
+    /* как в LiveOps header */
+    font-weight: 700;
 }
 
 #pp-root .pp-th-btn .pp-filter-ico {
@@ -355,6 +358,39 @@
     /* в LiveOps эти правила приходят на #ppRange, поэтому промо выпадало из layout */
     order: 3;
 }
+
+/* ===== Promotions: Reset Filters button = exactly like LiveOps (#ppResetBtn) ===== */
+#pp-root #ppPromoResetBtn {
+    width: 20%;
+    max-width: 180px;
+    min-width: 120px;
+    text-align: center;
+    border-radius: 4px;
+    padding: 8px 12px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: none;
+
+    /* делаем вид "синей кнопки" как в таблице */
+    background: var(--accent) !important;
+    color: var(--btn-n-field-bg) !important;
+    border: none;
+}
+
+#pp-root #ppPromoResetBtn:hover {
+    opacity: 0.75;
+}
+
+/* Dark theme: как у LiveOps reset/admin — светло-голубая с чёрным текстом */
+:root.theme-dark #ppPromoResetBtn,
+.theme-dark #ppPromoResetBtn,
+[data-theme="dark"] #ppPromoResetBtn,
+.dark #ppPromoResetBtn {
+    background: var(--accent) !important;
+    color: #0f172a !important;
+    border: none;
+}
+
 
 #pp-root #ppPromoPager .pp-nav {
     order: 4;

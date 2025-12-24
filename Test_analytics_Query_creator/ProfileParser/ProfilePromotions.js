@@ -197,8 +197,8 @@
 
             <!-- State -->
             <div class="pp-th state">
-              <button class="pp-th-btn" id="ppPromoStateBtn" type="button" aria-haspopup="true">
-  <span class="txt">State</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+             <button class="pp-th-btn" id="ppPromoStateBtn" type="button" aria-haspopup="true">
+  <span class="txt">State</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
 </button>
               <div class="pp-filter-pop" id="ppPromoStatePop" hidden>
                 <div class="pp-filter-actions">
@@ -215,8 +215,8 @@
 
             <!-- Name -->
             <div class="pp-th name">
-              <button class="pp-th-btn" id="ppPromoNameBtn" type="button" aria-haspopup="true">
-  <span class="txt">Name</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+             <button class="pp-th-btn" id="ppPromoNameBtn" type="button" aria-haspopup="true">
+  <span class="txt">Name</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
 </button>
               <div class="pp-filter-pop" id="ppPromoNamePop" hidden>
                 <div class="pp-filter-row">
@@ -242,8 +242,8 @@
 
             <!-- Type -->
             <div class="pp-th type">
-              <button class="pp-th-btn" id="ppPromoTypeBtn" type="button" aria-haspopup="true">
-  <span class="txt">Type</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+             <button class="pp-th-btn" id="ppPromoTypeBtn" type="button" aria-haspopup="true">
+  <span class="txt">Type</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
 </button>
               <div class="pp-filter-pop" id="ppPromoTypePop" hidden>
                 <div class="pp-filter-row">
@@ -270,7 +270,7 @@
             <!-- Start Date -->
             <div class="pp-th start">
              <button class="pp-th-btn" id="ppPromoStartBtn" type="button" aria-haspopup="true">
-  <span class="txt">Start Date</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+  <span class="txt">Start Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
 </button>
               <div class="pp-filter-pop pp-cal-pop" id="ppPromoStartPop" hidden>
                 <div class="pp-cal-top">
@@ -294,9 +294,10 @@
 
             <!-- End Date -->
             <div class="pp-th end">
-              <button class="pp-th-btn" id="ppPromoEndBtn" type="button" aria-haspopup="true">
-  <span class="txt">End Date</span><span class="pp-filter-ico" aria-hidden="true"></span><span class="arr">▾</span>
+             <button class="pp-th-btn" id="ppPromoEndBtn" type="button" aria-haspopup="true">
+  <span class="txt">End Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
 </button>
+
               <div class="pp-filter-pop pp-cal-pop" id="ppPromoEndPop" hidden>
                 <div class="pp-cal-top">
                   <select class="pp-sel" id="ppPromoEndRule">
@@ -697,6 +698,32 @@
         const resetBtn = wrap.querySelector('#ppPromoResetBtn');
 
         // --- header click sort by column ---
+        function syncPromoSortIcons() {
+            const map = [
+                ['#ppPromoStateBtn', 'state'],
+                ['#ppPromoNameBtn', 'name'],
+                ['#ppPromoTypeBtn', 'type'],
+                ['#ppPromoStartBtn', 'startPretty'],
+                ['#ppPromoEndBtn', 'endPretty'],
+            ];
+
+            map.forEach(([sel, key]) => {
+                const btn = wrap.querySelector(sel);
+                if (!btn) return;
+
+                const ico = btn.querySelector('.arr');
+                if (!ico) return;
+
+                // default
+                ico.textContent = '↕';
+
+                // active column
+                if (sortKey === key) {
+                    ico.textContent = (sortDir === 'asc') ? '↑' : '↓';
+                }
+            });
+        }
+
         function wireSort(btnId, key) {
             const b = wrap.querySelector(btnId);
             b?.addEventListener('click', (e) => {
@@ -706,9 +733,12 @@
                 e.stopPropagation();
                 if (sortKey === key) sortDir = (sortDir === 'asc') ? 'desc' : 'asc';
                 else { sortKey = key; sortDir = 'asc'; }
+
                 renderRows(true);
+                syncPromoSortIcons();
             });
         }
+
         wireSort('#ppPromoStateBtn', 'state');
         wireSort('#ppPromoNameBtn', 'name');
         wireSort('#ppPromoTypeBtn', 'type');
@@ -760,6 +790,7 @@
                 </div>
               </div>
             `).join('');
+            syncPromoSortIcons();
         }
 
         // --- click row: info ---
