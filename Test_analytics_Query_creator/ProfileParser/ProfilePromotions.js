@@ -769,27 +769,32 @@
             if (nextBtn) nextBtn.disabled = page >= pages;
             if (lastBtn) lastBtn.disabled = page >= pages;
 
-            // rows html
-            bodyEl.innerHTML = view.map((r) => `
+            // rows html (make Promotions rows identical to LiveOps rows)
+            // - State: use .pp-state with green check ✓ (same CSS as LiveOps)
+            // - Name: use same ".cell" structure so existing ellipsis rule applies
+            // - Info: same button classes as LiveOps to match size/spacing
+            bodyEl.innerHTML = view.map((r) => {
+                const label = String(r.state || 'On');
+                return `
               <div class="pp-t-row" data-name="${escapeHtml(r.name)}">
-                <div class="pp-td state">
-                  <label class="pp-toggle">
-                    <input type="checkbox" checked disabled />
-                    <span class="pp-toggle-ui"></span>
-                    <span class="pp-toggle-txt">${escapeHtml(r.state)}</span>
-                  </label>
+                <div class="cell">
+                  <span class="pp-state on">
+                    <span class="dot"></span><span class="lbl">${escapeHtml(label)}</span>
+                  </span>
                 </div>
 
-                <div class="pp-td name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</div>
-                <div class="pp-td type" title="${escapeHtml(r.type)}">${escapeHtml(r.type)}</div>
-                <div class="pp-td start">${escapeHtml(r.startPretty)}</div>
-                <div class="pp-td end">${escapeHtml(r.endPretty)}</div>
+                <div class="cell">${escapeHtml(r.name)}</div>
+                <div class="cell type">${escapeHtml(r.type)}</div>
+                <div class="cell">${escapeHtml(r.startPretty)}</div>
+                <div class="cell">${escapeHtml(r.endPretty)}</div>
 
-                <div class="pp-td info">
-                  <button class="pp-btn pp-btn-sm pp-info" type="button" data-info="1">Info</button>
+                <div class="cell">
+                  <button class="pp-btn pp-info" type="button" data-info="1">Info</button>
                 </div>
               </div>
-            `).join('');
+            `;
+            }).join('');
+
             syncPromoSortIcons();
         }
 
