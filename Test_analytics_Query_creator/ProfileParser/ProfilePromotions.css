@@ -454,7 +454,6 @@
     align-items: flex-start;
 }
 
-/* each toggle is a "value" row (column 2) */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row {
     grid-column: 2 / 3;
     justify-self: start;
@@ -463,7 +462,10 @@
     border: 0;
     background: transparent;
     padding: 0;
-    margin: 0;
+
+    /* CLOSED state (default): tighter like a list */
+    margin-top: 4px;
+    margin-bottom: 6px;
 
     display: inline-flex;
     align-items: center;
@@ -475,17 +477,40 @@
     user-select: none;
 }
 
+/* First toggle (PopUp) sits a bit lower than the left "Assets" label */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row:first-of-type {
+    margin-top: 10px;
+}
+
+/* OPEN state: title closer to its own block (reduce bottom gap) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row[aria-expanded="true"] {
+    margin-bottom: 2px;
+}
+
+
+
+
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row:hover {
     opacity: .9;
 }
 
-/* panel goes on the next row and spans both columns => full info panel width */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-panel {
     grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
+
+    /* OPEN: block should appear right under its title */
     margin-top: 8px;
+    margin-bottom: 10px;
 }
+
+/* When a panel is open and the next thing is another toggle (Icon),
+   push that next toggle down a bit to separate visually from the block above */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-panel:not([hidden])+.pp-asset-toggle-row {
+    margin-top: 14px;
+    /* <-- это и даст "Icon assets ниже от popup-блока" */
+}
+
 
 
 
