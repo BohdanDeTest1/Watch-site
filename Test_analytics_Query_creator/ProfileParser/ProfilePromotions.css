@@ -159,12 +159,43 @@
     gap: 8px;
 }
 
-/* --- [FIX] Promotions Info panel padding: make it 1-в-1 как LiveOps --- */
-.pp-item.info-open #ppPromoLoDetail.pp-liveops-detail {
-    /* в LiveOps это задаётся общим правилом .pp-item.info-open .pp-liveops-detail,
-       но у тебя для промо по факту оно не даёт нужного правого отступа (видно на скрине).
-       Дублируем явно для promo-detail. */
+/* --- [FIX] Promotions open-state: у промо НЕТ .pp-item, поэтому цепляемся к #ppPromoLiveops.info-open --- */
+#ppPromoLiveops.info-open {
+    /* как .pp-item.info-open -> сдвигаем контент, освобождая место под правую панель */
+    padding-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    /* как .pp-item.info-open .pp-liveops-detail */
+    width: var(--pp-detail-w);
     padding: 0 16px 16px 9px;
+    pointer-events: auto;
+}
+
+/* чтобы текст/контент не “лип” к правой границе (как у LiveOps) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-right: 16px;
+}
+
+/* как в LiveOps: таблица сдвигается влево, когда открыта панель */
+#ppPromoLiveops.info-open #ppPromoLoTable {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* показываем плавающие кнопки только в open-state (как .pp-item.info-open ...) */
+#ppPromoLiveops.info-open .pp-close-float {
+    display: inline-flex;
+    color: var(--text);
+}
+
+#ppPromoLiveops.info-open .pp-admin-float {
+    display: inline-flex;
+}
+
+
+/* [FIX] Добавляем внутренний right padding контенту, чтобы текст не “прилипал” к правой границе */
+.pp-item.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-right: 16px;
 }
 
 /* --- [FIX] Ensure copy icon is not accidentally collapsed by any other rules --- */
@@ -175,30 +206,34 @@
 }
 
 
-/* --- Name row: keep copy icon pinned to the right (same UX as LiveOps) --- */
-#pp-root #ppPromoLoDetail .pp-kv-name .pp-v {
-    display: flex;
-    /* важно: flex + ширина, чтобы margin-left:auto работал предсказуемо */
-    width: 100%;
-    align-items: center;
-    gap: 8px;
+/* --- Name row: PIN copy button like LiveOps, but bulletproof (absolute right) --- */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-kv-name .pp-v {
+    position: relative;
+    display: block;
+    /* важнее, чем flex: мы якорим кнопку абсолютом */
+    min-width: 0;
+    padding-right: 34px;
+    /* место под кнопку 26px + небольшой зазор */
 }
 
-/* name takes available space; button stays at the right edge */
-#pp-root #ppPromoLoDetail .pp-kv-name .pp-name-text {
-    flex: 1 1 auto;
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-kv-name .pp-name-text {
+    display: block;
     min-width: 0;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-/* keep the icon always visible on the right */
-#pp-root #ppPromoLoDetail .pp-kv-name .pp-ico {
-    flex: 0 0 auto;
-    margin-left: auto;
+/* сама кнопка всегда в правом верхнем углу value-колонки */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-kv-name .pp-ico {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-left: 0;
+    /* убираем auto, чтобы не влиял flex */
+    z-index: 3;
 }
+
 
 /* Copy icon button (same as LiveOps Info panel) */
 #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico {
@@ -527,4 +562,31 @@
 #pp-root #ppPromoPager .pp-label,
 #pp-root #ppPromoPager .pp-sel-wrap {
     order: 2;
+}
+
+/* IMPORTANT:
+   Не трогаем глобально .pp-v (это ломает grid-раскладку k/v в detail панели),
+   а применяем flex-раскладку только к Name-строке, как в LiveOps. */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-kv-name .pp-v {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    /* если мало места — кнопка может уйти на следующую строку */
+    min-width: 0;
+    overflow: visible;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-kv-name .pp-name-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* --- [FIX] Promotions open-state (у промо нет .pp-item, поэтому .pp-item.info-open не срабатывает) --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    padding: 0 16px 16px 9px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-right: 16px;
 }

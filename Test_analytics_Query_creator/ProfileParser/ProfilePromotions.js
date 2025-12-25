@@ -326,13 +326,12 @@
         <div class="pp-t-body" id="ppPromoTBody"></div>
       </div>
 
-      <!-- right info panel -->
+           <!-- right info panel -->
            <!-- right info panel + floating buttons (same layout as LiveOps) -->
       <aside class="pp-liveops-detail" id="ppPromoLoDetail" aria-hidden="true">
         <div class="muted small">Select a promotion to view details</div>
       </aside>
 
-            <button id="ppPromoLoClose" class="pp-close-float" aria-label="Close">×</button>
       <button id="ppPromoAdminBtn" class="pp-admin-float pp-btn" type="button">Promotions in Admin</button>
 
     </div>
@@ -411,7 +410,10 @@
 
         if (!bodyEl || !detEl) return;
 
-        closeBtn?.addEventListener('click', () => wrap.classList.remove('info-open'));
+        closeBtn?.addEventListener('click', () => {
+            const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+            liveopsEl.classList.remove('info-open');
+        });
 
         // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
         // Requirement: on click open Google.
@@ -637,22 +639,19 @@
             detEl.innerHTML = `
 
   <div class="pp-kvs">
-    <div class="pp-kv pp-kv-name">
+        <div class="pp-kv pp-kv-name">
       <span class="pp-k">Name</span>
       <span class="pp-v">
         <span class="pp-name-text">${safeName}</span>
-        <button id="ppPromoCopyName"
-                class="pp-ico"
-                type="button"
-                data-hint="Copy to clipboard"
-                aria-label="Copy to clipboard"
-                data-copy-name="">
+        <button id="ppPromoCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
+          <!-- та же иконка, что в календарном тултипе -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"></path>
           </svg>
         </button>
       </span>
     </div>
+
 
     <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${safeType}</span></div>
 
@@ -671,10 +670,38 @@
 
             // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку,
             // иначе в буфер улетает "&amp;" / "&#39;" и т.п.
-            const copyBtn = detEl.querySelector('#ppPromoCopyName');
+            let copyBtn = detEl.querySelector('#ppPromoCopyName');
+
+            // SAFETY: если по какой-то причине кнопка не попала в DOM — создадим её вручную
+            if (!copyBtn) {
+                const v = detEl.querySelector('.pp-kv-name .pp-v');
+                if (v) {
+                    const btn = document.createElement('button');
+                    btn.id = 'ppPromoCopyName';
+                    btn.className = 'pp-ico';
+                    btn.type = 'button';
+                    btn.setAttribute('data-hint', 'Copy to clipboard');
+                    btn.setAttribute('aria-label', 'Copy to clipboard');
+                    btn.setAttribute('data-copy-name', '');
+
+                    btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        `.trim();
+
+                    v.appendChild(btn);
+                    copyBtn = btn;
+                }
+            }
+
             if (copyBtn) copyBtn.setAttribute('data-copy-name', rawName);
 
-            wrap.classList.add('info-open');
+            // панель реально "открыта" (и для CSS, и для доступности)
+            detEl.setAttribute('aria-hidden', 'false');
+            const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+            liveopsEl.classList.add('info-open');
+
         }
 
 
