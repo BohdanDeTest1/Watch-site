@@ -423,7 +423,9 @@
         closeBtn?.addEventListener('click', () => {
             const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
             liveopsEl.classList.remove('info-open');
+            detEl.setAttribute('aria-hidden', 'true');
         });
+
 
         // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
         // Requirement: on click open Google.
@@ -654,37 +656,73 @@
 
             // ---- Assets (rename ClientAssets -> Assets; group popup/icon; no horizontal scroll) ----
             // Source in JSON: raw.theme.clientAssets: [{name:'popup', android:'...', ios:'...'}, ...]
+            // ---- Assets (2 buttons -> expands panels) ----
+            // Source in JSON: raw.theme.clientAssets: [{name:'popup', android:'...', ios:'...'}, ...]
             const clientAssets = asArr(raw?.theme?.clientAssets);
-            const assetsHtml = clientAssets.length
+
+            const normAssetName = (s) => String(s || '').trim().toLowerCase();
+            const getAsset = (nm) => clientAssets.find(a => normAssetName(a?.name) === nm) || null;
+
+            const popupAsset = getAsset('popup');
+            const iconAsset = getAsset('icon');
+
+            const renderAssetCard = (a) => {
+                if (!a) return '';
+                const nm = esc(a?.name || '');
+                const andPath = a?.android ? esc(a.android) : '';
+                const iosPath = a?.ios ? esc(a.ios) : '';
+
+                if (!andPath && !iosPath) return '';
+
+                return `
+      <div class="pp-asset2">
+        <div class="pp-asset2-name">${nm}</div>
+
+        <div class="pp-asset2-lines">
+          ${andPath ? `
+            <div class="pp-asset2-line">
+              <span class="pp-asset2-k">Android:</span>
+              <code class="pp-asset2-code">${andPath}</code>
+            </div>` : ''}
+
+          ${iosPath ? `
+            <div class="pp-asset2-line">
+              <span class="pp-asset2-k">iOS:</span>
+              <code class="pp-asset2-code">${iosPath}</code>
+            </div>` : ''}
+        </div>
+      </div>
+    `.trim();
+            };
+
+            const hasPopup = !!renderAssetCard(popupAsset);
+            const hasIcon = !!renderAssetCard(iconAsset);
+
+            const assetsControlsHtml = (hasPopup || hasIcon)
                 ? `
-          <div class="pp-assets2">
-            ${clientAssets.map(a => {
-                    const nm = esc(a?.name || '');
-                    const andPath = a?.android ? esc(a.android) : '';
-                    const iosPath = a?.ios ? esc(a.ios) : '';
-                    return `
-              <div class="pp-asset2">
-                <div class="pp-asset2-name">${nm}</div>
-
-                <div class="pp-asset2-lines">
-                  ${andPath ? `
-                    <div class="pp-asset2-line">
-                      <span class="pp-asset2-k">Android:</span>
-                      <code class="pp-asset2-code">${andPath}</code>
-                    </div>` : ''}
-
-                  ${iosPath ? `
-                    <div class="pp-asset2-line">
-                      <span class="pp-asset2-k">iOS:</span>
-                      <code class="pp-asset2-code">${iosPath}</code>
-                    </div>` : ''}
-                </div>
-              </div>
-            `;
-                }).join('')}
+      <div class="pp-assets-acc">
+        ${hasPopup ? `
+          <div class="pp-asset-acc" data-asset="popup">
+            <button class="pp-asset-toggle" type="button" data-asset="popup">PopUpAsset</button>
+            <div class="pp-asset-panel" data-asset="popup" hidden>
+              ${renderAssetCard(popupAsset)}
+            </div>
           </div>
-        `
+        ` : ''}
+
+        ${hasIcon ? `
+          <div class="pp-asset-acc" data-asset="icon">
+            <button class="pp-asset-toggle" type="button" data-asset="icon">IconAsset</button>
+            <div class="pp-asset-panel" data-asset="icon" hidden>
+              ${renderAssetCard(iconAsset)}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `.trim()
                 : '<span class="muted">—</span>';
+
+
 
             // ---- Segment / Subsegment (no duplicated word "Segment:" inside value) ----
             // segment = main value; externalSegment = subsegment (collapsible like LiveOps)
@@ -858,10 +896,13 @@
 
   <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v"><code class="pp-code">${esc(themeId) || '—'}</code></span></div>
 
-    <div class="pp-kv pp-kv-stack">
-      <div class="pp-k">Assets</div>
-      <div class="pp-v">${assetsHtml}</div>
-    </div>
+  <div class="pp-kv">
+  <span class="pp-k">Assets</span>
+  <span class="pp-v">
+    ${assetsControlsHtml}
+  </span>
+</div>
+
 
     <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segmentHtml}</span></div>
 
@@ -931,9 +972,52 @@
             if (copyBtn) copyBtn.setAttribute('data-copy-name', rawName);
 
             // панель реально "открыта" (и для CSS, и для доступности)
+
+            // --- Assets toggles (PopUpAsset / IconAsset) ---
+            (() => {
+                const acc = detEl.querySelector('.pp-assets-acc');
+                if (!acc) return;
+
+                const btns = Array.from(acc.querySelectorAll('.pp-asset-toggle'));
+                if (!btns.length) return;
+
+                const closeAll = () => {
+                    btns.forEach(b => b.classList.remove('is-open'));
+                    acc.querySelectorAll('.pp-asset-panel').forEach(p => (p.hidden = true));
+                };
+
+                btns.forEach((b) => {
+                    b.addEventListener('click', () => {
+                        const key = b.getAttribute('data-asset');
+                        const panel = acc.querySelector(`.pp-asset-panel[data-asset="${key}"]`);
+                        if (!panel) return;
+
+                        const isOpen = b.classList.contains('is-open');
+
+                        if (isOpen) {
+                            closeAll();
+                            return;
+                        }
+
+                        // открыть только выбранную
+                        btns.forEach(x => x.classList.toggle('is-open', x === b));
+                        acc.querySelectorAll('.pp-asset-panel').forEach(p => (p.hidden = (p !== panel)));
+                        panel.hidden = false;
+                    });
+                });
+
+                closeAll();
+            })();
+
+
+            // ---- OPEN the info panel (this is what makes "Info" visually work) ----
             detEl.setAttribute('aria-hidden', 'false');
             const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
             liveopsEl.classList.add('info-open');
+
+            // keep close button visible (CSS already depends on .info-open)
+
+
         }
 
 
@@ -1613,6 +1697,17 @@
                 });
             };
 
+            // debounce wrapper to avoid calling forceTitles too often (MutationObserver can be noisy)
+            let _forceTitlesRaf = 0;
+            const scheduleForceTitles = () => {
+                if (_forceTitlesRaf) return;
+                _forceTitlesRaf = requestAnimationFrame(() => {
+                    _forceTitlesRaf = 0;
+                    forceTitles();
+                });
+            };
+
+
 
 
             // два тика, потому что таймлайн иногда дорисовывает строки после первого кадра
@@ -1662,12 +1757,12 @@
             bindSmoothScrollTitles();
 
 
-            // 2) на любой DOM-перерендер внутри календаря — страховка
             const moRoot = document.getElementById('ppPromoCal');
             if (moRoot && typeof MutationObserver !== 'undefined') {
-                const mo = new MutationObserver(() => scheduleForceTitles());
+                const mo = new MutationObserver(scheduleForceTitles);
                 mo.observe(moRoot, { childList: true, subtree: true });
             }
+
 
             // 3) один дополнительный тик — на случай поздних дорисовок после resize/first paint
             setTimeout(forceTitles, 0);

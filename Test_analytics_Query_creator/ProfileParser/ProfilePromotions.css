@@ -331,6 +331,60 @@
     overflow-x: hidden;
 }
 
+/* ===== Assets accordion: buttons "in the air" + panel under each button ===== */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-assets-acc {
+    display: grid;
+    gap: 10px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-acc {
+    display: grid;
+    gap: 8px;
+}
+
+/* Button without background/border (like a value text), but clickable */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle:hover {
+    opacity: .85;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle::after {
+    content: "▸";
+    display: inline-block;
+    transform: rotate(0deg);
+    transition: transform .12s ease;
+    opacity: .9;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle.is-open::after {
+    transform: rotate(90deg);
+}
+
+/* Panel should be full-width inside the info panel */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-panel {
+    width: 100%;
+}
+
+/* Cards already exist; make sure they use full width */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset2 {
+    width: 100%;
+}
+
+
+
+/* внутри панелей используем уже существующие стили .pp-asset2 (карточки) */
+
+
 /* --- Assets layout: name -> lines under it (Android/iOS) --- */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-assets2 {
     display: grid;
@@ -1088,4 +1142,9 @@
 
 #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-main code {
     max-width: 100%;
+}
+
+/* [FORCE] Show Promotions in Admin button when info panel is open */
+#ppPromoLiveops.info-open #ppPromoAdminBtn {
+    display: inline-flex !important;
 }
