@@ -159,6 +159,48 @@
     gap: 8px;
 }
 
+/* --- Promotions detail: nested blocks (offers / progress / assets) --- */
+#pp-root #ppPromoLoDetail .pp-block {
+    display: grid;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+#pp-root #ppPromoLoDetail .pp-offer,
+#pp-root #ppPromoLoDetail .pp-mission {
+    border: 1px solid rgba(127, 127, 127, .18);
+    border-radius: 10px;
+    padding: 10px 10px;
+    background: rgba(127, 127, 127, .06);
+}
+
+#pp-root #ppPromoLoDetail .pp-offer-head {
+    font-weight: 800;
+    margin-bottom: 6px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+#pp-root #ppPromoLoDetail .pp-offer-row {
+    margin: 4px 0;
+    word-break: break-word;
+}
+
+#pp-root #ppPromoLoDetail .pp-rew-list .row,
+#pp-root #ppPromoLoDetail .pp-assets .row {
+    margin: 4px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#pp-root #ppPromoLoDetail .pp-asset-lines {
+    margin-top: 4px;
+    display: grid;
+    gap: 4px;
+}
+
+
 /* --- [FIX] Promotions open-state: у промо НЕТ .pp-item, поэтому цепляемся к #ppPromoLiveops.info-open --- */
 #ppPromoLiveops.info-open {
     /* как .pp-item.info-open -> сдвигаем контент, освобождая место под правую панель */

@@ -118,16 +118,26 @@
             const startTS = toMsAny(start);
             const endTS = toMsAny(end);
 
+            const state =
+                it.state ??
+                it.promoState ??
+                it.status ??
+                it.displayState ??
+                it.enabledState ??
+                'on';
+
             return {
                 id: String(id),
                 name: String(name),
                 type: String(type),
+                state: String(state),
                 startTS,
                 endTS,
                 startPretty: fmtUtc(startTS),
                 endPretty: fmtUtc(endTS),
                 raw: it
             };
+
         }).filter(x => Number.isFinite(x.startTS) && Number.isFinite(x.endTS) && x.endTS > x.startTS);
     }
 
@@ -620,31 +630,272 @@
 
         // --- detail panel ---
 
-        // --- detail panel ---
         function showDetail(row) {
             if (!row) return;
 
+            const raw = row.raw || {};
+
             const rawName = String(row.name ?? '');
             const safeName = escapeHtml(rawName);
-            const safeType = escapeHtml(row.type);
-            const safeStart = escapeHtml(row.startPretty);
-            const safeEnd = escapeHtml(row.endPretty);
-            const adminUrl = 'https://www.google.com/search?q=' + encodeURIComponent(rawName);
 
+            const safeType = escapeHtml(String(row.type ?? '—'));
+            const safeStart = escapeHtml(String(row.startPretty ?? '—'));
+            const safeEnd = escapeHtml(String(row.endPretty ?? '—'));
+
+            const stateRaw = String(row.state ?? raw.state ?? 'on');
+            const stateNorm = stateRaw.toLowerCase();
+            const stateLabel = (stateNorm === 'on') ? 'On' : stateRaw;
+
+            const isTrue = (v) => {
+                if (v === true) return true;
+                if (v === false) return false;
+                const s = String(v ?? '').trim().toLowerCase();
+                return s === 'true' || s === '1' || s === 'yes' || s === 'y';
+            };
+
+            // --- Theme + Assets ---
+            const themeObj = raw.theme || null;
+            const themeId =
+                themeObj?.id ??
+                themeObj?.configuration_id ??
+                raw.themeId ??
+                raw.themeID ??
+                '—';
+
+            const themeType =
+                themeObj?.type ??
+                raw.type ??
+                '—';
+
+            const clientAssets = Array.isArray(themeObj?.clientAssets) ? themeObj.clientAssets : [];
+            const assetsHtml = clientAssets.length
+                ? `
+      <div class="pp-kv">
+        <span class="pp-k">Client assets</span>
+        <span class="pp-v">
+          <div class="pp-assets">
+            ${clientAssets.map((a) => {
+                    const nm = escapeHtml(String(a?.name ?? '—'));
+                    const andP = escapeHtml(String(a?.android ?? '—'));
+                    const iosP = escapeHtml(String(a?.ios ?? '—'));
+                    return `
+              <div class="row">
+                <div><code>${nm}</code></div>
+                <div class="pp-asset-lines">
+                  <div><span class="muted">Android:</span> <code>${andP}</code></div>
+                  <div><span class="muted">iOS:</span> <code>${iosP}</code></div>
+                </div>
+              </div>
+            `.trim();
+                }).join('')}
+          </div>
+        </span>
+      </div>
+    `
+                : `
+      <div class="pp-kv">
+        <span class="pp-k">Client assets</span>
+        <span class="pp-v">—</span>
+      </div>
+    `;
+
+            // --- Segment ---
+            const segment =
+                raw.segment ??
+                raw.segments ??
+                raw.segmentName ??
+                null;
+
+            const externalSegment =
+                raw.externalSegment ??
+                raw.externalSegmentName ??
+                null;
+
+            const segHtml = (() => {
+                const parts = [];
+                if (segment != null && String(segment).trim()) parts.push(`<div><span class="muted">Segment:</span> <code>${escapeHtml(String(segment))}</code></div>`);
+                if (externalSegment != null && String(externalSegment).trim()) parts.push(`<div><span class="muted">External segment:</span> <code>${escapeHtml(String(externalSegment))}</code></div>`);
+                return parts.length ? `<div class="pp-wrap">${parts.join('')}</div>` : '—';
+            })();
+
+            // --- Conditions ---
+            const conditions = Array.isArray(raw.conditions) ? raw.conditions : [];
+
+            const condLabelFromPath = (p) => {
+                const s = String(p ?? '').trim();
+                if (!s) return 'Condition';
+                const low = s.toLowerCase();
+
+                // твои кейсы
+                if (low.includes('appversion')) return 'AppVersion';
+                if (low.endsWith('.level') || low.includes('town-service.level') || low.includes('service.level')) return 'Level';
+
+                // общий fallback: берём последний сегмент пути
+                const last = s.split('.').filter(Boolean).pop() || s;
+                // чуть “очеловечим”
+                return last.replace(/_/g, ' ');
+            };
+
+            const condHtml = conditions.length
+                ? conditions.map((c) => {
+                    const path = c?.pathToField ?? c?.PathToField ?? '';
+                    const op = c?.operator ?? c?.Operator ?? '>=';
+                    const val = c?.value ?? c?.Value ?? '';
+                    const label = condLabelFromPath(path);
+                    return `<div><code>${escapeHtml(label)} ${escapeHtml(String(op))} ${escapeHtml(String(val))}</code></div>`;
+                }).join('')
+                : '—';
+
+            // --- TimeDurationMinutes / showOnBoard / showOn ---
+            const timeDurationMinutes =
+                raw.timeDurationMinutes ??
+                raw.TimeDurationMinutes ??
+                null;
+
+            const showOnBoard =
+                (raw.showOnBoard !== undefined) ? raw.showOnBoard : null;
+
+            const showOn =
+                (raw.showOn !== undefined) ? raw.showOn : null;
+
+            // --- Offers (sku/SQ + VC Free + rewards/extraReward) ---
+            const offers = Array.isArray(raw.offers) ? raw.offers : [];
+
+            const readRewardList = (offer) => {
+                const list =
+                    (Array.isArray(offer?.extraReward) ? offer.extraReward : null) ??
+                    (Array.isArray(offer?.ExtraReward) ? offer.ExtraReward : null) ??
+                    (Array.isArray(offer?.rewards) ? offer.rewards : null) ??
+                    (Array.isArray(offer?.REWARDS) ? offer.REWARDS : null) ??
+                    null;
+
+                return Array.isArray(list) ? list : [];
+            };
+
+            const readVC = (offer) => {
+                const vc = offer?.virtualCurrency ?? offer?.VirtualCurrency ?? null;
+                if (!vc) return null;
+                // иногда может быть объект, иногда массив
+                if (Array.isArray(vc)) return vc;
+                if (typeof vc === 'object') return [vc];
+                return null;
+            };
+
+            const offersHtml = offers.length
+                ? `
+      <div class="pp-kv">
+        <span class="pp-k">Offers</span>
+        <span class="pp-v">
+          <div class="pp-block">
+            ${offers.map((o, idx) => {
+                    const offerIndex = o?.index ?? o?.offerIndex ?? idx;
+                    const sku = o?.sku ?? o?.SQ ?? o?.sq ?? '—';
+
+                    const vcArr = readVC(o);
+                    const vcFree = (() => {
+                        if (!vcArr || !vcArr.length) return null;
+                        // ищем “Free” как currency/label/type и т.п.
+                        const free = vcArr.find(x => String(x?.currency ?? x?.name ?? x?.type ?? x ?? '').toLowerCase() === 'free');
+                        return free ? 'Free' : null;
+                    })();
+
+                    const rewards = readRewardList(o);
+
+                    const rewardsHtml = rewards.length
+                        ? `<div class="pp-rew-list">
+                    ${rewards.map((r) => {
+                            const rName = r?.name ?? r?.Name ?? '—';
+                            const rVal = r?.value ?? r?.Value ?? r?.amount ?? r?.Amount ?? r?.count ?? r?.Count ?? '—';
+                            const rType = r?.type ?? r?.Type ?? '';
+                            return `<div class="row"><code>${escapeHtml(String(rName))}</code> <span class="muted">x</span> <code>${escapeHtml(String(rVal))}</code>${rType ? ` <span class="muted">type:</span> <code>${escapeHtml(String(rType))}</code>` : ''}</div>`;
+                        }).join('')}
+                  </div>`
+                        : `<div class="muted">No rewards</div>`;
+
+                    return `
+              <div class="pp-offer">
+                <div class="pp-offer-head"><span class="muted">Offer</span> <code>#${escapeHtml(String(offerIndex))}</code></div>
+                <div class="pp-offer-row"><span class="muted">SQ:</span> <code>${escapeHtml(String(sku))}</code>${vcFree ? ` <span class="muted">|</span> <span class="muted">VC:</span> <code>${escapeHtml(vcFree)}</code>` : ''}</div>
+                <div class="pp-offer-row"><span class="muted">Rewards:</span></div>
+                ${rewardsHtml}
+              </div>
+            `.trim();
+                }).join('')}
+          </div>
+        </span>
+      </div>
+    `
+                : `
+      <div class="pp-kv">
+        <span class="pp-k">Offers</span>
+        <span class="pp-v">—</span>
+      </div>
+    `;
+
+            // --- ProgressBar missions (only if enabled) ---
+            const withProgressBar = isTrue(raw.displayProgressBar) || isTrue(raw.withProgressBar) || isTrue(raw?.progressBar?.enabled) || isTrue(raw?.ProgressBar?.enabled);
+
+            const pbObj = raw.progressBar ?? raw.ProgressBar ?? null;
+            const missions =
+                Array.isArray(pbObj?.missions) ? pbObj.missions :
+                    Array.isArray(pbObj?.Missions) ? pbObj.Missions :
+                        Array.isArray(pbObj) ? pbObj :
+                            [];
+
+            const progressHtml = (withProgressBar && missions.length)
+                ? `
+      <div class="pp-kv">
+        <span class="pp-k">ProgressBar</span>
+        <span class="pp-v">
+          <div class="pp-block">
+            ${missions.map((m, idx) => {
+                    const mi = m?.index ?? m?.Index ?? idx;
+                    const reward = m?.reward ?? m?.Reward ?? m?.rewards ?? m?.Rewards ?? null;
+
+                    // reward может быть объектом или массивом
+                    const rewardList = Array.isArray(reward) ? reward : (reward ? [reward] : []);
+
+                    const rHtml = rewardList.length
+                        ? rewardList.map((r) => {
+                            const n = r?.name ?? r?.Name ?? '—';
+                            const v = r?.value ?? r?.Value ?? r?.amount ?? r?.Amount ?? r?.count ?? r?.Count ?? '—';
+                            const t = r?.type ?? r?.Type ?? '';
+                            return `<div class="row"><span class="muted">Reward:</span> <code>${escapeHtml(String(n))}</code> <span class="muted">x</span> <code>${escapeHtml(String(v))}</code>${t ? ` <span class="muted">type:</span> <code>${escapeHtml(String(t))}</code>` : ''}</div>`;
+                        }).join('')
+                        : `<div class="row muted">Reward: —</div>`;
+
+                    return `
+              <div class="pp-mission">
+                <div class="pp-offer-head"><span class="muted">Mission index</span> <code>${escapeHtml(String(mi))}</code></div>
+                ${rHtml}
+              </div>
+            `.trim();
+                }).join('')}
+          </div>
+        </span>
+      </div>
+    `
+                : `
+      <div class="pp-kv">
+        <span class="pp-k">ProgressBar</span>
+        <span class="pp-v">${withProgressBar ? '—' : '<span class="muted">disabled</span>'}</span>
+      </div>
+    `;
+
+            // --- Raw pretty ---
             let rawPretty = '';
-            try { rawPretty = escapeHtml(JSON.stringify(row.raw ?? {}, null, 2)); }
-            catch { rawPretty = escapeHtml(String(row.raw ?? '')); }
+            try { rawPretty = escapeHtml(JSON.stringify(raw ?? {}, null, 2)); }
+            catch { rawPretty = escapeHtml(String(raw ?? '')); }
 
-            // Match LiveOps Info panel markup/styles (fonts, weights, copy icon + tooltip)
+            // Render
             detEl.innerHTML = `
-
   <div class="pp-kvs">
-        <div class="pp-kv pp-kv-name">
+
+    <div class="pp-kv pp-kv-name">
       <span class="pp-k">Name</span>
       <span class="pp-v">
         <span class="pp-name-text">${safeName}</span>
         <button id="ppPromoCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
-          <!-- та же иконка, что в календарном тултипе -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"></path>
           </svg>
@@ -652,24 +903,50 @@
       </span>
     </div>
 
-
     <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${safeType}</span></div>
 
     <div class="pp-kv"><span class="pp-k">State</span>
-      <span class="pp-v"><span class="pp-state"><span class="pp-check" aria-hidden="true">✓</span> On</span></span>
+      <span class="pp-v">
+        <span class="pp-state ${escapeHtml(stateNorm)}">
+          <span class="pp-check" aria-hidden="true">✓</span> ${escapeHtml(stateLabel)}
+        </span>
+      </span>
     </div>
 
     <div class="pp-kv"><span class="pp-k">Start</span><span class="pp-v">${safeStart}</span></div>
     <div class="pp-kv"><span class="pp-k">End</span><span class="pp-v">${safeEnd}</span></div>
 
+    <div class="pp-kv"><span class="pp-k">Theme</span>
+      <span class="pp-v">
+        <div class="pp-wrap">
+          <div><span class="muted">Theme id:</span> <code>${escapeHtml(String(themeId))}</code></div>
+          <div><span class="muted">Theme type:</span> <code>${escapeHtml(String(themeType))}</code></div>
+        </div>
+      </span>
+    </div>
+
+    ${assetsHtml}
+
+    <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segHtml}</span></div>
+
+    <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
+
+    <div class="pp-kv"><span class="pp-k">TimeDurationMinutes</span><span class="pp-v">${(timeDurationMinutes != null) ? `<code>${escapeHtml(String(timeDurationMinutes))}</code>` : '—'}</span></div>
+    <div class="pp-kv"><span class="pp-k">showOnBoard</span><span class="pp-v">${(showOnBoard != null) ? `<code>${escapeHtml(String(showOnBoard))}</code>` : '—'}</span></div>
+    <div class="pp-kv"><span class="pp-k">showOn</span><span class="pp-v">${(showOn != null) ? `<code>${escapeHtml(String(showOn))}</code>` : '—'}</span></div>
+
+    ${progressHtml}
+
+    ${offersHtml}
+
     <div class="pp-kv"><span class="pp-k">Raw</span>
       <span class="pp-v"><pre class="pp-raw">${rawPretty}</pre></span>
     </div>
+
   </div>
 `;
 
-            // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку,
-            // иначе в буфер улетает "&amp;" / "&#39;" и т.п.
+            // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку
             let copyBtn = detEl.querySelector('#ppPromoCopyName');
 
             // SAFETY: если по какой-то причине кнопка не попала в DOM — создадим её вручную
@@ -701,8 +978,8 @@
             detEl.setAttribute('aria-hidden', 'false');
             const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
             liveopsEl.classList.add('info-open');
-
         }
+
 
 
 
