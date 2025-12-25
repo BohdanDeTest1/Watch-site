@@ -797,65 +797,80 @@
   `
                 : '';
 
-            // ---- Offers (SKU label, rewards as "Name: value", type indented, no mid-word breaks) ----
+
+            // ---- Offers (accordion like Assets: buttons on the right, panels full-width under each button) ----
             const offers = asArr(raw?.offers);
 
-            const offersHtml = offers.length
-                ? `
-        <div class="pp-offers">
-          ${offers.map((o, i) => {
-                    const sku = String(o?.sku ?? '').trim();
-                    const isFree = isTruthy(o?.isVirtual);
-                    const skuLine = sku
-                        ? (isFree ? `${esc(sku)} <span class="pp-free">(Free)</span>` : esc(sku))
-                        : (isFree ? '<span class="pp-free">Free</span>' : '<span class="muted">—</span>');
+            const offerCard = (o) => {
+                const sku = String(o?.sku ?? '').trim();
+                const isFree = isTruthy(o?.isVirtual);
 
-                    const rewards = asArr(o?.rewards);
+                const skuLine = sku
+                    ? (isFree ? `${esc(sku)} <span class="pp-free">(Free)</span>` : esc(sku))
+                    : (isFree ? '<span class="pp-free">Free</span>' : '<span class="muted">—</span>');
 
+                const rewards = asArr(o?.rewards);
+
+                // ВНУТРИ КАРТОЧКИ: только SKU + Rewards (без "Offer #N")
+                return `
+  <div class="pp-offer-card pp-offer-card-acc">
+    <div class="pp-offer-row">
+      <div class="pp-offer-k">SKU:</div>
+      <div class="pp-offer-v"><code class="pp-code">${skuLine}</code></div>
+    </div>
+
+    <div class="pp-offer-row pp-offer-row-rews">
+      <div class="pp-offer-k">Rewards:</div>
+      <div class="pp-offer-v">
+        ${rewards.length ? `
+          <div class="pp-rews">
+            ${rewards.map(r => {
+                    const rName = String(r?.name ?? '');
+                    const rVal = r?.value ?? '';
                     return `
-            <div class="pp-offer-card">
-              <div class="pp-offer-title">Offer #${i + 1}</div>
-
-              <div class="pp-offer-row">
-                <div class="pp-offer-k">SKU:</div>
-                <div class="pp-offer-v"><code class="pp-code">${skuLine}</code></div>
-              </div>
-
-              <div class="pp-offer-row pp-offer-row-rews">
-                <div class="pp-offer-k">Rewards:</div>
-                <div class="pp-offer-v">
-                  ${rewards.length ? `
-                    <div class="pp-rews">
-                      ${rewards.map(r => {
-                        const rName = String(r?.name ?? '');
-                        const rVal = r?.value ?? '';
-                        const rType = r?.type ? String(r.type) : '';
-
-                        return `
-                        <div class="pp-rew-row">
-                          <div class="pp-rew-main">
-                            <code class="pp-code pp-rew-name">${esc(rName)}</code><span class="pp-colon">:</span>
-                            <code class="pp-code">${esc(rVal)}</code>
-                          </div>
-                          ${rType ? `
-                            <div class="pp-rew-meta">
-                              <span class="pp-rew-meta-k">type:</span>
-                              <code class="pp-code">${esc(rType)}</code>
-                            </div>
-                          ` : ''}
-                        </div>
-                      `;
-                    }).join('')}
-                    </div>
-                  ` : '<span class="muted">—</span>'}
+              <div class="pp-rew-row">
+                <div class="pp-rew-main">
+                  <code class="pp-code pp-rew-name">${esc(rName)}</code><span class="pp-colon">:</span>
+                  <code class="pp-code">${esc(rVal)}</code>
                 </div>
               </div>
-            </div>
-          `;
+            `;
                 }).join('')}
-        </div>
-      `
-                : '<span class="muted">—</span>';
+          </div>
+        ` : '<span class="muted">—</span>'}
+      </div>
+    </div>
+  </div>
+`;
+            };
+
+            const offersKvHtml = offers.length
+                ? `
+  <div class="pp-kv pp-kv-offers">
+    <span class="pp-k">Offers</span>
+
+    ${offers.map((o, i) => `
+      <button type="button"
+              class="pp-offer-toggle pp-offer-toggle-row"
+              data-offer="${i}"
+              aria-expanded="false">
+        <span class="pp-offer-toggle-text">Offer #${i + 1}</span>
+        <span class="pp-offer-toggle-chev" aria-hidden="true">▸</span>
+      </button>
+
+      <div class="pp-offer-panel" data-offer-panel="${i}" hidden>
+        ${offerCard(o)}
+      </div>
+    `).join('')}
+  </div>
+`
+                : `
+  <div class="pp-kv">
+    <span class="pp-k">Offers</span>
+    <span class="pp-v"><span class="muted">—</span></span>
+  </div>
+`;
+
 
             // ---- Raw (collapsible + copy button only when open; no layout shift) ----
             let rawPretty = '';
@@ -913,10 +928,8 @@
 
     ${progressBarBlock}
 
-    <div class="pp-kv pp-kv-stack">
-      <div class="pp-k">Offers</div>
-      <div class="pp-v">${offersHtml}</div>
-    </div>
+        ${offersKvHtml}
+
 
        <div class="pp-kv">
       <span class="pp-k">Raw JSON</span>
@@ -1005,6 +1018,28 @@
 
                 toggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
                 const chev = toggle.querySelector('.pp-asset-toggle-chev');
+                if (chev) chev.textContent = nextOpen ? '▾' : '▸';
+
+                myPanel.hidden = !nextOpen;
+                return;
+            }
+
+            // --- Offers toggles (independent: each button controls its own offer panel) ---
+            const offerToggle = e.target.closest('button.pp-offer-toggle');
+            if (offerToggle) {
+                e.preventDefault();
+
+                const idx = offerToggle.getAttribute('data-offer');
+                if (idx == null) return;
+
+                const myPanel = detEl.querySelector(`.pp-offer-panel[data-offer-panel="${idx}"]`);
+                if (!myPanel) return;
+
+                const isOpen = offerToggle.getAttribute('aria-expanded') === 'true';
+                const nextOpen = !isOpen;
+
+                offerToggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+                const chev = offerToggle.querySelector('.pp-offer-toggle-chev');
                 if (chev) chev.textContent = nextOpen ? '▾' : '▸';
 
                 myPanel.hidden = !nextOpen;

@@ -512,6 +512,75 @@
 }
 
 
+/* ===== Offers accordion: exactly like Assets (buttons on right, panel full width) ===== */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers {
+    align-items: flex-start;
+}
+
+/* Offer toggle row sits in the RIGHT value column */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-toggle-row {
+    grid-column: 2 / 3;
+    justify-self: start;
+
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+
+    /* CLOSED state: tight list */
+    margin-top: 4px;
+    margin-bottom: 6px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-toggle-row:hover {
+    opacity: .9;
+}
+
+/* OPEN state: title closer to its own block */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-toggle-row[aria-expanded="true"] {
+    margin-bottom: 2px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-toggle-chev {
+    font-size: 12px;
+    opacity: .8;
+    transform: translateY(1px);
+}
+
+/* Panel should span FULL width of the info panel content */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-panel {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+/* If a panel is open and next is another offer toggle, add separation (like assets) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-offers .pp-offer-panel:not([hidden])+.pp-offer-toggle-row {
+    margin-top: 14px;
+}
+
+/* Offer card inside accordion: keep full width */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-offer-card.pp-offer-card-acc {
+    width: 100%;
+    min-width: 0;
+}
+
+/* No Offer title inside the card (we don't render it in JS, but keep safe) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-offer-card.pp-offer-card-acc .pp-offer-title {
+    display: none;
+}
 
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-assets-acc {
