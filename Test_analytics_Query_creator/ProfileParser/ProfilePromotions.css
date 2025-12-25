@@ -152,6 +152,130 @@
     padding: 10px 12px;
 }
 
+/* --- Promotions Info panel tweaks (match LiveOps look) --- */
+#pp-root #ppPromoLoDetail .pp-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- [FIX] Promotions Info panel padding: make it 1-в-1 как LiveOps --- */
+.pp-item.info-open #ppPromoLoDetail.pp-liveops-detail {
+    /* в LiveOps это задаётся общим правилом .pp-item.info-open .pp-liveops-detail,
+       но у тебя для промо по факту оно не даёт нужного правого отступа (видно на скрине).
+       Дублируем явно для promo-detail. */
+    padding: 0 16px 16px 9px;
+}
+
+/* --- [FIX] Ensure copy icon is not accidentally collapsed by any other rules --- */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico {
+    display: inline-grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* --- Name row: keep copy icon pinned to the right (same UX as LiveOps) --- */
+#pp-root #ppPromoLoDetail .pp-kv-name .pp-v {
+    display: flex;
+    /* важно: flex + ширина, чтобы margin-left:auto работал предсказуемо */
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+}
+
+/* name takes available space; button stays at the right edge */
+#pp-root #ppPromoLoDetail .pp-kv-name .pp-name-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-word;
+}
+
+/* keep the icon always visible on the right */
+#pp-root #ppPromoLoDetail .pp-kv-name .pp-ico {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+/* Copy icon button (same as LiveOps Info panel) */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico {
+    all: unset;
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: var(--btn-n-field-bg, #fff);
+    color: var(--text);
+    cursor: pointer;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico svg {
+    display: block;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico:hover {
+    opacity: .92;
+    filter: brightness(0.98);
+}
+
+
+/* Tooltip for copy icon (light theme) */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico[data-hint]:hover::after {
+    content: attr(data-hint);
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    padding: 4px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #d1d5db);
+    background: #ffffff;
+    color: #111827;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+    z-index: 1;
+}
+
+/* Tooltip for copy icon (dark theme) */
+:root.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico[data-hint]:hover::after,
+[data-theme="dark"] #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico[data-hint]:hover::after,
+.dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-ico[data-hint]:hover::after {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, .35);
+}
+
+
+/* green check similar to LiveOps table */
+#pp-root #ppPromoLoDetail .pp-state .pp-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    background: #22c55e;
+    color: #fff;
+}
+
+/* Ensure Promotions Info panel admin button matches LiveOps (blue + readable) */
+#pp-root #ppPromoAdminBtn.pp-btn {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, .08);
+}
+
+
+
 .pp-promos-tip__t {
     font-weight: 800;
     margin-bottom: 6px;

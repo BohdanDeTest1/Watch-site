@@ -327,7 +327,13 @@
       </div>
 
       <!-- right info panel -->
-      <aside class="pp-liveops-detail" id="ppPromoLoDetail" aria-hidden="true"></aside>
+           <!-- right info panel + floating buttons (same layout as LiveOps) -->
+      <aside class="pp-liveops-detail" id="ppPromoLoDetail" aria-hidden="true">
+        <div class="muted small">Select a promotion to view details</div>
+      </aside>
+
+            <button id="ppPromoLoClose" class="pp-close-float" aria-label="Close">×</button>
+      <button id="ppPromoAdminBtn" class="pp-admin-float pp-btn" type="button">Promotions in Admin</button>
 
     </div>
 
@@ -401,10 +407,17 @@
         const bodyEl = wrap.querySelector('#ppPromoTBody');
         const headEl = wrap.querySelector('#ppPromoLoTable .pp-t-head');
         const closeBtn = wrap.querySelector('#ppPromoLoClose');
+        const adminBtn = wrap.querySelector('#ppPromoAdminBtn');
 
         if (!bodyEl || !detEl) return;
 
         closeBtn?.addEventListener('click', () => wrap.classList.remove('info-open'));
+
+        // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
+        // Requirement: on click open Google.
+        adminBtn?.addEventListener('click', () => {
+            window.open('https://www.google.com', '_blank', 'noopener');
+        });
 
 
 
@@ -604,86 +617,93 @@
         }
 
         // --- detail panel ---
+
+        // --- detail panel ---
         function showDetail(row) {
             if (!row) return;
 
-            const safeName = escapeHtml(row.name);
+            const rawName = String(row.name ?? '');
+            const safeName = escapeHtml(rawName);
             const safeType = escapeHtml(row.type);
             const safeStart = escapeHtml(row.startPretty);
             const safeEnd = escapeHtml(row.endPretty);
-            const adminUrl = 'https://www.google.com/search?q=' + encodeURIComponent(row.name);
+            const adminUrl = 'https://www.google.com/search?q=' + encodeURIComponent(rawName);
 
             let rawPretty = '';
             try { rawPretty = escapeHtml(JSON.stringify(row.raw ?? {}, null, 2)); }
             catch { rawPretty = escapeHtml(String(row.raw ?? '')); }
 
+            // Match LiveOps Info panel markup/styles (fonts, weights, copy icon + tooltip)
             detEl.innerHTML = `
 
-              <div class="pp-kvs">
-                <div class="pp-kv">
-                  <div class="k">Name</div>
-                  <div class="v">
-                    <span class="pp-kv-name">${safeName}</span>
-                    <button class="pp-copy" type="button" title="Copy name" data-copy="${safeName}">⧉</button>
-                  </div>
-                </div>
+  <div class="pp-kvs">
+    <div class="pp-kv pp-kv-name">
+      <span class="pp-k">Name</span>
+      <span class="pp-v">
+        <span class="pp-name-text">${safeName}</span>
+        <button id="ppPromoCopyName"
+                class="pp-ico"
+                type="button"
+                data-hint="Copy to clipboard"
+                aria-label="Copy to clipboard"
+                data-copy-name="">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </button>
+      </span>
+    </div>
 
-                <div class="pp-kv">
-                  <div class="k">Type</div>
-                  <div class="v">${safeType}</div>
-                </div>
+    <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${safeType}</span></div>
 
-                <div class="pp-kv">
-                  <div class="k">Start</div>
-                  <div class="v">${safeStart}</div>
-                </div>
+    <div class="pp-kv"><span class="pp-k">State</span>
+      <span class="pp-v"><span class="pp-state"><span class="pp-check" aria-hidden="true">✓</span> On</span></span>
+    </div>
 
-                <div class="pp-kv">
-                  <div class="k">End</div>
-                  <div class="v">${safeEnd}</div>
-                </div>
+    <div class="pp-kv"><span class="pp-k">Start</span><span class="pp-v">${safeStart}</span></div>
+    <div class="pp-kv"><span class="pp-k">End</span><span class="pp-v">${safeEnd}</span></div>
 
-                <div class="pp-kv">
-                  <div class="k">Raw</div>
-                  <div class="v">
-                    <pre class="pp-raw">${rawPretty}</pre>
-                  </div>
-                </div>
-              </div>
+    <div class="pp-kv"><span class="pp-k">Raw</span>
+      <span class="pp-v"><pre class="pp-raw">${rawPretty}</pre></span>
+    </div>
+  </div>
+`;
 
-              <button class="pp-admin-btn" type="button" data-admin-url="${adminUrl}">Promotions in the Admin</button>
-            `;
+            // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку,
+            // иначе в буфер улетает "&amp;" / "&#39;" и т.п.
+            const copyBtn = detEl.querySelector('#ppPromoCopyName');
+            if (copyBtn) copyBtn.setAttribute('data-copy-name', rawName);
 
             wrap.classList.add('info-open');
         }
 
 
-        // copy name inside detail
-        // actions inside detail (admin + copy name)
-        detEl.addEventListener('click', async (e) => {
-            const admin = e.target.closest('button[data-admin-url]');
-            if (admin) {
-                const url = admin.getAttribute('data-admin-url') || '';
-                if (url) window.open(url, '_blank', 'noopener');
-                return;
-            }
 
+        // copy name inside detail (same UX as LiveOps: icon button + tooltip)
+        detEl.addEventListener('click', async (e) => {
             const b = e.target.closest('button[data-copy-name]');
             if (!b) return;
 
             const text = b.getAttribute('data-copy-name') || '';
+            const prevHint = b.getAttribute('data-hint') || 'Copy to clipboard';
+
+            const setHintTemp = (hint) => {
+                b.setAttribute('data-hint', hint);
+                setTimeout(() => b.setAttribute('data-hint', prevHint), 900);
+            };
+
             try {
                 await navigator.clipboard.writeText(text);
-                const prev = b.textContent;
-                b.textContent = 'Copied!';
-                setTimeout(() => (b.textContent = prev), 900);
+                setHintTemp('Copied!');
             } catch {
+                // fallback
                 const ta = document.createElement('textarea');
                 ta.value = text;
                 document.body.appendChild(ta);
                 ta.select();
                 document.execCommand('copy');
                 document.body.removeChild(ta);
+                setHintTemp('Copied!');
             }
         });
 
