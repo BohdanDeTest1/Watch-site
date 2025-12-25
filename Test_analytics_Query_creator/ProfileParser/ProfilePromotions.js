@@ -658,70 +658,74 @@
             // Source in JSON: raw.theme.clientAssets: [{name:'popup', android:'...', ios:'...'}, ...]
             // ---- Assets (2 buttons -> expands panels) ----
             // Source in JSON: raw.theme.clientAssets: [{name:'popup', android:'...', ios:'...'}, ...]
+
+            // ---- Assets (accordion buttons: PopUp assets / Icon assets; panels under their button; full width) ----
+            // Source in JSON: raw.theme.clientAssets: [{name:'popup', android:'...', ios:'...'}, ...]
             const clientAssets = asArr(raw?.theme?.clientAssets);
 
-            const normAssetName = (s) => String(s || '').trim().toLowerCase();
-            const getAsset = (nm) => clientAssets.find(a => normAssetName(a?.name) === nm) || null;
+            const byName = (nm) => clientAssets.find(a => String(a?.name || '').toLowerCase() === nm);
+            const popupA = byName('popup');
+            const iconA = byName('icon');
 
-            const popupAsset = getAsset('popup');
-            const iconAsset = getAsset('icon');
-
-            const renderAssetCard = (a) => {
-                if (!a) return '';
+            const assetBlock = (a) => {
+                if (!a) return '<span class="muted">—</span>';
                 const nm = esc(a?.name || '');
                 const andPath = a?.android ? esc(a.android) : '';
                 const iosPath = a?.ios ? esc(a.ios) : '';
-
-                if (!andPath && !iosPath) return '';
-
                 return `
-      <div class="pp-asset2">
-        <div class="pp-asset2-name">${nm}</div>
-
-        <div class="pp-asset2-lines">
-          ${andPath ? `
-            <div class="pp-asset2-line">
-              <span class="pp-asset2-k">Android:</span>
-              <code class="pp-asset2-code">${andPath}</code>
-            </div>` : ''}
-
-          ${iosPath ? `
-            <div class="pp-asset2-line">
-              <span class="pp-asset2-k">iOS:</span>
-              <code class="pp-asset2-code">${iosPath}</code>
-            </div>` : ''}
-        </div>
+  <div class="pp-assets2">
+    <div class="pp-asset2">
+      <div class="pp-asset2-name">${nm}</div>
+      <div class="pp-asset2-lines">
+        ${andPath ? `
+          <div class="pp-asset2-line">
+            <span class="pp-asset2-k">Android:</span>
+            <code class="pp-asset2-code">${andPath}</code>
+          </div>` : ''}
+        ${iosPath ? `
+          <div class="pp-asset2-line">
+            <span class="pp-asset2-k">iOS:</span>
+            <code class="pp-asset2-code">${iosPath}</code>
+          </div>` : ''}
       </div>
-    `.trim();
+    </div>
+  </div>
+`;
             };
 
-            const hasPopup = !!renderAssetCard(popupAsset);
-            const hasIcon = !!renderAssetCard(iconAsset);
-
-            const assetsControlsHtml = (hasPopup || hasIcon)
+            const assetsKvHtml = (popupA || iconA)
                 ? `
-      <div class="pp-assets-acc">
-        ${hasPopup ? `
-          <div class="pp-asset-acc" data-asset="popup">
-            <button class="pp-asset-toggle" type="button" data-asset="popup">PopUpAsset</button>
-            <div class="pp-asset-panel" data-asset="popup" hidden>
-              ${renderAssetCard(popupAsset)}
-            </div>
-          </div>
-        ` : ''}
+    <div class="pp-kv pp-kv-assets">
+      <span class="pp-k">Assets</span>
 
-        ${hasIcon ? `
-          <div class="pp-asset-acc" data-asset="icon">
-            <button class="pp-asset-toggle" type="button" data-asset="icon">IconAsset</button>
-            <div class="pp-asset-panel" data-asset="icon" hidden>
-              ${renderAssetCard(iconAsset)}
-            </div>
-          </div>
-        ` : ''}
-      </div>
-    `.trim()
-                : '<span class="muted">—</span>';
+      ${popupA ? `
+        <button type="button" class="pp-asset-toggle pp-asset-toggle-row" data-asset="popup" aria-expanded="false">
+          <span class="pp-asset-toggle-text">PopUp assets</span>
+          <span class="pp-asset-toggle-chev" aria-hidden="true">▸</span>
+        </button>
+        <div class="pp-asset-panel" data-asset-panel="popup" hidden>
+          ${assetBlock(popupA)}
+        </div>
+      ` : ''}
 
+      ${iconA ? `
+        <button type="button" class="pp-asset-toggle pp-asset-toggle-row" data-asset="icon" aria-expanded="false">
+          <span class="pp-asset-toggle-text">Icon assets</span>
+          <span class="pp-asset-toggle-chev" aria-hidden="true">▸</span>
+        </button>
+        <div class="pp-asset-panel" data-asset-panel="icon" hidden>
+          ${assetBlock(iconA)}
+        </div>
+      ` : ''}
+
+    </div>
+`
+                : `
+    <div class="pp-kv">
+      <span class="pp-k">Assets</span>
+      <span class="pp-v"><span class="muted">—</span></span>
+    </div>
+`;
 
 
             // ---- Segment / Subsegment (no duplicated word "Segment:" inside value) ----
@@ -896,12 +900,8 @@
 
   <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v"><code class="pp-code">${esc(themeId) || '—'}</code></span></div>
 
-  <div class="pp-kv">
-  <span class="pp-k">Assets</span>
-  <span class="pp-v">
-    ${assetsControlsHtml}
-  </span>
-</div>
+  ${assetsKvHtml}
+
 
 
     <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segmentHtml}</span></div>
@@ -971,43 +971,6 @@
 
             if (copyBtn) copyBtn.setAttribute('data-copy-name', rawName);
 
-            // панель реально "открыта" (и для CSS, и для доступности)
-
-            // --- Assets toggles (PopUpAsset / IconAsset) ---
-            (() => {
-                const acc = detEl.querySelector('.pp-assets-acc');
-                if (!acc) return;
-
-                const btns = Array.from(acc.querySelectorAll('.pp-asset-toggle'));
-                if (!btns.length) return;
-
-                const closeAll = () => {
-                    btns.forEach(b => b.classList.remove('is-open'));
-                    acc.querySelectorAll('.pp-asset-panel').forEach(p => (p.hidden = true));
-                };
-
-                btns.forEach((b) => {
-                    b.addEventListener('click', () => {
-                        const key = b.getAttribute('data-asset');
-                        const panel = acc.querySelector(`.pp-asset-panel[data-asset="${key}"]`);
-                        if (!panel) return;
-
-                        const isOpen = b.classList.contains('is-open');
-
-                        if (isOpen) {
-                            closeAll();
-                            return;
-                        }
-
-                        // открыть только выбранную
-                        btns.forEach(x => x.classList.toggle('is-open', x === b));
-                        acc.querySelectorAll('.pp-asset-panel').forEach(p => (p.hidden = (p !== panel)));
-                        panel.hidden = false;
-                    });
-                });
-
-                closeAll();
-            })();
 
 
             // ---- OPEN the info panel (this is what makes "Info" visually work) ----
@@ -1025,6 +988,30 @@
         // copy name inside detail (same UX as LiveOps: icon button + tooltip)
         // copy buttons inside detail (Name + Raw JSON)
         detEl.addEventListener('click', async (e) => {
+
+            // --- Assets toggles (independent: each button controls its own panel) ---
+            const toggle = e.target.closest('button.pp-asset-toggle');
+            if (toggle) {
+                e.preventDefault();
+
+                const kind = toggle.getAttribute('data-asset');
+                if (!kind) return;
+
+                const myPanel = detEl.querySelector(`.pp-asset-panel[data-asset-panel="${kind}"]`);
+                if (!myPanel) return;
+
+                const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+                const nextOpen = !isOpen;
+
+                toggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+                const chev = toggle.querySelector('.pp-asset-toggle-chev');
+                if (chev) chev.textContent = nextOpen ? '▾' : '▸';
+
+                myPanel.hidden = !nextOpen;
+                return;
+            }
+
+
             // --- RAW copy button ---
             const rawBtn = e.target.closest('button[data-copy-raw="1"]');
             if (rawBtn) {

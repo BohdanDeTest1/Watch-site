@@ -184,6 +184,47 @@
     margin-top: 2px;
 }
 
+/* --- [PROMOS] Assets value should look like normal right-column values (2 lines) --- */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-assets-inline {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* каждая строка (PopUp assets / Icon assets) выглядит как обычное значение */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-assets-inline .pp-asset-toggle {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* единственный треугольник берём из DOM: .pp-asset-toggle-chev */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-assets-inline .pp-asset-toggle-chev {
+    font-size: 12px;
+    opacity: .8;
+    transform: translateY(1px);
+}
+
+/* раскрытая панель — остаётся под своей строкой и на всю ширину value-колонки */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-assets-inline .pp-asset-panel {
+    width: 100%;
+    min-width: 0;
+}
+
+
+
 /* чуть “опускаем” сами блоки Offers/Assets внутри значения */
 #pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-offers,
 #pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-assets2 {
@@ -247,7 +288,7 @@
 #ppPromoLiveops #ppPromoLoClose.pp-close-float {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 0px;
 
     /* ВАЖНО: ProfileParser.css задаёт .pp-close-float { display:none; }.
        Поэтому здесь делаем override жёстко. */
@@ -255,10 +296,10 @@
 
     z-index: 1215;
     /* выше панели */
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border-radius: 10px;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 24px;
 
     align-items: center;
@@ -270,46 +311,55 @@
 }
 
 
-/* --- [UI] Floating Admin button: pinned to the bottom INSIDE the right info panel area --- */
+/* --- [UI] Floating Admin button: pinned to the bottom of the info-panel area --- */
+
+/* --- [UI] Floating Admin button: EXACTLY like LiveOps .pp-admin-float --- */
 #ppPromoLiveops #ppPromoAdminBtn.pp-admin-float {
     position: absolute;
-
-    /* приклеиваем к правой панели */
-    right: 12px;
-    left: auto;
-    transform: none;
-
-    bottom: 10px;
-
-    /* ширина именно как у панели деталей */
-    width: calc(var(--pp-detail-w) - 24px);
-    max-width: none;
-
-    /* скрыта пока панель закрыта (ProfileParser.css тоже прячет) */
-    display: none !important;
-
+    right: 11px;
+    bottom: 0px;
     z-index: 1210;
+
+    display: none;
+    /* показываем только когда открыта инфо-панель */
+
+    width: calc(var(--pp-detail-w) - 16px);
+    height: var(--pp-admin-h);
+
+    align-items: center;
+    justify-content: center;
 }
+
+/* show only when panel is open */
+#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
+    display: inline-flex !important;
+}
+
 
 #ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
     display: inline-flex !important;
 }
 
 
-
+/* --- [PROMOS] Open-state for right info panel: clone of .pp-item.info-open .pp-liveops-detail --- */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
-    /* как .pp-item.info-open .pp-liveops-detail */
+    position: absolute;
+    right: 0;
+    top: 15px;
+    /* как у LiveOps: верх панели = верх таблицы */
+    bottom: calc(var(--pp-admin-h) + 16px);
+    /* низ панели = выше кнопки */
     width: var(--pp-detail-w);
+
     padding: 0 16px 16px 9px;
     pointer-events: auto;
-}
+    opacity: 1;
 
-/* --- [PROMOS] Detail panel: no horizontal scroll + safe bottom spacing for floating Admin button --- */
-#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
     overflow-y: auto;
     overflow-x: hidden;
-    /* убираем горизонтальный скролл */
+    scrollbar-gutter: stable;
 }
+
 
 /* чтобы контент не “заезжал” под кнопку Promotions in Admin */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
@@ -358,17 +408,7 @@
     opacity: .85;
 }
 
-#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle::after {
-    content: "▸";
-    display: inline-block;
-    transform: rotate(0deg);
-    transition: transform .12s ease;
-    opacity: .9;
-}
 
-#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle.is-open::after {
-    transform: rotate(90deg);
-}
 
 /* Panel should be full-width inside the info panel */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-panel {
@@ -409,6 +449,89 @@
     gap: 6px;
 }
 
+/* --- [PROMOS] Assets KV: button in RIGHT column, panel under its button, panel spans FULL width --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets {
+    align-items: flex-start;
+}
+
+/* each toggle is a "value" row (column 2) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row {
+    grid-column: 2 / 3;
+    justify-self: start;
+
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-toggle-row:hover {
+    opacity: .9;
+}
+
+/* panel goes on the next row and spans both columns => full info panel width */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-assets .pp-asset-panel {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+}
+
+
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-assets-acc {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    margin-top: 2px;
+}
+
+/* “Кнопки в воздухе”: без фона/обводки, но кликабельные + pointer */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle:hover {
+    opacity: .9;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-toggle-chev {
+    font-size: 12px;
+    opacity: .8;
+    transform: translateY(1px);
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-panel {
+    width: 100%;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-panel .pp-assets2,
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset-panel .pp-asset2 {
+    width: 100%;
+}
+
+
 /* Raw summary — как аккуратный “спойлер” */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-details summary {
     cursor: pointer;
@@ -443,10 +566,7 @@
     box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
 }
 
-/* если у тебя кнопка физически перекрывает текст — делаем фон непрозрачным */
-#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
-    background: var(--btn);
-}
+
 
 
 /* [FIX] Добавляем внутренний right padding контенту, чтобы текст не “прилипал” к правой границе */
@@ -895,10 +1015,8 @@
     min-width: 120px;
 }
 
-/* Подстраховка: когда открыта инфо-панель — сдвигаем pager так же */
-.pp-item.info-open #ppPromoPager {
-    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
-}
+/* pager НЕ должен “съезжать” из-под таблицы при открытой инфо-панели.
+   Он относится к таблице, а не к инфо-панели. */
 
 
 
