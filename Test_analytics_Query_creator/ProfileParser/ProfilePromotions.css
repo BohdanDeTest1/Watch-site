@@ -1360,3 +1360,112 @@
 #ppPromoLiveops.info-open #ppPromoAdminBtn {
     display: inline-flex !important;
 }
+
+/* ===== Rewards: bullets + nested “Type” under reward ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-main {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-bullet {
+    width: 14px;
+    flex: 0 0 14px;
+    line-height: 1.2;
+    transform: translateY(2px);
+    opacity: .9;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-content {
+    min-width: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-line {
+    min-width: 0;
+    white-space: normal;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-meta {
+    margin-top: 2px;
+    /* ближе к реварду сверху */
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-meta-v {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* =========================
+   Raw JSON (PROMOS): "floating" toggle like Offers + full width block
+   ========================= */
+
+/* 1) Уменьшаем запас снизу под кнопку (примерно в 3 раза) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-bottom: 30px !important;
+}
+
+/* 2) Делаем Raw JSON value (details) на всю ширину инфопанели */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-v {
+    grid-column: 1 / -1;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin-top: 6px;
+}
+
+/* 3) Сам <details> не должен выглядеть как кнопка (убираем обводку/фон) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* 4) Summary — как “висячая” строка (как Offer #1/#2) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-sum {
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+/* треугольник стоит ПОСЛЕ текста, и поворачивается при open */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-chevron {
+    font-size: 12px;
+    opacity: .8;
+    transform: translateY(1px);
+    transition: transform .12s ease;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details[open] .pp-raw-chevron {
+    transform: translateY(1px) rotate(90deg);
+}
+
+/* 5) Сам JSON (pre) делаем “карточкой” и full width */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
+    width: 100%;
+    min-width: 0;
+
+    border: 1px solid var(--border, #d1d5db);
+    border-radius: 12px;
+    padding: 10px 10px;
+
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* dark theme for the raw block */
+:root.theme-dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+.theme-dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+[data-theme="dark"] #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+.dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
+    background: rgba(255, 255, 255, 0.04);
+}

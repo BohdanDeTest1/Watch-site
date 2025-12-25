@@ -825,17 +825,42 @@
         ${rewards.length ? `
           <div class="pp-rews">
             ${rewards.map(r => {
-                    const rName = String(r?.name ?? '');
+                    const rName = String(r?.name ?? '').trim();
                     const rVal = r?.value ?? '';
+
+                    // “специфический тайп” — пытаемся вытащить максимально гибко
+                    const rTypeRaw =
+                        r?.type ??
+                        r?.rewardType ??
+                        r?.specificType ??
+                        r?.meta?.type ??
+                        r?.metaType ??
+                        '';
+
+                    const rType = String(rTypeRaw ?? '').trim();
+
                     return `
-              <div class="pp-rew-row">
-                <div class="pp-rew-main">
-                  <code class="pp-code pp-rew-name">${esc(rName)}</code><span class="pp-colon">:</span>
+          <div class="pp-rew-row">
+            <div class="pp-rew-main">
+              <span class="pp-rew-bullet" aria-hidden="true">•</span>
+              <div class="pp-rew-content">
+                <div class="pp-rew-line">
+                  <code class="pp-code pp-rew-name">&#039;${esc(rName)}&#039;</code><span class="pp-colon">:</span>
                   <code class="pp-code">${esc(rVal)}</code>
                 </div>
+
+                ${rType ? `
+                  <div class="pp-rew-meta">
+                    <span class="pp-rew-meta-k">Type:</span>
+                    <code class="pp-code pp-rew-meta-v">${esc(rType)}</code>
+                  </div>
+                ` : ''}
               </div>
-            `;
+            </div>
+          </div>
+        `;
                 }).join('')}
+
           </div>
         ` : '<span class="muted">—</span>'}
       </div>
@@ -931,14 +956,16 @@
         ${offersKvHtml}
 
 
-       <div class="pp-kv">
+          <div class="pp-kv pp-kv-raw">
       <span class="pp-k">Raw JSON</span>
 
       <span class="pp-v">
         <details class="pp-raw-details">
           <summary class="pp-raw-sum">
-            <span class="pp-raw-title"><span class="pp-raw-chevron" aria-hidden="true">▸</span> <span class="pp-raw-text">Show full JSON</span></span>
-
+            <span class="pp-raw-title">
+              <span class="pp-raw-text">Show full JSON</span>
+              <span class="pp-raw-chevron" aria-hidden="true">▸</span>
+            </span>
 
             <button class="pp-ico pp-raw-copy" type="button" data-copy-raw="1" data-hint="Copy JSON" aria-label="Copy JSON">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -951,6 +978,7 @@
         </details>
       </span>
     </div>
+
 
   </div>
 `;
