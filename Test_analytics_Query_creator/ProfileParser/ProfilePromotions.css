@@ -166,6 +166,31 @@
     margin-top: 6px;
 }
 
+/* --- [PROMOS] KV stacked layout: title on its own row, value below (full width) --- */
+#pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    align-items: start;
+}
+
+#pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-k {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+}
+
+#pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-v {
+    grid-column: 1 / -1;
+    display: block;
+    margin-top: 2px;
+}
+
+/* чуть “опускаем” сами блоки Offers/Assets внутри значения */
+#pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-offers,
+#pp-root #ppPromoLoDetail .pp-kv.pp-kv-stack .pp-assets2 {
+    margin-top: 6px;
+}
+
+
 #pp-root #ppPromoLoDetail .pp-offer,
 #pp-root #ppPromoLoDetail .pp-mission {
     border: 1px solid rgba(127, 127, 127, .18);
@@ -223,27 +248,53 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    z-index: 60;
+
+    /* ВАЖНО: ProfileParser.css задаёт .pp-close-float { display:none; }.
+       Поэтому здесь делаем override жёстко. */
+    display: none !important;
+
+    z-index: 1215;
+    /* выше панели */
     width: 34px;
     height: 34px;
     border-radius: 10px;
     font-size: 24px;
     line-height: 24px;
-    display: inline-flex;
+
     align-items: center;
     justify-content: center;
 }
 
-/* --- [UI] Floating Admin button: always visible at bottom like LiveOps --- */
+#ppPromoLiveops.info-open #ppPromoLoClose.pp-close-float {
+    display: inline-flex !important;
+}
+
+
+/* --- [UI] Floating Admin button: pinned to the bottom INSIDE the right info panel area --- */
 #ppPromoLiveops #ppPromoAdminBtn.pp-admin-float {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+
+    /* приклеиваем к правой панели */
+    right: 12px;
+    left: auto;
+    transform: none;
+
     bottom: 10px;
-    width: calc(100% - 28px);
-    max-width: 520px;
-    z-index: 55;
+
+    /* ширина именно как у панели деталей */
+    width: calc(var(--pp-detail-w) - 24px);
+    max-width: none;
+
+    /* скрыта пока панель закрыта (ProfileParser.css тоже прячет) */
+    display: none !important;
+
+    z-index: 1210;
 }
+
+#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
+    display: inline-flex !important;
+}
+
 
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {

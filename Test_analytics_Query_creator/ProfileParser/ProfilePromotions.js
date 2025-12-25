@@ -856,9 +856,12 @@
     <!-- Conditions moved up near End -->
     <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
 
-    <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v"><code class="pp-code">${esc(themeId) || '—'}</code></span></div>
+  <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v"><code class="pp-code">${esc(themeId) || '—'}</code></span></div>
 
-    <div class="pp-kv"><span class="pp-k">Assets</span><span class="pp-v">${assetsHtml}</span></div>
+    <div class="pp-kv pp-kv-stack">
+      <div class="pp-k">Assets</div>
+      <div class="pp-v">${assetsHtml}</div>
+    </div>
 
     <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segmentHtml}</span></div>
 
@@ -869,10 +872,14 @@
 
     ${progressBarBlock}
 
-    <div class="pp-kv"><span class="pp-k">Offers</span><span class="pp-v">${offersHtml}</span></div>
+    <div class="pp-kv pp-kv-stack">
+      <div class="pp-k">Offers</div>
+      <div class="pp-v">${offersHtml}</div>
+    </div>
 
        <div class="pp-kv">
       <span class="pp-k">Raw JSON</span>
+
       <span class="pp-v">
         <details class="pp-raw-details">
           <summary class="pp-raw-sum">
