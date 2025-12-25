@@ -207,6 +207,45 @@
     padding-right: calc(var(--pp-detail-w) + var(--pp-gap));
 }
 
+/* --- [UI] Detail panel bounds: no horizontal scroll, and content should not go behind the Admin button --- */
+#ppPromoLiveops {
+    position: relative;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    overflow-x: hidden;
+    padding-bottom: 92px;
+    /* space for Promotions in Admin button */
+}
+
+/* --- [UI] Floating close button: keep fully visible and clickable --- */
+#ppPromoLiveops #ppPromoLoClose.pp-close-float {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 60;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 24px;
+    line-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- [UI] Floating Admin button: always visible at bottom like LiveOps --- */
+#ppPromoLiveops #ppPromoAdminBtn.pp-admin-float {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+    width: calc(100% - 28px);
+    max-width: 520px;
+    z-index: 55;
+}
+
+
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
     /* как .pp-item.info-open .pp-liveops-detail */
     width: var(--pp-detail-w);
@@ -911,6 +950,28 @@
     user-select: none;
 }
 
+/* --- Raw JSON summary should look like a link, with a chevron --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-sum {
+    padding: 0;
+    background: transparent;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-chevron {
+    display: inline-block;
+    transition: transform .12s ease;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-details[open] .pp-raw-chevron {
+    transform: rotate(90deg);
+}
+
+
 #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-title {
     font-weight: 900;
     color: var(--muted, #6b7280);
@@ -927,4 +988,53 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     word-break: break-word;
+}
+
+/* --- External segment toggle (no border “button”, like LiveOps) --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-extseg {
+    margin-top: 6px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-extseg-sum {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted, #6b7280);
+    font-weight: 800;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-extseg-sum:hover {
+    text-decoration: underline;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-extseg-val {
+    margin-top: 6px;
+}
+
+/* --- Offers: stack Rewards label above values (prevents ugly narrow wrapping) --- */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-row.pp-offer-row-rews {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-row.pp-offer-row-rews .pp-offer-k {
+    margin: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-row.pp-offer-row-rews .pp-offer-v {
+    padding-left: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-main {
+    overflow: hidden;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-main code {
+    max-width: 100%;
 }

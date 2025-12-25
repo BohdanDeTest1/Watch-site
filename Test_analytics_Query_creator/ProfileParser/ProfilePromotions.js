@@ -696,9 +696,9 @@
           <div class="pp-seg-main"><code class="pp-code">${esc(seg) || '—'}</code></div>
           ${subseg
                     ? `
-              <details class="pp-subseg">
-                <summary class="pp-subseg-sum">Show subsegment</summary>
-                <div class="pp-subseg-val"><code class="pp-code">${esc(subseg)}</code></div>
+              <details class="pp-extseg">
+                <summary class="pp-extseg-sum">Show External Segment</summary>
+                <div class="pp-extseg-val"><code class="pp-code">${esc(subseg)}</code></div>
               </details>
             `
                     : ''}
@@ -779,7 +779,7 @@
                 <div class="pp-offer-v"><code class="pp-code">${skuLine}</code></div>
               </div>
 
-              <div class="pp-offer-row">
+              <div class="pp-offer-row pp-offer-row-rews">
                 <div class="pp-offer-k">Rewards:</div>
                 <div class="pp-offer-v">
                   ${rewards.length ? `
@@ -871,12 +871,13 @@
 
     <div class="pp-kv"><span class="pp-k">Offers</span><span class="pp-v">${offersHtml}</span></div>
 
-    <div class="pp-kv">
-      <span class="pp-k">Raw</span>
+       <div class="pp-kv">
+      <span class="pp-k">Raw JSON</span>
       <span class="pp-v">
         <details class="pp-raw-details">
           <summary class="pp-raw-sum">
-            <span class="pp-raw-title">Raw</span>
+            <span class="pp-raw-title"><span class="pp-raw-chevron" aria-hidden="true">▸</span> <span class="pp-raw-text">Show full JSON</span></span>
+
 
             <button class="pp-ico pp-raw-copy" type="button" data-copy-raw="1" data-hint="Copy JSON" aria-label="Copy JSON">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
