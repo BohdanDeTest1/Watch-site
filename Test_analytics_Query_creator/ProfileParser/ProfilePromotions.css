@@ -421,6 +421,190 @@
     border: 1px solid rgba(0, 0, 0, .08);
 }
 
+/* ===== Promotions info panel: prevent horizontal scroll + stable width (no shift on Raw open) ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* место под нижнюю кнопку Promotions in Admin, чтобы текст не “уезжал” под неё */
+    padding-bottom: 78px;
+    /* не даём контенту “прыгать” по ширине при появлении/исчезновении скролла */
+    scrollbar-gutter: stable;
+}
+
+/* close button must always be clickable above Raw/pre */
+#ppPromoLiveops .pp-close-float {
+    z-index: 20;
+    pointer-events: auto;
+}
+
+/* Common code style inside panel */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-code {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* ===== Assets block (popup/icon titles: bigger + grey + spacing between groups) ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-assets2 {
+    display: grid;
+    gap: 12px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2 {
+    border: 1px solid var(--border, #d1d5db);
+    border-radius: 10px;
+    padding: 10px 10px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+:root.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2,
+.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2,
+[data-theme="dark"] #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2,
+.dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2 {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--muted, #6b7280);
+    /* серенький popup/icon */
+    margin-bottom: 8px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2-lines {
+    display: grid;
+    gap: 6px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2-line {
+    min-width: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2-k {
+    color: var(--muted, #6b7280);
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-asset2-code {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* ===== Segment + collapsible subsegment ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-seg-wrap {
+    display: grid;
+    gap: 8px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-subseg {
+    border: 1px dashed var(--border, #d1d5db);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-subseg-sum {
+    cursor: pointer;
+    color: var(--muted, #6b7280);
+    font-weight: 700;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-subseg-val {
+    margin-top: 8px;
+}
+
+/* ===== Offers cards + rewards rows (no mid-word breaks) ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offers {
+    display: grid;
+    gap: 12px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-card {
+    border: 1px solid var(--border, #d1d5db);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.02);
+    min-width: 0;
+}
+
+:root.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-card,
+.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-card,
+[data-theme="dark"] #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-card,
+.dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-card {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-title {
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 10px;
+    margin-top: 6px;
+    align-items: start;
+    min-width: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-k {
+    color: var(--muted, #6b7280);
+    font-weight: 800;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-offer-v {
+    min-width: 0;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rews {
+    display: grid;
+    gap: 8px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-row {
+    display: grid;
+    gap: 4px;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-main {
+    min-width: 0;
+    white-space: normal;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-name {
+    /* ключевое: запретить “разрез” слова по буквам */
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-colon {
+    margin: 0 6px 0 6px;
+    color: var(--muted, #6b7280);
+    font-weight: 900;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-meta {
+    padding-left: 18px;
+    /* визуально показывает, что type относится к реварду выше */
+    color: var(--muted, #6b7280);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-rew-meta-k {
+    font-weight: 800;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-free {
+    color: var(--muted, #6b7280);
+    font-weight: 800;
+}
 
 
 .pp-promos-tip__t {
@@ -701,4 +885,46 @@
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
     padding-right: 16px;
+}
+
+/* ===== Raw details (collapsible) + copy button only when open ===== */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details {
+    border: 1px solid var(--border, #d1d5db);
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+:root.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details,
+.theme-dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details,
+[data-theme="dark"] #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details,
+.dark #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-sum {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-title {
+    font-weight: 900;
+    color: var(--muted, #6b7280);
+}
+
+/* hide copy button until details is open */
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw-details:not([open]) .pp-raw-copy {
+    display: none !important;
+}
+
+#pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw {
+    margin-top: 10px;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
