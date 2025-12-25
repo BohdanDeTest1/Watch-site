@@ -214,6 +214,65 @@
     pointer-events: auto;
 }
 
+/* --- [PROMOS] Detail panel: no horizontal scroll + safe bottom spacing for floating Admin button --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* убираем горизонтальный скролл */
+}
+
+/* чтобы контент не “заезжал” под кнопку Promotions in Admin */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-bottom: 90px;
+    /* запас под кнопку + отступ */
+}
+
+/* принудительно переносим длинные пути/значения */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-v,
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail code,
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail pre {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail pre.pp-raw {
+    white-space: pre-wrap;
+    /* raw больше не ломает ширину */
+    overflow-x: hidden;
+}
+
+/* --- Assets layout: name -> lines under it (Android/iOS) --- */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-assets2 {
+    display: grid;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset2 {
+    border: 1px solid rgba(127, 127, 127, .18);
+    border-radius: 10px;
+    padding: 10px;
+    background: rgba(127, 127, 127, .06);
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset2-name {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-asset2-lines {
+    display: grid;
+    gap: 6px;
+}
+
+/* Raw summary — как аккуратный “спойлер” */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-raw-details summary {
+    cursor: pointer;
+    user-select: none;
+    margin-top: 6px;
+}
+
+
 /* чтобы текст/контент не “лип” к правой границе (как у LiveOps) */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
     padding-right: 16px;
@@ -232,6 +291,17 @@
 
 #ppPromoLiveops.info-open .pp-admin-float {
     display: inline-flex;
+}
+
+/* кнопка поверх контента, с “непрозрачной” подложкой */
+#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
+    z-index: 5;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+}
+
+/* если у тебя кнопка физически перекрывает текст — делаем фон непрозрачным */
+#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
+    background: var(--btn);
 }
 
 

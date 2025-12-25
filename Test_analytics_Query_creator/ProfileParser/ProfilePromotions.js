@@ -642,10 +642,7 @@
             const safeStart = escapeHtml(String(row.startPretty ?? '—'));
             const safeEnd = escapeHtml(String(row.endPretty ?? '—'));
 
-            const stateRaw = String(row.state ?? raw.state ?? 'on');
-            const stateNorm = stateRaw.toLowerCase();
-            const stateLabel = (stateNorm === 'on') ? 'On' : stateRaw;
-
+            // --- helpers ---
             const isTrue = (v) => {
                 if (v === true) return true;
                 if (v === false) return false;
@@ -653,7 +650,14 @@
                 return s === 'true' || s === '1' || s === 'yes' || s === 'y';
             };
 
-            // --- Theme + Assets ---
+            const kv = (k, v) => `
+              <div class="pp-kv">
+                <span class="pp-k">${k}</span>
+                <span class="pp-v">${v}</span>
+              </div>
+            `.trim();
+
+            // --- Theme (ONLY themeId value) ---
             const themeObj = raw.theme || null;
             const themeId =
                 themeObj?.id ??
@@ -661,43 +665,6 @@
                 raw.themeId ??
                 raw.themeID ??
                 '—';
-
-            const themeType =
-                themeObj?.type ??
-                raw.type ??
-                '—';
-
-            const clientAssets = Array.isArray(themeObj?.clientAssets) ? themeObj.clientAssets : [];
-            const assetsHtml = clientAssets.length
-                ? `
-      <div class="pp-kv">
-        <span class="pp-k">Client assets</span>
-        <span class="pp-v">
-          <div class="pp-assets">
-            ${clientAssets.map((a) => {
-                    const nm = escapeHtml(String(a?.name ?? '—'));
-                    const andP = escapeHtml(String(a?.android ?? '—'));
-                    const iosP = escapeHtml(String(a?.ios ?? '—'));
-                    return `
-              <div class="row">
-                <div><code>${nm}</code></div>
-                <div class="pp-asset-lines">
-                  <div><span class="muted">Android:</span> <code>${andP}</code></div>
-                  <div><span class="muted">iOS:</span> <code>${iosP}</code></div>
-                </div>
-              </div>
-            `.trim();
-                }).join('')}
-          </div>
-        </span>
-      </div>
-    `
-                : `
-      <div class="pp-kv">
-        <span class="pp-k">Client assets</span>
-        <span class="pp-v">—</span>
-      </div>
-    `;
 
             // --- Segment ---
             const segment =
@@ -718,33 +685,79 @@
                 return parts.length ? `<div class="pp-wrap">${parts.join('')}</div>` : '—';
             })();
 
-            // --- Conditions ---
+            // --- Conditions (Level first, then AppVersion, then others) ---
             const conditions = Array.isArray(raw.conditions) ? raw.conditions : [];
 
             const condLabelFromPath = (p) => {
                 const s = String(p ?? '').trim();
                 if (!s) return 'Condition';
                 const low = s.toLowerCase();
-
-                // твои кейсы
-                if (low.includes('appversion')) return 'AppVersion';
-                if (low.endsWith('.level') || low.includes('town-service.level') || low.includes('service.level')) return 'Level';
-
-                // общий fallback: берём последний сегмент пути
+                if (low.includes('appversion')) return 'appVersion';
+                if (low.endsWith('.level') || low.includes('service.level')) return 'level';
                 const last = s.split('.').filter(Boolean).pop() || s;
-                // чуть “очеловечим”
                 return last.replace(/_/g, ' ');
             };
 
+            const condOrder = (label) => {
+                const l = String(label ?? '').toLowerCase();
+                if (l === 'level' || l.includes('level')) return 0;
+                if (l.includes('appversion')) return 1;
+                return 2;
+            };
+
             const condHtml = conditions.length
-                ? conditions.map((c) => {
-                    const path = c?.pathToField ?? c?.PathToField ?? '';
-                    const op = c?.operator ?? c?.Operator ?? '>=';
-                    const val = c?.value ?? c?.Value ?? '';
-                    const label = condLabelFromPath(path);
-                    return `<div><code>${escapeHtml(label)} ${escapeHtml(String(op))} ${escapeHtml(String(val))}</code></div>`;
-                }).join('')
+                ? conditions
+                    .map((c) => {
+                        const path = c?.pathToField ?? c?.PathToField ?? '';
+                        const op = c?.operator ?? c?.Operator ?? '>=';
+                        const val = c?.value ?? c?.Value ?? '';
+                        const label = condLabelFromPath(path);
+                        return { label, html: `<div><code>${escapeHtml(label)} ${escapeHtml(String(op))} ${escapeHtml(String(val))}</code></div>` };
+                    })
+                    .sort((a, b) => (condOrder(a.label) - condOrder(b.label)) || a.label.localeCompare(b.label))
+                    .map(x => x.html)
+                    .join('')
                 : '—';
+
+            // --- Assets (grouped by asset name; Android/iOS under the name) ---
+            const clientAssets = Array.isArray(themeObj?.clientAssets) ? themeObj.clientAssets : [];
+            const assetsByName = clientAssets.reduce((acc, a) => {
+                const nm = String(a?.name ?? '—');
+                if (!acc[nm]) acc[nm] = [];
+                acc[nm].push(a);
+                return acc;
+            }, {});
+
+            const assetsHtml = Object.keys(assetsByName).length
+                ? `
+                <div class="pp-kv">
+                  <span class="pp-k">Assets</span>
+                  <span class="pp-v">
+                    <div class="pp-assets2">
+                      ${Object.keys(assetsByName).map((nm) => {
+                    const safeNm = escapeHtml(nm);
+                    const entries = assetsByName[nm] || [];
+                    return `
+                        <div class="pp-asset2">
+                          <div class="pp-asset2-name"><code>${safeNm}</code></div>
+                          <div class="pp-asset2-lines">
+                            ${entries.map((a) => {
+                        const andP = escapeHtml(String(a?.android ?? '—'));
+                        const iosP = escapeHtml(String(a?.ios ?? '—'));
+                        return `
+                              <div class="pp-asset2-line"><span class="muted">Android:</span> <code>${andP}</code></div>
+                              <div class="pp-asset2-line"><span class="muted">iOS:</span> <code>${iosP}</code></div>
+                            `.trim();
+                    }).join('')}
+                          </div>
+                        </div>
+                      `.trim();
+                }).join('')}
+                    </div>
+                  </span>
+                </div>
+              `.trim()
+                : kv('Assets', '—');
 
             // --- TimeDurationMinutes / showOnBoard / showOn ---
             const timeDurationMinutes =
@@ -758,7 +771,51 @@
             const showOn =
                 (raw.showOn !== undefined) ? raw.showOn : null;
 
-            // --- Offers (sku/SQ + VC Free + rewards/extraReward) ---
+            // --- ProgressBar (render ONLY if enabled; if disabled => DO NOT show at all) ---
+            const withProgressBar =
+                isTrue(raw.displayProgressBar) ||
+                isTrue(raw.withProgressBar) ||
+                isTrue(raw?.progressBar?.enabled) ||
+                isTrue(raw?.ProgressBar?.enabled);
+
+            const pbObj = raw.progressBar ?? raw.ProgressBar ?? null;
+            const missions =
+                Array.isArray(pbObj?.missions) ? pbObj.missions :
+                    Array.isArray(pbObj?.Missions) ? pbObj.Missions :
+                        Array.isArray(pbObj) ? pbObj : [];
+
+            const progressHtml = (withProgressBar && missions.length)
+                ? `
+                <div class="pp-kv">
+                  <span class="pp-k">ProgressBar</span>
+                  <span class="pp-v">
+                    <div class="pp-block">
+                      ${missions.map((m, idx) => {
+                    const mi = m?.index ?? m?.Index ?? idx;
+                    const reward = m?.reward ?? m?.Reward ?? m?.rewards ?? m?.Rewards ?? null;
+                    const rewardList = Array.isArray(reward) ? reward : (reward ? [reward] : []);
+                    const rHtml = rewardList.length
+                        ? rewardList.map((r) => {
+                            const n = r?.name ?? r?.Name ?? '—';
+                            const v = r?.value ?? r?.Value ?? r?.amount ?? r?.Amount ?? r?.count ?? r?.Count ?? '—';
+                            const t = r?.type ?? r?.Type ?? '';
+                            return `<div class="row"><code>${escapeHtml(String(n))}</code>: <code>${escapeHtml(String(v))}</code>${t ? ` <span class="muted">type:</span> <code>${escapeHtml(String(t))}</code>` : ''}</div>`;
+                        }).join('')
+                        : `<div class="row muted">—</div>`;
+                    return `
+                        <div class="pp-mission">
+                          <div class="pp-offer-head"><span class="muted">Mission</span> <code>${escapeHtml(String(mi))}</code></div>
+                          ${rHtml}
+                        </div>
+                        `.trim();
+                }).join('')}
+                    </div>
+                  </span>
+                </div>
+              `.trim()
+                : '';
+
+            // --- Offers (SKU + Rewards formatted as "Name: value") ---
             const offers = Array.isArray(raw.offers) ? raw.offers : [];
 
             const readRewardList = (offer) => {
@@ -772,215 +829,95 @@
                 return Array.isArray(list) ? list : [];
             };
 
-            const readVC = (offer) => {
-                const vc = offer?.virtualCurrency ?? offer?.VirtualCurrency ?? null;
-                if (!vc) return null;
-                // иногда может быть объект, иногда массив
-                if (Array.isArray(vc)) return vc;
-                if (typeof vc === 'object') return [vc];
-                return null;
-            };
-
             const offersHtml = offers.length
                 ? `
-      <div class="pp-kv">
-        <span class="pp-k">Offers</span>
-        <span class="pp-v">
-          <div class="pp-block">
-            ${offers.map((o, idx) => {
-                    const offerIndex = o?.index ?? o?.offerIndex ?? idx;
-                    const sku = o?.sku ?? o?.SQ ?? o?.sq ?? '—';
-
-                    const vcArr = readVC(o);
-                    const vcFree = (() => {
-                        if (!vcArr || !vcArr.length) return null;
-                        // ищем “Free” как currency/label/type и т.п.
-                        const free = vcArr.find(x => String(x?.currency ?? x?.name ?? x?.type ?? x ?? '').toLowerCase() === 'free');
-                        return free ? 'Free' : null;
-                    })();
+                <div class="pp-kv">
+                  <span class="pp-k">Offers</span>
+                  <span class="pp-v">
+                    <div class="pp-block">
+                      ${offers.map((o, idx) => {
+                    const offerIndex = o?.index ?? o?.offerIndex ?? idx + 1;
+                    const sku = o?.sku ?? o?.SKU ?? o?.SQ ?? o?.sq ?? '—';
 
                     const rewards = readRewardList(o);
 
                     const rewardsHtml = rewards.length
                         ? `<div class="pp-rew-list">
-                    ${rewards.map((r) => {
+                              ${rewards.map((r) => {
                             const rName = r?.name ?? r?.Name ?? '—';
                             const rVal = r?.value ?? r?.Value ?? r?.amount ?? r?.Amount ?? r?.count ?? r?.Count ?? '—';
                             const rType = r?.type ?? r?.Type ?? '';
-                            return `<div class="row"><code>${escapeHtml(String(rName))}</code> <span class="muted">x</span> <code>${escapeHtml(String(rVal))}</code>${rType ? ` <span class="muted">type:</span> <code>${escapeHtml(String(rType))}</code>` : ''}</div>`;
+                            return `<div class="row"><code>${escapeHtml(String(rName))}</code>: <code>${escapeHtml(String(rVal))}</code>${rType ? ` <span class="muted">type:</span> <code>${escapeHtml(String(rType))}</code>` : ''}</div>`;
                         }).join('')}
-                  </div>`
-                        : `<div class="muted">No rewards</div>`;
+                            </div>`
+                        : `<div class="muted">—</div>`;
 
                     return `
-              <div class="pp-offer">
-                <div class="pp-offer-head"><span class="muted">Offer</span> <code>#${escapeHtml(String(offerIndex))}</code></div>
-                <div class="pp-offer-row"><span class="muted">SQ:</span> <code>${escapeHtml(String(sku))}</code>${vcFree ? ` <span class="muted">|</span> <span class="muted">VC:</span> <code>${escapeHtml(vcFree)}</code>` : ''}</div>
-                <div class="pp-offer-row"><span class="muted">Rewards:</span></div>
-                ${rewardsHtml}
-              </div>
-            `.trim();
+                        <div class="pp-offer">
+                          <div class="pp-offer-head"><span class="muted">Offer</span> <code>#${escapeHtml(String(offerIndex))}</code></div>
+                          <div class="pp-offer-row"><span class="muted">SKU:</span> <code>${escapeHtml(String(sku))}</code></div>
+                          <div class="pp-offer-row"><span class="muted">Rewards:</span></div>
+                          ${rewardsHtml}
+                        </div>
+                        `.trim();
                 }).join('')}
-          </div>
-        </span>
-      </div>
-    `
-                : `
-      <div class="pp-kv">
-        <span class="pp-k">Offers</span>
-        <span class="pp-v">—</span>
-      </div>
-    `;
+                    </div>
+                  </span>
+                </div>
+              `.trim()
+                : '';
 
-            // --- ProgressBar missions (only if enabled) ---
-            const withProgressBar = isTrue(raw.displayProgressBar) || isTrue(raw.withProgressBar) || isTrue(raw?.progressBar?.enabled) || isTrue(raw?.ProgressBar?.enabled);
-
-            const pbObj = raw.progressBar ?? raw.ProgressBar ?? null;
-            const missions =
-                Array.isArray(pbObj?.missions) ? pbObj.missions :
-                    Array.isArray(pbObj?.Missions) ? pbObj.Missions :
-                        Array.isArray(pbObj) ? pbObj :
-                            [];
-
-            const progressHtml = (withProgressBar && missions.length)
-                ? `
-      <div class="pp-kv">
-        <span class="pp-k">ProgressBar</span>
-        <span class="pp-v">
-          <div class="pp-block">
-            ${missions.map((m, idx) => {
-                    const mi = m?.index ?? m?.Index ?? idx;
-                    const reward = m?.reward ?? m?.Reward ?? m?.rewards ?? m?.Rewards ?? null;
-
-                    // reward может быть объектом или массивом
-                    const rewardList = Array.isArray(reward) ? reward : (reward ? [reward] : []);
-
-                    const rHtml = rewardList.length
-                        ? rewardList.map((r) => {
-                            const n = r?.name ?? r?.Name ?? '—';
-                            const v = r?.value ?? r?.Value ?? r?.amount ?? r?.Amount ?? r?.count ?? r?.Count ?? '—';
-                            const t = r?.type ?? r?.Type ?? '';
-                            return `<div class="row"><span class="muted">Reward:</span> <code>${escapeHtml(String(n))}</code> <span class="muted">x</span> <code>${escapeHtml(String(v))}</code>${t ? ` <span class="muted">type:</span> <code>${escapeHtml(String(t))}</code>` : ''}</div>`;
-                        }).join('')
-                        : `<div class="row muted">Reward: —</div>`;
-
-                    return `
-              <div class="pp-mission">
-                <div class="pp-offer-head"><span class="muted">Mission index</span> <code>${escapeHtml(String(mi))}</code></div>
-                ${rHtml}
-              </div>
-            `.trim();
-                }).join('')}
-          </div>
-        </span>
-      </div>
-    `
-                : `
-      <div class="pp-kv">
-        <span class="pp-k">ProgressBar</span>
-        <span class="pp-v">${withProgressBar ? '—' : '<span class="muted">disabled</span>'}</span>
-      </div>
-    `;
-
-            // --- Raw pretty ---
+            // --- Raw (collapsed; wrapping is handled by CSS so no horizontal scroll) ---
             let rawPretty = '';
             try { rawPretty = escapeHtml(JSON.stringify(raw ?? {}, null, 2)); }
             catch { rawPretty = escapeHtml(String(raw ?? '')); }
 
-            // Render
             detEl.innerHTML = `
-  <div class="pp-kvs">
+              <div class="pp-kvs">
+                <div class="pp-kv pp-kv-name">
+                  <span class="pp-k">Name</span>
+                  <span class="pp-v">
+                    <span class="pp-name-text">${safeName}</span>
+                    <button class="pp-ico" type="button" data-copy-name="" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"></path>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
 
-    <div class="pp-kv pp-kv-name">
-      <span class="pp-k">Name</span>
-      <span class="pp-v">
-        <span class="pp-name-text">${safeName}</span>
-        <button id="ppPromoCopyName" class="pp-ico" type="button" data-hint="Copy to clipboard" aria-label="Copy to clipboard">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"></path>
-          </svg>
-        </button>
-      </span>
-    </div>
+                ${kv('Type', safeType)}
+                ${kv('Start date', safeStart)}
+                ${kv('End date', safeEnd)}
 
-    <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${safeType}</span></div>
+                ${kv('Conditions', condHtml)}
 
-    <div class="pp-kv"><span class="pp-k">State</span>
-      <span class="pp-v">
-        <span class="pp-state ${escapeHtml(stateNorm)}">
-          <span class="pp-check" aria-hidden="true">✓</span> ${escapeHtml(stateLabel)}
-        </span>
-      </span>
-    </div>
+                ${kv('Theme', `<code>${escapeHtml(String(themeId))}</code>`)}
+                ${assetsHtml}
+                ${kv('Segment', segHtml)}
 
-    <div class="pp-kv"><span class="pp-k">Start</span><span class="pp-v">${safeStart}</span></div>
-    <div class="pp-kv"><span class="pp-k">End</span><span class="pp-v">${safeEnd}</span></div>
+                ${timeDurationMinutes != null ? kv('TimeDurationMinutes', `<code>${escapeHtml(String(timeDurationMinutes))}</code>`) : kv('TimeDurationMinutes', '—')}
+                ${showOnBoard != null ? kv('showOnBoard', `<code>${escapeHtml(String(showOnBoard))}</code>`) : kv('showOnBoard', '—')}
+                ${showOn != null ? kv('showOn', `<code>${escapeHtml(String(showOn))}</code>`) : kv('showOn', '—')}
 
-    <div class="pp-kv"><span class="pp-k">Theme</span>
-      <span class="pp-v">
-        <div class="pp-wrap">
-          <div><span class="muted">Theme id:</span> <code>${escapeHtml(String(themeId))}</code></div>
-          <div><span class="muted">Theme type:</span> <code>${escapeHtml(String(themeType))}</code></div>
-        </div>
-      </span>
-    </div>
+                ${progressHtml}
+                ${offersHtml}
 
-    ${assetsHtml}
+                <details class="pp-raw-details">
+                  <summary class="muted">Raw</summary>
+                  <pre class="pp-raw">${rawPretty}</pre>
+                </details>
+              </div>
+            `;
 
-    <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segHtml}</span></div>
-
-    <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
-
-    <div class="pp-kv"><span class="pp-k">TimeDurationMinutes</span><span class="pp-v">${(timeDurationMinutes != null) ? `<code>${escapeHtml(String(timeDurationMinutes))}</code>` : '—'}</span></div>
-    <div class="pp-kv"><span class="pp-k">showOnBoard</span><span class="pp-v">${(showOnBoard != null) ? `<code>${escapeHtml(String(showOnBoard))}</code>` : '—'}</span></div>
-    <div class="pp-kv"><span class="pp-k">showOn</span><span class="pp-v">${(showOn != null) ? `<code>${escapeHtml(String(showOn))}</code>` : '—'}</span></div>
-
-    ${progressHtml}
-
-    ${offersHtml}
-
-    <div class="pp-kv"><span class="pp-k">Raw</span>
-      <span class="pp-v"><pre class="pp-raw">${rawPretty}</pre></span>
-    </div>
-
-  </div>
-`;
-
-            // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку
-            let copyBtn = detEl.querySelector('#ppPromoCopyName');
-
-            // SAFETY: если по какой-то причине кнопка не попала в DOM — создадим её вручную
-            if (!copyBtn) {
-                const v = detEl.querySelector('.pp-kv-name .pp-v');
-                if (v) {
-                    const btn = document.createElement('button');
-                    btn.id = 'ppPromoCopyName';
-                    btn.className = 'pp-ico';
-                    btn.type = 'button';
-                    btn.setAttribute('data-hint', 'Copy to clipboard');
-                    btn.setAttribute('aria-label', 'Copy to clipboard');
-                    btn.setAttribute('data-copy-name', '');
-
-                    btn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-        `.trim();
-
-                    v.appendChild(btn);
-                    copyBtn = btn;
-                }
-            }
-
+            // set raw (unescaped) name for copy button safely
+            const copyBtn = detEl.querySelector('button[data-copy-name]');
             if (copyBtn) copyBtn.setAttribute('data-copy-name', rawName);
 
-            // панель реально "открыта" (и для CSS, и для доступности)
+            // panel opened
             detEl.setAttribute('aria-hidden', 'false');
-            const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
-            liveopsEl.classList.add('info-open');
+            wrap.classList.add('info-open');
         }
-
-
 
 
         // copy name inside detail (same UX as LiveOps: icon button + tooltip)
