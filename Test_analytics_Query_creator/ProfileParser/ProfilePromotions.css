@@ -1300,7 +1300,7 @@
 }
 
 #pp-root #ppPromoLoDetail.pp-liveops-detail .pp-raw {
-    margin-top: 10px;
+    margin-top: 25px;
     max-width: 100%;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -1399,6 +1399,49 @@
 /* =========================
    Raw JSON (PROMOS): "floating" toggle like Offers + full width block
    ========================= */
+
+/* ===== Raw JSON (PROMOS) — no "Raw JSON" label, centered floating toggle, tighter bottom gap ===== */
+
+/* 0) KV becomes 1-column, no left label space */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only {
+    grid-template-columns: 1fr;
+    align-items: start;
+}
+
+/* value spans full width */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-v {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+}
+
+/* 1) Center the floating toggle row (summary) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-raw-sum {
+    justify-content: center;
+}
+
+/* 2) Keep copy icon on the right, without shifting the centered title */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-raw-details {
+    position: relative;
+}
+
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-raw-copy {
+    position: absolute;
+    right: 42px;
+    top: -4px;
+}
+
+/* 3) Smaller gap between Raw toggle and the blue admin button */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only {
+    margin-bottom: 6px;
+}
+
+/* the content padding under the KV list — make it smaller (and still safe) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-bottom: 18px !important;
+}
+
 
 /* 1) Уменьшаем запас снизу под кнопку (примерно в 3 раза) */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
