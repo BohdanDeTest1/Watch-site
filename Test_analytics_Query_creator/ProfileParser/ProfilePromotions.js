@@ -1279,6 +1279,51 @@
       }
     });
 
+    // --- external: open in table from Promotions calendar context popup ---
+    document.addEventListener('ppPromo:applyNameFilter', (ev) => {
+      const title = String(ev?.detail?.title || '');
+      if (!title) return;
+
+      // ensure Promotions section is expanded
+      wrap.classList.remove('collapsed');
+
+      // reset filters so the row is guaranteed visible, then filter by exact name
+      nameFilter = { rule: 'equals', query: title };
+      typeFilter = new Set();
+      typeTextFilter = { rule: 'contains', query: '' };
+      startFilter = { rule: 'between', from: '', to: '' };
+      endFilter = { rule: 'between', from: '', to: '' };
+      stateFilter = new Set(allStates);
+
+      renderRows(true);
+
+      // select + open info panel
+      const row =
+        base.find(x => x.name === title) ||
+        base.find(x => String(x.name || '').toLowerCase() === title.toLowerCase()) ||
+        null;
+
+      if (row) {
+        const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+        liveopsEl.classList.add('info-open');
+        showDetail(row);
+      }
+
+      // scroll to Promotions table area (make it visible)
+      const table = document.getElementById('ppPromoLoTable') || wrap.querySelector('#ppPromoLoTable');
+      table?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // highlight the (single) row in current view, if it exists
+      setTimeout(() => {
+        const rowEls = Array.from(bodyEl.querySelectorAll('.pp-t-row'));
+        const rowEl = rowEls.find(n => (n.getAttribute('data-name') || '') === title);
+        if (!rowEl) return;
+        bodyEl.querySelectorAll('.pp-t-row.selected').forEach(n => n.classList.remove('selected'));
+        rowEl.classList.add('selected');
+        rowEl.scrollIntoView({ block: 'nearest' });
+      }, 0);
+    });
+
 
     // --- pager events ---
     rowsSel?.addEventListener('change', () => {
@@ -1692,6 +1737,7 @@
 
       window.initTimelineCalendar(normalized, {
         title: 'promoTlTitle',
+        openEvent: 'ppPromo:applyNameFilter',
         header: 'promoTlHeader',
         body: 'promoTlBody',
         res: 'promoTlResList',
@@ -1699,6 +1745,7 @@
         toolbar: 'promoTlToolbar',
         dateInput: 'promoTlDateInput',
       });
+
 
 
 

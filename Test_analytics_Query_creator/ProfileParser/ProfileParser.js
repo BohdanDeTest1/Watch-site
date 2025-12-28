@@ -3757,6 +3757,10 @@
             dateInput: ids.dateInput || 'tlDateInput',
         };
 
+        // allow different 'Open in table' behavior for different calendars (LiveOps vs Promotions)
+        const OPEN_IN_TABLE_EVENT = ids.openEvent || 'pp:applyNameFilter';
+
+
         const elTitle = document.getElementById(ID.title);
         const elHeader = document.getElementById(ID.header);
         const elBody = document.getElementById(ID.body);
@@ -5939,13 +5943,14 @@
 
 
             // --- actions ---
+            // --- actions ---
             const openBtn = pop.querySelector('.js-open-in-table');
             const copyBtn = pop.querySelector('.js-copy-title');
             // открыть в таблице (через централизованный обработчик таблицы)
             openBtn?.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
-                document.dispatchEvent(new CustomEvent('pp:applyNameFilter', { detail: { title: title || '' } }));
+                document.dispatchEvent(new CustomEvent(OPEN_IN_TABLE_EVENT, { detail: { title: title || '' } }));
                 closeInfoPops();
             });
 
@@ -5963,6 +5968,7 @@
                     document.execCommand('copy'); document.body.removeChild(ta);
                 }
             });
+
 
         }
 
