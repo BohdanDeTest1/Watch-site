@@ -1109,8 +1109,18 @@
     min-width: 120px;
 }
 
-/* pager НЕ должен “съезжать” из-под таблицы при открытой инфо-панели.
-   Он относится к таблице, а не к инфо-панели. */
+/* Когда открыта правая инфо-панель (класс info-open висит на #ppPromoLiveops),
+   пейджер должен "съезжать" и оставаться закреплённым под таблицей, как в LiveOps.
+   В DOM #ppPromoPager — соседний блок после #ppPromoLiveops. */
+#ppPromoLiveops.info-open+#ppPromoPager,
+#ppPromoLiveops.info-open~#ppPromoPager {
+    margin-right: calc(var(--pp-detail-w) + var(--pp-gap));
+}
+
+/* чуть более приятное движение (в LiveOps панель тоже анимируется) */
+#ppPromoPager {
+    transition: margin-right .18s ease;
+}
 
 
 
