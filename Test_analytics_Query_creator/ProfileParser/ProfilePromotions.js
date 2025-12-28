@@ -1258,6 +1258,28 @@
       showDetail(row);
     });
 
+    // --- click row: select + (if panel open) update details (same UX as LiveOps) ---
+    bodyEl.addEventListener('click', (e) => {
+      // кнопку Info обрабатываем отдельным обработчиком выше
+      if (e.target.closest('button[data-info="1"]')) return;
+
+      const rowEl = e.target.closest('.pp-t-row');
+      if (!rowEl) return;
+
+      // подсветка строки
+      bodyEl.querySelectorAll('.pp-t-row.selected').forEach(n => n.classList.remove('selected'));
+      rowEl.classList.add('selected');
+
+      // если панель уже открыта — переключаем контент инфопанели на кликнутый промоушен
+      const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+      if (liveopsEl.classList.contains('info-open')) {
+        const name = rowEl.getAttribute('data-name') || '';
+        const row = allFilteredSorted.find(x => x.name === name) || null;
+        showDetail(row);
+      }
+    });
+
+
     // --- pager events ---
     rowsSel?.addEventListener('change', () => {
       pageSize = Number(rowsSel.value || 25);
