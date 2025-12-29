@@ -5511,4 +5511,105 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
 }
 
 
+/* =========================
+   Raw JSON (LIVE EVENTS): like Promotions "Show full JSON" at the end
+   ========================= */
+
+/* 0) KV becomes 1-column, no left label space */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only {
+    grid-template-columns: 1fr;
+    align-items: start;
+    margin-bottom: 6px;
+    /* tighter gap to bottom button (if any) */
+}
+
+/* value spans full width */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-v {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+}
+
+/* details = "floating row" (no border/box) */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    position: relative;
+}
+
+/* centered title, like Offers rows */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-sum {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+
+    padding: 0;
+    background: transparent;
+}
+
+/* title + chevron */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-chevron {
+    font-size: 12px;
+    opacity: .8;
+    transform: translateY(1px);
+    transition: transform .12s ease;
+}
+
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details[open] .pp-raw-chevron {
+    transform: translateY(1px) rotate(90deg);
+}
+
+/* copy icon pinned right (without shifting centered title) */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-copy {
+    position: absolute;
+    right: 42px;
+    top: -4px;
+}
+
+/* hide copy button until open */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-raw-details:not([open]) .pp-raw-copy {
+    display: none !important;
+}
+
+/* JSON card (full width) */
+#pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
+    width: 100%;
+    min-width: 0;
+
+    margin-top: 25px;
+    border: 1px solid var(--border, #d1d5db);
+    border-radius: 12px;
+    padding: 10px 10px;
+
+    white-space: pre-wrap;
+    overflow-x: hidden;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* dark theme for the raw block */
+:root.theme-dark #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+.theme-dark #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+[data-theme="dark"] #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
+.dark #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
 /* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */

@@ -247,9 +247,21 @@
         return `${y}-${m}-${dd} ${hh}:${mi}:${ss} UTC`;
     }
     // вырезаем суффикс " UTC"
+    // вырезаем суффикс " UTC"
     function stripUTC(s) {
         return (s || '').replace(/\s*UTC$/, '');
     }
+
+    // [FIX] used in LiveOps detail panel + calendar context popup (prevents XSS + fixes "escapeHtml is not defined")
+    function escapeHtml(v) {
+        return String(v ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
 
 
     // базовые цвета (приближённые к карточкам на скрине), без «сверх-светлых»
@@ -597,8 +609,13 @@
                 displayState, freezeEvent,
                 prereq,
                 segment: segVal ?? null,
+
+                // IMPORTANT: keep original event JSON for "Show full LiveEvent JSON"
+                raw: it,
+
                 externalSegments
             };
+
 
         });
     }
@@ -608,6 +625,7 @@
         for (const it of list) {
             const key = `${it.name}@@${it.startTS}@@${it.endTS}@@${it.type}`;
             let g = map.get(key);
+
             if (!g) {
                 g = { ...it, segments: [], externalsBySegment: {} };
                 // гарантируем массив условий
@@ -618,6 +636,12 @@
                 const a = new Set(Array.isArray(g.conditions) ? g.conditions : []);
                 (Array.isArray(it.conditions) ? it.conditions : []).forEach(s => a.add(String(s)));
                 g.conditions = Array.from(a);
+
+                // IMPORTANT: keep first raw (do not lose it on merge)
+                if (!g.raw && it.raw) g.raw = it.raw;
+
+                // переносим тему/активы, если в новой записи они подробнее
+
                 // переносим тему/активы, если в новой записи они подробнее
                 if (!g.themeId && it.themeId) g.themeId = it.themeId;
                 if (!g.themeAssets && it.themeAssets) g.themeAssets = it.themeAssets;
@@ -2674,7 +2698,18 @@
                 : '<div class="muted">None</div>';
 
             // ---- ШАПКА с кнопкой Copy (как в календарном тултипе) ----
+
+            // ---- ШАПКА с кнопкой Copy (как в календарном тултипе) ----
+
+            // ---- Raw JSON (for Show full LiveEvent JSON) ----
+            const rawObj = lo?.raw ?? lo;
+            const rawText = JSON.stringify(rawObj, null, 2);
+            const rawPretty = escapeHtml(rawText);
+
             detEl.innerHTML = `
+
+           
+    
 
   <div class="pp-kvs">
     <!-- Name: кнопка теперь внутри значения и стоит справа от текста -->
@@ -2701,10 +2736,14 @@
     
   <div class="pp-kv"><span class="pp-k">Conditions</span><span class="pp-v">${condHtml}</span></div>
     <div class="pp-kv"><span class="pp-k">Theme</span><span class="pp-v">${themeHtml}</span></div>
-    ${assetsKV}
+        ${assetsKV}
     <div class="pp-kv"><span class="pp-k">LiveOps prerequisites</span><span class="pp-v">${prereqHtml}</span></div>
+
+  
+
   </div>
 `;
+
 
             // [SEGMENTS] вставляем KV-блок «Сегмент»
             (function renderSegmentsKV() {
@@ -2774,6 +2813,107 @@
                 });
             })();
 
+            // [SEGMENTS] вставляем KV-блок «Сегмент»
+            (function renderSegmentsKV() {
+                const kvs = detEl.querySelector('.pp-kvs');
+                if (!kvs || !lo.segments || !lo.segments.length) return;
+
+                const segKV = document.createElement('div');
+                segKV.className = 'pp-kv';
+                const many = lo.segments.length > 1;
+
+                const segListId = 'ppSegList';
+                const oneSeg = !many ? `<code>${lo.segments[0]}</code>` : `
+      <button id="ppSegShowBtn" class="pp-link" type="button">Show all</button>
+      <div id="${segListId}" class="pp-seg-list" hidden>
+       
+      ${lo.segments.map((s, i) => {
+                    const key = String(s).trim();
+                    const rawExts = (lo.externalsBySegment && lo.externalsBySegment[key]) ? lo.externalsBySegment[key] : [];
+                    const exts = Array.isArray(rawExts) ? rawExts.map(e => String(e).trim()).filter(Boolean) : [];
+                    const extId = `ppExtList-${i}`;
+                    const extBtn = exts.length
+                        ? `<button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>`
+                        : '';
+                    const extList = exts.length
+                        ? `<div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`
+                        : '';
+                    return `<div class="seg-item"><code>${key}</code> ${extBtn}${extList}</div>`;
+                }).join('')}
+
+      </div>`;
+
+                segKV.innerHTML = `
+      <span class="pp-k muted">Segment</span>
+      
+      <span class="pp-v">${many ? oneSeg : (() => {
+                        const s = lo.segments[0];
+                        const key = String(s).trim();
+                        const rawExts = (lo.externalsBySegment && lo.externalsBySegment[key]) ? lo.externalsBySegment[key] : [];
+                        const exts = Array.isArray(rawExts) ? rawExts.map(e => String(e).trim()).filter(Boolean) : [];
+                        if (!exts.length) return `<code>${key}</code>`;
+                        const extId = 'ppExtSingle';
+                        return `<code>${key}</code> <button class="pp-link small pp-ext-tgl" data-ext="${extId}" type="button">Show External Segment</button>
+      <div id="${extId}" class="pp-seg-ext" hidden>${exts.map(e => `<div class="row"><code>${e}</code></div>`).join('')}</div>`;
+                    })()}</span>
+
+    `;
+                kvs.appendChild(segKV);
+
+                const btnAll = detEl.querySelector('#ppSegShowBtn');
+                const listEl = detEl.querySelector('#' + segListId);
+                if (btnAll && listEl) {
+                    btnAll.addEventListener('click', () => {
+                        const hidden = listEl.hasAttribute('hidden');
+                        if (hidden) { listEl.removeAttribute('hidden'); btnAll.textContent = 'Hide'; }
+                        else { listEl.setAttribute('hidden', ''); btnAll.textContent = 'Show all'; }
+                    });
+                }
+                detEl.addEventListener('click', (e) => {
+                    const tgl = e.target.closest('.pp-ext-tgl');
+                    if (!tgl) return;
+                    const id = tgl.dataset.ext;
+                    const box = id && detEl.querySelector('#' + CSS.escape(id));
+                    if (!box) return;
+                    const hidden = box.hasAttribute('hidden');
+                    if (hidden) { box.removeAttribute('hidden'); tgl.textContent = 'Hide External Segment'; }
+                    else { box.setAttribute('hidden', ''); tgl.textContent = 'Show External Segment'; }
+                });
+            })();
+
+            // [RAW JSON] always LAST in the info panel (after Segments)
+            (function renderRawJsonKV() {
+                const kvs = detEl.querySelector('.pp-kvs');
+                if (!kvs) return;
+
+                const rawKV = document.createElement('div');
+                rawKV.className = 'pp-kv pp-kv-raw pp-kv-raw-only';
+
+                rawKV.innerHTML = `
+      <span class="pp-v">
+        <details class="pp-raw-details">
+          <summary class="pp-raw-sum">
+            <span class="pp-raw-title">
+              <span class="pp-raw-text">Show full LiveOps event JSON</span>
+              <span class="pp-raw-chevron" aria-hidden="true">▸</span>
+            </span>
+
+            <button class="pp-ico pp-raw-copy" type="button" data-copy-raw="1" data-hint="Copy JSON" aria-label="Copy JSON">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 9h11v11H9V9zm-5 5V4h11" stroke="currentColor" stroke-width="1.5"></path>
+              </svg>
+            </button>
+          </summary>
+
+          <pre class="pp-raw">${rawPretty}</pre>
+        </details>
+      </span>
+    `;
+
+                kvs.appendChild(rawKV);
+            })();
+
+
             // переключатель assets
             const tgl = detEl.querySelector('#ppAssetsTgl');
             if (tgl) {
@@ -2786,23 +2926,26 @@
                 });
             }
 
-            // КОПИРОВАНИЕ имени (кнопка в шапке инфопанели)
-            const copyBtn = detEl.querySelector('#ppCopyName');
-            copyBtn?.addEventListener('click', async (ev) => {
+            // Copy full JSON (only when clicking the copy icon in Raw block)
+            const rawCopyBtn = detEl.querySelector('[data-copy-raw="1"]');
+            rawCopyBtn?.addEventListener('click', async (ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
-                const text = lo.name || '';
                 try {
-                    await navigator.clipboard.writeText(text);
-                    const prev = copyBtn.getAttribute('data-hint');
-                    copyBtn.setAttribute('data-hint', 'Copied!');
-                    setTimeout(() => copyBtn.setAttribute('data-hint', prev || 'Copy to clipboard'), 900);
+                    await navigator.clipboard.writeText(rawText);
+                    const prev = rawCopyBtn.getAttribute('data-hint');
+                    rawCopyBtn.setAttribute('data-hint', 'Copied!');
+                    setTimeout(() => rawCopyBtn.setAttribute('data-hint', prev || 'Copy JSON'), 900);
                 } catch {
                     const ta = document.createElement('textarea');
-                    ta.value = text; document.body.appendChild(ta); ta.select();
-                    document.execCommand('copy'); document.body.removeChild(ta);
+                    ta.value = rawText;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
                 }
             });
+
 
             // обработчик для кнопки "Event in the Admin"
             detEl.querySelector('#ppAdminBtn')?.addEventListener('click', () => {
