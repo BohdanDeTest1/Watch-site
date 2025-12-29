@@ -2659,33 +2659,50 @@
                 ? `<div class="pp-conds">${lo.conditions.map(s => `<div>${s}</div>`).join('')}</div>`
                 : '<div class="muted">None</div>';
 
-            const hasAssets = !!lo.themeAssets && (lo.themeAssets.android || lo.themeAssets.ios);
-            const assetsInside = hasAssets ? `
-  <button class="pp-link assets" id="ppAssetsTgl">
-    assets <span class="chev" id="ppAssetsChev">▾</span>
-  </button>
-  <div class="pp-assets" id="ppAssetsBox" hidden>
-    ${lo.themeAssets.android ? `<div class="row"><strong>And:</strong> <code>${lo.themeAssets.android}</code></div>` : ''}
-    ${lo.themeAssets.ios ? `<div class="row"><strong>iOS:</strong> <code>${lo.themeAssets.ios}</code></div>` : ''}
-  </div>` : '';
-
+            // Theme
             let themeHtml = (lo.themeId ? `<code>${lo.themeId}</code>` : 'None');
 
-            // готовим содержимое строки Assets (если есть что показывать)
+            // Assets (accordion like Promotions): single button "Show assets"
             let assetsKV = '';
             if (lo.themeAssets && (lo.themeAssets.android || lo.themeAssets.ios)) {
-                const assetsList = `
-    <div class="pp-assets" id="ppAssetsBox">
-      ${lo.themeAssets.android ? `<div class="row"><strong>And:</strong> <code>${lo.themeAssets.android}</code></div>` : ''}
-      ${lo.themeAssets.ios ? `<div class="row"><strong>iOS:</strong> <code>${lo.themeAssets.ios}</code></div>` : ''}
-    </div>
-  `;
+                const andSafe = lo.themeAssets.android ? escapeHtml(lo.themeAssets.android) : '';
+                const iosSafe = lo.themeAssets.ios ? escapeHtml(lo.themeAssets.ios) : '';
+
                 assetsKV = `
-    <div class="pp-kv">
+    <div class="pp-kv pp-kv-assets">
       <span class="pp-k">Assets</span>
-      <span class="pp-v">${assetsList}</span>
+
+      <button class="pp-asset-toggle-row" type="button" data-asset-panel="ppAssetsPanel" aria-expanded="false">
+        <span>Show assets</span>
+        <span class="pp-asset-toggle-chev" aria-hidden="true">▸</span>
+      </button>
+
+      <div id="ppAssetsPanel" class="pp-asset-panel" hidden>
+        <div class="pp-assets2">
+          ${lo.themeAssets.android ? `
+          <div class="pp-asset2">
+            <div class="pp-asset2-lines">
+              <div class="pp-asset2-line">
+                <span class="pp-asset2-k">and:</span>
+                <code class="pp-asset2-code">${andSafe}</code>
+              </div>
+            </div>
+          </div>` : ''}
+
+          ${lo.themeAssets.ios ? `
+          <div class="pp-asset2">
+            <div class="pp-asset2-lines">
+              <div class="pp-asset2-line">
+                <span class="pp-asset2-k">ios:</span>
+                <code class="pp-asset2-code">${iosSafe}</code>
+              </div>
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
     </div>`;
             }
+
 
             const prereqHtml = (lo.prereq && lo.prereq.length)
                 ? `<div class="pp-wrap">` + lo.prereq.map(p => {
@@ -2790,7 +2807,10 @@
                     })()}</span>
 
     `;
-                kvs.appendChild(segKV);
+                const rawKV = kvs.querySelector('.pp-kv-raw');
+                if (rawKV) kvs.insertBefore(segKV, rawKV);
+                else kvs.appendChild(segKV);
+
 
                 const btnAll = detEl.querySelector('#ppSegShowBtn');
                 const listEl = detEl.querySelector('#' + segListId);
@@ -2914,17 +2934,29 @@
             })();
 
 
-            // переключатель assets
-            const tgl = detEl.querySelector('#ppAssetsTgl');
-            if (tgl) {
-                const box = detEl.querySelector('#ppAssetsBox');
-                const chev = detEl.querySelector('#ppAssetsChev');
-                tgl.addEventListener('click', () => {
-                    const hidden = box.hasAttribute('hidden');
-                    if (hidden) { box.removeAttribute('hidden'); chev.textContent = '▴'; }
-                    else { box.setAttribute('hidden', ''); chev.textContent = '▾'; }
+            // Assets accordion toggle (single "Show assets")
+            const assetsBtn = detEl.querySelector('.pp-asset-toggle-row[data-asset-panel]');
+            if (assetsBtn) {
+                const panelId = assetsBtn.getAttribute('data-asset-panel');
+                const panel = panelId ? detEl.querySelector('#' + panelId) : null;
+                const chev = assetsBtn.querySelector('.pp-asset-toggle-chev');
+
+                assetsBtn.addEventListener('click', () => {
+                    if (!panel) return;
+
+                    const hidden = panel.hasAttribute('hidden');
+                    if (hidden) {
+                        panel.removeAttribute('hidden');
+                        assetsBtn.setAttribute('aria-expanded', 'true');
+                        if (chev) chev.textContent = '▾';
+                    } else {
+                        panel.setAttribute('hidden', '');
+                        assetsBtn.setAttribute('aria-expanded', 'false');
+                        if (chev) chev.textContent = '▸';
+                    }
                 });
             }
+
 
             // Copy full JSON (only when clicking the copy icon in Raw block)
             const rawCopyBtn = detEl.querySelector('[data-copy-raw="1"]');

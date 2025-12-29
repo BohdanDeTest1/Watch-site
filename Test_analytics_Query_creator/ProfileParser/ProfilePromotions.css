@@ -775,9 +775,11 @@
 /* Ensure Promotions Info panel admin button matches LiveOps (blue + readable) */
 #pp-root #ppPromoAdminBtn.pp-btn {
     background: var(--accent);
-    color: #fff;
+    color: #111827;
+    /* make text dark (like LiveOps) */
     border: 1px solid rgba(0, 0, 0, .08);
 }
+
 
 /* ===== Promotions info panel: prevent horizontal scroll + stable width (no shift on Raw open) ===== */
 #pp-root #ppPromoLoDetail.pp-liveops-detail {
@@ -1438,8 +1440,8 @@
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw.pp-kv-raw-only .pp-raw-copy {
     position: absolute;
-    right: 42px;
-    top: -4px;
+    right: 38px;
+    top: 3px;
 }
 
 /* 3) Smaller gap between Raw toggle and the blue admin button */
@@ -1493,7 +1495,7 @@
 
 /* треугольник стоит ПОСЛЕ текста, и поворачивается при open */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-chevron {
-    font-size: 12px;
+    font-size: 22px;
     opacity: .8;
     transform: translateY(1px);
     transition: transform .12s ease;
