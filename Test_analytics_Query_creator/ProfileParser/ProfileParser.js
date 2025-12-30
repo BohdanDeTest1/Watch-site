@@ -736,7 +736,7 @@
   <div class="pp-t-head">
 
     <!-- State + кнопка фильтра -->
-    <div class="pp-state-filter">
+    <div class="pp-th state pp-state-filter">
       <span class="pp-sort" data-key="displayState">State</span>
       <button id="ppStateBtn" class="pp-icon-btn" type="button" aria-label="Filter State" title="Filter State"></button>
 
@@ -754,7 +754,7 @@
     </div>
 
     <!-- Name + кнопка фильтра -->
-    <div>
+    <div class="pp-th name">
       <span class="pp-name-filter">
         <span class="pp-sort" data-key="name">Name</span>
         <button id="ppNameBtn" class="pp-icon-btn" type="button" aria-label="Filter Name" title="Filter Name"></button>
@@ -784,7 +784,7 @@
     </div>
 
     <!-- Type -->
-    <div class="pp-type-filter">
+    <div class="pp-th type pp-type-filter">
       <span class="pp-sort" data-key="type">Type</span>
       <button id="ppTypeBtn" class="pp-icon-btn" type="button" aria-label="Filter Type" title="Filter Type"></button>
 
@@ -799,114 +799,137 @@
       </div>
     </div>
 
-    
-  
     <!-- Start date -->
-<div class="pp-date-filter">
-  <div class="pp-sort" data-key="startPretty">Start Date</div>
-  <button id="ppStartBtn" class="pp-icon-btn" aria-label="Filter Start Date" title="Filter"></button>
+    <div class="pp-th start pp-date-filter">
+      <div class="pp-sort" data-key="startPretty">Start Date</div>
+      <button id="ppStartBtn" class="pp-icon-btn" aria-label="Filter Start Date" title="Filter"></button>
 
-  <div id="ppStartPop" class="pp-filter-pop pp-date-pop" hidden role="dialog" aria-label="Start date filter">
-    <div class="pp-filter-row" style="display:grid;grid-template-columns:160px 1fr;gap:12px">
-      <button id="ppStartRuleBtn" class="pp-select" data-val="between">
-        <span class="txt">Between</span><span class="chev">▾</span>
-      </button>
+      <div id="ppStartPop" class="pp-filter-pop pp-date-pop pp-date-pop-fields" hidden role="dialog" aria-label="Start date filter">
+        <div class="pp-dtf-main">
+          <button id="ppStartRuleBtn" class="pp-select pp-dtf-rule" data-val="after" type="button">
+            <span class="txt">After</span><span class="chev">▾</span>
+          </button>
 
-      <!-- Композитный пикер даты+времени -->
-      <div class="pp-dtp" id="ppStartPicker" data-active="#ppStartFrom">
-        <div class="pp-dtp-head">
-          <button class="pp-dtp-tab active" data-bind="#ppStartFrom">From</button>
-          <button class="pp-dtp-tab" data-bind="#ppStartTo">To</button>
-        </div>
-        <div class="pp-dtp-body">
-          <div class="pp-mini-cal" id="ppStartCal">
-            <div class="pp-cal-head">
-              <button class="pp-cal-nav" data-dir="-1" aria-label="Prev month">‹</button>
-              <div class="pp-cal-title"></div>
-              <button class="pp-cal-nav" data-dir="1" aria-label="Next month">›</button>
+          <div class="pp-dtf-fields">
+            <div class="pp-dtf-col" data-open="date">
+              <div class="lbl">Date (UTC)</div>
+              <input id="ppStartDate" class="pp-inp" type="text" placeholder="dd.mm.yyyy" readonly />
             </div>
-            <div class="pp-cal-grid"></div>
-          </div>
-          <div class="pp-time">
-            <div class="pp-time-col" id="ppStartH"></div>
-            <div class="pp-time-col" id="ppStartM"></div>
-          </div>
-        </div>
-      </div>
 
-      <!-- скрытые поля-значения -->
-      <input id="ppStartFrom" type="hidden" />
-      <input id="ppStartTo"   type="hidden" />
-
-      <div id="ppStartRuleMenu" class="pp-select-menu" hidden>
-        <button data-val="between" type="button">Between</button>
-        <button data-val="before"  type="button">Before</button>
-        <button data-val="after"   type="button">After</button>
-      </div>
-    </div>
-
-    <div class="pp-filter-actions">
-      <button id="ppStartReset" class="pp-link-btn" type="button">RESET</button>
-      <button id="ppStartApply" class="pp-btn primary" type="button">CONFIRM</button>
-    </div>
-  </div>
-</div>
-
-<!-- End date -->
-<div class="pp-date-filter">
-  <div class="pp-sort" data-key="endPretty">End Date</div>
-  <button id="ppEndBtn" class="pp-icon-btn" aria-label="Filter End Date" title="Filter"></button>
-
-  <div id="ppEndPop" class="pp-filter-pop pp-date-pop" hidden role="dialog" aria-label="End date filter">
-    <div class="pp-filter-row" style="display:grid;grid-template-columns:160px 1fr;gap:12px">
-      <button id="ppEndRuleBtn" class="pp-select" data-val="between">
-        <span class="txt">Between</span><span class="chev">▾</span>
-      </button>
-
-      <div class="pp-dtp" id="ppEndPicker" data-active="#ppEndFrom">
-        <div class="pp-dtp-head">
-          <button class="pp-dtp-tab active" data-bind="#ppEndFrom">From</button>
-          <button class="pp-dtp-tab" data-bind="#ppEndTo">To</button>
-        </div>
-        <div class="pp-dtp-body">
-          <div class="pp-mini-cal" id="ppEndCal">
-            <div class="pp-cal-head">
-              <button class="pp-cal-nav" data-dir="-1" aria-label="Prev month">‹</button>
-              <div class="pp-cal-title"></div>
-              <button class="pp-cal-nav" data-dir="1" aria-label="Next month">›</button>
+            <div class="pp-dtf-col" data-open="time">
+              <div class="lbl">Time (UTC)</div>
+              <input id="ppStartTime" class="pp-inp" type="text" placeholder="--:--" readonly />
             </div>
-            <div class="pp-cal-grid"></div>
           </div>
-          <div class="pp-time">
-            <div class="pp-time-col" id="ppEndH"></div>
-            <div class="pp-time-col" id="ppEndM"></div>
+
+          <div class="pp-dtf-actions">
+            <button id="ppStartOk" class="pp-btn primary" type="button">OK</button>
+            <button id="ppStartCancel" class="pp-btn" type="button">Cancel</button>
+            <button id="ppStartReset" class="pp-btn pp-reset" type="button">Reset</button>
           </div>
         </div>
-      </div>
 
-      <input id="ppEndFrom" type="hidden" />
-      <input id="ppEndTo"   type="hidden" />
+        <input id="ppStartFrom" type="hidden" />
+        <input id="ppStartTo" type="hidden" />
+        <input id="ppStartDraft" type="hidden" />
 
-      <div id="ppEndRuleMenu" class="pp-select-menu" hidden>
-        <button data-val="between" type="button">Between</button>
-        <button data-val="before"  type="button">Before</button>
-        <button data-val="after"   type="button">After</button>
+        <div id="ppStartDtp" class="pp-dtp-pop" hidden data-bind="#ppStartDraft">
+          <div class="pp-dtp-body">
+            <div class="pp-mini-cal">
+              <div class="pp-cal-head">
+                <div class="pp-cal-title">Month YYYY</div>
+                <div class="pp-cal-navs">
+                  <button class="pp-cal-nav" type="button" data-dir="-1">‹</button>
+                  <button class="pp-cal-nav" type="button" data-dir="1">›</button>
+                </div>
+              </div>
+              <div class="pp-cal-grid"></div>
+            </div>
+
+            <div class="pp-time">
+              <div class="pp-time-col" data-part="h"></div>
+              <div class="pp-time-col" data-part="m"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ppStartRuleMenu" class="pp-select-menu" hidden>
+          <button data-val="after" type="button">After</button>
+          <button data-val="before" type="button">Before</button>
+        </div>
       </div>
     </div>
 
-    <div class="pp-filter-actions">
-      <button id="ppEndReset" class="pp-link-btn" type="button">RESET</button>
-      <button id="ppEndApply" class="pp-btn primary" type="button">CONFIRM</button>
-    </div>
-  </div>
-</div>
+    <!-- End date -->
+    <div class="pp-th end pp-date-filter">
+      <div class="pp-sort" data-key="endPretty">End Date</div>
+      <button id="ppEndBtn" class="pp-icon-btn" aria-label="Filter End Date" title="Filter"></button>
 
-  
+      <div id="ppEndPop" class="pp-filter-pop pp-date-pop pp-date-pop-fields" hidden role="dialog" aria-label="End date filter">
+        <div class="pp-dtf-main">
+          <button id="ppEndRuleBtn" class="pp-select pp-dtf-rule" data-val="before" type="button">
+            <span class="txt">Before</span><span class="chev">▾</span>
+          </button>
+
+          <div class="pp-dtf-fields">
+            <div class="pp-dtf-col" data-open="date">
+              <div class="lbl">Date (UTC)</div>
+              <input id="ppEndDate" class="pp-inp" type="text" placeholder="dd.mm.yyyy" readonly />
+            </div>
+
+            <div class="pp-dtf-col" data-open="time">
+              <div class="lbl">Time (UTC)</div>
+              <input id="ppEndTime" class="pp-inp" type="text" placeholder="--:--" readonly />
+            </div>
+          </div>
+
+          <div class="pp-dtf-actions">
+            <button id="ppEndOk" class="pp-btn primary" type="button">OK</button>
+            <button id="ppEndCancel" class="pp-btn" type="button">Cancel</button>
+            <button id="ppEndReset" class="pp-btn pp-reset" type="button">Reset</button>
+          </div>
+        </div>
+
+        <input id="ppEndFrom" type="hidden" />
+        <input id="ppEndTo" type="hidden" />
+        <input id="ppEndDraft" type="hidden" />
+
+        <div id="ppEndDtp" class="pp-dtp-pop" hidden data-bind="#ppEndDraft">
+          <div class="pp-dtp-body">
+            <div class="pp-mini-cal">
+              <div class="pp-cal-head">
+                <div class="pp-cal-title">Month YYYY</div>
+                <div class="pp-cal-navs">
+                  <button class="pp-cal-nav" type="button" data-dir="-1">‹</button>
+                  <button class="pp-cal-nav" type="button" data-dir="1">›</button>
+                </div>
+              </div>
+              <div class="pp-cal-grid"></div>
+            </div>
+
+            <div class="pp-time">
+              <div class="pp-time-col" data-part="h"></div>
+              <div class="pp-time-col" data-part="m"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ppEndRuleMenu" class="pp-select-menu" hidden>
+          <button data-val="before" type="button">Before</button>
+          <button data-val="after" type="button">After</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВАЖНО: 6-я колонка под кнопку Info (как в Promotions) -->
+    <div class="pp-th info"></div>
 
   </div>
 
   <div class="pp-t-body" id="ppTBody"></div>
 </div>
+
+ 
 
 <!-- панель деталей и плавающие кнопки -->
 <div class="pp-liveops-detail" id="ppLoDetail">
@@ -2358,8 +2381,8 @@
         let stateFilter = new Set();
         const allTypes = Array.from(new Set(items.map(i => i.type).filter(Boolean))).sort();
         let typeTextFilter = { rule: 'contains', query: '' }; // текстовое правило для Type
-        let startFilter = { rule: 'between', from: '', to: '' };
-        let endFilter = { rule: 'between', from: '', to: '' };
+        let startFilter = { rule: 'after', from: '', to: '' };
+        let endFilter = { rule: 'before', from: '', to: '' };
         // момент времени, по которому фильтруем «активные сейчас» события (UTC ms) — null = фильтра нет
         let activeTimeFilterTs = null;
 
@@ -2446,9 +2469,12 @@
             const eRule = wrap.querySelector('#ppEndRuleBtn');
             const eFrom = wrap.querySelector('#ppEndFrom');
             const eTo = wrap.querySelector('#ppEndTo');
-            if (eRule) { eRule.dataset.val = 'between'; eRule.querySelector('.txt').textContent = 'Between'; }
+
+            // EndDate дефолт: Before (Between больше нет)
+            if (eRule) { eRule.dataset.val = 'before'; eRule.querySelector('.txt').textContent = 'Before'; }
             if (eFrom) eFrom.value = '';
             if (eTo) eTo.value = '';
+
 
             // 4.5) Снять фильтр «Active at picked time»
             activeTimeFilterTs = null;
@@ -3438,44 +3464,51 @@
         // ---------- Фильтры дат (Start/End) ----------
 
         // мини-движок композитного пикера календарь+время
-        function buildDateTimePicker(root, opts = {}) {
+        function buildDateTimePicker(root) {
             if (!root) return null;
-            const cal = root.querySelector('.pp-mini-cal');
-            const head = cal.querySelector('.pp-cal-head');
-            const title = cal.querySelector('.pp-cal-title');
-            const grid = cal.querySelector('.pp-cal-grid');
-            const colH = root.querySelector('.pp-time-col#' + (root.id.includes('Start') ? 'ppStartH' : 'ppEndH'));
-            const colM = root.querySelector('.pp-time-col#' + (root.id.includes('Start') ? 'ppStartM' : 'ppEndM'));
 
-            // текущее редактируемое hidden-поле
-            const getActiveInput = () => {
-                const sel = root.getAttribute('data-active') || '';
+            const cal = root.querySelector('.pp-mini-cal');
+            const head = cal?.querySelector('.pp-cal-head');
+            const title = cal?.querySelector('.pp-cal-title');
+            const grid = cal?.querySelector('.pp-cal-grid');
+
+            const colH = root.querySelector('.pp-time-col[data-part="h"]');
+            const colM = root.querySelector('.pp-time-col[data-part="m"]');
+
+            // bind: root[data-bind="#hiddenInputId"]
+            const getBoundInput = () => {
+                const sel = (root.getAttribute('data-bind') || '').trim();
                 return sel ? document.querySelector(sel) : null;
             };
 
-            // состояние: текущий «курсор» месяца/выбранный день/часы/минуты
-            const now = new Date();
-            let curY = now.getUTCFullYear();
-            let curM = now.getUTCMonth(); // 0..11
-            let selD = now.getUTCDate();
-            let selH = now.getUTCHours();
-            let selMin = Math.floor(now.getUTCMinutes() / 1); // шаг 1 мин
-
-            // утилиты
-            const pad = n => String(n).padStart(2, '0');
+            const pad = (n) => String(n).padStart(2, '0');
             const daysIn = (y, m) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
             const firstW = (y, m) => (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7; // Mon=0
 
+            const now = new Date();
+            let curY = now.getUTCFullYear();
+            let curM = now.getUTCMonth();
+            let selD = now.getUTCDate();
+            let selH = now.getUTCHours();
+            let selMin = now.getUTCMinutes();
+
             function writeToInput() {
-                const inp = getActiveInput();
+                const inp = getBoundInput();
                 if (!inp) return;
-                const val = `${curY}-${pad(curM + 1)}-${pad(selD)} ${pad(selH)}:${pad(selMin)}`;
-                inp.value = val;
+
+                const nextVal = `${curY}-${pad(curM + 1)}-${pad(selD)} ${pad(selH)}:${pad(selMin)}`;
+                inp.value = nextVal;
+
+                // важно: уведомляем слушателей (табличные фильтры синкают видимые поля по этому событию)
+                try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch { }
             }
 
+
             function paintCalendar() {
+                if (!title || !grid) return;
                 title.textContent = new Date(Date.UTC(curY, curM, 1))
                     .toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
                 grid.innerHTML = '';
                 const blanks = firstW(curY, curM);
                 for (let i = 0; i < blanks; i++) {
@@ -3484,190 +3517,297 @@
                     d.disabled = true;
                     grid.appendChild(d);
                 }
+
                 const days = daysIn(curY, curM);
                 for (let d = 1; d <= days; d++) {
                     const btn = document.createElement('button');
                     btn.className = 'pp-cal-day' + (d === selD ? ' selected' : '');
                     btn.textContent = d;
-                    btn.addEventListener('click', () => { selD = d; writeToInput(); paintCalendar(); });
+                    btn.addEventListener('click', () => {
+                        selD = d;
+                        writeToInput();
+                        paintCalendar();
+                    });
                     grid.appendChild(btn);
                 }
             }
 
             function buildColumn(colEl, max, getSel, setSel) {
+                if (!colEl) return;
                 colEl.innerHTML = '';
                 for (let v = 0; v <= max; v++) {
                     const b = document.createElement('div');
                     b.className = 'pp-time-item' + (v === getSel() ? ' selected' : '');
                     b.textContent = pad(v);
-                    b.addEventListener('click', () => { setSel(v); writeToInput(); paintTime(); });
+                    b.addEventListener('click', () => {
+                        setSel(v);
+                        writeToInput();
+                        paintTime();
+                    });
                     colEl.appendChild(b);
                 }
-                // колесо
                 colEl.addEventListener('wheel', (e) => {
                     e.preventDefault();
                     const dir = e.deltaY > 0 ? 1 : -1;
                     let nv = getSel() + dir;
                     if (nv < 0) nv = max;
                     if (nv > max) nv = 0;
-                    setSel(nv); writeToInput(); paintTime();
+                    setSel(nv);
+                    writeToInput();
+                    paintTime();
                 }, { passive: false });
             }
 
             function paintTime() {
+                if (!colH || !colM) return;
                 colH.querySelectorAll('.pp-time-item').forEach((el, i) => el.classList.toggle('selected', i === selH));
                 colM.querySelectorAll('.pp-time-item').forEach((el, i) => el.classList.toggle('selected', i === selMin));
-                // автопрокрутка выбранного
-                const curH = colH.querySelector('.pp-time-item.selected');
-                const curM = colM.querySelector('.pp-time-item.selected');
-                curH?.scrollIntoView({ block: 'center', inline: 'nearest' });
-                curM?.scrollIntoView({ block: 'center', inline: 'nearest' });
+
+                colH.querySelector('.pp-time-item.selected')?.scrollIntoView({ block: 'center', inline: 'nearest' });
+                colM.querySelector('.pp-time-item.selected')?.scrollIntoView({ block: 'center', inline: 'nearest' });
             }
 
-            // навигация месяца
-            head.addEventListener('click', (e) => {
+            head?.addEventListener('click', (e) => {
                 const nav = e.target.closest('.pp-cal-nav');
                 if (!nav) return;
                 const dir = Number(nav.dataset.dir) || 0;
                 const d = new Date(Date.UTC(curY, curM + dir, 1));
                 curY = d.getUTCFullYear();
                 curM = d.getUTCMonth();
-                // если выбранный день «выпал» из месяца — скорректируем
                 selD = Math.min(selD, daysIn(curY, curM));
                 writeToInput();
                 paintCalendar();
             });
 
-            // вкладки From/To
-            root.querySelectorAll('.pp-dtp-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    root.querySelectorAll('.pp-dtp-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    root.setAttribute('data-active', tab.dataset.bind);
-                    // при переключении подхватываем уже введённое значение как начальные H/M
-                    const tgt = document.querySelector(tab.dataset.bind);
-                    const v = (tgt?.value || '').trim();
-                    if (v && /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(v)) {
-                        const [d, tm] = v.split(/\s+/);
-                        const [yy, mm, dd] = d.split('-').map(Number);
-                        const [hh, mi] = tm.split(':').map(Number);
-                        curY = yy; curM = mm - 1; selD = dd; selH = hh; selMin = mi;
-                    }
-                    paintCalendar(); paintTime();
-                });
-            });
-
-            // инициализация
-            buildColumn(colH, 23, () => selH, (v) => selH = v);
-            buildColumn(colM, 59, () => selMin, (v) => selMin = v);
-            writeToInput(); paintCalendar(); paintTime();
-
-            return {
-                setValue(str) {
-                    // str "YYYY-MM-DD HH:mm" | "YYYY-MM-DD"
-                    if (!str) return;
-                    const parts = str.trim().split(/\s+/);
-                    const [Y, M, D] = parts[0].split('-').map(Number);
-                    curY = Y; curM = M - 1; selD = D;
-                    if (parts[1]) { const [h, m] = parts[1].split(':').map(Number); selH = h; selMin = m; }
-                    writeToInput(); paintCalendar(); paintTime();
+            function setValue(val) {
+                const v = String(val || '').trim();
+                if (v && /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(v)) {
+                    const [dd, tm] = v.split(/\s+/);
+                    const [yy, mm, d] = dd.split('-').map(Number);
+                    const [hh, mi] = tm.split(':').map(Number);
+                    curY = yy; curM = mm - 1; selD = d; selH = hh; selMin = mi;
                 }
-            };
-        }
-
-        function wireDateFilter(opts) {
-            const { btnSel, popSel, ruleBtnSel, ruleMenuSel, fromSel, toSel, resetSel, applySel, get, set } = opts;
-            const btn = wrap.querySelector(btnSel);
-            const pop = wrap.querySelector(popSel);
-            const ruleBtn = wrap.querySelector(ruleBtnSel);
-            const ruleMenu = wrap.querySelector(ruleMenuSel);
-            const fromInp = wrap.querySelector(fromSel);
-            const toInp = wrap.querySelector(toSel);
-            const resetBtn = wrap.querySelector(resetSel);
-            const applyBtn = wrap.querySelector(applySel);
-            const labels = { between: 'Between', before: 'Before', after: 'After' };
-
-            const picker = buildDateTimePicker(pop.querySelector('.pp-dtp'));
-
-            function sync() {
-                const rule = ruleBtn?.dataset.val || 'between';
-
-                // показать/спрятать вкладку "To"
-                const tabs = pop.querySelectorAll('.pp-dtp-tab');
-                tabs.forEach(t => t.style.display = (rule === 'between') ? '' : (t.dataset.bind.endsWith('To') ? 'none' : ''));
-
-                // сетка колонок в шапке строки
-                const row = ruleBtn ? ruleBtn.closest('.pp-filter-row') : null;
-                if (row) row.style.gridTemplateColumns = '160px 1fr';
-
-                // ширина попапа (одинаковая)
-                pop?.classList.remove('single');
-
-                // состояние Apply
-                const hasA = !!(fromInp?.value);
-                const hasB = !!(toInp?.value);
-                applyBtn.disabled = (rule === 'between') ? (!hasA && !hasB) : !hasA;
+                paintCalendar();
+                paintTime();
             }
 
-            btn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // закрыть другие попапы
+            // init
+            buildColumn(colH, 23, () => selH, (v) => { selH = v; });
+            buildColumn(colM, 59, () => selMin, (v) => { selMin = v; });
+            paintCalendar();
+            paintTime();
+
+            return { setValue };
+        }
+
+        // ---------- Фильтры дат (Start/End) ----------
+        // ---------- Фильтры дат (Start/End) ----------
+        function wireDateFilter(opts) {
+            const {
+                btnSel, popSel,
+                ruleBtnSel, ruleMenuSel,
+                fromSel, toSel,
+                okSel, cancelSel, resetSel,
+                get, set,
+                defaultRule = 'after'
+            } = opts;
+
+            const btn = wrap.querySelector(btnSel);
+            const pop = wrap.querySelector(popSel);
+
+            const ruleBtn = wrap.querySelector(ruleBtnSel);
+            const ruleMenu = wrap.querySelector(ruleMenuSel);
+
+            const fromInp = wrap.querySelector(fromSel);
+            const toInp = wrap.querySelector(toSel);
+
+            const okBtn = wrap.querySelector(okSel);
+            const cancelBtn = wrap.querySelector(cancelSel);
+            const resetBtn = wrap.querySelector(resetSel);
+
+            if (!btn || !pop || !ruleBtn || !ruleMenu || !fromInp || !toInp) return;
+
+            const labels = { after: 'After', before: 'Before', between: 'Between' };
+
+            const singleWrap = pop.querySelector('.pp-dtf-single');
+            const betweenWrap = pop.querySelector('.pp-dtf-between');
+
+            const singleDate = pop.querySelector('[data-slot="single-date"]');
+            const singleTime = pop.querySelector('[data-slot="single-time"]');
+
+            const fromDate = pop.querySelector('[data-slot="from-date"]');
+            const fromTime = pop.querySelector('[data-slot="from-time"]');
+            const toDate = pop.querySelector('[data-slot="to-date"]');
+            const toTime = pop.querySelector('[data-slot="to-time"]');
+
+            const pad2 = (n) => String(n).padStart(2, '0');
+
+            function splitDT(v) {
+                const s = String(v || '').trim();
+                if (!s) return { d: '', t: '' };
+
+                // ожидаем "YYYY-MM-DD HH:mm"
+                const m = s.match(/^(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}))?$/);
+                if (!m) return { d: '', t: '' };
+
+                return { d: m[1] || '', t: m[2] || '00:00' };
+            }
+
+            function composeDT(d, t) {
+                const dd = String(d || '').trim();
+                if (!dd) return '';
+                const tt = String(t || '').trim() || '00:00';
+                return `${dd} ${tt}`;
+            }
+
+            function closeAllOtherPops() {
                 wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.setAttribute('hidden', ''); });
                 wrap.querySelectorAll('.pp-select-menu').forEach(m => m.setAttribute('hidden', ''));
+            }
+
+            function syncUI() {
+                const rule = ruleBtn.dataset.val || defaultRule;
+
+                const isBetween = rule === 'between';
+                if (betweenWrap) betweenWrap.hidden = !isBetween;
+                if (singleWrap) singleWrap.hidden = isBetween;
+
+                // ширины попапа: single компактнее
+                pop.classList.toggle('is-between', isBetween);
+
+                // OK enabled
+                const hasSingle = !!(singleDate?.value);
+                const hasFrom = !!(fromDate?.value);
+                const hasTo = !!(toDate?.value);
+
+                if (okBtn) {
+                    if (rule === 'after') okBtn.disabled = !hasSingle;
+                    else if (rule === 'before') okBtn.disabled = !hasSingle;
+                    else okBtn.disabled = (!hasFrom || !hasTo); // для Between требуем оба конца диапазона
+                }
+            }
+
+            function loadFromState() {
+                const cur = (typeof get === 'function') ? get() : { rule: defaultRule, from: '', to: '' };
+                const rule = cur.rule || defaultRule;
+
+                ruleBtn.dataset.val = rule;
+                ruleBtn.querySelector('.txt').textContent = labels[rule] || labels[defaultRule];
+
+                fromInp.value = cur.from || '';
+                toInp.value = cur.to || '';
+
+                // заполнить inputs
+                if (rule === 'after') {
+                    const a = splitDT(fromInp.value);
+                    if (singleDate) singleDate.value = a.d;
+                    if (singleTime) singleTime.value = a.t || '00:00';
+                } else if (rule === 'before') {
+                    const b = splitDT(toInp.value);
+                    if (singleDate) singleDate.value = b.d;
+                    if (singleTime) singleTime.value = b.t || '00:00';
+                } else {
+                    const a = splitDT(fromInp.value);
+                    const b = splitDT(toInp.value);
+                    if (fromDate) fromDate.value = a.d;
+                    if (fromTime) fromTime.value = a.t || '00:00';
+                    if (toDate) toDate.value = b.d;
+                    if (toTime) toTime.value = b.t || '00:00';
+                }
+
+                syncUI();
+            }
+
+            function applyToHidden() {
+                const rule = ruleBtn.dataset.val || defaultRule;
+
+                if (rule === 'after') {
+                    const v = composeDT(singleDate?.value, singleTime?.value);
+                    fromInp.value = v;
+                    toInp.value = '';
+                } else if (rule === 'before') {
+                    const v = composeDT(singleDate?.value, singleTime?.value);
+                    toInp.value = v;
+                    fromInp.value = '';
+                } else {
+                    fromInp.value = composeDT(fromDate?.value, fromTime?.value);
+                    toInp.value = composeDT(toDate?.value, toTime?.value);
+                }
+
+                set({ rule, from: fromInp.value || '', to: toInp.value || '' });
+                pop.hidden = true;
+                renderRows();
+            }
+
+            // open/close popup
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeAllOtherPops();
 
                 const willOpen = pop.hidden;
                 pop.hidden = !pop.hidden;
 
-                if (willOpen) {
-                    const cur = (typeof get === 'function') ? get() : { rule: 'between', from: '', to: '' };
-                    if (ruleBtn) {
-                        ruleBtn.dataset.val = cur.rule || 'between';
-                        ruleBtn.querySelector('.txt').textContent = labels[ruleBtn.dataset.val] || 'Between';
-                    }
-                    if (fromInp) fromInp.value = cur.from || '';
-                    if (toInp) toInp.value = cur.to || '';
-                    // проставим в пикер актуальные значения
-                    picker?.setValue(cur.from || '');
-                    sync();
-                }
+                if (willOpen) loadFromState();
             });
 
-            ruleBtn?.addEventListener('click', (e) => {
+            // rule dropdown open
+            ruleBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (ruleMenu.hidden) openMenuBelow(ruleBtn, ruleMenu);
                 else ruleMenu.hidden = true;
             });
-            ruleMenu?.addEventListener('click', (e) => {
+
+            // rule select
+            ruleMenu.addEventListener('click', (e) => {
                 const b = e.target.closest('button[data-val]');
                 if (!b) return;
+
                 ruleBtn.dataset.val = b.dataset.val;
                 ruleBtn.querySelector('.txt').textContent = b.textContent;
+
                 ruleMenu.hidden = true;
-                sync();
+
+                // при смене правила — не применяем сразу, просто перестраиваем UI
+                syncUI();
             });
 
-            // клики по вкладкам переключают активное hidden-поле
-            pop.querySelectorAll('.pp-dtp-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    pop.querySelector('.pp-dtp').setAttribute('data-active', tab.dataset.bind);
-                });
+            // live enable/disable OK
+            [singleDate, singleTime, fromDate, fromTime, toDate, toTime].forEach(el => {
+                el?.addEventListener('input', syncUI);
+                el?.addEventListener('change', syncUI);
+            });
+
+            okBtn?.addEventListener('click', () => {
+                applyToHidden();
+            });
+
+            cancelBtn?.addEventListener('click', () => {
+                pop.hidden = true;
+                if (ruleMenu) ruleMenu.hidden = true;
             });
 
             resetBtn?.addEventListener('click', () => {
-                set({ rule: 'between', from: '', to: '' });
-                if (fromInp) fromInp.value = '';
-                if (toInp) toInp.value = '';
+                const resetRule = defaultRule;
+                ruleBtn.dataset.val = resetRule;
+                ruleBtn.querySelector('.txt').textContent = labels[resetRule] || 'After';
+
+                fromInp.value = '';
+                toInp.value = '';
+
+                // очистить UI inputs
+                if (singleDate) singleDate.value = '';
+                if (singleTime) singleTime.value = '';
+                if (fromDate) fromDate.value = '';
+                if (fromTime) fromTime.value = '';
+                if (toDate) toDate.value = '';
+                if (toTime) toTime.value = '';
+
+                set({ rule: resetRule, from: '', to: '' });
                 pop.hidden = true;
                 renderRows();
             });
 
-            applyBtn?.addEventListener('click', () => {
-                set({ rule: ruleBtn.dataset.val, from: fromInp?.value || '', to: toInp?.value || '' });
-                pop.hidden = true;
-                renderRows();
-            });
-
-            // клик вне — закрыть попап (и меню правил)
+            // click outside closes
             document.addEventListener('click', (e) => {
                 if (!document.body.contains(pop) || pop.hidden) return;
                 if (e.target.closest(popSel) || e.target.closest(btnSel)) return;
@@ -3677,21 +3817,292 @@
         }
 
 
-        // Подключаем оба дата-фильтра
+        function wireDateFilter(opts) {
+            const {
+                btnSel, popSel,
+                ruleBtnSel, ruleMenuSel,
+                dateSel, timeSel,
+                dtpSel, draftSel,
+                fromSel, toSel,
+                okSel, cancelSel, resetSel,
+                defaultRule = 'after',
+                fallbackGet,
+                get, set
+            } = opts || {};
+
+            const btn = wrap.querySelector(btnSel);
+            const pop = wrap.querySelector(popSel);
+            if (!btn || !pop) return;
+
+            const ruleBtn = pop.querySelector(ruleBtnSel);
+            const ruleMenu = pop.querySelector(ruleMenuSel);
+
+            const dateInp = pop.querySelector(dateSel);
+            const timeInp = pop.querySelector(timeSel);
+
+            const dtp = pop.querySelector(dtpSel);
+            const draftInp = pop.querySelector(draftSel);
+
+            const fromInp = pop.querySelector(fromSel);
+            const toInp = pop.querySelector(toSel);
+
+            const okBtn = pop.querySelector(okSel);
+            const cancelBtn = pop.querySelector(cancelSel);
+            const resetBtn = pop.querySelector(resetSel);
+
+            const labels = { after: 'After', before: 'Before' };
+            const pad = (n) => String(n).padStart(2, '0');
+
+            function nowUTCVal() {
+                const n = new Date();
+                const y = n.getUTCFullYear();
+                const m = pad(n.getUTCMonth() + 1);
+                const d = pad(n.getUTCDate());
+                const hh = pad(n.getUTCHours());
+                const mi = pad(n.getUTCMinutes());
+                return `${y}-${m}-${d} ${hh}:${mi}`;
+            }
+
+            function splitVal(v) {
+                const raw = (v || '').trim();
+                if (!raw) return { date: '', time: '' };
+                const parts = raw.split(/\s+/);
+                const date = parts[0] || '';
+                const time = (parts[1] && /^\d{2}:\d{2}$/.test(parts[1])) ? parts[1] : '00:00';
+                return { date, time };
+            }
+
+            function formatDatePretty(yyyyMmDd) {
+                const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec((yyyyMmDd || '').trim());
+                if (!m) return '';
+                return `${m[3]}.${m[2]}.${m[1]}`;
+            }
+
+            function syncVisibleFromDraft() {
+                if (!draftInp) return;
+                const { date, time } = splitVal(draftInp.value);
+                if (dateInp) dateInp.value = formatDatePretty(date) || '';
+                if (timeInp) timeInp.value = time || '';
+            }
+
+            function openMenuBelow(anchorBtn, menuEl) {
+                const r = anchorBtn.getBoundingClientRect();
+                menuEl.style.left = `${Math.round(r.left)}px`;
+                menuEl.style.top = `${Math.round(r.bottom + 6)}px`;
+                menuEl.hidden = false;
+            }
+
+            // init picker engine (one-time)
+            const picker = buildDateTimePicker(dtp);
+
+            function openPicker(mode) {
+                if (!dtp || !picker) return;
+
+                dtp.classList.toggle('mode-date', mode === 'date');
+                dtp.classList.toggle('mode-time', mode === 'time');
+
+                // позиционируем внутри попапа фильтра, рядом с инпутами
+                const host = pop.getBoundingClientRect();
+                const anchor = (mode === 'time' ? timeInp : dateInp) || pop;
+                const ar = anchor.getBoundingClientRect();
+
+                // координаты относительно pop (он relative в css)
+                const left = Math.max(10, Math.round(ar.left - host.left));
+                const top = Math.round(ar.bottom - host.top + 8);
+
+                dtp.style.left = `${left}px`;
+                dtp.style.top = `${top}px`;
+
+                // прокинем текущее значение в движок
+                picker.setValue(draftInp?.value || '');
+                dtp.hidden = false;
+            }
+
+            function closePicker() {
+                if (dtp) dtp.hidden = true;
+                dtp?.classList.remove('mode-date', 'mode-time');
+            }
+
+            // открытие/закрытие основного попапа
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // закрыть другие попапы
+                wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.hidden = true; });
+                wrap.querySelectorAll('.pp-select-menu').forEach(m => m.hidden = true);
+
+                const willOpen = pop.hidden;
+                pop.hidden = !pop.hidden;
+                if (!willOpen) { closePicker(); return; }
+
+                // текущее состояние фильтра
+                const cur = (typeof get === 'function')
+                    ? (get() || { rule: defaultRule, from: '', to: '' })
+                    : { rule: defaultRule, from: '', to: '' };
+
+                const rule = (cur.rule === 'before') ? 'before' : 'after';
+                if (ruleBtn) {
+                    ruleBtn.dataset.val = rule;
+                    const t = ruleBtn.querySelector('.txt');
+                    if (t) t.textContent = labels[rule] || labels[defaultRule] || 'After';
+                }
+
+                // значение, которое покажем в полях:
+                // 1) если текущего нет — ставим NOW(UTC)
+                // 2) если это EndDate и он пустой — копируем из StartDate (fallbackGet)
+                let val = (rule === 'before') ? (cur.to || '').trim() : (cur.from || '').trim();
+
+                if (!val && typeof fallbackGet === 'function') {
+                    const fb = fallbackGet() || {};
+                    val = (fb.from || fb.to || '').trim();
+                }
+                if (!val) val = nowUTCVal();
+
+                if (draftInp) draftInp.value = val;
+                syncVisibleFromDraft();
+
+                // синхроним hidden inputs (чтобы passDateRule видел «что-то» даже до OK)
+                if (fromInp) fromInp.value = (rule === 'after') ? val : '';
+                if (toInp) toInp.value = (rule === 'before') ? val : '';
+
+                closePicker();
+            });
+
+            // rule dropdown
+            ruleBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!ruleMenu) return;
+                if (ruleMenu.hidden) openMenuBelow(ruleBtn, ruleMenu);
+                else ruleMenu.hidden = true;
+            });
+
+            ruleMenu?.addEventListener('click', (e) => {
+                const b = e.target.closest('button[data-val]');
+                if (!b) return;
+                const v = (b.dataset.val === 'before') ? 'before' : 'after';
+
+                if (ruleBtn) {
+                    ruleBtn.dataset.val = v;
+                    const t = ruleBtn.querySelector('.txt');
+                    if (t) t.textContent = labels[v];
+                }
+
+                // при смене правила сохраняем тот же datetime, только меняем «куда» он пишется
+                const val = (draftInp?.value || '').trim();
+                if (fromInp) fromInp.value = (v === 'after') ? val : '';
+                if (toInp) toInp.value = (v === 'before') ? val : '';
+
+                if (ruleMenu) ruleMenu.hidden = true;
+            });
+
+            // open picker from visible inputs
+            pop.querySelectorAll('.pp-dtf-col').forEach(col => {
+                col.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    ruleMenu && (ruleMenu.hidden = true);
+
+                    const mode = col.getAttribute('data-open') === 'time' ? 'time' : 'date';
+                    openPicker(mode);
+                });
+            });
+
+            // draft change -> update visible
+            draftInp?.addEventListener('input', () => {
+                syncVisibleFromDraft();
+
+                const rule = (ruleBtn?.dataset?.val === 'before') ? 'before' : 'after';
+                const val = (draftInp?.value || '').trim();
+                if (fromInp) fromInp.value = (rule === 'after') ? val : '';
+                if (toInp) toInp.value = (rule === 'before') ? val : '';
+            });
+
+            // OK / Cancel / RESET
+            okBtn?.addEventListener('click', () => {
+                const rule = (ruleBtn?.dataset?.val === 'before') ? 'before' : 'after';
+                const val = (draftInp?.value || '').trim();
+
+                if (typeof set === 'function') {
+                    if (rule === 'before') set({ rule: 'before', from: '', to: val });
+                    else set({ rule: 'after', from: val, to: '' });
+                }
+
+                if (fromInp) fromInp.value = (rule === 'after') ? val : '';
+                if (toInp) toInp.value = (rule === 'before') ? val : '';
+
+                closePicker();
+                pop.hidden = true;
+                renderRows();
+            });
+
+            cancelBtn?.addEventListener('click', () => {
+                closePicker();
+                pop.hidden = true;
+            });
+
+            resetBtn?.addEventListener('click', () => {
+                if (typeof set === 'function') set({ rule: defaultRule, from: '', to: '' });
+
+                if (draftInp) draftInp.value = '';
+                if (dateInp) dateInp.value = '';
+                if (timeInp) timeInp.value = '';
+
+                if (fromInp) fromInp.value = '';
+                if (toInp) toInp.value = '';
+
+                closePicker();
+                pop.hidden = true;
+                renderRows();
+            });
+
+            // клик вне — закрыть попап (и меню правил / dtp)
+            document.addEventListener('click', (e) => {
+                if (!document.body.contains(pop) || pop.hidden) return;
+
+                // внутри попапа
+                if (e.target.closest(popSel)) {
+                    // клик по самому dtp — не закрываем
+                    if (e.target.closest('.pp-dtp-pop')) return;
+                    return;
+                }
+
+                // клик по кнопке открытия — игнор
+                if (e.target.closest(btnSel)) return;
+
+                pop.hidden = true;
+                if (ruleMenu) ruleMenu.hidden = true;
+                closePicker();
+            });
+        }
+
+
+
+        // Подключаем оба дата-фильтра (Between убран)
         wireDateFilter({
             btnSel: '#ppStartBtn', popSel: '#ppStartPop',
             ruleBtnSel: '#ppStartRuleBtn', ruleMenuSel: '#ppStartRuleMenu',
+            dateSel: '#ppStartDate', timeSel: '#ppStartTime',
+            dtpSel: '#ppStartDtp', draftSel: '#ppStartDraft',
             fromSel: '#ppStartFrom', toSel: '#ppStartTo',
-            resetSel: '#ppStartReset', applySel: '#ppStartApply',
-            get: () => startFilter, set: (v) => { startFilter = v; }
+            okSel: '#ppStartOk', cancelSel: '#ppStartCancel', resetSel: '#ppStartReset',
+            defaultRule: 'after',
+            get: () => startFilter,
+            set: (v) => { startFilter = v; }
         });
+
         wireDateFilter({
             btnSel: '#ppEndBtn', popSel: '#ppEndPop',
             ruleBtnSel: '#ppEndRuleBtn', ruleMenuSel: '#ppEndRuleMenu',
+            dateSel: '#ppEndDate', timeSel: '#ppEndTime',
+            dtpSel: '#ppEndDtp', draftSel: '#ppEndDraft',
             fromSel: '#ppEndFrom', toSel: '#ppEndTo',
-            resetSel: '#ppEndReset', applySel: '#ppEndApply',
-            get: () => endFilter, set: (v) => { endFilter = v; }
+            okSel: '#ppEndOk', cancelSel: '#ppEndCancel', resetSel: '#ppEndReset',
+            defaultRule: 'before',
+            // если EndDate пустой — копируем из StartDate
+            fallbackGet: () => startFilter,
+            get: () => endFilter,
+            set: (v) => { endFilter = v; }
         });
+
 
 
         typeSearch?.addEventListener('input', () => buildTypeList(typeSearch.value));

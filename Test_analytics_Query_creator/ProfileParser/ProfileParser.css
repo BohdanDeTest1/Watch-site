@@ -666,6 +666,92 @@
     /* было 6px 8px в общем .pp-select */
 }
 
+/* ---------- Date filter popup (table) — new Date/Time UI ---------- */
+#pp-root .pp-date-pop {
+    padding: 14px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-main {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+#pp-root .pp-date-pop .pp-dtf-rule {
+    height: 40px;
+    justify-content: space-between;
+}
+
+#pp-root .pp-date-pop .pp-dtf-content {
+    min-width: 360px;
+}
+
+#pp-root .pp-date-pop.is-between .pp-dtf-content {
+    min-width: 520px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-single {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-between {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-field {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-label {
+    font-size: 12px;
+    opacity: .85;
+    margin-bottom: 8px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-inp {
+    width: 100%;
+    height: 40px;
+    padding: 8px 10px;
+    border: 1px solid rgba(88, 154, 255, 0.55);
+    border-radius: 10px;
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
+}
+
+#pp-root .pp-date-pop .pp-dtf-inp:focus {
+    border-color: rgba(88, 154, 255, 0.9);
+    box-shadow: 0 0 0 2px rgba(88, 154, 255, 0.15);
+}
+
+#pp-root .pp-date-pop .pp-dtf-range-title {
+    grid-column: 1 / -1;
+    padding: 6px 2px 2px;
+    font-size: 12px;
+    opacity: .75;
+    letter-spacing: 0.2px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 12px;
+}
+
+#pp-root .pp-date-pop .pp-dtf-actions .pp-link-btn {
+    margin-left: auto;
+}
+
 
 #pp-root .pp-type-list {
     display: grid;
@@ -1032,6 +1118,13 @@
        .pp-t-head — через --pp-table-head-bg,
        .pp-t-row — через «зебру» */
 }
+
+/* Шапка таблицы: каждый заголовок — позиционируемый контейнер для filter-pop,
+   чтобы попапы вели себя как в Promotions (без “уезда”/ломания) */
+.pp-t-head>div {
+    position: relative;
+}
+
 
 /* при открытой панели — 5 колонок (без Info), правые — шире */
 .pp-item.info-open .pp-t-head,
@@ -1945,16 +2038,16 @@
     border-radius: 6px !important;
 }
 
-#pp-root #ppStartPop {
-    right: 0;
-    left: auto;
-    transform: translateX(100px);
-    /* тонкая юстировка влево */
-}
-
+/* Date popups: держим попап под кнопкой фильтра и уводим в центр (от правого края) */
+#pp-root #ppStartPop,
 #pp-root #ppEndPop {
     right: 0;
+    /* правый край попапа упирается в правый край ячейки/кнопки */
+    left: auto;
+    transform: none;
+    /* никаких сдвигов вправо */
 }
+
 
 /* вертикальный список чекбоксов State */
 #pp-root .pp-state-list {
@@ -2109,15 +2202,92 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     outline-offset: 2px;
 }
 
-/* ширина поп-апа дат по умолчанию (Between = 2 поля) */
+/* ширина + позиционирование поп-апа дат (важно: НЕ участвует в потоке, не раздувает шапку) */
 #pp-root .pp-date-pop {
-    min-width: 520px;
+    min-width: 0;
+    width: max-content;
+    /* ширина по контенту */
+    max-width: min(520px, calc(100vw - 40px));
+    /* чтобы не вылазило за экран */
+    box-sizing: border-box;
+
+    position: absolute !important;
+    /* критично: перекрываем любой relative */
+    top: 40px;
+    /* как у остальных попапов */
+    z-index: 50;
+    /* поверх шапки/строк */
 }
 
-/* узкий поп-ап, когда одно поле (Before/After) */
-#pp-root .pp-date-pop.single {
-    min-width: 360px;
+
+/* popover внутри фильтра даты (календарь + время) */
+#pp-root .pp-date-pop .pp-dtp-pop {
+    position: absolute;
+    z-index: 400000;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .22);
 }
+
+/* режимы открытия: по клику на Date показываем только календарь, по Time — только колонки времени */
+#pp-root .pp-date-pop .pp-dtp-pop.mode-date .pp-time {
+    display: none;
+}
+
+#pp-root .pp-date-pop .pp-dtp-pop.mode-time .pp-mini-cal {
+    display: none;
+}
+
+
+/* Date filter: Date/Time input layout (table filters) — compact */
+#pp-root .pp-date-pop .pp-dtf-fields {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+#pp-root .pp-date-pop .pp-dtf-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    /* ключ: не раздувать контейнер */
+    cursor: pointer;
+}
+
+/* компактные ширины именно для полей */
+#pp-root .pp-date-pop .pp-dtf-col[data-open="date"] .pp-inp {
+    width: 140px;
+    /* dd.mm.yyyy */
+}
+
+#pp-root .pp-date-pop .pp-dtf-col[data-open="time"] .pp-inp {
+    width: 90px;
+    /* hh:mm */
+}
+
+/* если где-то width:100% давит — пусть инпуты будут по контенту */
+#pp-root .pp-date-pop .pp-dtf-col .pp-inp {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+#pp-root .pp-date-pop .pp-dtf-col .lbl {
+    font-size: 12px;
+    opacity: .85;
+    letter-spacing: .2px;
+}
+
+/* чуть лучше читаемость на темной теме */
+#pp-root .pp-date-pop input[type="date"].pp-inp,
+#pp-root .pp-date-pop input[type="time"].pp-inp {
+    width: 100%;
+}
+
 
 /* --- collapsible sections for Profile Parser --- */
 .pp-item .pp-title {
@@ -5706,6 +5876,72 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
     overflow-wrap: anywhere;
     word-break: break-word;
 }
+
+
+/* ===== DateTime picker (календарь + часы/минуты) ===== */
+.pp-date-pop .pp-dtp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pp-dtp-head {
+    display: flex;
+    gap: 8px;
+}
+
+.pp-dtp-cap {
+    font-weight: 700;
+    opacity: .9;
+    padding: 0 2px;
+}
+
+.pp-dtp-body {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+/* контейнер под single/range */
+.pp-date-pop .pp-dtp-wrap {
+    display: block;
+}
+
+/* Between: два пикера рядом */
+.pp-date-pop .pp-dtp-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+/* ширина поп-апа дат (Between выпилен) */
+#pp-root .pp-date-pop {
+    min-width: 360px;
+    position: relative;
+    /* якорь для .pp-dtp-pop */
+}
+
+/* popover внутри фильтра даты (календарь + время) */
+#pp-root .pp-date-pop .pp-dtp-pop {
+    position: absolute;
+    z-index: 400000;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .22);
+}
+
+/* режимы открытия: по клику на Date показываем только календарь, по Time — только колонки времени */
+#pp-root .pp-date-pop .pp-dtp-pop.mode-date .pp-time {
+    display: none;
+}
+
+#pp-root .pp-date-pop .pp-dtp-pop.mode-time .pp-mini-cal {
+    display: none;
+}
+
 
 
 /* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */
