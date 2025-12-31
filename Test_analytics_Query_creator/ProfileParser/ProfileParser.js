@@ -829,10 +829,10 @@
 </div>
 
 <div class="pp-dtf-actions">
-  <button id="ppStartOk" class="pp-btn primary" type="button">OK</button>
-  <button id="ppStartCancel" class="pp-btn pp-cancel" type="button">Cancel</button>
-  <button id="ppStartReset" class="pp-btn pp-reset" type="button">Reset</button>
-</div>
+<button id="ppStartReset" class="pp-btn pp-reset" type="button">RESET</button>
+<button id="ppStartOk" class="pp-btn primary" type="button">CONFIRM</button>
+  </div>
+
 
         </div>
 
@@ -897,10 +897,12 @@
 </div>
 
 <div class="pp-dtf-actions">
-  <button id="ppEndOk" class="pp-btn primary" type="button">OK</button>
-  <button id="ppEndCancel" class="pp-btn pp-cancel" type="button">Cancel</button>
-  <button id="ppEndReset" class="pp-btn pp-reset" type="button">Reset</button>
-</div>
+  
+<button id="ppEndReset" class="pp-btn pp-reset" type="button">RESET</button>
+<button id="ppEndOk" class="pp-btn primary" type="button">CONFIRM</button>
+  </div>
+
+
 
           
         </div>
