@@ -278,55 +278,86 @@
             </div>
 
             <!-- Start Date -->
+            <!-- Start Date -->
             <div class="pp-th start">
-             <button class="pp-th-btn" id="ppPromoStartBtn" type="button" aria-haspopup="true">
-  <span class="txt">Start Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
-</button>
-              <div class="pp-filter-pop pp-cal-pop" id="ppPromoStartPop" hidden>
-                <div class="pp-cal-top">
-                  <select class="pp-sel" id="ppPromoStartRule">
-                    <option value="between">Between</option>
-                    <option value="gte">After (>=)</option>
-                    <option value="lte">Before (<=)</option>
-                    <option value="blank">Is blank</option>
-                  </select>
+              <button class="pp-th-btn" id="ppPromoStartBtn" type="button" aria-haspopup="true">
+                <span class="txt">Start Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
+              </button>
+
+              <div class="pp-filter-pop pp-date-pop pp-date-pop-fields" id="ppPromoStartPop" hidden role="dialog" aria-label="Promo start date filter">
+                <div class="pp-dtf-main">
+                  <button id="ppPromoStartRuleBtn" class="pp-select pp-dtf-rule" data-val="after" type="button">
+                    <span class="txt">After</span><span class="chev">▾</span>
+                  </button>
+
+                  <div class="pp-dtf-fields tl-dtp">
+                    <label class="tl-dtp-col">
+                      <span class="lbl">Date (UTC)</span>
+                      <input id="ppPromoStartDate" type="date" class="fld pp-inp" />
+                    </label>
+
+                    <label class="tl-dtp-col">
+                      <span class="lbl">Time (UTC)</span>
+                      <input id="ppPromoStartTime" type="time" step="60" class="fld pp-inp" />
+                    </label>
+                  </div>
+
+                  <div class="pp-dtf-actions">
+                    <button id="ppPromoStartReset" class="pp-link-btn" type="button">RESET</button>
+                    <button id="ppPromoStartOk" class="pp-btn primary" type="button">CONFIRM</button>
+                  </div>
                 </div>
-                <div class="pp-cal-inputs" id="ppPromoStartInputs">
-                  <input class="pp-filter-inp" id="ppPromoStartFrom" placeholder="YYYY-MM-DD [HH:mm]" />
-                  <input class="pp-filter-inp" id="ppPromoStartTo" placeholder="YYYY-MM-DD [HH:mm]" />
-                </div>
-                <div class="pp-filter-actions">
-                  <button id="ppPromoStartReset" class="pp-link-btn" type="button">RESET</button>
-                  <button id="ppPromoStartApply" class="pp-btn primary" type="button">CONFIRM</button>
+
+                <input id="ppPromoStartFrom" type="hidden" />
+                <input id="ppPromoStartTo" type="hidden" />
+
+                <div id="ppPromoStartRuleMenu" class="pp-select-menu" hidden>
+                  <button data-val="after" type="button">After</button>
+                  <button data-val="before" type="button">Before</button>
                 </div>
               </div>
             </div>
 
             <!-- End Date -->
             <div class="pp-th end">
-             <button class="pp-th-btn" id="ppPromoEndBtn" type="button" aria-haspopup="true">
-  <span class="txt">End Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
-</button>
+              <button class="pp-th-btn" id="ppPromoEndBtn" type="button" aria-haspopup="true">
+                <span class="txt">End Date</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
+              </button>
 
-              <div class="pp-filter-pop pp-cal-pop" id="ppPromoEndPop" hidden>
-                <div class="pp-cal-top">
-                  <select class="pp-sel" id="ppPromoEndRule">
-                    <option value="between">Between</option>
-                    <option value="gte">After (>=)</option>
-                    <option value="lte">Before (<=)</option>
-                    <option value="blank">Is blank</option>
-                  </select>
+              <div class="pp-filter-pop pp-date-pop pp-date-pop-fields" id="ppPromoEndPop" hidden role="dialog" aria-label="Promo end date filter">
+                <div class="pp-dtf-main">
+                  <button id="ppPromoEndRuleBtn" class="pp-select pp-dtf-rule" data-val="before" type="button">
+                    <span class="txt">Before</span><span class="chev">▾</span>
+                  </button>
+
+                  <div class="pp-dtf-fields tl-dtp">
+                    <label class="tl-dtp-col">
+                      <span class="lbl">Date (UTC)</span>
+                      <input id="ppPromoEndDate" type="date" class="fld pp-inp" />
+                    </label>
+
+                    <label class="tl-dtp-col">
+                      <span class="lbl">Time (UTC)</span>
+                      <input id="ppPromoEndTime" type="time" step="60" class="fld pp-inp" />
+                    </label>
+                  </div>
+
+                  <div class="pp-dtf-actions">
+                    <button id="ppPromoEndReset" class="pp-link-btn" type="button">RESET</button>
+                    <button id="ppPromoEndOk" class="pp-btn primary" type="button">CONFIRM</button>
+                  </div>
                 </div>
-                <div class="pp-cal-inputs" id="ppPromoEndInputs">
-                  <input class="pp-filter-inp" id="ppPromoEndFrom" placeholder="YYYY-MM-DD [HH:mm]" />
-                  <input class="pp-filter-inp" id="ppPromoEndTo" placeholder="YYYY-MM-DD [HH:mm]" />
-                </div>
-                <div class="pp-filter-actions">
-                  <button id="ppPromoEndReset" class="pp-link-btn" type="button">RESET</button>
-                  <button id="ppPromoEndApply" class="pp-btn primary" type="button">CONFIRM</button>
+
+                <input id="ppPromoEndFrom" type="hidden" />
+                <input id="ppPromoEndTo" type="hidden" />
+
+                <div id="ppPromoEndRuleMenu" class="pp-select-menu" hidden>
+                  <button data-val="after" type="button">After</button>
+                  <button data-val="before" type="button">Before</button>
                 </div>
               </div>
             </div>
+
 
             <!-- Info col -->
             <div class="pp-th info"></div>
@@ -531,8 +562,8 @@
     let page = 1;
 
     let nameFilter = { rule: 'contains', query: '' };
-    let startFilter = { rule: 'between', from: '', to: '' };
-    let endFilter = { rule: 'between', from: '', to: '' };
+    let startFilter = { rule: 'after', from: '', to: '' };
+    let endFilter = { rule: 'before', from: '', to: '' };
 
     const allTypes = Array.from(new Set(base.map(i => i.type).filter(Boolean))).sort();
     let typeFilter = new Set(); // empty = all
@@ -1612,101 +1643,257 @@
       });
     })();
 
-    // --- wire date filters (Start/End) ---
-    function wireDateFilter(cfg) {
-      const btn = wrap.querySelector(cfg.btnSel);
-      const pop = wrap.querySelector(cfg.popSel);
-      const ruleBtn = wrap.querySelector(cfg.ruleBtnSel);
-      const ruleMenu = wrap.querySelector(cfg.ruleMenuSel);
-      const fromInp = wrap.querySelector(cfg.fromSel);
-      const toInp = wrap.querySelector(cfg.toSel);
-      const resetBtn = wrap.querySelector(cfg.resetSel);
-      const applyBtn = wrap.querySelector(cfg.applySel);
+    function wireDateFilter(opts) {
+      const {
+        btnSel, popSel,
+        ruleBtnSel, ruleMenuSel,
+        dateSel, timeSel,
+        fromSel, toSel,
+        okSel, cancelSel, resetSel,
+        defaultRule = 'after',
+        fallbackGet,
+        get, set
+      } = opts || {};
 
-      const labels = { between: 'Between', before: 'Before', after: 'After', today: 'Today', blank: 'Is blank' };
-
+      const btn = wrap.querySelector(btnSel);
+      const pop = wrap.querySelector(popSel);
       if (!btn || !pop) return;
 
-      btn.addEventListener('click', (e) => {
-        if (!e.target.closest('.pp-filter-ico')) return;
-        e.stopPropagation();
+      const ruleBtn = pop.querySelector(ruleBtnSel);
+      const ruleMenu = pop.querySelector(ruleMenuSel);
 
-        wrap.querySelector('#ppPromoStatePop')?.setAttribute('hidden', '');
-        wrap.querySelector('#ppPromoNamePop')?.setAttribute('hidden', '');
-        wrap.querySelector('#ppPromoTypePop')?.setAttribute('hidden', '');
-        // закрыть второй date-pop, чтобы не было двух одновременно
-        if (cfg.popSel === '#ppPromoStartPop') wrap.querySelector('#ppPromoEndPop')?.setAttribute('hidden', '');
-        if (cfg.popSel === '#ppPromoEndPop') wrap.querySelector('#ppPromoStartPop')?.setAttribute('hidden', '');
+      const dateInp = pop.querySelector(dateSel);
+      const timeInp = pop.querySelector(timeSel);
+
+      const fromInp = pop.querySelector(fromSel);
+      const toInp = pop.querySelector(toSel);
+
+      const okBtn = pop.querySelector(okSel);
+      const cancelBtn = pop.querySelector(cancelSel);
+      const resetBtn = pop.querySelector(resetSel);
+
+      const labels = { after: 'After', before: 'Before' };
+      const pad2 = (n) => String(n).padStart(2, '0');
+
+      function nowUTCParts() {
+        const d = new Date();
+        const yyyy = d.getUTCFullYear();
+        const mm = pad2(d.getUTCMonth() + 1);
+        const dd = pad2(d.getUTCDate());
+        const hh = pad2(d.getUTCHours());
+        const mi = pad2(d.getUTCMinutes());
+        return { date: `${yyyy}-${mm}-${dd}`, time: `${hh}:${mi}` };
+      }
+
+      function splitVal(v) {
+        const raw = String(v || '').trim();
+        if (!raw) return { date: '', time: '' };
+        const [date, time] = raw.split(/\s+/);
+        return { date: date || '', time: (time && /^\d{2}:\d{2}$/.test(time)) ? time : '' };
+      }
+
+      function buildVal(dateStr, timeStr) {
+        const d = String(dateStr || '').trim();
+        if (!d) return '';
+        const t = String(timeStr || '').trim() || '00:00';
+        return `${d} ${t}`;
+      }
+
+      function closeAllOtherPops() {
+        wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.setAttribute('hidden', ''); });
+        wrap.querySelectorAll('.pp-select-menu').forEach(m => m.setAttribute('hidden', ''));
+      }
+
+      function openMenuBelow(anchorBtn, menuEl) {
+        const parent = wrap;
+        const btnR = anchorBtn.getBoundingClientRect();
+        const parentR = parent.getBoundingClientRect();
+
+        const left = Math.round(btnR.left - parentR.left);
+        const top = Math.round(btnR.bottom - parentR.top + 6);
+
+        menuEl.style.left = `${Math.max(8, left)}px`;
+        menuEl.style.top = `${Math.max(8, top)}px`;
+        menuEl.hidden = false;
+      }
+
+      function ensureHybridPicker(inp, realType, placeholderText) {
+        if (!inp) return;
+
+        // Плейсхолдеры DD-MM-YYYY / HH-MM: пока пусто — type="text" + placeholder
+        // при фокусе/клике — переключаем на date/time и открываем picker
+        inp.dataset.realType = realType;
+        inp.dataset.hybrid = '1';
+
+        const toTextIfEmpty = () => {
+          if (!inp.value) {
+            inp.type = 'text';
+            inp.placeholder = placeholderText;
+          }
+        };
+
+        const toRealType = () => {
+          inp.type = realType;
+          inp.removeAttribute('placeholder');
+        };
+
+        // стартовое состояние
+        toTextIfEmpty();
+
+        // фокус — всегда переводим в real type и открываем picker
+        inp.addEventListener('focus', () => {
+          toRealType();
+          try { inp.showPicker?.(); } catch (_) { }
+        });
+
+        // КЛИК ПО ЛЮБОЙ ОБЛАСТИ ПОЛЯ (даже если value уже есть) — открываем picker
+        inp.addEventListener('click', () => {
+          toRealType();
+          try { inp.showPicker?.(); } catch (_) { }
+        });
+
+        // если ушли и поле пустое — обратно в text + placeholder
+        inp.addEventListener('blur', () => {
+          toTextIfEmpty();
+        });
+      }
+
+      // включаем гибрид для даты/времени
+      ensureHybridPicker(dateInp, 'date', 'DD-MM-YYYY');
+      ensureHybridPicker(timeInp, 'time', 'HH-MM');
+
+      function loadFromState() {
+        const stateObj = (typeof get === 'function' && get()) || (typeof fallbackGet === 'function' && fallbackGet()) || null;
+        const rule = (stateObj && (stateObj.rule === 'before' || stateObj.rule === 'after')) ? stateObj.rule : defaultRule;
+
+        if (ruleBtn) {
+          ruleBtn.dataset.val = rule;
+          const txtEl = ruleBtn.querySelector('.txt');
+          if (txtEl) txtEl.textContent = labels[rule] || labels[defaultRule] || 'After';
+        }
+
+        const val = (rule === 'after') ? (stateObj?.from || '') : (stateObj?.to || '');
+        const { date, time } = splitVal(val);
+
+        if (dateInp) dateInp.value = date || '';
+        if (timeInp) timeInp.value = time || '';
+
+        // вернуть в "text+placeholder" если пусто
+        if (dateInp) dateInp.dispatchEvent(new Event('blur'));
+        if (timeInp) timeInp.dispatchEvent(new Event('blur'));
+      }
+
+      // open/close popup
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllOtherPops();
 
         const willOpen = pop.hidden;
         pop.hidden = !pop.hidden;
 
         if (willOpen) {
-          const cur = cfg.get();
-          ruleBtn.dataset.val = cur.rule || 'between';
-          ruleBtn.querySelector('.txt').textContent = labels[ruleBtn.dataset.val] || 'Between';
-          if (fromInp) fromInp.value = cur.from || '';
-          if (toInp) toInp.value = cur.to || '';
+          loadFromState();
+
+          // если совсем пусто — чтобы пикер открывался сразу с разумной датой,
+          // при этом в инпутах визуально остаётся placeholder до выбора
+          if (dateInp && !dateInp.value) {
+            const n = nowUTCParts();
+            // не сетим value прямо сейчас — иначе placeholder пропадёт
+            // просто держим как "первую позицию" при открытии:
+            // (Chrome сам подхватит текущую дату, но так надёжнее)
+          }
         }
       });
 
-      // tabs inside pop
-      pop.querySelectorAll('.pp-dtp-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          pop.querySelector('.pp-dtp')?.setAttribute('data-active', tab.dataset.bind);
-        });
-      });
-
+      // rule dropdown open
       ruleBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (!ruleMenu) return;
         if (ruleMenu.hidden) openMenuBelow(ruleBtn, ruleMenu);
         else ruleMenu.hidden = true;
       });
 
+      // rule select
       ruleMenu?.addEventListener('click', (e) => {
         const b = e.target.closest('button[data-val]');
         if (!b) return;
+
         ruleBtn.dataset.val = b.dataset.val;
-        ruleBtn.querySelector('.txt').textContent = b.textContent;
+        const txtEl = ruleBtn.querySelector('.txt');
+        if (txtEl) txtEl.textContent = b.textContent;
         ruleMenu.hidden = true;
       });
 
+      okBtn?.addEventListener('click', () => {
+        const rule = (ruleBtn?.dataset?.val === 'before') ? 'before' : 'after';
+        const val = buildVal(dateInp?.value, timeInp?.value);
+
+        if (typeof set === 'function') {
+          if (rule === 'before') set({ rule: 'before', from: '', to: val });
+          else set({ rule: 'after', from: val, to: '' });
+        }
+
+        if (fromInp) fromInp.value = (rule === 'after') ? val : '';
+        if (toInp) toInp.value = (rule === 'before') ? val : '';
+
+        pop.hidden = true;
+        renderRows(true);
+      });
+
+      cancelBtn?.addEventListener('click', () => {
+        pop.hidden = true;
+      });
+
       resetBtn?.addEventListener('click', () => {
-        cfg.set({ rule: 'between', from: '', to: '' });
+        if (typeof set === 'function') set({ rule: defaultRule, from: '', to: '' });
+
+        if (dateInp) dateInp.value = '';
+        if (timeInp) timeInp.value = '';
+
         if (fromInp) fromInp.value = '';
         if (toInp) toInp.value = '';
+
+        // вернуть placeholders
+        if (dateInp) dateInp.dispatchEvent(new Event('blur'));
+        if (timeInp) timeInp.dispatchEvent(new Event('blur'));
+
         pop.hidden = true;
         renderRows(true);
       });
 
-      applyBtn?.addEventListener('click', () => {
-        cfg.set({ rule: ruleBtn.dataset.val, from: fromInp?.value || '', to: toInp?.value || '' });
-        pop.hidden = true;
-        renderRows(true);
-      });
-
+      // click outside closes
       document.addEventListener('click', (e) => {
         if (!document.body.contains(pop) || pop.hidden) return;
-        if (e.target.closest(cfg.popSel) || e.target.closest(cfg.btnSel)) return;
+        if (e.target.closest(popSel) || e.target.closest(btnSel)) return;
         pop.hidden = true;
         if (ruleMenu) ruleMenu.hidden = true;
       });
     }
 
+
     wireDateFilter({
       btnSel: '#ppPromoStartBtn', popSel: '#ppPromoStartPop',
       ruleBtnSel: '#ppPromoStartRuleBtn', ruleMenuSel: '#ppPromoStartRuleMenu',
+      dateSel: '#ppPromoStartDate', timeSel: '#ppPromoStartTime',
       fromSel: '#ppPromoStartFrom', toSel: '#ppPromoStartTo',
-      resetSel: '#ppPromoStartReset', applySel: '#ppPromoStartApply',
-      get: () => startFilter, set: (v) => { startFilter = v; }
+      okSel: '#ppPromoStartOk', cancelSel: '#ppPromoStartCancel', resetSel: '#ppPromoStartReset',
+      defaultRule: 'after',
+      get: () => startFilter,
+      set: (v) => { startFilter = v; }
     });
+
     wireDateFilter({
       btnSel: '#ppPromoEndBtn', popSel: '#ppPromoEndPop',
       ruleBtnSel: '#ppPromoEndRuleBtn', ruleMenuSel: '#ppPromoEndRuleMenu',
+      dateSel: '#ppPromoEndDate', timeSel: '#ppPromoEndTime',
       fromSel: '#ppPromoEndFrom', toSel: '#ppPromoEndTo',
-      resetSel: '#ppPromoEndReset', applySel: '#ppPromoEndApply',
-      get: () => endFilter, set: (v) => { endFilter = v; }
+      okSel: '#ppPromoEndOk', cancelSel: '#ppPromoEndCancel', resetSel: '#ppPromoEndReset',
+      defaultRule: 'before',
+      fallbackGet: () => startFilter,
+      get: () => endFilter,
+      set: (v) => { endFilter = v; }
     });
+
 
     // initial UI defaults
     const stateList = wrap.querySelector('#ppPromoStateList');
