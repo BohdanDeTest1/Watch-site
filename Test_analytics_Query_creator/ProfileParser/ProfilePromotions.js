@@ -1705,17 +1705,31 @@
       }
 
       function openMenuBelow(anchorBtn, menuEl) {
-        const parent = wrap;
+        if (!anchorBtn || !menuEl) return;
+
+        // меню живёт ВНУТРИ pop, значит координаты считаем ОТ pop
+        const popEl = anchorBtn.closest(popSel) || pop;
+        if (!popEl) return;
+
+        // гарантируем, что absolute-позиционирование меню будет относительно pop
+        const cs = getComputedStyle(popEl);
+        if (cs.position === 'static') popEl.style.position = 'relative';
+
+        const popR = popEl.getBoundingClientRect();
         const btnR = anchorBtn.getBoundingClientRect();
-        const parentR = parent.getBoundingClientRect();
 
-        const left = Math.round(btnR.left - parentR.left);
-        const top = Math.round(btnR.bottom - parentR.top + 6);
+        const left = Math.round(btnR.left - popR.left);
+        const top = Math.round(btnR.bottom - popR.top + 6);
 
+        menuEl.style.position = 'absolute';
         menuEl.style.left = `${Math.max(8, left)}px`;
         menuEl.style.top = `${Math.max(8, top)}px`;
+        menuEl.style.minWidth = `${Math.round(btnR.width)}px`;
+        menuEl.style.zIndex = '9999'; // чтобы не пряталось под другими слоями
         menuEl.hidden = false;
       }
+
+
 
       function ensureHybridPicker(inp, realType, placeholderText) {
         if (!inp) return;
