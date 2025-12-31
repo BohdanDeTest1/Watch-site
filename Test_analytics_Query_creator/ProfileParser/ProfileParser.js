@@ -810,23 +810,30 @@
             <span class="txt">After</span><span class="chev">▾</span>
           </button>
 
-          <div class="pp-dtf-fields">
-            <div class="pp-dtf-col" data-open="date">
-              <div class="lbl">Date (UTC)</div>
-              <input id="ppStartDate" class="pp-inp" type="text" placeholder="dd.mm.yyyy" readonly />
-            </div>
+         <div class="pp-dtf-fields">
+  <div class="pp-dtf-col" data-open="date">
+    <div class="lbl">Date (UTC)</div>
+    <div class="pp-dtf-inpwrap is-date">
+      <input id="ppStartDate" class="pp-inp pp-dtf-inp" type="text" placeholder="dd.mm.yyyy" readonly />
+      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    </div>
+  </div>
 
-            <div class="pp-dtf-col" data-open="time">
-              <div class="lbl">Time (UTC)</div>
-              <input id="ppStartTime" class="pp-inp" type="text" placeholder="--:--" readonly />
-            </div>
-          </div>
+  <div class="pp-dtf-col" data-open="time">
+    <div class="lbl">Time (UTC)</div>
+    <div class="pp-dtf-inpwrap is-time">
+      <input id="ppStartTime" class="pp-inp pp-dtf-inp" type="text" placeholder="--:--" readonly />
+      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    </div>
+  </div>
+</div>
 
-          <div class="pp-dtf-actions">
-            <button id="ppStartOk" class="pp-btn primary" type="button">OK</button>
-            <button id="ppStartCancel" class="pp-btn" type="button">Cancel</button>
-            <button id="ppStartReset" class="pp-btn pp-reset" type="button">Reset</button>
-          </div>
+<div class="pp-dtf-actions">
+  <button id="ppStartOk" class="pp-btn primary" type="button">OK</button>
+  <button id="ppStartCancel" class="pp-btn pp-cancel" type="button">Cancel</button>
+  <button id="ppStartReset" class="pp-btn pp-reset" type="button">Reset</button>
+</div>
+
         </div>
 
         <input id="ppStartFrom" type="hidden" />
@@ -871,23 +878,31 @@
             <span class="txt">Before</span><span class="chev">▾</span>
           </button>
 
-          <div class="pp-dtf-fields">
-            <div class="pp-dtf-col" data-open="date">
-              <div class="lbl">Date (UTC)</div>
-              <input id="ppEndDate" class="pp-inp" type="text" placeholder="dd.mm.yyyy" readonly />
-            </div>
+         <div class="pp-dtf-fields">
+  <div class="pp-dtf-col" data-open="date">
+    <div class="lbl">Date (UTC)</div>
+    <div class="pp-dtf-inpwrap is-date">
+      <input id="ppEndDate" class="pp-inp pp-dtf-inp" type="text" placeholder="dd.mm.yyyy" readonly />
+      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    </div>
+  </div>
 
-            <div class="pp-dtf-col" data-open="time">
-              <div class="lbl">Time (UTC)</div>
-              <input id="ppEndTime" class="pp-inp" type="text" placeholder="--:--" readonly />
-            </div>
-          </div>
+  <div class="pp-dtf-col" data-open="time">
+    <div class="lbl">Time (UTC)</div>
+    <div class="pp-dtf-inpwrap is-time">
+      <input id="ppEndTime" class="pp-inp pp-dtf-inp" type="text" placeholder="--:--" readonly />
+      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    </div>
+  </div>
+</div>
 
-          <div class="pp-dtf-actions">
-            <button id="ppEndOk" class="pp-btn primary" type="button">OK</button>
-            <button id="ppEndCancel" class="pp-btn" type="button">Cancel</button>
-            <button id="ppEndReset" class="pp-btn pp-reset" type="button">Reset</button>
-          </div>
+<div class="pp-dtf-actions">
+  <button id="ppEndOk" class="pp-btn primary" type="button">OK</button>
+  <button id="ppEndCancel" class="pp-btn pp-cancel" type="button">Cancel</button>
+  <button id="ppEndReset" class="pp-btn pp-reset" type="button">Reset</button>
+</div>
+
+          
         </div>
 
         <input id="ppEndFrom" type="hidden" />
