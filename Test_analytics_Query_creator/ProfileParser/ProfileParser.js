@@ -715,15 +715,15 @@
 <button class="tl-btn" data-nav="prev" aria-label="Назад" data-hint="Go to previous day">&#x276E;</button>
 <button class="tl-btn" data-nav="today" data-hint="Jump to today">today</button>
 <button class="tl-btn" data-nav="next" aria-label="Вперёд" data-hint="Go to next day">&#x276F;</button>
+
 </div>
     <div class="tl-title" id="tlTitle"></div>
-      <div class="tl-right">
-     
-<div class="tl-right"></div>
-
+    <div class="tl-right"></div>
   </div>
-      <div class="tl-grid-header" id="tlHeader"></div>
-      <div class="tl-grid-body" id="tlBody"></div>
+  <div class="tl-grid-header" id="tlHeader"></div>
+  <div class="tl-grid-body" id="tlBody"></div>
+
+
     </div>
   </div>
 </section>
@@ -805,67 +805,40 @@
       <button id="ppStartBtn" class="pp-icon-btn" aria-label="Filter Start Date" title="Filter"></button>
 
       <div id="ppStartPop" class="pp-filter-pop pp-date-pop pp-date-pop-fields" hidden role="dialog" aria-label="Start date filter">
-        <div class="pp-dtf-main">
-          <button id="ppStartRuleBtn" class="pp-select pp-dtf-rule" data-val="after" type="button">
-            <span class="txt">After</span><span class="chev">▾</span>
-          </button>
+  <div class="pp-dtf-main">
+    <button id="ppStartRuleBtn" class="pp-select pp-dtf-rule" data-val="after" type="button">
+      <span class="txt">After</span><span class="chev">▾</span>
+    </button>
 
-         <div class="pp-dtf-fields">
-  <div class="pp-dtf-col" data-open="date">
-    <div class="lbl">Date (UTC)</div>
-    <div class="pp-dtf-inpwrap is-date">
-      <input id="ppStartDate" class="pp-inp pp-dtf-inp" type="text" placeholder="dd.mm.yyyy" readonly />
-      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    <!-- Native date/time like timeline (tlDtDate/tlDtTime) -->
+    <div class="pp-dtf-fields tl-dtp">
+      <label class="tl-dtp-col">
+        <span class="lbl">Date (UTC)</span>
+        <input id="ppStartDate" type="date" class="fld pp-inp" />
+      </label>
+
+      <label class="tl-dtp-col">
+        <span class="lbl">Time (UTC)</span>
+        <input id="ppStartTime" type="time" step="60" class="fld pp-inp" />
+      </label>
+    </div>
+
+    <div class="pp-dtf-actions">
+      <button id="ppStartReset" class="pp-btn pp-reset" type="button">RESET</button>
+      <button id="ppStartOk" class="pp-btn primary" type="button">CONFIRM</button>
     </div>
   </div>
 
-  <div class="pp-dtf-col" data-open="time">
-    <div class="lbl">Time (UTC)</div>
-    <div class="pp-dtf-inpwrap is-time">
-      <input id="ppStartTime" class="pp-inp pp-dtf-inp" type="text" placeholder="--:--" readonly />
-      <span class="pp-dtf-ico" aria-hidden="true"></span>
-    </div>
-  </div>
+  <input id="ppStartFrom" type="hidden" />
+  <input id="ppStartTo" type="hidden" />
+
+  <div id="ppStartRuleMenu" class="pp-select-menu" hidden>
+  <button data-val="after" type="button">After</button>
+  <button data-val="before" type="button">Before</button>
 </div>
+</div> <!-- /#ppStartPop -->
+</div> <!-- /.pp-th.start -->
 
-<div class="pp-dtf-actions">
-<button id="ppStartReset" class="pp-btn pp-reset" type="button">RESET</button>
-<button id="ppStartOk" class="pp-btn primary" type="button">CONFIRM</button>
-  </div>
-
-
-        </div>
-
-        <input id="ppStartFrom" type="hidden" />
-        <input id="ppStartTo" type="hidden" />
-        <input id="ppStartDraft" type="hidden" />
-
-        <div id="ppStartDtp" class="pp-dtp-pop" hidden data-bind="#ppStartDraft">
-          <div class="pp-dtp-body">
-            <div class="pp-mini-cal">
-              <div class="pp-cal-head">
-                <div class="pp-cal-title">Month YYYY</div>
-                <div class="pp-cal-navs">
-                  <button class="pp-cal-nav" type="button" data-dir="-1">‹</button>
-                  <button class="pp-cal-nav" type="button" data-dir="1">›</button>
-                </div>
-              </div>
-              <div class="pp-cal-grid"></div>
-            </div>
-
-            <div class="pp-time">
-              <div class="pp-time-col" data-part="h"></div>
-              <div class="pp-time-col" data-part="m"></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="ppStartRuleMenu" class="pp-select-menu" hidden>
-          <button data-val="after" type="button">After</button>
-          <button data-val="before" type="button">Before</button>
-        </div>
-      </div>
-    </div>
 
     <!-- End date -->
     <div class="pp-th end pp-date-filter">
@@ -873,69 +846,40 @@
       <button id="ppEndBtn" class="pp-icon-btn" aria-label="Filter End Date" title="Filter"></button>
 
       <div id="ppEndPop" class="pp-filter-pop pp-date-pop pp-date-pop-fields" hidden role="dialog" aria-label="End date filter">
-        <div class="pp-dtf-main">
-          <button id="ppEndRuleBtn" class="pp-select pp-dtf-rule" data-val="before" type="button">
-            <span class="txt">Before</span><span class="chev">▾</span>
-          </button>
+  <div class="pp-dtf-main">
+    <button id="ppEndRuleBtn" class="pp-select pp-dtf-rule" data-val="before" type="button">
+      <span class="txt">Before</span><span class="chev">▾</span>
+    </button>
 
-         <div class="pp-dtf-fields">
-  <div class="pp-dtf-col" data-open="date">
-    <div class="lbl">Date (UTC)</div>
-    <div class="pp-dtf-inpwrap is-date">
-      <input id="ppEndDate" class="pp-inp pp-dtf-inp" type="text" placeholder="dd.mm.yyyy" readonly />
-      <span class="pp-dtf-ico" aria-hidden="true"></span>
+    <!-- Native date/time like timeline (tlDtDate/tlDtTime) -->
+    <div class="pp-dtf-fields tl-dtp">
+      <label class="tl-dtp-col">
+        <span class="lbl">Date (UTC)</span>
+        <input id="ppEndDate" type="date" class="fld pp-inp" />
+      </label>
+
+      <label class="tl-dtp-col">
+        <span class="lbl">Time (UTC)</span>
+        <input id="ppEndTime" type="time" step="60" class="fld pp-inp" />
+      </label>
+    </div>
+
+    <div class="pp-dtf-actions">
+      <button id="ppEndReset" class="pp-btn pp-reset" type="button">RESET</button>
+      <button id="ppEndOk" class="pp-btn primary" type="button">CONFIRM</button>
     </div>
   </div>
 
-  <div class="pp-dtf-col" data-open="time">
-    <div class="lbl">Time (UTC)</div>
-    <div class="pp-dtf-inpwrap is-time">
-      <input id="ppEndTime" class="pp-inp pp-dtf-inp" type="text" placeholder="--:--" readonly />
-      <span class="pp-dtf-ico" aria-hidden="true"></span>
-    </div>
+  <input id="ppEndFrom" type="hidden" />
+  <input id="ppEndTo" type="hidden" />
+
+  <div id="ppEndRuleMenu" class="pp-select-menu" hidden>
+    <button data-val="before" type="button">Before</button>
+    <button data-val="after" type="button">After</button>
   </div>
 </div>
 
-<div class="pp-dtf-actions">
-  
-<button id="ppEndReset" class="pp-btn pp-reset" type="button">RESET</button>
-<button id="ppEndOk" class="pp-btn primary" type="button">CONFIRM</button>
-  </div>
 
-
-
-          
-        </div>
-
-        <input id="ppEndFrom" type="hidden" />
-        <input id="ppEndTo" type="hidden" />
-        <input id="ppEndDraft" type="hidden" />
-
-        <div id="ppEndDtp" class="pp-dtp-pop" hidden data-bind="#ppEndDraft">
-          <div class="pp-dtp-body">
-            <div class="pp-mini-cal">
-              <div class="pp-cal-head">
-                <div class="pp-cal-title">Month YYYY</div>
-                <div class="pp-cal-navs">
-                  <button class="pp-cal-nav" type="button" data-dir="-1">‹</button>
-                  <button class="pp-cal-nav" type="button" data-dir="1">›</button>
-                </div>
-              </div>
-              <div class="pp-cal-grid"></div>
-            </div>
-
-            <div class="pp-time">
-              <div class="pp-time-col" data-part="h"></div>
-              <div class="pp-time-col" data-part="m"></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="ppEndRuleMenu" class="pp-select-menu" hidden>
-          <button data-val="before" type="button">Before</button>
-          <button data-val="after" type="button">After</button>
-        </div>
-      </div>
     </div>
 
     <!-- ВАЖНО: 6-я колонка под кнопку Info (как в Promotions) -->
@@ -3617,221 +3561,6 @@
             return { setValue };
         }
 
-        // ---------- Фильтры дат (Start/End) ----------
-        // ---------- Фильтры дат (Start/End) ----------
-        function wireDateFilter(opts) {
-            const {
-                btnSel, popSel,
-                ruleBtnSel, ruleMenuSel,
-                fromSel, toSel,
-                okSel, cancelSel, resetSel,
-                get, set,
-                defaultRule = 'after'
-            } = opts;
-
-            const btn = wrap.querySelector(btnSel);
-            const pop = wrap.querySelector(popSel);
-
-            const ruleBtn = wrap.querySelector(ruleBtnSel);
-            const ruleMenu = wrap.querySelector(ruleMenuSel);
-
-            const fromInp = wrap.querySelector(fromSel);
-            const toInp = wrap.querySelector(toSel);
-
-            const okBtn = wrap.querySelector(okSel);
-            const cancelBtn = wrap.querySelector(cancelSel);
-            const resetBtn = wrap.querySelector(resetSel);
-
-            if (!btn || !pop || !ruleBtn || !ruleMenu || !fromInp || !toInp) return;
-
-            const labels = { after: 'After', before: 'Before', between: 'Between' };
-
-            const singleWrap = pop.querySelector('.pp-dtf-single');
-            const betweenWrap = pop.querySelector('.pp-dtf-between');
-
-            const singleDate = pop.querySelector('[data-slot="single-date"]');
-            const singleTime = pop.querySelector('[data-slot="single-time"]');
-
-            const fromDate = pop.querySelector('[data-slot="from-date"]');
-            const fromTime = pop.querySelector('[data-slot="from-time"]');
-            const toDate = pop.querySelector('[data-slot="to-date"]');
-            const toTime = pop.querySelector('[data-slot="to-time"]');
-
-            const pad2 = (n) => String(n).padStart(2, '0');
-
-            function splitDT(v) {
-                const s = String(v || '').trim();
-                if (!s) return { d: '', t: '' };
-
-                // ожидаем "YYYY-MM-DD HH:mm"
-                const m = s.match(/^(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}))?$/);
-                if (!m) return { d: '', t: '' };
-
-                return { d: m[1] || '', t: m[2] || '00:00' };
-            }
-
-            function composeDT(d, t) {
-                const dd = String(d || '').trim();
-                if (!dd) return '';
-                const tt = String(t || '').trim() || '00:00';
-                return `${dd} ${tt}`;
-            }
-
-            function closeAllOtherPops() {
-                wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.setAttribute('hidden', ''); });
-                wrap.querySelectorAll('.pp-select-menu').forEach(m => m.setAttribute('hidden', ''));
-            }
-
-            function syncUI() {
-                const rule = ruleBtn.dataset.val || defaultRule;
-
-                const isBetween = rule === 'between';
-                if (betweenWrap) betweenWrap.hidden = !isBetween;
-                if (singleWrap) singleWrap.hidden = isBetween;
-
-                // ширины попапа: single компактнее
-                pop.classList.toggle('is-between', isBetween);
-
-                // OK enabled
-                const hasSingle = !!(singleDate?.value);
-                const hasFrom = !!(fromDate?.value);
-                const hasTo = !!(toDate?.value);
-
-                if (okBtn) {
-                    if (rule === 'after') okBtn.disabled = !hasSingle;
-                    else if (rule === 'before') okBtn.disabled = !hasSingle;
-                    else okBtn.disabled = (!hasFrom || !hasTo); // для Between требуем оба конца диапазона
-                }
-            }
-
-            function loadFromState() {
-                const cur = (typeof get === 'function') ? get() : { rule: defaultRule, from: '', to: '' };
-                const rule = cur.rule || defaultRule;
-
-                ruleBtn.dataset.val = rule;
-                ruleBtn.querySelector('.txt').textContent = labels[rule] || labels[defaultRule];
-
-                fromInp.value = cur.from || '';
-                toInp.value = cur.to || '';
-
-                // заполнить inputs
-                if (rule === 'after') {
-                    const a = splitDT(fromInp.value);
-                    if (singleDate) singleDate.value = a.d;
-                    if (singleTime) singleTime.value = a.t || '00:00';
-                } else if (rule === 'before') {
-                    const b = splitDT(toInp.value);
-                    if (singleDate) singleDate.value = b.d;
-                    if (singleTime) singleTime.value = b.t || '00:00';
-                } else {
-                    const a = splitDT(fromInp.value);
-                    const b = splitDT(toInp.value);
-                    if (fromDate) fromDate.value = a.d;
-                    if (fromTime) fromTime.value = a.t || '00:00';
-                    if (toDate) toDate.value = b.d;
-                    if (toTime) toTime.value = b.t || '00:00';
-                }
-
-                syncUI();
-            }
-
-            function applyToHidden() {
-                const rule = ruleBtn.dataset.val || defaultRule;
-
-                if (rule === 'after') {
-                    const v = composeDT(singleDate?.value, singleTime?.value);
-                    fromInp.value = v;
-                    toInp.value = '';
-                } else if (rule === 'before') {
-                    const v = composeDT(singleDate?.value, singleTime?.value);
-                    toInp.value = v;
-                    fromInp.value = '';
-                } else {
-                    fromInp.value = composeDT(fromDate?.value, fromTime?.value);
-                    toInp.value = composeDT(toDate?.value, toTime?.value);
-                }
-
-                set({ rule, from: fromInp.value || '', to: toInp.value || '' });
-                pop.hidden = true;
-                renderRows();
-            }
-
-            // open/close popup
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                closeAllOtherPops();
-
-                const willOpen = pop.hidden;
-                pop.hidden = !pop.hidden;
-
-                if (willOpen) loadFromState();
-            });
-
-            // rule dropdown open
-            ruleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (ruleMenu.hidden) openMenuBelow(ruleBtn, ruleMenu);
-                else ruleMenu.hidden = true;
-            });
-
-            // rule select
-            ruleMenu.addEventListener('click', (e) => {
-                const b = e.target.closest('button[data-val]');
-                if (!b) return;
-
-                ruleBtn.dataset.val = b.dataset.val;
-                ruleBtn.querySelector('.txt').textContent = b.textContent;
-
-                ruleMenu.hidden = true;
-
-                // при смене правила — не применяем сразу, просто перестраиваем UI
-                syncUI();
-            });
-
-            // live enable/disable OK
-            [singleDate, singleTime, fromDate, fromTime, toDate, toTime].forEach(el => {
-                el?.addEventListener('input', syncUI);
-                el?.addEventListener('change', syncUI);
-            });
-
-            okBtn?.addEventListener('click', () => {
-                applyToHidden();
-            });
-
-            cancelBtn?.addEventListener('click', () => {
-                pop.hidden = true;
-                if (ruleMenu) ruleMenu.hidden = true;
-            });
-
-            resetBtn?.addEventListener('click', () => {
-                const resetRule = defaultRule;
-                ruleBtn.dataset.val = resetRule;
-                ruleBtn.querySelector('.txt').textContent = labels[resetRule] || 'After';
-
-                fromInp.value = '';
-                toInp.value = '';
-
-                // очистить UI inputs
-                if (singleDate) singleDate.value = '';
-                if (singleTime) singleTime.value = '';
-                if (fromDate) fromDate.value = '';
-                if (fromTime) fromTime.value = '';
-                if (toDate) toDate.value = '';
-                if (toTime) toTime.value = '';
-
-                set({ rule: resetRule, from: '', to: '' });
-                pop.hidden = true;
-                renderRows();
-            });
-
-            // click outside closes
-            document.addEventListener('click', (e) => {
-                if (!document.body.contains(pop) || pop.hidden) return;
-                if (e.target.closest(popSel) || e.target.closest(btnSel)) return;
-                pop.hidden = true;
-                if (ruleMenu) ruleMenu.hidden = true;
-            });
-        }
 
 
         function wireDateFilter(opts) {
@@ -3839,7 +3568,6 @@
                 btnSel, popSel,
                 ruleBtnSel, ruleMenuSel,
                 dateSel, timeSel,
-                dtpSel, draftSel,
                 fromSel, toSel,
                 okSel, cancelSel, resetSel,
                 defaultRule = 'after',
@@ -3854,11 +3582,8 @@
             const ruleBtn = pop.querySelector(ruleBtnSel);
             const ruleMenu = pop.querySelector(ruleMenuSel);
 
-            const dateInp = pop.querySelector(dateSel);
-            const timeInp = pop.querySelector(timeSel);
-
-            const dtp = pop.querySelector(dtpSel);
-            const draftInp = pop.querySelector(draftSel);
+            const dateInp = pop.querySelector(dateSel); // type="date"
+            const timeInp = pop.querySelector(timeSel); // type="time"
 
             const fromInp = pop.querySelector(fromSel);
             const toInp = pop.querySelector(toSel);
@@ -3868,38 +3593,36 @@
             const resetBtn = pop.querySelector(resetSel);
 
             const labels = { after: 'After', before: 'Before' };
-            const pad = (n) => String(n).padStart(2, '0');
 
-            function nowUTCVal() {
-                const n = new Date();
-                const y = n.getUTCFullYear();
-                const m = pad(n.getUTCMonth() + 1);
-                const d = pad(n.getUTCDate());
-                const hh = pad(n.getUTCHours());
-                const mi = pad(n.getUTCMinutes());
-                return `${y}-${m}-${d} ${hh}:${mi}`;
+            const pad2 = (n) => String(n).padStart(2, '0');
+
+            function nowUTCParts() {
+                const d = new Date();
+                const yyyy = d.getUTCFullYear();
+                const mm = pad2(d.getUTCMonth() + 1);
+                const dd = pad2(d.getUTCDate());
+                const hh = pad2(d.getUTCHours());
+                const mi = pad2(d.getUTCMinutes());
+                return { date: `${yyyy}-${mm}-${dd}`, time: `${hh}:${mi}` };
             }
 
             function splitVal(v) {
-                const raw = (v || '').trim();
+                const raw = String(v || '').trim();
                 if (!raw) return { date: '', time: '' };
-                const parts = raw.split(/\s+/);
-                const date = parts[0] || '';
-                const time = (parts[1] && /^\d{2}:\d{2}$/.test(parts[1])) ? parts[1] : '00:00';
-                return { date, time };
+                const [date, time] = raw.split(/\s+/);
+                return { date: date || '', time: (time && /^\d{2}:\d{2}$/.test(time)) ? time : '00:00' };
             }
 
-            function formatDatePretty(yyyyMmDd) {
-                const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec((yyyyMmDd || '').trim());
-                if (!m) return '';
-                return `${m[3]}.${m[2]}.${m[1]}`;
+            function buildVal(dateStr, timeStr) {
+                const d = String(dateStr || '').trim();
+                if (!d) return '';
+                const t = String(timeStr || '').trim() || '00:00';
+                return `${d} ${t}`;
             }
 
-            function syncVisibleFromDraft() {
-                if (!draftInp) return;
-                const { date, time } = splitVal(draftInp.value);
-                if (dateInp) dateInp.value = formatDatePretty(date) || '';
-                if (timeInp) timeInp.value = time || '';
+            function closeAllOtherPops() {
+                wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.setAttribute('hidden', ''); });
+                wrap.querySelectorAll('.pp-select-menu').forEach(m => m.setAttribute('hidden', ''));
             }
 
             function openMenuBelow(anchorBtn, menuEl) {
@@ -3909,83 +3632,44 @@
                 menuEl.hidden = false;
             }
 
-            // init picker engine (one-time)
-            const picker = buildDateTimePicker(dtp);
+            function loadFromState() {
+                const stateObj = (typeof get === 'function' && get()) || (typeof fallbackGet === 'function' && fallbackGet()) || null;
+                const rule = (stateObj && (stateObj.rule === 'before' || stateObj.rule === 'after')) ? stateObj.rule : defaultRule;
 
-            function openPicker(mode) {
-                if (!dtp || !picker) return;
+                if (ruleBtn) {
+                    ruleBtn.dataset.val = rule;
+                    const txt = ruleBtn.querySelector('.txt');
+                    if (txt) txt.textContent = labels[rule] || labels[defaultRule] || 'After';
+                }
 
-                dtp.classList.toggle('mode-date', mode === 'date');
-                dtp.classList.toggle('mode-time', mode === 'time');
+                const val = (rule === 'after') ? (stateObj?.from || '') : (stateObj?.to || '');
+                const { date, time } = splitVal(val);
 
-                // позиционируем внутри попапа фильтра, рядом с инпутами
-                const host = pop.getBoundingClientRect();
-                const anchor = (mode === 'time' ? timeInp : dateInp) || pop;
-                const ar = anchor.getBoundingClientRect();
-
-                // координаты относительно pop (он relative в css)
-                const left = Math.max(10, Math.round(ar.left - host.left));
-                const top = Math.round(ar.bottom - host.top + 8);
-
-                dtp.style.left = `${left}px`;
-                dtp.style.top = `${top}px`;
-
-                // прокинем текущее значение в движок
-                picker.setValue(draftInp?.value || '');
-                dtp.hidden = false;
+                if (dateInp) dateInp.value = date || '';
+                if (timeInp) timeInp.value = time || '';
             }
 
-            function closePicker() {
-                if (dtp) dtp.hidden = true;
-                dtp?.classList.remove('mode-date', 'mode-time');
-            }
-
-            // открытие/закрытие основного попапа
+            // open/close popup
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-
-                // закрыть другие попапы
-                wrap.querySelectorAll('.pp-filter-pop').forEach(p => { if (p !== pop) p.hidden = true; });
-                wrap.querySelectorAll('.pp-select-menu').forEach(m => m.hidden = true);
+                closeAllOtherPops();
 
                 const willOpen = pop.hidden;
                 pop.hidden = !pop.hidden;
-                if (!willOpen) { closePicker(); return; }
 
-                // текущее состояние фильтра
-                const cur = (typeof get === 'function')
-                    ? (get() || { rule: defaultRule, from: '', to: '' })
-                    : { rule: defaultRule, from: '', to: '' };
+                if (willOpen) {
+                    loadFromState();
 
-                const rule = (cur.rule === 'before') ? 'before' : 'after';
-                if (ruleBtn) {
-                    ruleBtn.dataset.val = rule;
-                    const t = ruleBtn.querySelector('.txt');
-                    if (t) t.textContent = labels[rule] || labels[defaultRule] || 'After';
+                    // если совсем пусто — подставим текущий UTC как удобный дефолт
+                    if (dateInp && !dateInp.value) {
+                        const n = nowUTCParts();
+                        dateInp.value = n.date;
+                        if (timeInp && !timeInp.value) timeInp.value = n.time;
+                    }
                 }
-
-                // значение, которое покажем в полях:
-                // 1) если текущего нет — ставим NOW(UTC)
-                // 2) если это EndDate и он пустой — копируем из StartDate (fallbackGet)
-                let val = (rule === 'before') ? (cur.to || '').trim() : (cur.from || '').trim();
-
-                if (!val && typeof fallbackGet === 'function') {
-                    const fb = fallbackGet() || {};
-                    val = (fb.from || fb.to || '').trim();
-                }
-                if (!val) val = nowUTCVal();
-
-                if (draftInp) draftInp.value = val;
-                syncVisibleFromDraft();
-
-                // синхроним hidden inputs (чтобы passDateRule видел «что-то» даже до OK)
-                if (fromInp) fromInp.value = (rule === 'after') ? val : '';
-                if (toInp) toInp.value = (rule === 'before') ? val : '';
-
-                closePicker();
             });
 
-            // rule dropdown
+            // rule dropdown open
             ruleBtn?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!ruleMenu) return;
@@ -3993,50 +3677,19 @@
                 else ruleMenu.hidden = true;
             });
 
+            // rule select
             ruleMenu?.addEventListener('click', (e) => {
                 const b = e.target.closest('button[data-val]');
                 if (!b) return;
-                const v = (b.dataset.val === 'before') ? 'before' : 'after';
 
-                if (ruleBtn) {
-                    ruleBtn.dataset.val = v;
-                    const t = ruleBtn.querySelector('.txt');
-                    if (t) t.textContent = labels[v];
-                }
-
-                // при смене правила сохраняем тот же datetime, только меняем «куда» он пишется
-                const val = (draftInp?.value || '').trim();
-                if (fromInp) fromInp.value = (v === 'after') ? val : '';
-                if (toInp) toInp.value = (v === 'before') ? val : '';
-
-                if (ruleMenu) ruleMenu.hidden = true;
+                ruleBtn.dataset.val = b.dataset.val;
+                ruleBtn.querySelector('.txt').textContent = b.textContent;
+                ruleMenu.hidden = true;
             });
 
-            // open picker from visible inputs
-            pop.querySelectorAll('.pp-dtf-col').forEach(col => {
-                col.addEventListener('click', (ev) => {
-                    ev.stopPropagation();
-                    ruleMenu && (ruleMenu.hidden = true);
-
-                    const mode = col.getAttribute('data-open') === 'time' ? 'time' : 'date';
-                    openPicker(mode);
-                });
-            });
-
-            // draft change -> update visible
-            draftInp?.addEventListener('input', () => {
-                syncVisibleFromDraft();
-
-                const rule = (ruleBtn?.dataset?.val === 'before') ? 'before' : 'after';
-                const val = (draftInp?.value || '').trim();
-                if (fromInp) fromInp.value = (rule === 'after') ? val : '';
-                if (toInp) toInp.value = (rule === 'before') ? val : '';
-            });
-
-            // OK / Cancel / RESET
             okBtn?.addEventListener('click', () => {
                 const rule = (ruleBtn?.dataset?.val === 'before') ? 'before' : 'after';
-                const val = (draftInp?.value || '').trim();
+                const val = buildVal(dateInp?.value, timeInp?.value);
 
                 if (typeof set === 'function') {
                     if (rule === 'before') set({ rule: 'before', from: '', to: val });
@@ -4046,59 +3699,44 @@
                 if (fromInp) fromInp.value = (rule === 'after') ? val : '';
                 if (toInp) toInp.value = (rule === 'before') ? val : '';
 
-                closePicker();
                 pop.hidden = true;
                 renderRows();
             });
 
             cancelBtn?.addEventListener('click', () => {
-                closePicker();
                 pop.hidden = true;
             });
 
             resetBtn?.addEventListener('click', () => {
                 if (typeof set === 'function') set({ rule: defaultRule, from: '', to: '' });
 
-                if (draftInp) draftInp.value = '';
                 if (dateInp) dateInp.value = '';
                 if (timeInp) timeInp.value = '';
 
                 if (fromInp) fromInp.value = '';
                 if (toInp) toInp.value = '';
 
-                closePicker();
                 pop.hidden = true;
                 renderRows();
             });
 
-            // клик вне — закрыть попап (и меню правил / dtp)
+            // click outside closes
             document.addEventListener('click', (e) => {
                 if (!document.body.contains(pop) || pop.hidden) return;
-
-                // внутри попапа
-                if (e.target.closest(popSel)) {
-                    // клик по самому dtp — не закрываем
-                    if (e.target.closest('.pp-dtp-pop')) return;
-                    return;
-                }
-
-                // клик по кнопке открытия — игнор
-                if (e.target.closest(btnSel)) return;
-
+                if (e.target.closest(popSel) || e.target.closest(btnSel)) return;
                 pop.hidden = true;
                 if (ruleMenu) ruleMenu.hidden = true;
-                closePicker();
             });
         }
 
 
 
-        // Подключаем оба дата-фильтра (Between убран)
+
+
         wireDateFilter({
             btnSel: '#ppStartBtn', popSel: '#ppStartPop',
             ruleBtnSel: '#ppStartRuleBtn', ruleMenuSel: '#ppStartRuleMenu',
             dateSel: '#ppStartDate', timeSel: '#ppStartTime',
-            dtpSel: '#ppStartDtp', draftSel: '#ppStartDraft',
             fromSel: '#ppStartFrom', toSel: '#ppStartTo',
             okSel: '#ppStartOk', cancelSel: '#ppStartCancel', resetSel: '#ppStartReset',
             defaultRule: 'after',
@@ -4110,15 +3748,14 @@
             btnSel: '#ppEndBtn', popSel: '#ppEndPop',
             ruleBtnSel: '#ppEndRuleBtn', ruleMenuSel: '#ppEndRuleMenu',
             dateSel: '#ppEndDate', timeSel: '#ppEndTime',
-            dtpSel: '#ppEndDtp', draftSel: '#ppEndDraft',
             fromSel: '#ppEndFrom', toSel: '#ppEndTo',
             okSel: '#ppEndOk', cancelSel: '#ppEndCancel', resetSel: '#ppEndReset',
             defaultRule: 'before',
-            // если EndDate пустой — копируем из StartDate
             fallbackGet: () => startFilter,
             get: () => endFilter,
             set: (v) => { endFilter = v; }
         });
+
 
 
 

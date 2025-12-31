@@ -2148,9 +2148,8 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
     position: relative;
 }
 
-#pp-root .pp-date-pop input[type="date"] {
-    font-size: 12px;
-}
+
+
 
 #pp-root .pp-date-pop .pp-inp {
     width: 100%;
@@ -4927,6 +4926,32 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #tlDateTimePop.tl-dtp 
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
 
+
+/* tabular nums for all date/time inputs (timeline + table filters) */
+.tl-dtp .fld,
+#pp-root .pp-date-pop input[type="date"],
+#pp-root .pp-date-pop input[type="time"] {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Use the same "timeline" field look inside table date popups */
+#pp-root .pp-date-pop .tl-dtp .fld {
+    /* страхуем, если вдруг другие правила перебьют */
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+/* Compact widths to match dd.mm.yyyy / hh:mm proportions */
+#pp-root .pp-date-pop .tl-dtp .tl-dtp-col:first-child .fld {
+    width: 160px;
+}
+
+#pp-root .pp-date-pop .tl-dtp .tl-dtp-col:last-child .fld {
+    width: 110px;
+}
+
 /* Светлая тема для полей внутри DTP */
 :root:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp .fld,
 html:not(.theme-dark):not(.dark):not([data-theme="dark"]) .tl-dtp .fld,
@@ -5944,6 +5969,17 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
 
 
 /* ===== Table Date filters (Start/End) — UI like Calendar picker ===== */
+
+/* ===== Table Date filters (Start/End) — UI like Calendar picker ===== */
+
+/* табличные цифры (чтобы 1/7/0 не "прыгали" по ширине) */
+#pp-root .pp-date-pop .pp-dtf-inp,
+#pp-root .pp-date-pop .pp-time-item,
+#pp-root .pp-date-pop .pp-cal-grid {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+}
+
 
 /* важно: якорь позиционирования — сам header-cell фильтра */
 #pp-root .pp-date-filter {
