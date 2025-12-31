@@ -6064,6 +6064,29 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
     box-sizing: border-box;
 }
 
+
+/* === FIX: одинаковая высота для After/Before + Date + Time === */
+#pp-root .pp-date-pop .pp-dtf-rule {
+    height: 44px !important;
+    min-height: 44px !important;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#pp-root .pp-date-pop .pp-dtf-inpwrap {
+    height: 44px !important;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* чтобы кликабельность ощущалась “по всему полю” */
+#pp-root .pp-date-pop .pp-dtf-inpwrap,
+#pp-root .pp-date-pop .pp-dtf-col {
+    cursor: pointer;
+}
+
 /* фикс ширин: чтобы не раздувало попап */
 #pp-root .pp-date-pop .pp-dtf-inpwrap.is-date .pp-dtf-inp {
     width: 140px;
@@ -6165,7 +6188,8 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
     grid-column: 1;
     grid-row: 1;
     height: 44px;
-    max-width: 95px;
+    max-width: 100px;
+    min-width: 100px;
     justify-content: space-between;
 }
 

@@ -2416,25 +2416,24 @@
                 tList.innerHTML = arr.map(t => `<label class="pp-type-opt"><input type="checkbox" value="${t}"/> <span>${t}</span></label>`).join('') || '<div class="muted small">No types</div>';
             }
 
-            // 4) Dates (Start/End)
-            startFilter = { rule: 'between', from: '', to: '' };
-            endFilter = { rule: 'between', from: '', to: '' };
+            // 4) Dates (Start/End) — Between убран, держим только After/Before
+            startFilter = { rule: 'after', from: '', to: '' };
+            endFilter = { rule: 'before', from: '', to: '' };
 
             const sRule = wrap.querySelector('#ppStartRuleBtn');
             const sFrom = wrap.querySelector('#ppStartFrom');
             const sTo = wrap.querySelector('#ppStartTo');
-            if (sRule) { sRule.dataset.val = 'between'; sRule.querySelector('.txt').textContent = 'Between'; }
+            if (sRule) { sRule.dataset.val = 'after'; sRule.querySelector('.txt').textContent = 'After'; }
             if (sFrom) sFrom.value = '';
             if (sTo) sTo.value = '';
 
             const eRule = wrap.querySelector('#ppEndRuleBtn');
             const eFrom = wrap.querySelector('#ppEndFrom');
             const eTo = wrap.querySelector('#ppEndTo');
-
-            // EndDate дефолт: Before (Between больше нет)
             if (eRule) { eRule.dataset.val = 'before'; eRule.querySelector('.txt').textContent = 'Before'; }
             if (eFrom) eFrom.value = '';
             if (eTo) eTo.value = '';
+
 
 
             // 4.5) Снять фильтр «Active at picked time»
@@ -3626,11 +3625,20 @@
             }
 
             function openMenuBelow(anchorBtn, menuEl) {
-                const r = anchorBtn.getBoundingClientRect();
-                menuEl.style.left = `${Math.round(r.left)}px`;
-                menuEl.style.top = `${Math.round(r.bottom + 6)}px`;
+                // Меню лежит ВНУТРИ pop (absolute), поэтому координаты нужны ОТНОСИТЕЛЬНО pop/offsetParent
+                const btnR = anchorBtn.getBoundingClientRect();
+
+                const parent = menuEl.offsetParent || pop;
+                const parentR = parent.getBoundingClientRect();
+
+                const left = Math.round(btnR.left - parentR.left);
+                const top = Math.round(btnR.bottom - parentR.top + 6);
+
+                menuEl.style.left = `${Math.max(8, left)}px`;
+                menuEl.style.top = `${Math.max(8, top)}px`;
                 menuEl.hidden = false;
             }
+
 
             function loadFromState() {
                 const stateObj = (typeof get === 'function' && get()) || (typeof fallbackGet === 'function' && fallbackGet()) || null;
