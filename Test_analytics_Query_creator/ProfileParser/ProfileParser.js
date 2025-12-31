@@ -3670,13 +3670,13 @@
                     try { inp.showPicker?.(); } catch (_) { }
                 });
 
-                // если пользователь кликнул в пустое поле (type=text), сразу откроем picker
+                // ВСЕГДА открываем picker по клику в поле (и когда пусто, и когда уже есть value)
+                // иначе в нативных date/time при заполненном value часто открытие происходит только по иконке
                 inp.addEventListener('click', () => {
-                    if (inp.type === 'text') {
-                        toRealType();
-                        try { inp.showPicker?.(); } catch (_) { }
-                    }
+                    toRealType();
+                    try { inp.showPicker?.(); } catch (_) { }
                 });
+
 
                 // если ушли и не выбрали — вернуть placeholder
                 inp.addEventListener('blur', () => {
