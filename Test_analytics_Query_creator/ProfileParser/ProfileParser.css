@@ -683,6 +683,28 @@
     justify-content: space-between;
 }
 
+/* --- Make all 3 controls the same height inside date filter popup --- */
+#pp-root .pp-date-pop .pp-select.pp-dtf-rule,
+#pp-root .pp-date-pop .tl-dtp .fld {
+    height: 44px !important;
+    box-sizing: border-box;
+}
+
+/* unify padding so heights truly match (override tl-dtp default padding) */
+#pp-root .pp-date-pop .tl-dtp .fld {
+    padding: 0 12px;
+    /* instead of 10px 12px */
+    line-height: 38px;
+}
+
+/* darker placeholders for our hybrid "text" state */
+#pp-root .pp-date-pop .tl-dtp .fld::placeholder {
+    color: rgba(148, 163, 184, 0.75);
+    /* slightly dim */
+    font-variant-numeric: tabular-nums;
+}
+
+
 #pp-root .pp-date-pop .pp-dtf-content {
     min-width: 360px;
 }

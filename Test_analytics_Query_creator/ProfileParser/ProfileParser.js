@@ -3640,6 +3640,65 @@
             }
 
 
+            function ensureHybridPicker(inp, realType, placeholderText) {
+                if (!inp) return;
+
+                // Мы хотим плейсхолдеры DD-MM-YYYY / HH-MM, а нативные date/time их нормально не показывают.
+                // Поэтому: пока поле пустое — держим type="text" с placeholder.
+                // При фокусе/клике — переключаем на date/time и открываем picker.
+                inp.dataset.realType = realType;
+                inp.dataset.hybrid = '1';
+
+                const toTextIfEmpty = () => {
+                    if (!inp.value) {
+                        inp.type = 'text';
+                        inp.placeholder = placeholderText;
+                    }
+                };
+
+                const toRealType = () => {
+                    inp.type = realType;
+                    inp.removeAttribute('placeholder');
+                };
+
+                // стартовое состояние
+                toTextIfEmpty();
+
+                inp.addEventListener('focus', () => {
+                    toRealType();
+                    // В Chrome можно форсить showPicker()
+                    try { inp.showPicker?.(); } catch (_) { }
+                });
+
+                // если пользователь кликнул в пустое поле (type=text), сразу откроем picker
+                inp.addEventListener('click', () => {
+                    if (inp.type === 'text') {
+                        toRealType();
+                        try { inp.showPicker?.(); } catch (_) { }
+                    }
+                });
+
+                // если ушли и не выбрали — вернуть placeholder
+                inp.addEventListener('blur', () => {
+                    // маленькая задержка, чтобы value успел проставиться из picker
+                    setTimeout(() => {
+                        if (!inp.value) toTextIfEmpty();
+                    }, 0);
+                });
+            }
+
+            function syncHybridTypeByValue(inp, realType, placeholderText) {
+                if (!inp) return;
+                // если есть значение — держим реальный type, если нет — text+placeholder
+                if (inp.value) {
+                    inp.type = realType;
+                    inp.removeAttribute('placeholder');
+                } else {
+                    inp.type = 'text';
+                    inp.placeholder = placeholderText;
+                }
+            }
+
             function loadFromState() {
                 const stateObj = (typeof get === 'function' && get()) || (typeof fallbackGet === 'function' && fallbackGet()) || null;
                 const rule = (stateObj && (stateObj.rule === 'before' || stateObj.rule === 'after')) ? stateObj.rule : defaultRule;
@@ -3655,7 +3714,16 @@
 
                 if (dateInp) dateInp.value = date || '';
                 if (timeInp) timeInp.value = time || '';
+
+                // важно: если значений нет — оставляем пустыми (никакой auto-now UTC),
+                // и показываем плейсхолдеры
+                syncHybridTypeByValue(dateInp, 'date', 'DD-MM-YYYY');
+                syncHybridTypeByValue(timeInp, 'time', 'HH-MM');
             }
+
+            // Инициализация hybrid-полей (1 раз)
+            ensureHybridPicker(dateInp, 'date', 'DD-MM-YYYY');
+            ensureHybridPicker(timeInp, 'time', 'HH-MM');
 
             // open/close popup
             btn.addEventListener('click', (e) => {
@@ -3667,15 +3735,10 @@
 
                 if (willOpen) {
                     loadFromState();
-
-                    // если совсем пусто — подставим текущий UTC как удобный дефолт
-                    if (dateInp && !dateInp.value) {
-                        const n = nowUTCParts();
-                        dateInp.value = n.date;
-                        if (timeInp && !timeInp.value) timeInp.value = n.time;
-                    }
+                    // НИЧЕГО не подставляем по умолчанию — оставляем пусто с placeholder'ами
                 }
             });
+
 
             // rule dropdown open
             ruleBtn?.addEventListener('click', (e) => {
