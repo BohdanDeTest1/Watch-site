@@ -2234,9 +2234,10 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-select-me
 
     position: absolute !important;
     /* критично: перекрываем любой relative */
-    top: 40px;
-    /* как у остальных попапов */
+    top: 26px;
+    right: 15px;
     z-index: 50;
+    border: none;
     /* поверх шапки/строк */
 }
 

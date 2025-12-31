@@ -1322,8 +1322,8 @@
       nameFilter = { rule: 'equals', query: title };
       typeFilter = new Set();
       typeTextFilter = { rule: 'contains', query: '' };
-      startFilter = { rule: 'between', from: '', to: '' };
-      endFilter = { rule: 'between', from: '', to: '' };
+      startFilter = { rule: 'after', from: '', to: '' };
+      endFilter = { rule: 'before', from: '', to: '' };
       stateFilter = new Set(allStates);
 
       renderRows(true);

@@ -10,6 +10,24 @@
     margin-top: 6px;
 }
 
+#pp-root #ppPromoCal {
+    margin-top: 6px;
+}
+
+/* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps) */
+#pp-root #ppPromoLoTable.pp-table {
+    overflow: visible;
+    /* иначе попап обрезается border-radius/overflow:hidden */
+}
+
+#pp-root #ppPromoLoTable .pp-t-head {
+    overflow: visible;
+    position: relative;
+    z-index: 5;
+    /* держим шапку выше строк, чтобы попап был кликабельный */
+}
+
+
 /* [FIX] Promotions: синяя линия Picked (которую двигаем) должна быть поверх баров.
    В базовом CSS у .tl-picked z-index: 4, а у промо-баров z-index: 6 — поэтому линия "под" барами. */
 #ppPromoCal .tl-picked {
