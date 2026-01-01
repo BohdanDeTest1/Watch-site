@@ -298,9 +298,12 @@
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
     overflow-x: hidden;
-    padding-bottom: 92px;
-    /* space for Promotions in Admin button */
+
+    /* панель тянется до низа, а кнопка "PromotionInTheAdmin" лежит поверх,
+       поэтому делаем внутренний отступ под кнопку, чтобы контент не заезжал под неё */
+    padding-bottom: calc(var(--pp-admin-h) + 24px);
 }
+
 
 /* --- [UI] Floating close button: keep fully visible and clickable --- */
 #ppPromoLiveops #ppPromoLoClose.pp-close-float {
@@ -359,14 +362,13 @@
 }
 
 
-/* --- [PROMOS] Open-state for right info panel: clone of .pp-item.info-open .pp-liveops-detail --- */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
     position: absolute;
     right: 0;
     top: 15px;
-    /* как у LiveOps: верх панели = верх таблицы */
-    bottom: calc(var(--pp-admin-h) + 16px);
-    /* низ панели = выше кнопки */
+    /* верх панели = верх таблицы */
+    bottom: 0;
+    /* важно: теперь панель ДО НИЗА, включая область под кнопкой */
     width: var(--pp-detail-w);
 
     padding: 0 16px 16px 9px;
@@ -379,11 +381,12 @@
 }
 
 
-/* чтобы контент не “заезжал” под кнопку Promotions in Admin */
+
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
-    padding-bottom: 90px;
+    padding-bottom: calc(var(--pp-admin-h) + 24px);
     /* запас под кнопку + отступ */
 }
+
 
 /* принудительно переносим длинные пути/значения */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-v,
@@ -674,9 +677,12 @@
 
 /* кнопка поверх контента, с “непрозрачной” подложкой */
 #ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
-    z-index: 5;
+    z-index: 1210 !important;
+    /* MUST be above the detail panel */
     box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+    pointer-events: auto;
 }
+
 
 
 
@@ -1580,4 +1586,19 @@
 [data-theme="dark"] #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw,
 .dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
     background: rgba(255, 255, 255, 0.04);
+}
+
+/* [PROMOS][LIGHT] Fix: делаем фон инфопанели полностью solid (без прозрачности) */
+#ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    background: var(--card) !important;
+    opacity: 1 !important;
+}
+
+
+/* [PROMOS][DARK] Fix: убираем прозрачность подложки инфопанели (делаем фон полностью “solid”) */
+:root.theme-dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail,
+.theme-dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail,
+[data-theme="dark"] #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail,
+.dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
+    background: var(--pp-dark-bg, var(--card-bg, #1c2136)) !important;
 }
