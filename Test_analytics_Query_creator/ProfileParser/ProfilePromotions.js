@@ -1255,6 +1255,28 @@
     wireSort('#ppPromoStartBtn', 'startPretty');
     wireSort('#ppPromoEndBtn', 'endPretty');
 
+    // === Global close: click anywhere outside popups closes ALL filter panels ===
+    // Это решает "панель остаётся открытой, если я кликаю по другим фильтрам/областям".
+    const __ppPromoCloseAllPops = () => {
+      wrap.querySelectorAll('.pp-filter-pop').forEach(p => p.setAttribute('hidden', ''));
+      wrap.querySelectorAll('.pp-select-menu').forEach(m => m.setAttribute('hidden', ''));
+      wrap.querySelectorAll('.pp-rule-pop').forEach(m => m.setAttribute('hidden', ''));
+    };
+
+    document.addEventListener('click', (e) => {
+      // если клик вообще не в нашей секции Promotions — игнор
+      if (!wrap.contains(e.target)) return;
+
+      // если клик по funnel-иконке — пусть конкретный handler сам решает (и закрывает others)
+      if (e.target.closest('.pp-filter-ico')) return;
+
+      // если клик внутри любого попапа/меню — не закрываем
+      if (e.target.closest('.pp-filter-pop') || e.target.closest('.pp-select-menu') || e.target.closest('.pp-rule-pop')) return;
+
+      __ppPromoCloseAllPops();
+    });
+
+
     // --- render rows ---
     let allFilteredSorted = [];
     function renderRows(resetPage) {
@@ -1834,6 +1856,20 @@
 
       // open/close popup
       btn.addEventListener('click', (e) => {
+        // ВАЖНО: открываем date-filter ТОЛЬКО по клику на funnel-иконку.
+        // Клик по тексту/стрелкам — это сортировка (wireSort), и попап мы НЕ открываем.
+        const onFunnel = !!e.target.closest('.pp-filter-ico');
+
+        if (!onFunnel) {
+          // Если попап уже открыт и юзер кликнул по шапке (например, сортировка) —
+          // закрываем его, чтобы не "залипал".
+          if (!pop.hidden) {
+            pop.hidden = true;
+            if (ruleMenu) ruleMenu.hidden = true;
+          }
+          return; // не блокируем сортировку
+        }
+
         e.stopPropagation();
         closeAllOtherPops();
 
@@ -1847,12 +1883,11 @@
           // при этом в инпутах визуально остаётся placeholder до выбора
           if (dateInp && !dateInp.value) {
             const n = nowUTCParts();
-            // не сетим value прямо сейчас — иначе placeholder пропадёт
-            // просто держим как "первую позицию" при открытии:
-            // (Chrome сам подхватит текущую дату, но так надёжнее)
+            // ничего не сетим — placeholder пусть остаётся
           }
         }
       });
+
 
       // rule dropdown open
       ruleBtn?.addEventListener('click', (e) => {
