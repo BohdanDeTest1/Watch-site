@@ -250,18 +250,33 @@
               </div>
             </div>
 
-            <!-- Type -->
+                        <!-- Type -->
             <div class="pp-th type">
-             <button class="pp-th-btn" id="ppPromoTypeBtn" type="button" aria-haspopup="true">
-  <span class="txt">Type</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
-</button>
+              <button class="pp-th-btn" id="ppPromoTypeBtn" type="button" aria-haspopup="true">
+                <span class="txt">Type</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
+              </button>
+
               <div class="pp-filter-pop" id="ppPromoTypePop" hidden>
+                <!-- чекбоксы (как в LiveOps) -->
+                <div class="pp-filter-actions">
+                  <button class="pp-mini" id="ppPromoTypeAll" type="button">All</button>
+                  <button class="pp-mini" id="ppPromoTypeNone" type="button">None</button>
+                </div>
+
                 <div class="pp-filter-row">
+                  <input class="pp-filter-inp" id="ppPromoTypeSearch" placeholder="Search types..." />
+                </div>
+
+                <div class="pp-filter-list" id="ppPromoTypeList"></div>
+
+                <!-- текстовый фильтр (оставляем как у тебя) -->
+                <div class="pp-filter-row" style="margin-top:10px;">
                   <button class="pp-rule-btn" id="ppPromoTypeRuleBtn" type="button" data-val="contains">
                     <span class="txt">Contains</span><span class="arr">▾</span>
                   </button>
                   <input class="pp-filter-inp" id="ppPromoTypeQuery" placeholder="Type..." />
                 </div>
+
                 <div class="pp-filter-actions">
                   <button id="ppPromoTypeReset" class="pp-link-btn" type="button">RESET</button>
                   <button id="ppPromoTypeApply" class="pp-btn primary" type="button">CONFIRM</button>
@@ -276,6 +291,7 @@
                 </div>
               </div>
             </div>
+
 
             <!-- Start Date -->
             <!-- Start Date -->

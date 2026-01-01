@@ -1178,6 +1178,19 @@
     font-weight: 700;
 }
 
+/* ===== Promotions Type filter: list/search (missing markup was added in JS) ===== */
+#pp-root #ppPromoTypePop #ppPromoTypeList {
+    max-height: 220px;
+    overflow: auto;
+    padding-top: 6px;
+}
+
+#pp-root #ppPromoTypePop #ppPromoTypeSearch {
+    width: 100%;
+}
+
+
+
 #pp-root .pp-th-btn .pp-filter-ico {
     width: 14px;
     height: 14px;
