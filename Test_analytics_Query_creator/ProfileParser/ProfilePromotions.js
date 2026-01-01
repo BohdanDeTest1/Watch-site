@@ -256,40 +256,16 @@
                 <span class="txt">Type</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
               </button>
 
-              <div class="pp-filter-pop" id="ppPromoTypePop" hidden>
-                <!-- чекбоксы (как в LiveOps) -->
-                <div class="pp-filter-actions">
-                  <button class="pp-mini" id="ppPromoTypeAll" type="button">All</button>
-                  <button class="pp-mini" id="ppPromoTypeNone" type="button">None</button>
-                </div>
-
-                <div class="pp-filter-row">
-                  <input class="pp-filter-inp" id="ppPromoTypeSearch" placeholder="Search types..." />
-                </div>
-
-                <div class="pp-filter-list" id="ppPromoTypeList"></div>
-
-                <!-- текстовый фильтр (оставляем как у тебя) -->
-                <div class="pp-filter-row" style="margin-top:10px;">
-                  <button class="pp-rule-btn" id="ppPromoTypeRuleBtn" type="button" data-val="contains">
-                    <span class="txt">Contains</span><span class="arr">▾</span>
-                  </button>
-                  <input class="pp-filter-inp" id="ppPromoTypeQuery" placeholder="Type..." />
-                </div>
+             <div class="pp-filter-pop" id="ppPromoTypePop" hidden>
+                <input class="pp-inp" id="ppPromoTypeSearch" type="text" placeholder="Filter list…">
+                <div id="ppPromoTypeList" class="pp-type-list"></div>
 
                 <div class="pp-filter-actions">
-                  <button id="ppPromoTypeReset" class="pp-link-btn" type="button">RESET</button>
-                  <button id="ppPromoTypeApply" class="pp-btn primary" type="button">CONFIRM</button>
-                </div>
-
-                <div class="pp-rule-pop" id="ppPromoTypeRuleMenu" hidden>
-                  <button type="button" data-val="contains">Contains</button>
-                  <button type="button" data-val="eq">Equals</button>
-                  <button type="button" data-val="starts">Starts with</button>
-                  <button type="button" data-val="ends">Ends with</button>
-                  <button type="button" data-val="blank">Is blank</button>
+                <button id="ppPromoTypeReset" class="pp-link-btn" type="button">RESET</button>
+                <button id="ppPromoTypeApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
               </div>
+
             </div>
 
 
@@ -618,7 +594,7 @@
 
     const allTypes = Array.from(new Set(base.map(i => i.type).filter(Boolean))).sort();
     let typeFilter = new Set(); // empty = all
-    let typeTextFilter = { rule: 'contains', query: '' };
+
 
     const allStates = ['On']; // promotions — всегда On (чтобы таблица 1-в-1 выглядела)
     let stateFilter = new Set(allStates); // по умолчанию всё включено
@@ -674,21 +650,7 @@
         rows = rows.filter(r => typeFilter.has(r.type));
       }
 
-      // type (text rule)
-      if (typeTextFilter) {
-        const q = (typeTextFilter.query || '').toLowerCase();
-        rows = rows.filter(r => {
-          const s = (r.type || '').toLowerCase();
-          switch (typeTextFilter.rule) {
-            case 'contains': return s.includes(q);
-            case 'notcontains': return q ? !s.includes(q) : true;
-            case 'starts': return s.startsWith(q);
-            case 'equals': return s === q;
-            case 'blank': return !s.trim();
-            default: return true;
-          }
-        });
-      }
+
 
       // dates
       rows = rows.filter(r => passDateRule(r.startPretty, startFilter) && passDateRule(r.endPretty, endFilter));
@@ -1449,7 +1411,6 @@
     resetBtn?.addEventListener('click', () => {
       nameFilter = { rule: 'contains', query: '' };
       typeFilter = new Set();
-      typeTextFilter = { rule: 'contains', query: '' };
       startFilter = { rule: 'between', from: '', to: '' };
       endFilter = { rule: 'between', from: '', to: '' };
       stateFilter = new Set(allStates);
@@ -1459,6 +1420,7 @@
       detEl.innerHTML = '';
       renderRows(true);
     });
+
 
     // --- filter wiring (State) ---
     (function wireStateFilter() {
@@ -1614,12 +1576,6 @@
 
       const search = wrap.querySelector('#ppPromoTypeSearch');
       const listBox = wrap.querySelector('#ppPromoTypeList');
-      const allBtn = wrap.querySelector('#ppPromoTypeAll');
-      const noneBtn = wrap.querySelector('#ppPromoTypeNone');
-
-      const ruleBtn = wrap.querySelector('#ppPromoTypeRuleBtn');
-      const ruleMenu = wrap.querySelector('#ppPromoTypeRuleMenu');
-      const queryInput = wrap.querySelector('#ppPromoTypeQuery');
 
       const reset = wrap.querySelector('#ppPromoTypeReset');
       const apply = wrap.querySelector('#ppPromoTypeApply');
@@ -1627,21 +1583,24 @@
       if (!btn || !pop || !listBox) return;
 
       let draftSet = new Set(typeFilter);
-      let draftText = { ...typeTextFilter };
 
       function buildList(q) {
         const qq = String(q || '').toLowerCase();
         const filtered = allTypes.filter(t => String(t || '').toLowerCase().includes(qq));
+
         listBox.innerHTML = filtered.map(t => {
           const checked = draftSet.has(t) ? 'checked' : '';
-          return `<label class="pp-chk"><input type="checkbox" data-val="${escapeHtml(t)}" ${checked}/> <span>${escapeHtml(t)}</span></label>`;
-        }).join('');
+          return `<label class="pp-type-opt"><input type="checkbox" value="${escapeHtml(t)}" ${checked}/> <span>${escapeHtml(t)}</span></label>`;
+        }).join('') || '<div class="muted small">No types</div>';
       }
 
       btn.addEventListener('click', (e) => {
+        // открываем фильтр ТОЛЬКО по клику на funnel-иконку
         if (!e.target.closest('.pp-filter-ico')) return;
+
         e.stopPropagation();
 
+        // close others
         wrap.querySelector('#ppPromoStatePop')?.setAttribute('hidden', '');
         wrap.querySelector('#ppPromoNamePop')?.setAttribute('hidden', '');
         wrap.querySelector('#ppPromoStartPop')?.setAttribute('hidden', '');
@@ -1652,72 +1611,40 @@
 
         if (willOpen) {
           draftSet = new Set(typeFilter);
-          draftText = { ...typeTextFilter };
-          search.value = '';
+          if (search) search.value = '';
           buildList('');
-
-          ruleBtn.dataset.val = draftText.rule || 'contains';
-          ruleBtn.querySelector('.txt').textContent = ({
-            contains: 'Contains', notcontains: 'Not contains', starts: 'Starts with', equals: 'Equals', blank: 'Is blank'
-          })[ruleBtn.dataset.val] || 'Contains';
-
-          queryInput.value = draftText.query || '';
+          search?.focus();
         }
       });
 
       search?.addEventListener('input', () => buildList(search.value));
 
       listBox.addEventListener('change', (e) => {
-        const inp = e.target.closest('input[type="checkbox"][data-val]');
-        if (!inp) return;
-        const v = inp.getAttribute('data-val');
-        if (inp.checked) draftSet.add(v); else draftSet.delete(v);
-      });
-
-      allBtn?.addEventListener('click', () => { draftSet = new Set(allTypes); buildList(search.value); });
-      noneBtn?.addEventListener('click', () => { draftSet = new Set(); buildList(search.value); });
-
-      ruleBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (ruleMenu.hidden) openMenuBelow(ruleBtn, ruleMenu);
-        else ruleMenu.hidden = true;
-      });
-
-      ruleMenu?.addEventListener('click', (e) => {
-        const b = e.target.closest('button[data-val]');
-        if (!b) return;
-        ruleBtn.dataset.val = b.dataset.val;
-        ruleBtn.querySelector('.txt').textContent = b.textContent;
-        ruleMenu.hidden = true;
+        const cb = e.target.closest('input[type="checkbox"]');
+        if (!cb) return;
+        if (cb.checked) draftSet.add(cb.value);
+        else draftSet.delete(cb.value);
       });
 
       reset?.addEventListener('click', () => {
         typeFilter = new Set();
-        typeTextFilter = { rule: 'contains', query: '' };
         pop.hidden = true;
         renderRows(true);
       });
 
       apply?.addEventListener('click', () => {
         typeFilter = new Set(draftSet);
-        typeTextFilter = { rule: ruleBtn.dataset.val, query: queryInput.value.trim() };
         pop.hidden = true;
         renderRows(true);
       });
 
       document.addEventListener('click', (e) => {
         if (!document.body.contains(pop) || pop.hidden) return;
-        if (!ruleMenu.hidden &&
-          !e.target.closest('#ppPromoTypeRuleMenu') &&
-          !e.target.closest('#ppPromoTypeRuleBtn')) {
-          ruleMenu.hidden = true;
-          return;
-        }
         if (e.target.closest('#ppPromoTypePop') || e.target.closest('#ppPromoTypeBtn')) return;
         pop.hidden = true;
-        ruleMenu.hidden = true;
       });
     })();
+
 
     function wireDateFilter(opts) {
       const {

@@ -1178,16 +1178,42 @@
     font-weight: 700;
 }
 
-/* ===== Promotions Type filter: list/search (missing markup was added in JS) ===== */
-#pp-root #ppPromoTypePop #ppPromoTypeList {
-    max-height: 220px;
-    overflow: auto;
-    padding-top: 6px;
+/* ===== Promotions Type filter — match LiveOps Type popup ===== */
+#pp-root #ppPromoTypePop {
+    min-width: 350px;
+    padding: 14px;
 }
 
-#pp-root #ppPromoTypePop #ppPromoTypeSearch {
+#pp-root #ppPromoTypePop .pp-inp {
     width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    outline: none;
 }
+
+#pp-root #ppPromoTypePop .pp-type-list {
+    display: grid;
+    gap: 8px;
+    max-height: 180px;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+#pp-root #ppPromoTypePop .pp-type-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+}
+
+#pp-root #ppPromoTypePop .pp-type-opt input {
+    accent-color: var(--accent);
+}
+
 
 
 
