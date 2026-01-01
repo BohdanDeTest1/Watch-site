@@ -1602,3 +1602,76 @@
 .dark #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {
     background: var(--pp-dark-bg, var(--card-bg, #1c2136)) !important;
 }
+
+/* --- [UI] Floating close button: keep fully visible and clickable --- */
+#ppPromoLiveops #ppPromoLoClose.pp-close-float {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+
+    /* ProfileParser.css задаёт .pp-close-float { display:none; } — override только в открытом состоянии */
+    display: none !important;
+
+    z-index: 1215;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 22px;
+    line-height: 24px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* показываем кнопку закрытия только когда открыта инфопанель (как в LiveOps) */
+#pp-root .pp-item.info-open #ppPromoLoClose.pp-close-float {
+    display: inline-flex !important;
+}
+
+
+/* --- [PROMOS] Split layout + solid info panel background (match LiveOps) --- */
+
+/* гарантируем правильный контекст позиционирования для aside + кнопок */
+#pp-root #ppPromoLiveops {
+    position: relative;
+    overflow: visible;
+}
+
+/* Floating Admin button: same behavior as LiveOps (.pp-admin-float) */
+#ppPromoLiveops #ppPromoAdminBtn.pp-admin-float {
+    position: absolute;
+    right: 11px;
+    bottom: 0px;
+    z-index: 1210;
+    display: none;
+    width: calc(var(--pp-detail-w) - 16px);
+    height: var(--pp-admin-h);
+    align-items: center;
+    justify-content: center;
+}
+
+/* показываем кнопку только когда инфопанель открыта */
+#pp-root .pp-item.info-open #ppPromoAdminBtn.pp-admin-float {
+    display: inline-flex !important;
+}
+
+/* Promotions detail panel: make it reach the very bottom (behind the Admin button)
+   + remove any "transparent" look in dark theme by forcing a solid background. */
+#pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail {
+    bottom: 0;
+    background: var(--pp-table-inner-bg, var(--card-bg));
+    /* иногда визуально кажется прозрачной из-за наложений — прижимаем к fully-opaque */
+    opacity: 1;
+}
+
+/* чтобы контент не заезжал под кнопку */
+#pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
+    padding-bottom: calc(var(--pp-admin-h) + 24px);
+}
+
+/* принудительно переносим длинные пути/значения */
+#pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail .pp-v,
+#pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail code,
+#pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail pre {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}

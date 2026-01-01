@@ -445,9 +445,13 @@
 
     closeBtn?.addEventListener('click', () => {
       const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+      // LiveOps layout relies on `.pp-item.info-open` on the whole section.
+      // Keep both flags in sync (section + inner container).
+      wrap.classList.remove('info-open');
       liveopsEl.classList.remove('info-open');
       detEl.setAttribute('aria-hidden', 'true');
     });
+
 
 
     // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
@@ -1060,9 +1064,9 @@
       // ---- OPEN the info panel (this is what makes "Info" visually work) ----
       detEl.setAttribute('aria-hidden', 'false');
       const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+      // LiveOps: the *section* gets `info-open` which triggers the split layout.
+      wrap.classList.add('info-open');
       liveopsEl.classList.add('info-open');
-
-      // keep close button visible (CSS already depends on .info-open)
 
 
     }
@@ -1416,8 +1420,11 @@
       stateFilter = new Set(allStates);
 
       // UI sync minimal (попапы сами подтянут draft при открытии)
+      const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
       wrap.classList.remove('info-open');
+      liveopsEl.classList.remove('info-open');
       detEl.innerHTML = '';
+      detEl.setAttribute('aria-hidden', 'true');
       renderRows(true);
     });
 
