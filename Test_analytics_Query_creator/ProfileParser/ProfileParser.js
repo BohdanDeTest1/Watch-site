@@ -379,22 +379,59 @@
         const ms = Date.parse(iso);
         return Number.isFinite(ms) ? ms : null;
     }
-    function dayStartMs(isoDate /* YYYY-MM-DD */) { return Date.parse(isoDate + 'T00:00:00Z'); }
-    function dayEndMs(isoDate) { return Date.parse(isoDate + 'T23:59:59Z'); }
+
+    // нормализуем дату в ISO: YYYY-MM-DD
+    function __ppNormIsoDate(d) {
+        const s = String(d || '').trim();
+        if (!s) return '';
+        // уже ISO
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+        // DD.MM.YYYY или DD-MM-YYYY
+        const m = s.match(/^(\d{2})[.\-](\d{2})[.\-](\d{4})$/);
+        if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+
+        return s; // fallback (пусть дальше safeParse решит)
+    }
+
+    function __ppSafeParse(isoLike) {
+        const ms = Date.parse(isoLike);
+        return Number.isFinite(ms) ? ms : null;
+    }
+
+    function dayStartMs(anyDate /* YYYY-MM-DD or DD.MM.YYYY */) {
+        const d = __ppNormIsoDate(anyDate);
+        if (!d) return null;
+        return __ppSafeParse(d + 'T00:00:00Z');
+    }
+    function dayEndMs(anyDate /* YYYY-MM-DD or DD.MM.YYYY */) {
+        const d = __ppNormIsoDate(anyDate);
+        if (!d) return null;
+        return __ppSafeParse(d + 'T23:59:59Z');
+    }
 
     function passDateRule(cellStr, f) {
         // cellStr — строка из таблицы формата "YYYY-MM-DD HH:mm:ss UTC"
         if (!f || !f.rule) return true;
+
         const t = toMsFromCell(cellStr);
         if (t == null) return true;
 
-        // поддержка значений "YYYY-MM-DD HH:mm" в фильтре
-        const hasTime = (s) => typeof s === 'string' && s.trim().length > 10 && /\d{2}:\d{2}$/.test(s.trim());
+        // поддержка значений "YYYY-MM-DD HH:mm" (и DD.MM.YYYY HH:mm) в фильтре
+        const hasTime = (s) =>
+            typeof s === 'string' &&
+            s.trim().length > 10 &&
+            /\d{2}:\d{2}$/.test(s.trim());
+
         const toPointMs = (s) => {
             if (!s) return null;
-            const [d, tm] = s.trim().split(/\s+/); // "YYYY-MM-DD" ["HH:mm"]
-            if (hasTime(s)) return Date.parse(`${d}T${tm}:00Z`);
-            // без времени — границы суток
+            const parts = String(s).trim().split(/\s+/);
+            const dRaw = parts[0] || '';
+            const tm = parts[1] || '';
+            const d = __ppNormIsoDate(dRaw);
+            if (!d) return null;
+
+            if (hasTime(s) && tm) return __ppSafeParse(`${d}T${tm}:00Z`);
             return null;
         };
 
@@ -403,16 +440,21 @@
             const b = hasTime(f.to) ? toPointMs(f.to) : (f.to ? dayEndMs(f.to) : null);
             return (a == null || t >= a) && (b == null || t <= b);
         }
+
         if (f.rule === 'before') {
-            const b = hasTime(f.from) ? toPointMs(f.from) : (f.from ? dayEndMs(f.from) : null);
+            // ВАЖНО: для "before" значение хранится в f.to (а не в f.from)
+            const b = hasTime(f.to) ? toPointMs(f.to) : (f.to ? dayEndMs(f.to) : null);
             return (b == null) || (t <= b);
         }
+
         if (f.rule === 'after') {
             const a = hasTime(f.from) ? toPointMs(f.from) : (f.from ? dayStartMs(f.from) : null);
             return (a == null) || (t >= a);
         }
+
         return true;
     }
+
 
 
     // приводим коллекцию liveops к массиву объектов

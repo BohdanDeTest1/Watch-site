@@ -468,24 +468,58 @@
 
     // --- helpers (локально, чтобы не зависеть от ProfileParser.js) ---
     function stripUTC(s) { return String(s || '').replace(/\s*UTC\s*$/i, '').trim(); }
-    function toMsFromCell(s) {
-      const iso = stripUTC(s).replace(' ', 'T') + 'Z';
-      const ms = Date.parse(iso);
+
+    function __ppPromoNormIsoDate(d) {
+      const s = String(d || '').trim();
+      if (!s) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+      const m = s.match(/^(\d{2})[.\-](\d{2})[.\-](\d{4})$/);
+      if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+
+      return s;
+    }
+
+    function __ppPromoSafeParse(isoLike) {
+      const ms = Date.parse(isoLike);
       return Number.isFinite(ms) ? ms : null;
     }
-    function dayStartMs(isoDate) { return Date.parse(isoDate + 'T00:00:00Z'); }
-    function dayEndMs(isoDate) { return Date.parse(isoDate + 'T23:59:59Z'); }
+
+    function toMsFromCell(s) {
+      const iso = stripUTC(s).replace(' ', 'T') + 'Z';
+      return __ppPromoSafeParse(iso);
+    }
+
+    function dayStartMs(anyDate) {
+      const d = __ppPromoNormIsoDate(anyDate);
+      if (!d) return null;
+      return __ppPromoSafeParse(d + 'T00:00:00Z');
+    }
+    function dayEndMs(anyDate) {
+      const d = __ppPromoNormIsoDate(anyDate);
+      if (!d) return null;
+      return __ppPromoSafeParse(d + 'T23:59:59Z');
+    }
 
     function passDateRule(cellStr, f) {
       if (!f || !f.rule) return true;
+
       const t = toMsFromCell(cellStr);
       if (t == null) return true;
 
-      const hasTime = (s) => typeof s === 'string' && s.trim().length > 10 && /\d{2}:\d{2}$/.test(s.trim());
+      const hasTime = (s) =>
+        typeof s === 'string' &&
+        s.trim().length > 10 &&
+        /\d{2}:\d{2}$/.test(s.trim());
+
       const toPointMs = (s) => {
         if (!s) return null;
-        const [d, tm] = s.trim().split(/\s+/);
-        if (hasTime(s)) return Date.parse(`${d}T${tm}:00Z`);
+        const parts = String(s).trim().split(/\s+/);
+        const dRaw = parts[0] || '';
+        const tm = parts[1] || '';
+        const d = __ppPromoNormIsoDate(dRaw);
+        if (!d) return null;
+        if (hasTime(s) && tm) return __ppPromoSafeParse(`${d}T${tm}:00Z`);
         return null;
       };
 
@@ -495,32 +529,33 @@
       if (rule === 'today') {
         const now = new Date();
         const d = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`;
-        return t >= dayStartMs(d) && t <= dayEndMs(d);
+        const a = dayStartMs(d);
+        const b = dayEndMs(d);
+        return (a == null || t >= a) && (b == null || t <= b);
       }
 
       if (rule === 'before') {
-        const p = toPointMs(f.to) ?? (f.to ? dayStartMs(f.to.trim()) : null);
+        // ВАЖНО: для "before" значение хранится в f.to (а не в f.from)
+        // до конца выбранного дня/момента
+        const p = hasTime(f.to) ? toPointMs(f.to) : (f.to ? dayEndMs(f.to.trim()) : null);
         if (p == null) return true;
-        return t < p;
+        return t <= p;
       }
+
       if (rule === 'after') {
-        const p = toPointMs(f.from) ?? (f.from ? dayEndMs(f.from.trim()) : null);
+        // после начала выбранного дня/момента
+        const p = hasTime(f.from) ? toPointMs(f.from) : (f.from ? dayStartMs(f.from.trim()) : null);
         if (p == null) return true;
-        return t > p;
+        return t >= p;
       }
 
       // between
-      const fromHasTime = hasTime(f.from);
-      const toHasTime = hasTime(f.to);
+      const fromMs = f.from ? (hasTime(f.from) ? toPointMs(f.from) : dayStartMs(f.from.trim())) : null;
+      const toMs = f.to ? (hasTime(f.to) ? toPointMs(f.to) : dayEndMs(f.to.trim())) : null;
 
-      const fromMs = f.from ? (toPointMs(f.from) ?? dayStartMs(f.from.trim())) : null;
-      const toMs = f.to ? (toPointMs(f.to) ?? dayEndMs(f.to.trim())) : null;
-
-      if (fromMs != null && toMs != null) return t >= fromMs && t <= toMs;
-      if (fromMs != null) return t >= fromMs;
-      if (toMs != null) return t <= toMs;
-      return true;
+      return (fromMs == null || t >= fromMs) && (toMs == null || t <= toMs);
     }
+
 
     // Ставит выпадающее меню ровно под кнопкой внутри текущего попапа
     function openMenuBelow(buttonEl, menuEl) {
