@@ -1237,10 +1237,12 @@
     function wireSort(btnId, key) {
       const b = wrap.querySelector(btnId);
       b?.addEventListener('click', (e) => {
-        // если кликнули по иконке фильтра — НЕ сортируем
+        // если кликнули по иконке фильтра — НЕ сортируем (иконка сама откроет попап)
         if (e.target.closest('.pp-filter-ico')) return;
 
-        e.stopPropagation();
+        // ВАЖНО: НЕ стопаем всплытие.
+        // Тогда сработает глобальный document.click (у тебя он закрывает все попапы),
+        // и фильтр-панель не будет "залипать" при кликах по шапке таблицы.
         if (sortKey === key) sortDir = (sortDir === 'asc') ? 'desc' : 'asc';
         else { sortKey = key; sortDir = 'asc'; }
 
@@ -1248,6 +1250,7 @@
         syncPromoSortIcons();
       });
     }
+
 
     wireSort('#ppPromoStateBtn', 'state');
     wireSort('#ppPromoNameBtn', 'name');
