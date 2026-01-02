@@ -796,12 +796,22 @@
     color: #fff;
 }
 
-/* Ensure Promotions Info panel admin button matches LiveOps (blue + readable) */
+/* Ensure Promotions Info panel admin button:
+   Light theme -> WHITE text
+   Dark theme  -> BLACK text */
 #pp-root #ppPromoAdminBtn.pp-btn {
     background: var(--accent);
-    color: #111827;
-    /* make text dark (like LiveOps) */
+    color: #ffffff;
+    /* Light: white text */
     border: 1px solid rgba(0, 0, 0, .08);
+}
+
+/* Dark theme: black text (as you want) */
+:root.theme-dark #pp-root #ppPromoAdminBtn.pp-btn,
+.theme-dark #pp-root #ppPromoAdminBtn.pp-btn,
+[data-theme="dark"] #pp-root #ppPromoAdminBtn.pp-btn,
+.dark #pp-root #ppPromoAdminBtn.pp-btn {
+    color: #0f172a !important;
 }
 
 
@@ -1518,10 +1528,12 @@
 }
 
 
-/* 1) Уменьшаем запас снизу под кнопку (примерно в 3 раза) */
+/* [FIX] Safe space under the floating Admin button:
+   so the last lines don't touch the button border */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kvs {
-    padding-bottom: 30px !important;
+    padding-bottom: calc(var(--pp-admin-h) + 24px) !important;
 }
+
 
 /* 2) Делаем Raw JSON value (details) на всю ширину инфопанели */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-v {
