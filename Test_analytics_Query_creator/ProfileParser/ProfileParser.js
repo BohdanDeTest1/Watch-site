@@ -2427,8 +2427,9 @@
         // Глобальная кнопка сброса фильтров
         const resetAllBtn = wrap.querySelector('#ppResetBtn');
 
+        function resetAllTableFilters(opts = {}) {
+            const { silent = false, keepActiveTime = false } = opts;
 
-        function resetAllTableFilters() {
             // 1) State
             try {
                 stateFilter.clear();
@@ -2453,7 +2454,6 @@
             if (tQuery) tQuery.value = '';
             if (tSearch) tSearch.value = '';
             if (tList) {
-                // Перерисуем список типов (все чекбоксы сняты)
                 const arr = allTypes;
                 tList.innerHTML = arr.map(t => `<label class="pp-type-opt"><input type="checkbox" value="${t}"/> <span>${t}</span></label>`).join('') || '<div class="muted small">No types</div>';
             }
@@ -2476,18 +2476,43 @@
             if (eFrom) eFrom.value = '';
             if (eTo) eTo.value = '';
 
-
-
-            // 4.5) Снять фильтр «Active at picked time»
-            activeTimeFilterTs = null;
+            // 4.5) Active-at-picked-time: снимаем ТОЛЬКО если это обычный reset (кнопка Reset Filters)
+            if (!keepActiveTime) {
+                activeTimeFilterTs = null;
+            }
 
             // 5) Закрыть все открытые попапы и меню правил
             wrap.querySelectorAll('.pp-filter-pop, .pp-select-menu').forEach(p => p.hidden = true);
 
-            // 6) Пагинация — на первую страницу и перерисовать
+            // 6) Пагинация — на первую страницу и (опционально) перерисовать
+            page = 1;
+
+            if (!silent) {
+                renderRows();
+            }
+        }
+
+        // Глобальная кнопка сброса фильтров
+        resetAllBtn?.addEventListener('click', () => resetAllTableFilters());
+
+        // принять запрос на фильтрацию таблицы по моменту времени (кнопка над синей линией Picked)
+        document.addEventListener('pp:filterByTime', (ev) => {
+            const ts = ev.detail && Number(ev.detail.ts);
+            if (!Number.isFinite(ts)) return;
+
+            // IMPORTANT: сбрасываем ВСЕ фильтры, которые могли остаться от "Show in table" и др.,
+            // но render делаем ОДИН раз — уже с активным временем
+            resetAllTableFilters({ silent: true, keepActiveTime: true });
+
+            activeTimeFilterTs = ts;
             page = 1;
             renderRows();
-        }
+
+            // прокручиваем страницу к таблице, чтобы пользователь сразу видел результат
+            document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+
 
 
         resetAllBtn?.addEventListener('click', resetAllTableFilters);

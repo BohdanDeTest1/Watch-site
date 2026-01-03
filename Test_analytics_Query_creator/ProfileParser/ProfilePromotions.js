@@ -1431,6 +1431,37 @@
       }, 0);
     });
 
+    function resetAllPromoFilters(opts = {}) {
+      const { silent = false, keepActiveTime = false } = opts;
+
+      nameFilter = { rule: 'contains', query: '' };
+      typeFilter = new Set();
+      startFilter = { rule: 'between', from: '', to: '' };
+      endFilter = { rule: 'between', from: '', to: '' };
+      stateFilter = new Set(allStates);
+
+      if (!keepActiveTime) {
+        activeTimeFilterTs = null;
+      }
+
+      // UI sync minimal (как было в resetBtn)
+      const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+      wrap.classList.remove('info-open');
+      liveopsEl.classList.remove('info-open');
+
+      // закрыть попапы, если открыты
+      try {
+        wrap.querySelectorAll('.pp-filter-pop, .pp-select-menu').forEach(p => p.hidden = true);
+      } catch { }
+
+      page = 1;
+
+      if (!silent) {
+        renderRows(true);
+      }
+    }
+
+
     // --- external: filter Promotions table by picked time (blue pin button on timeline) ---
     document.addEventListener('ppPromo:filterByTime', (ev) => {
       const ts = Number(ev?.detail?.ts);
@@ -1445,6 +1476,10 @@
       }
       wrap.classList.remove('collapsed');
 
+      // IMPORTANT: сбросить любые текущие фильтры (в т.ч. name=equals после "Show in table"),
+      // и только потом применить active-time фильтр
+      resetAllPromoFilters({ silent: true, keepActiveTime: true });
+
       activeTimeFilterTs = ts;
       page = 1;
       renderRows(true);
@@ -1453,6 +1488,7 @@
       const table = document.getElementById('ppPromoLoTable') || wrap.querySelector('#ppPromoLoTable');
       table?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+
 
 
     // --- pager events ---
@@ -1470,22 +1506,7 @@
     });
 
     resetBtn?.addEventListener('click', () => {
-      nameFilter = { rule: 'contains', query: '' };
-      typeFilter = new Set();
-      startFilter = { rule: 'between', from: '', to: '' };
-      endFilter = { rule: 'between', from: '', to: '' };
-      stateFilter = new Set(allStates);
-
-      // снять фильтр «Active at picked time»
-      activeTimeFilterTs = null;
-
-      // UI sync minimal (попапы сами подтянут draft при открытии)
-      const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
-      wrap.classList.remove('info-open');
-      liveopsEl.classList.remove('info-open');
-      detEl.innerHTML = '';
-      detEl.setAttribute('aria-hidden', 'true');
-      renderRows(true);
+      resetAllPromoFilters();
     });
 
 
