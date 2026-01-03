@@ -1357,13 +1357,20 @@
       const title = String(ev?.detail?.title || '');
       if (!title) return;
 
-      // ensure Promotions section is expanded
+      // ensure Promotions section is expanded (важно: в collapsed режиме .pp-body может быть hidden)
+      if (wrap.classList.contains('collapsed')) {
+        wrap.querySelector('.pp-collapser')?.click();
+      } else {
+        // на всякий случай, если collapsed сняли вручную, но body остался hidden
+        const body = wrap.querySelector('.pp-body');
+        if (body) body.hidden = false;
+      }
       wrap.classList.remove('collapsed');
 
       // reset filters so the row is guaranteed visible, then filter by exact name
       nameFilter = { rule: 'equals', query: title };
       typeFilter = new Set();
-      typeTextFilter = { rule: 'contains', query: '' };
+      // В Promotions нет typeTextFilter (как в LiveOps), поэтому НЕ трогаем — иначе падаем.
       startFilter = { rule: 'after', from: '', to: '' };
       endFilter = { rule: 'before', from: '', to: '' };
       stateFilter = new Set(allStates);
@@ -1378,7 +1385,11 @@
 
       if (row) {
         const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
+
+        // держим open-state в синхроне (как у LiveOps: и секция, и внутренний контейнер)
+        wrap.classList.add('info-open');
         liveopsEl.classList.add('info-open');
+
         showDetail(row);
       }
 
@@ -1396,6 +1407,7 @@
         rowEl.scrollIntoView({ block: 'nearest' });
       }, 0);
     });
+
 
 
     // --- pager events ---
