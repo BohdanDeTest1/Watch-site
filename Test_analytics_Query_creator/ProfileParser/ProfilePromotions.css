@@ -14,18 +14,42 @@
     margin-top: 6px;
 }
 
-/* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps) */
+/* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps)
+   + draw proper rounded corners (border) without clipping popups */
 #pp-root #ppPromoLoTable.pp-table {
     overflow: visible;
-    /* иначе попап обрезается border-radius/overflow:hidden */
+    /* попапы фильтров не клипаем */
+    position: relative;
+    /* якорь для ::before */
+    background: var(--card);
+    border: 0;
+    /* рамку рисуем через ::before */
+    border-radius: 12px 12px 0 0;
+    /* верхние углы таблицы */
 }
 
+/* “Рамка” таблицы поверх контента — чтобы углы всегда были дорисованы */
+#pp-root #ppPromoLoTable.pp-table::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    /* низ соединится с пейджером */
+    border-radius: 12px 12px 0 0;
+}
+
+/* header остаётся кликабельным и попапы не режутся */
 #pp-root #ppPromoLoTable .pp-t-head {
     overflow: visible;
     position: relative;
     z-index: 5;
     /* держим шапку выше строк, чтобы попап был кликабельный */
 }
+
 
 
 /* [FIX] Promotions: синяя линия Picked (которую двигаем) должна быть поверх баров.
@@ -371,7 +395,9 @@
     /* важно: теперь панель ДО НИЗА, включая область под кнопкой */
     width: var(--pp-detail-w);
 
-    padding: 0 16px 16px 9px;
+    /* ВАЖНО: нижний padding = safe area под фиксированной кнопкой */
+    padding: 0 16px calc(var(--pp-admin-h) + 24px) 9px;
+
     pointer-events: auto;
     opacity: 1;
 
@@ -379,6 +405,7 @@
     overflow-x: hidden;
     scrollbar-gutter: stable;
 }
+
 
 
 
@@ -1140,9 +1167,37 @@
 /* ===========================
    Promotions table: pager = 1-в-1 как LiveEvents
    =========================== */
+/* [FIX] Promotions pager: make bottom corners rounded and match table border
+   (border is drawn via ::before to avoid corner “gaps”) */
+
+
 
 #ppPromoPager #ppPromoRange {
     min-width: 120px;
+}
+
+#pp-root #ppPromoPager {
+    position: relative;
+    /* якорь для ::before */
+    background: var(--card);
+    border: 0;
+    /* рамку рисуем через ::before */
+    border-radius: 0 0 12px 12px;
+    /* нижние углы */
+}
+
+/* “Рамка” пейджера — продолжение рамки таблицы */
+#pp-root #ppPromoPager::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+
+    border: 1px solid var(--border);
+    border-top: 0;
+    /* верх соединится с таблицей без двойной линии */
+    border-radius: 0 0 12px 12px;
 }
 
 /* Когда открыта правая инфо-панель (класс info-open висит на #ppPromoLiveops),
