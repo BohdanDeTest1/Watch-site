@@ -16,6 +16,9 @@
 
 /* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps)
    + draw proper rounded corners (border) without clipping popups */
+
+/* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps)
+   + draw proper rounded corners (border) without clipping popups */
 #pp-root #ppPromoLoTable.pp-table {
     overflow: visible;
     /* попапы фильтров не клипаем */
@@ -24,8 +27,8 @@
     background: var(--card);
     border: 0;
     /* рамку рисуем через ::before */
-    border-radius: 12px 12px 0 0;
-    /* верхние углы таблицы */
+    border-radius: 12px;
+    /* ВСЕ углы у таблицы */
 }
 
 /* “Рамка” таблицы поверх контента — чтобы углы всегда были дорисованы */
@@ -37,10 +40,11 @@
     z-index: 20;
 
     border: 1px solid var(--border);
-    border-bottom: 0;
-    /* низ соединится с пейджером */
-    border-radius: 12px 12px 0 0;
+    /* замыкаем рамку снизу */
+    border-radius: 12px;
+    /* ВСЕ углы */
 }
+
 
 /* header остаётся кликабельным и попапы не режутся */
 #pp-root #ppPromoLoTable .pp-t-head {
@@ -1171,34 +1175,30 @@
    (border is drawn via ::before to avoid corner “gaps”) */
 
 
+/* ===========================
+   Promotions table: pager should be OUTSIDE the table frame (like LiveOps)
+   =========================== */
 
 #ppPromoPager #ppPromoRange {
     min-width: 120px;
 }
 
+/* Пейджер НЕ является частью рамки таблицы: убираем border-обвязку и даём отступ */
 #pp-root #ppPromoPager {
     position: relative;
-    /* якорь для ::before */
-    background: var(--card);
+    background: transparent;
+    /* как “под таблицей” */
     border: 0;
-    /* рамку рисуем через ::before */
-    border-radius: 0 0 12px 12px;
-    /* нижние углы */
+    border-radius: 0;
+    margin-top: 10px;
+    /* визуальный разрыв от рамки таблицы */
 }
 
-/* “Рамка” пейджера — продолжение рамки таблицы */
+/* убираем псевдо-рамку пейджера (чтобы не выглядело, будто он внутри общей рамки) */
 #pp-root #ppPromoPager::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-
-    border: 1px solid var(--border);
-    border-top: 0;
-    /* верх соединится с таблицей без двойной линии */
-    border-radius: 0 0 12px 12px;
+    content: none;
 }
+
 
 /* Когда открыта правая инфо-панель (класс info-open висит на #ppPromoLiveops),
    пейджер должен "съезжать" и оставаться закреплённым под таблицей, как в LiveOps.
