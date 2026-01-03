@@ -365,7 +365,7 @@
         <div class="muted small">Select a promotion to view details</div>
       </aside>
 
-      <button id="ppPromoAdminBtn" class="pp-admin-float pp-btn" type="button">PromotionInTheAdmin</button>
+      <button id="ppPromoAdminBtn" class="pp-admin-float pp-btn" type="button">Promotion in the Admin</button>
       
     </div>
 

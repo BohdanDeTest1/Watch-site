@@ -1262,11 +1262,16 @@
     justify-content: flex-end;
     /* правые элементы остаются справа */
     gap: 18px;
+
+    /* ✅ как в Promotions: визуальный разрыв от рамки таблицы */
+    margin-top: 10px;
+
     padding: 10px 12px;
     border-top: 0;
     box-shadow: inset 0 0.1px 0 var(--border-2);
     background: var(--card-bg);
 }
+
 
 .pp-pager .pp-reset {
     margin-right: auto;
