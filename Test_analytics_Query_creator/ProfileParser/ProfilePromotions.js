@@ -603,6 +603,11 @@
     const allStates = ['On']; // promotions — всегда On (чтобы таблица 1-в-1 выглядела)
     let stateFilter = new Set(allStates); // по умолчанию всё включено
 
+    // фильтр «Active at picked time» (синяя шпилька / кнопка-табличка)
+    let activeTimeFilterTs = null;
+
+
+
     // фиксированная высота тела (как LiveEvents)
     const FIXED_ROWS = 10;
     function setBodyHeightByRow() {
@@ -658,7 +663,19 @@
 
       // dates
       rows = rows.filter(r => passDateRule(r.startPretty, startFilter) && passDateRule(r.endPretty, endFilter));
+
+      // active at picked time (ts in ms)
+      if (Number.isFinite(activeTimeFilterTs)) {
+        const ts = activeTimeFilterTs;
+        rows = rows.filter(r => {
+          const s = Number(r.startTS);
+          const e = Number(r.endTS);
+          if (!Number.isFinite(s) || !Number.isFinite(e)) return true;
+          return (s <= ts) && (ts <= e);
+        });
+      }
       return rows;
+
     }
 
     // --- sorting ---
@@ -1370,6 +1387,12 @@
       // reset filters so the row is guaranteed visible, then filter by exact name
       nameFilter = { rule: 'equals', query: title };
       typeFilter = new Set();
+      // reset filters so the row is guaranteed visible, then filter by exact name
+      nameFilter = { rule: 'equals', query: title };
+      typeFilter = new Set();
+      activeTimeFilterTs = null;
+      // В Promotions нет typeTextFilter (как в LiveOps), поэтому НЕ трогаем — иначе падаем.
+
       // В Promotions нет typeTextFilter (как в LiveOps), поэтому НЕ трогаем — иначе падаем.
       startFilter = { rule: 'after', from: '', to: '' };
       endFilter = { rule: 'before', from: '', to: '' };
@@ -1408,6 +1431,28 @@
       }, 0);
     });
 
+    // --- external: filter Promotions table by picked time (blue pin button on timeline) ---
+    document.addEventListener('ppPromo:filterByTime', (ev) => {
+      const ts = Number(ev?.detail?.ts);
+      if (!Number.isFinite(ts)) return;
+
+      // ensure Promotions section is visible
+      if (wrap.classList.contains('collapsed')) {
+        wrap.querySelector('.pp-collapser')?.click();
+      } else {
+        const body = wrap.querySelector('.pp-body');
+        if (body) body.hidden = false;
+      }
+      wrap.classList.remove('collapsed');
+
+      activeTimeFilterTs = ts;
+      page = 1;
+      renderRows(true);
+
+      // scroll to Promotions table area
+      const table = document.getElementById('ppPromoLoTable') || wrap.querySelector('#ppPromoLoTable');
+      table?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
 
 
     // --- pager events ---
@@ -1430,6 +1475,9 @@
       startFilter = { rule: 'between', from: '', to: '' };
       endFilter = { rule: 'between', from: '', to: '' };
       stateFilter = new Set(allStates);
+
+      // снять фильтр «Active at picked time»
+      activeTimeFilterTs = null;
 
       // UI sync minimal (попапы сами подтянут draft при открытии)
       const liveopsEl = wrap.querySelector('#ppPromoLiveops') || wrap;
@@ -1974,6 +2022,8 @@
       window.initTimelineCalendar(normalized, {
         title: 'promoTlTitle',
         openEvent: 'ppPromo:applyNameFilter',
+        filterEvent: 'ppPromo:filterByTime',
+        pickedHint: 'Show active promotions in the table',
         header: 'promoTlHeader',
         body: 'promoTlBody',
         res: 'promoTlResList',
@@ -1981,6 +2031,7 @@
         toolbar: 'promoTlToolbar',
         dateInput: 'promoTlDateInput',
       });
+
 
 
 

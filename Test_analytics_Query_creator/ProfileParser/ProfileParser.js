@@ -4110,8 +4110,15 @@
             dateInput: ids.dateInput || 'tlDateInput',
         };
 
-        // allow different 'Open in table' behavior for different calendars (LiveOps vs Promotions)
+        // allow different behaviors for different calendars (LiveOps vs Promotions)
+        // 1) Open конкретного айтема в таблице (из контекстного меню бара)
         const OPEN_IN_TABLE_EVENT = ids.openEvent || 'pp:applyNameFilter';
+
+        // 2) Фильтр таблицы по «picked time» (по синей круглой кнопке на шпильке)
+        const FILTER_BY_TIME_EVENT = ids.filterEvent || 'pp:filterByTime';
+
+        // 3) Текст подсказки для синей круглой кнопки
+        const PICKED_HINT = ids.pickedHint || 'Show active events in the table';
 
 
         const elTitle = document.getElementById(ID.title);
@@ -5751,9 +5758,12 @@
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'pp-picked-btn';
+
                         // используем data-hint вместо title, чтобы подсказка показывалась мгновенно
-                        btn.setAttribute('data-hint', 'Show active promotions in the table');
-                        btn.setAttribute('aria-label', 'Show active promotions in the table');
+                        // IMPORTANT: текст подсказки берём из ids.pickedHint (PICKED_HINT)
+                        btn.setAttribute('data-hint', PICKED_HINT);
+                        btn.setAttribute('aria-label', PICKED_HINT);
+
                         btn.style.left = `${xPick}px`;
 
                         // общий контекст для drag
@@ -5772,15 +5782,19 @@
 
                             ev.preventDefault();
                             ev.stopPropagation();
+
                             const ts = state.pickedMs;
                             if (!Number.isFinite(ts)) return;
 
-                            document.dispatchEvent(new CustomEvent('pp:filterByTime', {
+                            // IMPORTANT: календарь может быть LiveOps или Promotions,
+                            // поэтому событие берём из ids.filterEvent (FILTER_BY_TIME_EVENT)
+                            document.dispatchEvent(new CustomEvent(FILTER_BY_TIME_EVENT, {
                                 detail: { ts }
                             }));
                         });
 
                         topScale.appendChild(btn);
+
                     }
 
                 }
@@ -6303,9 +6317,14 @@
             openBtn?.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
-                document.dispatchEvent(new CustomEvent(OPEN_IN_TABLE_EVENT, { detail: { title: title || '' } }));
-                closeInfoPops();
+
+                // IMPORTANT: календарь может быть LiveOps или Promotions,
+                // поэтому событие берём из ids.openEvent (OPEN_IN_TABLE_EVENT)
+                document.dispatchEvent(new CustomEvent(OPEN_IN_TABLE_EVENT, { detail: { title } }));
+
+                closeCtxPopup();
             });
+
 
             copyBtn?.addEventListener('click', async (ev) => {
                 ev.preventDefault(); ev.stopPropagation();
