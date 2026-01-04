@@ -104,6 +104,44 @@
 
 /* форма */
 /* форма */
+
+/* ===== Input with fixed prefix ===== */
+#ppFormCard .pp-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--btn-n-field-bg);
+    padding: 0 10px;
+    height: 38px;
+    box-sizing: border-box;
+}
+
+#ppFormCard .pp-input-prefix {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* ВАЖНО: убираем любые рамки/паддинги у самого input,
+   т.к. рамка должна быть только у .pp-input-wrap */
+#ppFormCard .pp-input-with-prefix {
+    border: none !important;
+    outline: none;
+    background: transparent;
+    padding: 0 0 0 4px;
+    /* только небольшой отступ от префикса */
+    margin: 0;
+    font-size: 13px;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    /* чтобы не ломало flex и не вылезало */
+    box-shadow: none !important;
+}
+
+
 #ppFormCard .row {
     display: grid;
     grid-template-columns: max-content auto;
@@ -112,8 +150,173 @@
     justify-content: start;
 }
 
+/* ===== Top bar над полем ввода (Stage/RC/PROD + Demo mode) ===== */
+#ppFormCard .pp-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
 
-#ppForm input[type="text"] {
+/* ===== Environment block ===== */
+/* ===== Environment block ===== */
+#ppFormCard .pp-env {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Environment и Profile name — одинаковый стиль */
+#ppFormCard .pp-env-title,
+#ppFormCard .label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* чтобы label не жил своей жизнью по отступам */
+#ppFormCard .label {
+    display: block;
+    margin: 0 0 6px 0;
+}
+
+#ppFormCard .pp-env-btns {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* кнопки окружения — стиль как input */
+#ppFormCard .pp-env-btn {
+    appearance: none;
+    background: var(--btn-n-field-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    /* как у input-wrap */
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppFormCard .pp-env-btn:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+/* активная кнопка — как Search */
+#ppFormCard .pp-env-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+
+
+/* кнопки окружения */
+#ppFormCard .pp-env-btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+#ppFormCard .pp-env-btn:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+/* Demo mode toggle (UI-only) */
+#ppFormCard .pp-demo-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+#ppFormCard .pp-demo-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+#ppFormCard .pp-slider {
+    position: relative;
+    width: 46px;
+    height: 24px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(127, 127, 127, .25);
+    transition: background .15s ease, border-color .15s ease;
+}
+
+#ppFormCard .pp-slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid rgba(0, 0, 0, .08);
+    transition: transform .15s ease;
+}
+
+#ppFormCard #ppDemoMode:checked+.pp-slider {
+    background: var(--accent);
+    border-color: transparent;
+}
+
+#ppFormCard #ppDemoMode:checked+.pp-slider::before {
+    transform: translateX(22px);
+}
+
+#ppFormCard .pp-demo-text {
+    font-weight: 800;
+    color: var(--text);
+    font-size: 13px;
+}
+
+#ppFormCard .pp-demo-state {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 800;
+    font-size: 12px;
+    opacity: .85;
+}
+
+#ppFormCard .pp-demo-state .on,
+#ppFormCard .pp-demo-state .off {
+    display: none;
+}
+
+/* показываем ON/OFF без JS */
+#ppFormCard #ppDemoMode:checked~.pp-demo-state .on {
+    display: inline;
+}
+
+#ppFormCard #ppDemoMode:not(:checked)~.pp-demo-state .off {
+    display: inline;
+}
+
+
+#ppForm input[type="text"]:not(.pp-input-with-prefix) {
     width: 150%;
     padding: 10px 12px;
     border-radius: 4px;
@@ -122,6 +325,7 @@
     color: var(--text);
     outline: none;
 }
+
 
 /* панель результатов */
 .pp-results {

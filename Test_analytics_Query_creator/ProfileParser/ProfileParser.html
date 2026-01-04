@@ -34,9 +34,36 @@
             <!-- форма ввода -->
             <section class="card" id="ppFormCard">
                 <form id="ppForm" class="pp-form">
+                    <!-- верхняя панель над полем ввода -->
+                    <div class="pp-topbar">
+                        <div class="pp-env">
+                            <div class="pp-env-title">Environment</div>
+                            <div class="pp-env-btns" role="group" aria-label="Environment">
+                                <button type="button" class="pp-env-btn active" id="ppEnvStage">Stage</button>
+                                <button type="button" class="pp-env-btn" id="ppEnvRc">RC</button>
+                                <button type="button" class="pp-env-btn" id="ppEnvProd">PROD</button>
+                            </div>
+                        </div>
+
+
+                        <label class="pp-demo-toggle" title="Use mocked JSON files when ON">
+                            <input type="checkbox" id="ppDemoMode" checked />
+                            <span class="pp-slider" aria-hidden="true"></span>
+                            <span class="pp-demo-text">Demo mode</span>
+                            <span class="pp-demo-state" aria-hidden="true">
+                                <span class="on">ON</span>
+                                <span class="off">OFF</span>
+                            </span>
+                        </label>
+                    </div>
+
                     <label class="label" for="ppName">Profile name</label>
                     <div class="row">
-                        <input id="ppName" type="text" placeholder="e.g. my_profile_name" required />
+                        <div class="pp-input-wrap">
+                            <span class="pp-input-prefix">2_12_master_</span>
+                            <input id="ppName" type="text" class="pp-input-with-prefix" required />
+                        </div>
+
                         <button id="ppSearch" type="submit" class="btn-primary">Search</button>
                     </div>
                     <p id="ppFormErr" class="small"
@@ -44,6 +71,7 @@
                         Please enter a profile name.
                     </p>
                 </form>
+
             </section>
 
             <!-- панель вывода -->
