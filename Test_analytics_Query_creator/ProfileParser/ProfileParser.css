@@ -118,6 +118,36 @@
     width: 300px;
 }
 
+/* FIX: Search должен быть той же высоты, что и input */
+#ppFormCard #ppSearch.btn-primary {
+    height: 38px;
+    /* = .pp-input-wrap */
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 5px;
+    /* чтобы визуально матчился с input */
+    border: 1px solid var(--accent);
+    background: var(--accent);
+
+    /* в светлой теме будет белый (если btn-n-field-bg = белый),
+       в тёмной — тёмный (если btn-n-field-bg = тёмный) */
+    color: var(--btn-n-field-bg);
+
+    font-weight: 700;
+    line-height: 1;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#ppFormCard #ppSearch.btn-primary:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+
 /* префикс больше не используем (оставляю комментарий, чтобы было понятно почему) */
 /* .pp-input-prefix — удалён из разметки, дефолтное значение теперь в самом input */
 
@@ -191,14 +221,23 @@
     background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
     border-radius: 4px;
-    /* как у input-wrap */
-    padding: 8px 14px;
+
+    /* FIX: одинаковая высота во всех темах */
+    height: 38px;
+    /* = .pp-input-wrap */
+    padding: 0 14px;
+    /* убираем влияние вертикального padding на высоту */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     font-weight: 700;
     font-size: 13px;
     line-height: 1;
     color: var(--text);
     cursor: pointer;
     user-select: none;
+    box-sizing: border-box;
 }
 
 #ppFormCard .pp-env-btn:hover {
@@ -211,7 +250,17 @@
     background: var(--accent);
     border-color: var(--accent);
     color: #fff;
+    /* светлая тема */
 }
+
+/* FIX: в тёмной теме у активной кнопки текст должен быть чёрным */
+:root.theme-dark #ppFormCard .pp-env-btn.active,
+.theme-dark #ppFormCard .pp-env-btn.active,
+[data-theme="dark"] #ppFormCard .pp-env-btn.active,
+.dark #ppFormCard .pp-env-btn.active {
+    color: #0b1120;
+}
+
 
 
 
