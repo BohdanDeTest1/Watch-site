@@ -110,7 +110,7 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 5px;
     background: var(--btn-n-field-bg);
     padding: 0 10px;
     height: 38px;
@@ -118,7 +118,7 @@
 }
 
 #ppFormCard .pp-input-prefix {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--muted);
     white-space: nowrap;
@@ -133,7 +133,7 @@
     padding: 0 0 0 4px;
     /* только небольшой отступ от префикса */
     margin: 0;
-    font-size: 13px;
+    font-size: 15px;
     flex: 1;
     width: 100%;
     min-width: 0;
@@ -170,15 +170,16 @@
 /* Environment и Profile name — одинаковый стиль */
 #ppFormCard .pp-env-title,
 #ppFormCard .label {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--muted);
+    margin: 15px 0 9px 0;
 }
 
 /* чтобы label не жил своей жизнью по отступам */
 #ppFormCard .label {
     display: block;
-    margin: 0 0 6px 0;
+    margin: 23px 0 0 0;
 }
 
 #ppFormCard .pp-env-btns {
@@ -192,7 +193,7 @@
     appearance: none;
     background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 4px;
     /* как у input-wrap */
     padding: 8px 14px;
     font-weight: 700;
@@ -223,10 +224,10 @@
     border: 1px solid var(--border);
     background: var(--btn-n-field-bg);
     color: var(--text);
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 8px 14px;
     font-weight: 800;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1;
     cursor: pointer;
     user-select: none;
