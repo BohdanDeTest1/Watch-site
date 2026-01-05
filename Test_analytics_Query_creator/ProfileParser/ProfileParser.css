@@ -115,14 +115,11 @@
     padding: 0 10px;
     height: 38px;
     box-sizing: border-box;
+    width: 300px;
 }
 
-#ppFormCard .pp-input-prefix {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-}
+/* префикс больше не используем (оставляю комментарий, чтобы было понятно почему) */
+/* .pp-input-prefix — удалён из разметки, дефолтное значение теперь в самом input */
 
 /* ВАЖНО: убираем любые рамки/паддинги у самого input,
    т.к. рамка должна быть только у .pp-input-wrap */
@@ -130,22 +127,22 @@
     border: none !important;
     outline: none;
     background: transparent;
-    padding: 0 0 0 4px;
-    /* только небольшой отступ от префикса */
+    padding: 0;
+    /* раньше было 0 0 0 4px из-за префикса */
     margin: 0;
     font-size: 15px;
     flex: 1;
     width: 100%;
     min-width: 0;
-    /* чтобы не ломало flex и не вылезало */
     box-shadow: none !important;
 }
+
 
 
 #ppFormCard .row {
     display: grid;
     grid-template-columns: max-content auto;
-    gap: 100px;
+    gap: 2px;
     align-items: center;
     justify-content: start;
 }
@@ -258,8 +255,8 @@
 
 #ppFormCard .pp-slider {
     position: relative;
-    width: 46px;
-    height: 24px;
+    width: 49px;
+    height: 27px;
     border-radius: 999px;
     border: 1px solid var(--border);
     background: rgba(127, 127, 127, .25);
