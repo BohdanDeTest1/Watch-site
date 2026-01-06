@@ -12,9 +12,9 @@
             promos: 'https://profile-provider-v2-service.ttstage-int.net/stage/internal-api/v2/config/profiles/[profile_name]/promotionsScheduleNew'
         },
         rc: {
-            state: '',
-            liveops: '',
-            promos: ''
+            state: 'https://static.ttrc-ext.net/data/travel_town/testing-2_12_master_[profile_name]-all.json',
+            liveops: 'https://profile-provider-v2-service.ttstage-int.net/od-rc/internal-api/v2/config/profiles/[profile_name]/liveops',
+            promos: 'https://profile-provider-v2-service.ttstage-int.net/od-rc/internal-api/v2/config/profiles/[profile_name]/promotionsScheduleNew'
         },
         prod: {
             state: '',
