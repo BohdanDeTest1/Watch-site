@@ -363,6 +363,28 @@
 }
 
 
+
+
+/* banner: endpoints are missing (shown when Demo mode is OFF but endpoints are empty) */
+#ppFormCard .pp-endpoints-banner {
+    margin-left: auto;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255, 180, 0, 0.12);
+    color: var(--text);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+#ppFormCard .pp-endpoints-banner.hidden {
+    display: none;
+}
+
+
+
 #ppForm input[type="text"]:not(.pp-input-with-prefix) {
     width: 150%;
     padding: 10px 12px;

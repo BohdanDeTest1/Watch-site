@@ -108,23 +108,89 @@
         });
     }
 
-    // === URLs (реальные) и МОКИ (локальные файлы)
-    const URL_TPL = {
-        state: 'https://static.ttstage-ext.net/data/travel_town/testing-2_12_master_[Variable]-all.json',
-        liveops: 'https://profile-provider-v2-service.ttstage-int.net/stage/internal-api/v2/config/profiles/2_12_master_[Variable]/liveops',
-        promos: 'https://profile-provider-v2-service.ttstage-int.net/stage/internal-api/v2/config/profiles/2_12_master_[Variable]/promotionsScheduleNew',
-    };
-    // Моки лежат в папке ProfileParser/
+    // === Runtime env + Demo mode ===
+    // Environment: 'stage' | 'rc' | 'prod'
+    let PP_ENV = 'stage';
+
+    // Demo mode ON => use mocked JSON files
+    let USE_MOCKS = true;
+
+    // === Real endpoints live in a separate file (placeholders for you to fill later)
+    // That file must define: window.PP_ENDPOINTS = { stage:{state:'',liveops:'',promos:''}, rc:{...}, prod:{...} }
+    const ENDPOINTS_SRC_CANDIDATES = [
+        'ProfileParser.endpoints.js',
+        './ProfileParser.endpoints.js',
+        'ProfileParser/ProfileParser.endpoints.js',
+        './ProfileParser/ProfileParser.endpoints.js'
+    ];
+
+    // (Legacy) Example shape; NOT used when Demo mode is OFF unless you fill endpoints file
+    // const URL_TPL = { state:'', liveops:'', promos:'' };
+
+    // Mocks lie in ProfileParser/ (Demo mode ON)
     const MOCKS = {
         state: 'ProfileParser/Stage_profile_State.json',
         liveops: 'ProfileParser/Stage_01_event.json',
         promos: 'ProfileParser/Stage_01_promo.json',
     };
-    const USE_MOCKS = true; // оставляем включённым
+
+    function __ppBannerEl() {
+        return document.getElementById('ppEndpointsBanner');
+    }
+    function __ppSetEndpointsBannerVisible(visible) {
+        const b = __ppBannerEl();
+        if (!b) return;
+        b.classList.toggle('hidden', !visible);
+    }
+
+    function __ppSetEnv(env) {
+        PP_ENV = env;
+        // визуал: active только на выбранной
+        const btns = document.querySelectorAll('#ppFormCard .pp-env-btn');
+        btns.forEach(b => b.classList.remove('active'));
+        const map = { stage: '#ppEnvStage', rc: '#ppEnvRc', prod: '#ppEnvProd' };
+        const activeBtn = document.querySelector(map[env] || map.stage);
+        activeBtn?.classList.add('active');
+    }
+
+    function __ppSetDemoMode(isDemo) {
+        USE_MOCKS = Boolean(isDemo);
+        // когда Demo ON — баннер точно скрываем
+        if (USE_MOCKS) __ppSetEndpointsBannerVisible(false);
+    }
+
+    async function __ppEnsureEndpointsLoaded() {
+        if (window.PP_ENDPOINTS) return true;
+        return await __ppEnsureGlobal('PP_ENDPOINTS', ENDPOINTS_SRC_CANDIDATES);
+    }
+
+    function __ppGetEndpointsForEnv() {
+        return (window.PP_ENDPOINTS && window.PP_ENDPOINTS[PP_ENV]) ? window.PP_ENDPOINTS[PP_ENV] : null;
+    }
+
+    function __ppMissingEndpointsList() {
+        const cfg = __ppGetEndpointsForEnv();
+        const missing = [];
+        if (!cfg || !cfg.state) missing.push('state');
+        if (!cfg || !cfg.liveops) missing.push('liveops');
+        if (!cfg || !cfg.promos) missing.push('promos');
+        // also treat whitespace-only as missing
+        return missing.filter(k => {
+            const v = cfg && cfg[k];
+            return !v || String(v).trim() === '';
+        });
+    }
 
     function buildUrl(kind, name) {
         if (USE_MOCKS) return MOCKS[kind];
-        return URL_TPL[kind].replace('[Variable]', encodeURIComponent(name));
+
+        const cfg = __ppGetEndpointsForEnv();
+        const tpl = cfg ? cfg[kind] : '';
+        if (!tpl || String(tpl).trim() === '') return null;
+
+        const s = String(tpl);
+        if (s.includes('[Variable]')) return s.replace('[Variable]', encodeURIComponent(name));
+        return s;
     }
 
     // утилита: читаем как ТЕКСТ, валидируем JSON.parse
@@ -4022,17 +4088,39 @@
     }
 
 
-    // основной сценарий — строго последовательно
     async function runProfileLookup(name) {
         const btn = el('#ppSearch');
         const results = el('#ppResults');
         const err = el('#ppFormErr');
+        if (!btn || !results || !err) return;
 
+        // основной сценарий — строго последовательно
         err.style.display = 'none';
         results.innerHTML = '';
         btn.disabled = true; btn.classList.add('pp-loading');
 
+        // Demo OFF => use real endpoints from ProfileParser.endpoints.js
+        if (!USE_MOCKS) {
+            await __ppEnsureEndpointsLoaded();
+            const miss = __ppMissingEndpointsList();
+            if (miss.length > 0) {
+                __ppSetEndpointsBannerVisible(true);
+                // не продолжаем запросы, чтобы не падать на fetch(null)
+                const item = document.createElement('div');
+                item.className = 'pp-item';
+                item.innerHTML = `<div class="pp-title">Configuration</div>
+          <div class="pp-meta" style="color:var(--validation-warn)">Endpoints are missing</div>
+          <div class="pp-meta muted small">Missing: ${miss.join(', ')} (env: ${PP_ENV.toUpperCase()})</div>`;
+                results.appendChild(item);
+                return;
+            }
+            __ppSetEndpointsBannerVisible(false);
+        } else {
+            __ppSetEndpointsBannerVisible(false);
+        }
+
         try {
+
             // 1. Profile state (parse JSON и выводим поля; без метатекста)
             {
                 const t = await fetchJsonText(buildUrl('state', name));
@@ -4060,7 +4148,6 @@
             {
                 const t = await fetchJsonText(buildUrl('liveops', name));
 
-
                 const json = JSON.parse(t);
                 const rawItems = extractLiveOps(json);
                 const items = aggregateByNameWithSegments(rawItems); // ← ДЕДУП ПО NAME+ВРЕМЯ
@@ -4070,8 +4157,6 @@
                 } else {
                     appendLiveOpsTable(items);
                 }
-
-
             }
 
 
@@ -4108,10 +4193,6 @@
                 }
             }
 
-
-
-
-
         } catch (e) {
             const item = document.createElement('div');
             item.className = 'pp-item';
@@ -4122,6 +4203,7 @@
             btn.disabled = false; btn.classList.remove('pp-loading');
         }
     }
+
 
     // ===================== [TIMELINE] Pure JS =====================
     function initTimelineCalendar(items, ids = {}) {
@@ -6482,12 +6564,43 @@
     // =================== [/TIMELINE] ===================
 
 
-    // навесить обработчики формы
+    // навесить обработчики формы + верхней панели (Environment/Demo)
     function wireUI() {
         const form = el('#ppForm');
         const nameInput = el('#ppName');
         const err = el('#ppFormErr');
 
+        // --- Environment buttons ---
+        const btnStage = el('#ppEnvStage');
+        const btnRc = el('#ppEnvRc');
+        const btnProd = el('#ppEnvProd');
+
+        btnStage?.addEventListener('click', () => __ppSetEnv('stage'));
+        btnRc?.addEventListener('click', () => __ppSetEnv('rc'));
+        btnProd?.addEventListener('click', () => __ppSetEnv('prod'));
+
+        // --- Demo toggle ---
+        const demo = el('#ppDemoMode');
+        if (demo) {
+            __ppSetDemoMode(demo.checked);
+            demo.addEventListener('change', async () => {
+                __ppSetDemoMode(demo.checked);
+
+                // если выключили демо — пробуем подгрузить файл endpoints и показываем баннер, если пусто
+                if (!USE_MOCKS) {
+                    await __ppEnsureEndpointsLoaded();
+                    const miss = __ppMissingEndpointsList();
+                    __ppSetEndpointsBannerVisible(miss.length > 0);
+                } else {
+                    __ppSetEndpointsBannerVisible(false);
+                }
+            });
+        }
+
+        // выставим дефолтное окружение так, как оно отмечено в HTML (Stage active)
+        __ppSetEnv('stage');
+
+        // submit
         form?.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = (nameInput?.value || '').trim();
@@ -6498,6 +6611,7 @@
             runProfileLookup(name);
         });
     }
+
 
 
     async function init(container) {
