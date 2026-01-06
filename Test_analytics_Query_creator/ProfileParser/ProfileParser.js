@@ -204,10 +204,31 @@
         const tpl = cfg ? cfg[kind] : '';
         if (!tpl || String(tpl).trim() === '') return null;
 
-        const s = String(tpl);
-        if (s.includes('[Variable]')) return s.replace('[Variable]', encodeURIComponent(name));
+        const encoded = encodeURIComponent(name);
+        let s = String(tpl);
+
+        // main placeholder
+        if (s.includes('[profile_name]')) {
+            s = s.replaceAll('[profile_name]', encoded);
+            return s;
+        }
+
+        // backward compatibility (older placeholder name)
+        if (s.includes('[Variable]')) {
+            s = s.replaceAll('[Variable]', encoded);
+            return s;
+        }
+
+        // optional compatibility (if you ever decide to use {profile_name})
+        if (s.includes('{profile_name}')) {
+            s = s.replaceAll('{profile_name}', encoded);
+            return s;
+        }
+
+        // no placeholder in template — return as-is
         return s;
     }
+
 
     // утилита: читаем как ТЕКСТ, валидируем JSON.parse
     async function fetchJsonText(url) {
@@ -6629,10 +6650,10 @@
             e.preventDefault();
 
             const DEFAULT_PREFIX = '2_12_master_';
-            const name = (nameInput?.value || '').trim();
+            const raw = (nameInput?.value || '').trim();
 
-            // если пусто или оставили только дефолтный префикс — не ищем
-            if (!name || name === DEFAULT_PREFIX) {
+            // пусто — не ищем
+            if (!raw) {
                 if (err) {
                     err.textContent = 'Profile is missing.';
                     err.style.display = '';
@@ -6640,9 +6661,27 @@
                 return;
             }
 
+            // гарантируем префикс:
+            // - если юзер ввёл "Pool" => станет "2_12_master_Pool"
+            // - если юзер ввёл уже "2_12_master_Pool" => оставим как есть
+            const fullName = raw.startsWith(DEFAULT_PREFIX) ? raw : (DEFAULT_PREFIX + raw);
+
+            // если оставили только префикс — не ищем
+            if (fullName === DEFAULT_PREFIX) {
+                if (err) {
+                    err.textContent = 'Profile is missing.';
+                    err.style.display = '';
+                }
+                return;
+            }
+
+            // (опционально, но удобно) нормализуем отображение в инпуте
+            if (nameInput) nameInput.value = fullName;
+
             if (err) err.style.display = 'none';
-            runProfileLookup(name);
+            runProfileLookup(fullName);
         });
+
 
     }
 
