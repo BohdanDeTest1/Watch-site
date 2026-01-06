@@ -177,14 +177,25 @@
     justify-content: start;
 }
 
-/* ===== Top bar над полем ввода (Stage/RC/PROD + Demo mode) ===== */
 #ppFormCard .pp-topbar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: flex-start;
+    /* важно: не space-between */
     gap: 16px;
     margin-bottom: 10px;
 }
+
+/* правый блок: Demo toggle + hint под ним (не влияет на левую часть) */
+#ppFormCard .pp-demo-wrap {
+    margin-left: auto;
+    /* уводим вправо только этот блок */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
 
 /* ===== Environment block ===== */
 /* ===== Environment block ===== */
@@ -340,9 +351,24 @@
     font-size: 13px;
 }
 
+/* правый блок: Demo toggle + hint под ним (не влияет на левую часть) */
+#ppFormCard .pp-demo-wrap {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+/* фикс дергания ON/OFF: резервируем место одинаковой ширины */
 #ppFormCard .pp-demo-state {
+    width: 34px;
+    /* фикс ширины под "ON"/"OFF" */
+    height: 14px;
+    position: relative;
     display: inline-flex;
     align-items: center;
+    justify-content: flex-start;
     font-weight: 800;
     font-size: 12px;
     opacity: .85;
@@ -350,24 +376,27 @@
 
 #ppFormCard .pp-demo-state .on,
 #ppFormCard .pp-demo-state .off {
-    display: none;
+    position: absolute;
+    inset: 0;
+    display: inline;
+    opacity: 0;
+    transition: opacity .12s ease;
 }
 
-/* показываем ON/OFF без JS */
+/* показываем ON/OFF без JS (но без изменения ширины) */
 #ppFormCard #ppDemoMode:checked~.pp-demo-state .on {
-    display: inline;
+    opacity: 1;
 }
 
 #ppFormCard #ppDemoMode:not(:checked)~.pp-demo-state .off {
-    display: inline;
+    opacity: 1;
 }
 
 
-
-
-/* banner: endpoints are missing (shown when Demo mode is OFF but endpoints are empty) */
+/* hint под toggle: endpoints are missing */
 #ppFormCard .pp-endpoints-banner {
-    margin-left: auto;
+    margin-left: 0;
+    /* больше не пушим вправо через margin-left:auto */
     padding: 8px 12px;
     border-radius: 8px;
     border: 1px solid var(--border);
@@ -378,6 +407,7 @@
     line-height: 1;
     white-space: nowrap;
 }
+
 
 #ppFormCard .pp-endpoints-banner.hidden {
     display: none;

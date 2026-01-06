@@ -153,6 +153,22 @@
         activeBtn?.classList.add('active');
     }
 
+    async function __ppRefreshEndpointsHint() {
+        // Demo ON => hint никогда не показываем
+        if (USE_MOCKS) {
+            __ppSetEndpointsBannerVisible(false);
+            return;
+        }
+
+        // Demo OFF => пытаемся подгрузить endpoints файл (если не был загружен)
+        await __ppEnsureEndpointsLoaded();
+
+        // показываем hint только если реально не хватает endpoint-ов для текущего env
+        const miss = __ppMissingEndpointsList();
+        __ppSetEndpointsBannerVisible(miss.length > 0);
+    }
+
+
     function __ppSetDemoMode(isDemo) {
         USE_MOCKS = Boolean(isDemo);
         // когда Demo ON — баннер точно скрываем
@@ -6575,9 +6591,18 @@
         const btnRc = el('#ppEnvRc');
         const btnProd = el('#ppEnvProd');
 
-        btnStage?.addEventListener('click', () => __ppSetEnv('stage'));
-        btnRc?.addEventListener('click', () => __ppSetEnv('rc'));
-        btnProd?.addEventListener('click', () => __ppSetEnv('prod'));
+        btnStage?.addEventListener('click', async () => {
+            __ppSetEnv('stage');
+            await __ppRefreshEndpointsHint();
+        });
+        btnRc?.addEventListener('click', async () => {
+            __ppSetEnv('rc');
+            await __ppRefreshEndpointsHint();
+        });
+        btnProd?.addEventListener('click', async () => {
+            __ppSetEnv('prod');
+            await __ppRefreshEndpointsHint();
+        });
 
         // --- Demo toggle ---
         const demo = el('#ppDemoMode');
@@ -6585,31 +6610,40 @@
             __ppSetDemoMode(demo.checked);
             demo.addEventListener('change', async () => {
                 __ppSetDemoMode(demo.checked);
-
-                // если выключили демо — пробуем подгрузить файл endpoints и показываем баннер, если пусто
-                if (!USE_MOCKS) {
-                    await __ppEnsureEndpointsLoaded();
-                    const miss = __ppMissingEndpointsList();
-                    __ppSetEndpointsBannerVisible(miss.length > 0);
-                } else {
-                    __ppSetEndpointsBannerVisible(false);
-                }
+                await __ppRefreshEndpointsHint();
             });
+
         }
 
         // выставим дефолтное окружение так, как оно отмечено в HTML (Stage active)
         __ppSetEnv('stage');
 
+        // сразу синхронизируем hint (Demo OFF + missing endpoints)
+        (async () => {
+            await __ppRefreshEndpointsHint();
+        })();
+
+
         // submit
         form?.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            const DEFAULT_PREFIX = '2_12_master_';
             const name = (nameInput?.value || '').trim();
-            if (!name) {
-                err.style.display = '';
+
+            // если пусто или оставили только дефолтный префикс — не ищем
+            if (!name || name === DEFAULT_PREFIX) {
+                if (err) {
+                    err.textContent = 'Profile is missing.';
+                    err.style.display = '';
+                }
                 return;
             }
+
+            if (err) err.style.display = 'none';
             runProfileLookup(name);
         });
+
     }
 
 

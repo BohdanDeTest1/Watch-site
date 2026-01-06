@@ -45,21 +45,25 @@
                             </div>
                         </div>
 
+                        <div class="pp-demo-wrap">
+                            <label class="pp-demo-toggle" title="Use mocked JSON files when ON">
+                                <input type="checkbox" id="ppDemoMode" checked />
+                                <span class="pp-slider" aria-hidden="true"></span>
+                                <span class="pp-demo-text">Demo mode</span>
+                                <span class="pp-demo-state" aria-hidden="true">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </span>
+                            </label>
 
-                        <label class="pp-demo-toggle" title="Use mocked JSON files when ON">
-                            <input type="checkbox" id="ppDemoMode" checked />
-                            <span class="pp-slider" aria-hidden="true"></span>
-                            <span class="pp-demo-text">Demo mode</span>
-                            <span class="pp-demo-state" aria-hidden="true">
-                                <span class="on">ON</span>
-                                <span class="off">OFF</span>
-                            </span>
-                        </label>
-
-                        <div id="ppEndpointsBanner" class="pp-endpoints-banner hidden" role="status" aria-live="polite">
-                            Endpoints are missing
+                            <div id="ppEndpointsBanner" class="pp-endpoints-banner hidden" role="status"
+                                aria-live="polite">
+                                Endpoints are missing
+                            </div>
                         </div>
                     </div>
+
+
 
                     <label class="label" for="ppName">Profile name</label>
                     <div class="row">
@@ -72,8 +76,9 @@
                     </div>
                     <p id="ppFormErr" class="small"
                         style="display:none; color: var(--validation-warn); margin-top:6px;">
-                        Please enter a profile name.
+                        Profile is missing.
                     </p>
+
                 </form>
 
             </section>
