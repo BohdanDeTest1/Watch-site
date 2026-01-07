@@ -110,7 +110,7 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 6px;
     background: var(--btn-n-field-bg);
     padding: 0 10px;
     height: 38px;
@@ -127,7 +127,7 @@
     align-items: center;
     justify-content: center;
 
-    border-radius: 5px;
+    border-radius: 6px;
     /* чтобы визуально матчился с input */
     border: 1px solid var(--accent);
     background: var(--accent);
@@ -305,7 +305,7 @@
     appearance: none;
     background: var(--btn-n-field-bg);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
 
     /* FIX: одинаковая высота во всех темах */
     height: 38px;
@@ -365,8 +365,9 @@
 }
 
 #ppFormCard .pp-env-btn:hover {
+
     filter: brightness(0.98);
-    opacity: 0.95;
+    opacity: 0.75;
 }
 
 /* Demo mode toggle (UI-only) */
