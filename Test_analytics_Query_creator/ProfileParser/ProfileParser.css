@@ -147,6 +147,80 @@
     cursor: default;
 }
 
+/* ===== Manual import (CORS/VPN fallback) ===== */
+#pp-root .pp-manual {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#pp-root .pp-manual-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+#pp-root .pp-manual-text {
+    color: var(--text);
+    opacity: .9;
+    font-size: 13px;
+}
+
+#pp-root .pp-manual-open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+#pp-root .pp-manual-open:hover {
+    opacity: .85;
+}
+
+#pp-root .pp-manual-input {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--btn-n-field-bg);
+    color: var(--text);
+    padding: 10px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.35;
+    box-sizing: border-box;
+}
+
+#pp-root .pp-manual-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#pp-root .pp-manual-parse {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--btn-n-field-bg);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#pp-root .pp-manual-parse:hover {
+    opacity: .85;
+}
+
 
 /* префикс больше не используем (оставляю комментарий, чтобы было понятно почему) */
 /* .pp-input-prefix — удалён из разметки, дефолтное значение теперь в самом input */

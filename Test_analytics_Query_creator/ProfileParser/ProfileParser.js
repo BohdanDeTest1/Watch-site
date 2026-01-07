@@ -313,6 +313,77 @@
         el('#ppResults')?.appendChild(wrap);
     }
 
+    // ===== Manual import UI (fallback for CORS/VPN protected endpoints) =====
+    function appendManualImportSection(opts) {
+        const {
+            title,
+            url,
+            helpText,
+            textareaPlaceholder,
+            onParsed // (json, rawText) => void
+        } = opts || {};
+
+        const wrap = document.createElement('div');
+        wrap.className = 'pp-item collapsible'; // открытый по умолчанию
+
+        const safeUrl = url || '';
+        const safeHelp = helpText || 'Open the page and copy JSON here (CMD-C, CMD-V).';
+
+        wrap.innerHTML = `
+<div class="pp-title">
+  <button class="pp-collapser" type="button">
+    ${title || 'Data'} <span class="chev">▾</span>
+  </button>
+</div>
+
+<div class="pp-body">
+  <div class="pp-manual">
+    <div class="pp-manual-row">
+      <div class="pp-manual-text">${safeHelp}</div>
+      <a class="pp-manual-open" href="${safeUrl}" target="_blank" rel="noopener">Open endpoint</a>
+    </div>
+
+    <textarea class="pp-manual-input" spellcheck="false" placeholder="${textareaPlaceholder || 'Paste copied JSON text here'}"></textarea>
+
+    <div class="pp-manual-actions">
+      <button type="button" class="pp-manual-parse">Parse</button>
+    </div>
+  </div>
+</div>
+`;
+
+        wireCollapser(wrap);
+
+        const ta = wrap.querySelector('.pp-manual-input');
+        const btn = wrap.querySelector('.pp-manual-parse');
+
+        btn?.addEventListener('click', () => {
+            const raw = String(ta?.value || '').trim();
+            if (!raw) return;
+
+            let json;
+            try {
+                json = JSON.parse(raw);
+            } catch (e) {
+                // по требованиям: текст ошибки визуально НЕ показываем
+                // просто не парсим, юзер поправит вставку
+                return;
+            }
+
+            try {
+                // если распарсилось — убираем manual-блок и рендерим нормальный UI
+                wrap.remove();
+                onParsed && onParsed(json, raw);
+            } catch (e) {
+                // визуально ошибку НЕ показываем
+            }
+        });
+
+        el('#ppResults')?.appendChild(wrap);
+        return wrap;
+    }
+
+
     // Делает секцию сворачиваемой (по умолчанию — свернута)
     function wireCollapser(wrap) {
         const btn = wrap.querySelector('.pp-collapser');
@@ -4156,11 +4227,12 @@
             __ppSetEndpointsBannerVisible(false);
         }
 
-        try {
 
-            // 1. Profile state (parse JSON и выводим поля; без метатекста)
-            {
-                const t = await fetchJsonText(buildUrl('state', name));
+        try {
+            // 1) Profile state — пробуем всегда
+            try {
+                const stateUrl = buildUrl('state', name);
+                const t = await fetchJsonText(stateUrl);
                 const json = JSON.parse(t);
                 const prof = json?.data?.profile || {};
 
@@ -4176,69 +4248,115 @@
                         ['Change purpose', String(changePurpose)],
                         ['Last publish date', lastPublish],
                     ]
-                    // метатекст не передаём — строка ниже карточки не рендерится
                 );
+            } catch (e) {
+                // по требованиям: текст ошибки визуально не показываем
+                appendKVResult('Profile state', [['Status', 'Failed to load']]);
             }
 
-
-            // 2. LiveOps — таблица + фильтр + панель деталей
+            // 2) LiveOps — если CORS/VPN блок, показываем manual import
             {
-                const t = await fetchJsonText(buildUrl('liveops', name));
+                const liveopsUrl = buildUrl('liveops', name);
 
-                const json = JSON.parse(t);
-                const rawItems = extractLiveOps(json);
-                const items = aggregateByNameWithSegments(rawItems); // ← ДЕДУП ПО NAME+ВРЕМЯ
-
-                if (!items.length) {
-                    appendKVResult('LiveOps', [['Status', 'No items found']]);
-                } else {
-                    appendLiveOpsTable(items);
-                }
-            }
-
-
-            // 3. Promotions
-            // 3. Promotions
-            // 3. Promotions
-            // 3. Promotions
-            {
-                const t = await fetchJsonText(buildUrl('promos', name));
-
-                // Самый безопасный вариант А:
-                // если Promotions-модуль не подгрузился (путь/порядок скриптов) — подгружаем его на лету.
-                // Это НЕ влияет на LiveOps, т.к. работает только внутри Promotions-блока.
-                await __ppEnsureGlobal('PP_Promotions', [
-                    'ProfilePromotions.js',
-                    './ProfilePromotions.js',
-                    'ProfileParser/ProfilePromotions.js',
-                    './ProfileParser/ProfilePromotions.js',
-                ]);
-
-                // Если модуль подгрузился — рендерим календарь+таблицу.
-                // Иначе — честный fallback (мета-строка), чтобы ничего не ломать.
-                if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
+                try {
+                    const t = await fetchJsonText(liveopsUrl);
                     const json = JSON.parse(t);
-                    const promoItems = window.PP_Promotions.extract(json);
+                    const rawItems = extractLiveOps(json);
+                    const items = aggregateByNameWithSegments(rawItems);
 
-                    if (!promoItems.length) {
-                        appendKVResult('Promotions', [['Status', 'No items found']]);
+                    if (!items.length) {
+                        appendKVResult('LiveOps', [['Status', 'No items found']]);
                     } else {
-                        window.PP_Promotions.appendPromotionsUI(promoItems);
+                        appendLiveOpsTable(items);
                     }
-                } else {
-                    appendPromotionsSection(first10(t), t.length);
+                } catch (e) {
+                    // ВАЖНО: в UI не показываем ошибку, вместо этого — manual import
+                    appendManualImportSection({
+                        title: 'LiveOps',
+                        url: liveopsUrl,
+                        helpText: 'Open the page and copy JSON here (CMD-C, CMD-V).',
+                        textareaPlaceholder: 'Paste copied JSON text here',
+                        onParsed: (json) => {
+                            const rawItems = extractLiveOps(json);
+                            const items = aggregateByNameWithSegments(rawItems);
+
+                            if (!items.length) {
+                                appendKVResult('LiveOps', [['Status', 'No items found']]);
+                            } else {
+                                appendLiveOpsTable(items);
+                            }
+                        }
+                    });
                 }
             }
 
-        } catch (e) {
-            const item = document.createElement('div');
-            item.className = 'pp-item';
-            item.innerHTML = `<div class="pp-title">Ошибка</div>
-      <div class="pp-meta" style="color:var(--validation-warn)">Не удалось получить данные: ${e.message}</div>`;
-            results.appendChild(item);
+            // 3) Promotions — аналогично
+            {
+                const promosUrl = buildUrl('promos', name);
+
+                try {
+                    const t = await fetchJsonText(promosUrl);
+
+                    // подгружаем модуль Promotions при необходимости
+                    await __ppEnsureGlobal('PP_Promotions', [
+                        'ProfilePromotions.js',
+                        './ProfilePromotions.js',
+                        'ProfileParser/ProfilePromotions.js',
+                        './ProfileParser/ProfilePromotions.js',
+                    ]);
+
+                    if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
+                        const json = JSON.parse(t);
+                        const promoItems = window.PP_Promotions.extract(json);
+
+                        if (!promoItems.length) {
+                            appendKVResult('Promotions', [['Status', 'No items found']]);
+                        } else {
+                            window.PP_Promotions.appendPromotionsUI(promoItems);
+                        }
+                    } else {
+                        // fallback (твой старый)
+                        appendPromotionsSection(first10(t), t.length);
+                    }
+                } catch (e) {
+                    appendManualImportSection({
+                        title: 'Promotions',
+                        url: promosUrl,
+                        helpText: 'Open the page and copy JSON here (CMD-C, CMD-V).',
+                        textareaPlaceholder: 'Paste copied JSON text here',
+                        onParsed: async (json) => {
+                            // модуль Promotions может быть еще не загружен
+                            await __ppEnsureGlobal('PP_Promotions', [
+                                'ProfilePromotions.js',
+                                './ProfilePromotions.js',
+                                'ProfileParser/ProfilePromotions.js',
+                                './ProfileParser/ProfilePromotions.js',
+                            ]);
+
+                            if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
+                                const promoItems = window.PP_Promotions.extract(json);
+
+                                if (!promoItems.length) {
+                                    appendKVResult('Promotions', [['Status', 'No items found']]);
+                                } else {
+                                    window.PP_Promotions.appendPromotionsUI(promoItems);
+                                }
+                            } else {
+                                // если модуля всё равно нет — просто показываем “кусок”
+                                const raw = JSON.stringify(json);
+                                appendPromotionsSection(first10(raw), raw.length);
+                            }
+                        }
+                    });
+                }
+            }
+
         } finally {
             btn.disabled = false; btn.classList.remove('pp-loading');
         }
+
+
+
     }
 
 
