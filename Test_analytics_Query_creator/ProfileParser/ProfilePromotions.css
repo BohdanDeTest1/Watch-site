@@ -845,6 +845,22 @@
     color: #0f172a !important;
 }
 
+/* [FIX] Promo Admin button hover:
+   НЕ делаем opacity (иначе выглядит “прозрачной” на фоне панели),
+   а делаем лёгкое затемнение как у Events in Admin. */
+#pp-root #ppPromoAdminBtn.pp-btn:hover {
+    opacity: 1;
+    /* перебиваем любые общие hover-правила */
+    filter: brightness(0.86);
+    /* лёгкое затемнение вместо прозрачности */
+}
+
+/* на всякий случай — когда кнопку “нажимают” */
+#pp-root #ppPromoAdminBtn.pp-btn:active {
+    opacity: 1;
+    filter: brightness(0.88);
+}
+
 
 /* ===== Promotions info panel: prevent horizontal scroll + stable width (no shift on Raw open) ===== */
 #pp-root #ppPromoLoDetail.pp-liveops-detail {
