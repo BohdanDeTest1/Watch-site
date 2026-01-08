@@ -384,10 +384,14 @@
     display: inline-flex !important;
 }
 
-
-#ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
-    display: inline-flex !important;
+/* HARD RULE: on PROD env admin button must not exist (override any info-open rules) */
+:root[data-pp-env="prod"] #ppPromoAdminBtn,
+:root[data-pp-env="prod"] #ppPromoAdminBtn.pp-admin-float,
+:root[data-pp-env="prod"] #ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
+    display: none !important;
 }
+
+
 
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail {

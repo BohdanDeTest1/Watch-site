@@ -145,13 +145,27 @@
 
     function __ppSetEnv(env) {
         PP_ENV = env;
+
+        // persist env (so reload keeps selection)
+        try { sessionStorage.setItem('pp-env', PP_ENV); } catch { }
+
+        // expose env for CSS (hard hide admin buttons on prod)
+        try { document.documentElement.setAttribute('data-pp-env', PP_ENV); } catch { }
+
         // визуал: active только на выбранной
         const btns = document.querySelectorAll('#ppFormCard .pp-env-btn');
         btns.forEach(b => b.classList.remove('active'));
         const map = { stage: '#ppEnvStage', rc: '#ppEnvRc', prod: '#ppEnvProd' };
         const activeBtn = document.querySelector(map[env] || map.stage);
         activeBtn?.classList.add('active');
+
+        // notify UI modules (Promotions / LiveOps buttons visibility)
+        try {
+            document.dispatchEvent(new CustomEvent('pp:envChanged', { detail: { env: PP_ENV } }));
+        } catch { }
     }
+
+
 
     async function __ppRefreshEndpointsHint() {
         // Demo ON => hint никогда не показываем
@@ -173,7 +187,13 @@
         USE_MOCKS = Boolean(isDemo);
         // когда Demo ON — баннер точно скрываем
         if (USE_MOCKS) __ppSetEndpointsBannerVisible(false);
+
+        // notify modules (so click handler can switch google/admin)
+        try {
+            document.dispatchEvent(new CustomEvent('pp:demoChanged', { detail: { isDemo: USE_MOCKS } }));
+        } catch { }
     }
+
 
     async function __ppEnsureEndpointsLoaded() {
         if (window.PP_ENDPOINTS) return true;
@@ -228,6 +248,44 @@
         // no placeholder in template — return as-is
         return s;
     }
+
+    function buildAdminUrl(kind, vars = {}) {
+        // Demo ON => оставляем Google как есть
+        if (USE_MOCKS) return 'https://www.google.com';
+
+        const cfg = __ppGetEndpointsForEnv();
+        const tpl = cfg ? cfg[kind] : '';
+        if (!tpl || String(tpl).trim() === '') return null;
+
+        // подставляем плейсхолдеры (ты сам позже заполнишь tpl’ы)
+        let s = String(tpl);
+
+        const rep = (ph, val) => {
+            if (val === undefined || val === null) return;
+            s = s.replaceAll(ph, encodeURIComponent(String(val)));
+        };
+
+        // item id (event / promo)
+        rep('[item_id]', vars.itemId);
+        rep('[id]', vars.itemId);
+        rep('[event_id]', vars.itemId);
+        rep('[promotion_id]', vars.itemId);
+
+        // optional: if you ever need profile too
+        rep('[profile_name]', vars.profileName);
+        rep('[Variable]', vars.profileName);
+        rep('{profile_name}', vars.profileName);
+
+        return s;
+    }
+
+    // Expose small runtime API for other modules (ProfilePromotions.js)
+    window.PP_Runtime = window.PP_Runtime || {
+        getEnv: () => PP_ENV,
+        isDemo: () => USE_MOCKS,
+        buildUrl: (kind, profileName) => buildUrl(kind, profileName),
+        buildAdminUrl: (kind, vars) => buildAdminUrl(kind, vars)
+    };
 
 
     // утилита: читаем как ТЕКСТ, валидируем JSON.parse
@@ -2544,10 +2602,52 @@
         const tableBox = wrap.querySelector('#ppLoTable');
         closeBtn.addEventListener('click', () => wrap.classList.remove('info-open'));
 
+        let __ppCurrentLiveopsItem = null;
+
         const adminBtn = wrap.querySelector('#ppAdminBtn');
-        adminBtn?.addEventListener('click', () => {
-            window.open('https://www.google.com', '_blank', 'noopener');
+
+        function __ppSyncLiveopsAdminBtnVisibility() {
+            if (!adminBtn) return;
+            // не показываем кнопку, если выбран PROD (в любом режиме demo/non-demo)
+            adminBtn.hidden = (PP_ENV === 'prod');
+        }
+
+        // первичная синхронизация
+        __ppSyncLiveopsAdminBtnVisibility();
+
+        // реагируем на переключение окружения
+        document.addEventListener('pp:envChanged', () => {
+            __ppSyncLiveopsAdminBtnVisibility();
         });
+
+        adminBtn?.addEventListener('click', () => {
+            // если PROD — на всякий случай ничего не делаем (кнопка скрыта, но защита лишней не будет)
+            if (PP_ENV === 'prod') return;
+
+            // Demo ON => Google
+            if (USE_MOCKS) {
+                window.open('https://www.google.com', '_blank', 'noopener');
+                return;
+            }
+
+            // Demo OFF => admin endpoint (stage/rc)
+            const itemId =
+                __ppCurrentLiveopsItem?.id ??
+                __ppCurrentLiveopsItem?.raw?.id ??
+                __ppCurrentLiveopsItem?.raw?._id ??
+                null;
+
+            const url = buildAdminUrl('adminLiveops', { itemId });
+
+            if (!url) {
+                // если tpl ещё не заполнен — не падаем
+                window.open('https://www.google.com', '_blank', 'noopener');
+                return;
+            }
+
+            window.open(url, '_blank', 'noopener');
+        });
+
 
         el('#ppResults')?.appendChild(wrap);
 
@@ -2912,6 +3012,7 @@
 
         // ---------- детальная панель ----------
         function showDetail(idx) {
+            __ppCurrentLiveopsItem = items[idx] || null;
             const lo = viewRows[idx];
             if (!lo) return;
 
@@ -3238,11 +3339,6 @@
                 }
             });
 
-
-            // обработчик для кнопки "Event in the Admin"
-            detEl.querySelector('#ppAdminBtn')?.addEventListener('click', () => {
-                window.open('https://www.google.com', '_blank', 'noopener');
-            });
         }
 
         // ---------- события ----------
@@ -6854,17 +6950,45 @@
         const btnProd = el('#ppEnvProd');
 
         btnStage?.addEventListener('click', async () => {
+            // сохраняем то, что юзер уже ввёл — это НЕ должно перетираться
+            const keepName = nameInput ? nameInput.value : '';
+
             __ppSetEnv('stage');
+
+            // обновить hint по endpoints (Demo OFF + missing endpoints)
             await __ppRefreshEndpointsHint();
+
+            // как Refresh вкладки парсера, но НЕ трогаем input
+            if (err) err.style.display = 'none';
+            __ppRenderEmptyResults();
+
+            if (nameInput) nameInput.value = keepName;
         });
+
         btnRc?.addEventListener('click', async () => {
+            const keepName = nameInput ? nameInput.value : '';
+
             __ppSetEnv('rc');
             await __ppRefreshEndpointsHint();
+
+            if (err) err.style.display = 'none';
+            __ppRenderEmptyResults();
+
+            if (nameInput) nameInput.value = keepName;
         });
+
         btnProd?.addEventListener('click', async () => {
+            const keepName = nameInput ? nameInput.value : '';
+
             __ppSetEnv('prod');
             await __ppRefreshEndpointsHint();
+
+            if (err) err.style.display = 'none';
+            __ppRenderEmptyResults();
+
+            if (nameInput) nameInput.value = keepName;
         });
+
 
         // --- Demo toggle ---
         const demo = el('#ppDemoMode');
@@ -6876,9 +7000,11 @@
             });
 
         }
+        const savedEnv = (() => {
+            try { return sessionStorage.getItem('pp-env'); } catch { return null; }
+        })();
 
-        // выставим дефолтное окружение так, как оно отмечено в HTML (Stage active)
-        __ppSetEnv('stage');
+        __ppSetEnv(savedEnv || 'stage');
 
         // сразу синхронизируем hint (Demo OFF + missing endpoints)
         (async () => {

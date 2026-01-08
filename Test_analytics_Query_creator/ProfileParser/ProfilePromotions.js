@@ -441,6 +441,61 @@
     const closeBtn = wrap.querySelector('#ppPromoLoClose');
     const adminBtn = wrap.querySelector('#ppPromoAdminBtn');
 
+    let __ppCurrentPromoItem = null;
+
+    function __ppGetEnvSafe() {
+      try { return window.PP_Runtime?.getEnv?.() || 'stage'; } catch { return 'stage'; }
+    }
+    function __ppIsDemoSafe() {
+      try { return Boolean(window.PP_Runtime?.isDemo?.()); } catch { return true; }
+    }
+    function __ppBuildPromoAdminUrlSafe(itemId) {
+      try { return window.PP_Runtime?.buildAdminUrl?.('adminPromos', { itemId }) || null; } catch { return null; }
+    }
+
+    function __ppSyncPromoAdminBtnVisibility() {
+      if (!adminBtn) return;
+      adminBtn.hidden = (__ppGetEnvSafe() === 'prod');
+    }
+
+    // первичная синхронизация
+    __ppSyncPromoAdminBtnVisibility();
+
+    // реагируем на переключение окружения (событие диспатчит ProfileParser.js)
+    document.addEventListener('pp:envChanged', () => {
+      __ppSyncPromoAdminBtnVisibility();
+    });
+
+    // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
+    adminBtn?.addEventListener('click', () => {
+      // PROD — не должно быть кнопки
+      if (__ppGetEnvSafe() === 'prod') return;
+
+      // Demo ON => Google
+      if (__ppIsDemoSafe()) {
+        window.open('https://www.google.com', '_blank', 'noopener');
+        return;
+      }
+
+      // Demo OFF => admin endpoint (stage/rc)
+      const itemId =
+        __ppCurrentPromoItem?.id ??
+        __ppCurrentPromoItem?.raw?.id ??
+        __ppCurrentPromoItem?.raw?._id ??
+        null;
+
+
+      // если tpl ещё не заполнен — fallback на Google, чтобы не ломать UX
+      const url = __ppBuildPromoAdminUrlSafe(itemId);
+      if (!url) {
+        window.open('https://www.google.com', '_blank', 'noopener');
+        return;
+      }
+
+      window.open(url, '_blank', 'noopener');
+    });
+
+
     if (!bodyEl || !detEl) return;
 
     closeBtn?.addEventListener('click', () => {
@@ -450,14 +505,6 @@
       wrap.classList.remove('info-open');
       liveopsEl.classList.remove('info-open');
       detEl.setAttribute('aria-hidden', 'true');
-    });
-
-
-
-    // Same behavior as LiveOps: floating "Go to admin" button (fixed to panel bottom).
-    // Requirement: on click open Google.
-    adminBtn?.addEventListener('click', () => {
-      window.open('https://www.google.com', '_blank', 'noopener');
     });
 
 
@@ -699,6 +746,15 @@
 
     function showDetail(row) {
       if (!row) return;
+
+      // keep selected promotion for "Promotion in the Admin" button logic
+      // (row here is the normalized table row; id usually lives in row.raw)
+      __ppCurrentPromoItem = row;
+
+      // [SHOW IN CALENDAR] данные для кнопки "Show in calendar"
+      detEl.dataset.ppFocusTitle = String(row.name || '').trim();
+      detEl.dataset.ppFocusStart = Number(row.startTS || 0);
+
 
       const rawName = String(row.name ?? '');
       const rawType = String(row.type ?? '');
@@ -976,6 +1032,10 @@
       // Store raw copy text on panel element (NOT html-escaped)
       detEl.dataset.rawText = rawCopyText;
 
+      // used by "Show in calendar" button (delegated handler below)
+      detEl.dataset.ppFocusTitle = rawName;
+      detEl.dataset.ppFocusStart = String(Number(row.startTS) || '');
+
       detEl.innerHTML = `
   <div class="pp-kvs">
 
@@ -991,7 +1051,13 @@
       </span>
     </div>
 
-    <div class="pp-kv"><span class="pp-k">Type</span><span class="pp-v">${safeType}</span></div>
+    <div class="pp-kv pp-kv-type">
+      <span class="pp-k">Type</span>
+      <span class="pp-v">
+        <span class="pp-type-text">${safeType}</span>
+        <button class="pp-btn pp-showcal" type="button" data-showcal="1">Show in calendar</button>
+      </span>
+    </div>
 
     <div class="pp-kv"><span class="pp-k">State</span>
       <span class="pp-v"><span class="pp-state"><span class="pp-check" aria-hidden="true">✓</span> On</span></span>
@@ -1007,8 +1073,6 @@
 
   ${assetsKvHtml}
 
-
-
     <div class="pp-kv"><span class="pp-k">Segment</span><span class="pp-v">${segmentHtml}</span></div>
 
     <div class="pp-kv"><span class="pp-k">TimeDurationMinutes</span><span class="pp-v"><code class="pp-code">${esc(raw?.timeDurationMinutes ?? '—')}</code></span></div>
@@ -1019,7 +1083,6 @@
     ${progressBarBlock}
 
         ${offersKvHtml}
-
 
           <div class="pp-kv pp-kv-raw pp-kv-raw-only">
       <span class="pp-v">
@@ -1041,11 +1104,9 @@
         </details>
       </span>
     </div>
-
-
-
-  </div>
 `;
+
+
 
       // IMPORTANT: кладём в data-copy-name НЕ html-escaped строку,
       // иначе в буфер улетает "&amp;" / "&#39;" и т.п.
@@ -1094,6 +1155,21 @@
     // copy buttons inside detail (Name + Raw JSON)
     detEl.addEventListener('click', async (e) => {
 
+      // --- Show in calendar (scroll to calendar + center start date + focus this promo) ---
+      const showCalBtn = e.target.closest('button[data-showcal="1"]');
+      if (showCalBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const title = String(detEl.dataset.ppFocusTitle || '').trim();
+        const startMs = Number(detEl.dataset.ppFocusStart);
+
+        document.dispatchEvent(new CustomEvent('pp:showInCalendar', {
+          detail: { calId: 'ppPromoCal', title, startMs }
+        }));
+        return;
+      }
+
       // --- Assets toggles (independent: each button controls its own panel) ---
       const toggle = e.target.closest('button.pp-asset-toggle');
       if (toggle) {
@@ -1116,27 +1192,8 @@
         return;
       }
 
-      // --- Offers toggles (independent: each button controls its own offer panel) ---
-      const offerToggle = e.target.closest('button.pp-offer-toggle');
-      if (offerToggle) {
-        e.preventDefault();
+      // --- Offers toggles ...
 
-        const idx = offerToggle.getAttribute('data-offer');
-        if (idx == null) return;
-
-        const myPanel = detEl.querySelector(`.pp-offer-panel[data-offer-panel="${idx}"]`);
-        if (!myPanel) return;
-
-        const isOpen = offerToggle.getAttribute('aria-expanded') === 'true';
-        const nextOpen = !isOpen;
-
-        offerToggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
-        const chev = offerToggle.querySelector('.pp-offer-toggle-chev');
-        if (chev) chev.textContent = nextOpen ? '▾' : '▸';
-
-        myPanel.hidden = !nextOpen;
-        return;
-      }
 
 
       // --- RAW copy button ---

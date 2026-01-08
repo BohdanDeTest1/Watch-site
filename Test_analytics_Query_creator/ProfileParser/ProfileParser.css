@@ -2283,6 +2283,17 @@
     opacity: 0.75;
 }
 
+html[data-pp-env="prod"] #ppAdminBtn {
+    display: none !important;
+}
+
+
+/* HARD RULE: on PROD env admin button must not exist (override any JS/CSS states) */
+:root[data-pp-env="prod"] #ppAdminBtn {
+    display: none !important;
+}
+
+
 :root.theme-dark .pp-t-row .pp-info,
 .theme-dark .pp-t-row .pp-info,
 [data-theme="dark"] .pp-t-row .pp-info,
