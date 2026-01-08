@@ -136,11 +136,71 @@
        в тёмной — тёмный (если btn-n-field-bg = тёмный) */
     color: var(--btn-n-field-bg);
 
-    font-weight: 700;
+    font-weight: 800;
+    font-size: 15px;
     line-height: 1;
     box-sizing: border-box;
     cursor: pointer;
 }
+
+/* Refresh button (orange, same sizing as Search) */
+/* Refresh button (orange, same sizing as Search) */
+#ppFormCard #ppRefresh.btn-refresh {
+    height: 38px;
+    /* = .pp-input-wrap */
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    /* всегда оранжевый фон (и чтобы никакие темы/кнопочные стили не перебили) */
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
+
+    /* LIGHT theme: белый текст (фиксируем жёстко) */
+    color: #ffffff !important;
+
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* DARK theme: чёрный текст (фиксируем жёстко) */
+:root.theme-dark #ppFormCard #ppRefresh.btn-refresh,
+.theme-dark #ppFormCard #ppRefresh.btn-refresh,
+[data-theme="dark"] #ppFormCard #ppRefresh.btn-refresh,
+.dark #ppFormCard #ppRefresh.btn-refresh {
+    color: #0b1120 !important;
+}
+
+
+/* hover */
+#ppFormCard #ppRefresh.btn-refresh:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+
+/* hover/active like primary */
+#ppFormCard .btn-refresh:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+/* Empty Results message (before first Search / after Refresh) */
+#ppPanel .pp-results-empty {
+    background: rgb(160 198 250 / 21%);
+    border-radius: 8px;
+    padding: 12px 12px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
 
 #ppFormCard #ppSearch.btn-primary:disabled {
     opacity: .6;
@@ -245,11 +305,17 @@
 
 #ppFormCard .row {
     display: grid;
-    grid-template-columns: max-content auto;
-    gap: 2px;
+
+    /* 1) input (фикс ширины через .pp-input-wrap = 300px)
+       2) Search
+       3) Refresh */
+    grid-template-columns: max-content max-content max-content;
+
+    gap: 10px;
     align-items: center;
     justify-content: start;
 }
+
 
 #ppFormCard .pp-topbar {
     display: flex;
@@ -304,7 +370,7 @@
 #ppFormCard .pp-env-btn {
     appearance: none;
     background: var(--btn-n-field-bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--btn-secondary-border);
     border-radius: 6px;
 
     /* FIX: одинаковая высота во всех темах */

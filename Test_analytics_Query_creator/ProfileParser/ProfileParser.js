@@ -320,61 +320,80 @@
             url,
             helpText,
             textareaPlaceholder,
-            onParsed // (json, rawText) => void
+            onParsed // (json, rawText) => void | Promise<void>
         } = opts || {};
 
         const wrap = document.createElement('div');
-        wrap.className = 'pp-item collapsible'; // открытый по умолчанию
+
+        // ВАЖНО: секция должна быть ОТКРЫТА по умолчанию
+        wrap.className = 'pp-item collapsible open';
+        wrap.dataset.defaultOpen = '1';
 
         const safeUrl = url || '';
         const safeHelp = helpText || 'Open the page and copy JSON here (CMD-C, CMD-V).';
+        const safePh = textareaPlaceholder || 'Paste copied JSON text here';
 
         wrap.innerHTML = `
 <div class="pp-title">
   <button class="pp-collapser" type="button">
-    ${title || 'Data'} <span class="chev">▾</span>
+    ${title || 'Data'} <span class="chev">▴</span>
   </button>
 </div>
 
 <div class="pp-body">
-  <div class="pp-manual">
-    <div class="pp-manual-row">
-      <div class="pp-manual-text">${safeHelp}</div>
-      <a class="pp-manual-open" href="${safeUrl}" target="_blank" rel="noopener">Open endpoint</a>
-    </div>
+  <div class="pp-meta" style="margin-bottom:10px;">
+    ${safeHelp}
+  </div>
 
-    <textarea class="pp-manual-input" spellcheck="false" placeholder="${textareaPlaceholder || 'Paste copied JSON text here'}"></textarea>
+  <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+    <button type="button" class="btn-primary btn-refresh pp-manual-open-btn">Open link</button>
+    <div class="small" style="opacity:.85; word-break:break-all;">${safeUrl}</div>
+  </div>
 
-    <div class="pp-manual-actions">
-      <button type="button" class="pp-manual-parse">Parse</button>
-    </div>
+  <textarea class="pp-manual-input" rows="10" style="width:100%; resize:vertical;" spellcheck="false"
+    placeholder="${safePh}"></textarea>
+
+  <div style="margin-top:10px;">
+    <button type="button" class="btn-primary pp-manual-parse">Parsing</button>
   </div>
 </div>
 `;
 
         wireCollapser(wrap);
 
+        // Open link
+        wrap.querySelector('.pp-manual-open-btn')?.addEventListener('click', () => {
+            if (!safeUrl) return;
+            window.open(safeUrl, '_blank', 'noopener');
+        });
+
         const ta = wrap.querySelector('.pp-manual-input');
         const btn = wrap.querySelector('.pp-manual-parse');
 
-        btn?.addEventListener('click', () => {
+        btn?.addEventListener('click', async () => {
             const raw = String(ta?.value || '').trim();
             if (!raw) return;
 
             let json;
             try {
                 json = JSON.parse(raw);
-            } catch (e) {
+            } catch (_) {
                 // по требованиям: текст ошибки визуально НЕ показываем
-                // просто не парсим, юзер поправит вставку
+                // просто подсветим textarea, чтобы юзер понял что не так
+                if (ta) {
+                    ta.focus();
+                    ta.style.outline = '2px solid var(--validation-warn)';
+                    setTimeout(() => { ta.style.outline = ''; }, 1200);
+                }
                 return;
             }
 
             try {
                 // если распарсилось — убираем manual-блок и рендерим нормальный UI
                 wrap.remove();
-                onParsed && onParsed(json, raw);
-            } catch (e) {
+                if (onParsed) await onParsed(json, raw);
+                __ppExpandAllResults();
+            } catch (_) {
                 // визуально ошибку НЕ показываем
             }
         });
@@ -382,6 +401,8 @@
         el('#ppResults')?.appendChild(wrap);
         return wrap;
     }
+
+
 
 
     // Делает секцию сворачиваемой (по умолчанию — свернута)
@@ -395,13 +416,23 @@
             if (body) body.hidden = flag;
             if (chev) chev.textContent = flag ? '▾' : '▴';
         }
-        setCollapsed(true); // дефолт: закрыто
+
+        // allow default-open via class or dataset
+        const defaultOpen = wrap.classList.contains('open') || wrap.dataset.defaultOpen === '1';
+        setCollapsed(!defaultOpen);
+
+        // expose for programmatic control
+        wrap.__ppSetCollapsed = setCollapsed;
 
         btn?.addEventListener('click', () => setCollapsed(!wrap.classList.contains('collapsed')));
         btn?.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setCollapsed(!wrap.classList.contains('collapsed'));
+            }
         });
     }
+
 
     window.wireCollapser = wireCollapser;
 
@@ -891,13 +922,15 @@
     // Таблица LiveOps + слева панель деталей
     function appendLiveOpsTable(items) {
         const wrap = document.createElement('div');
-        wrap.className = 'pp-item collapsible collapsed';
+        wrap.className = 'pp-item collapsible open';
+        wrap.dataset.defaultOpen = '1';
         wrap.innerHTML = `
   <div class="pp-title">
     <button class="pp-collapser" type="button">
-      LiveOps <span class="chev">▾</span>
+      LiveOps <span class="chev">▴</span>
     </button>
   </div>
+
 
   <div class="pp-body">
  <!-- [CAL] Timeline (pure JS/CSS) -->
@@ -4168,6 +4201,26 @@
 
 
     function el(q) { return document.querySelector(q); }
+
+    function __ppRenderEmptyResults() {
+        const results = el('#ppResults');
+        if (!results) return;
+        results.innerHTML = `
+            <div id="ppResultsEmpty" class="pp-results-empty">
+                Enter a profile name and click <b>Search</b> to get results
+            </div>
+        `;
+    }
+
+    function __ppExpandAllResults() {
+        const results = el('#ppResults');
+        if (!results) return;
+        results.querySelectorAll('.pp-item.collapsible').forEach(w => {
+            if (typeof w.__ppSetCollapsed === 'function') w.__ppSetCollapsed(false);
+        });
+    }
+
+
     function appendResult(title, text10, totalLen) {
         const item = document.createElement('div');
         item.className = 'pp-item';
@@ -4178,13 +4231,77 @@
         el('#ppResults')?.appendChild(item);
     }
 
-    function appendPromotionsSection(text10, totalLen) {
+    function appendManualPasteSection({ title, url, helpText, textareaPlaceholder, onParsed }) {
         const wrap = document.createElement('div');
-        wrap.className = 'pp-item collapsible collapsed';
+        wrap.className = 'pp-item collapsible open';
+        wrap.dataset.defaultOpen = '1';
+
         wrap.innerHTML = `
       <div class="pp-title">
         <button class="pp-collapser" type="button">
-          Promotions <span class="chev">▾</span>
+          ${title} <span class="chev">▴</span>
+        </button>
+      </div>
+
+      <div class="pp-body">
+        <div class="pp-meta" style="margin-bottom:10px;">
+          ${helpText || 'Open the page and copy JSON here (CMD-C, CMD-V).'}
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+          <button type="button" class="btn-primary btn-refresh pp-open-json">Open link</button>
+          <div class="small" style="opacity:.85; word-break:break-all;">${url}</div>
+        </div>
+
+        <textarea class="pp-manual-ta" rows="10" style="width:100%; resize:vertical;"
+          placeholder="${textareaPlaceholder || 'Paste copied JSON text here'}"></textarea>
+
+        <div style="margin-top:10px;">
+          <button type="button" class="btn-primary pp-parse-json">Parsing</button>
+        </div>
+      </div>
+    `;
+
+        wireCollapser(wrap);
+
+        // open url in new tab
+        wrap.querySelector('.pp-open-json')?.addEventListener('click', () => {
+            window.open(url, '_blank', 'noopener');
+        });
+
+        // parse JSON from textarea
+        wrap.querySelector('.pp-parse-json')?.addEventListener('click', async () => {
+            const ta = wrap.querySelector('.pp-manual-ta');
+            const raw = (ta?.value || '').trim();
+            if (!raw) return;
+
+            try {
+                const json = JSON.parse(raw);
+                // remove this manual card before rendering real UI (clean)
+                wrap.remove();
+                await onParsed(json);
+                __ppExpandAllResults();
+            } catch (_) {
+                // silently ignore visually (по требованию), но можно подсветить textarea минимально:
+                if (ta) {
+                    ta.focus();
+                    ta.style.outline = '2px solid var(--validation-warn)';
+                    setTimeout(() => { ta.style.outline = ''; }, 1200);
+                }
+            }
+        });
+
+        el('#ppResults')?.appendChild(wrap);
+    }
+
+    function appendPromotionsSection(text10, totalLen) {
+        const wrap = document.createElement('div');
+        wrap.className = 'pp-item collapsible open';
+        wrap.dataset.defaultOpen = '1';
+        wrap.innerHTML = `
+      <div class="pp-title">
+        <button class="pp-collapser" type="button">
+          Promotions <span class="chev">▴</span>
         </button>
       </div>
       <div class="pp-body">
@@ -4194,6 +4311,7 @@
         wireCollapser(wrap);
         el('#ppResults')?.appendChild(wrap);
     }
+
 
 
     async function runProfileLookup(name) {
@@ -4352,8 +4470,13 @@
             }
 
         } finally {
-            btn.disabled = false; btn.classList.remove('pp-loading');
+            // После любого сценария (успех/фолбэк) — раскрываем все collapsible секции
+            __ppExpandAllResults();
+
+            btn.disabled = false;
+            btn.classList.remove('pp-loading');
         }
+
 
 
 
@@ -6773,7 +6896,7 @@
             // пусто — не ищем
             if (!raw) {
                 if (err) {
-                    err.textContent = 'Profile is missing.';
+                    err.textContent = 'Profile name is missing';
                     err.style.display = '';
                 }
                 return;
@@ -6787,7 +6910,7 @@
             // если оставили только префикс — не ищем
             if (fullName === DEFAULT_PREFIX) {
                 if (err) {
-                    err.textContent = 'Profile is missing.';
+                    err.textContent = 'Profile name is missing';
                     err.style.display = '';
                 }
                 return;
@@ -6798,6 +6921,21 @@
 
             if (err) err.style.display = 'none';
             runProfileLookup(fullName);
+        });
+
+        // Refresh: reset Results + errors + input (но НЕ трогаем Demo mode и Environment)
+        const refreshBtn = el('#ppRefresh');
+        refreshBtn?.addEventListener('click', () => {
+            const DEFAULT_PREFIX = '2_12_master_';
+
+            // вернуть дефолтный префикс
+            if (nameInput) nameInput.value = DEFAULT_PREFIX;
+
+            // спрятать ошибку формы (если была)
+            if (err) err.style.display = 'none';
+
+            // вернуть Results в дефолтное состояние
+            __ppRenderEmptyResults();
         });
 
 
@@ -6851,6 +6989,8 @@
 
         wireGate(); // навесим обработчики на форму
         wireUI();   // <— подключаем обработчик submit (preventDefault + запуск моков)
+        // show empty Results before first Search
+        __ppRenderEmptyResults();
     }
 
 

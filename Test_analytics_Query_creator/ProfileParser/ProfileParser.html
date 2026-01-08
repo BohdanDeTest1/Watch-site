@@ -71,13 +71,16 @@
                             <input id="ppName" type="text" class="pp-input-with-prefix" value="2_12_master_" required />
                         </div>
 
-
                         <button id="ppSearch" type="submit" class="btn-primary">Search</button>
+                        <button id="ppRefresh" type="button" class="btn-primary btn-refresh">Refresh</button>
+
+
                     </div>
                     <p id="ppFormErr" class="small"
-                        style="display:none; color: var(--validation-warn); margin-top:6px;">
-                        Profile is missing.
+                        style="display:none; color: var(--validation-warn); margin-top:6px; font-weight:700;">
+                        Profile name is missing
                     </p>
+
 
                 </form>
 
@@ -87,8 +90,11 @@
             <section class="card" id="ppPanel">
                 <h2 style="margin-bottom:10px;">Results</h2>
                 <div id="ppResults" class="pp-results">
-                    <!-- сюда будут добавляться ответы 1 → 2 → 3 -->
+                    <div id="ppResultsEmpty" class="pp-results-empty">
+                        Enter a profile name and click <b>Search</b>
+                    </div>
                 </div>
+
             </section>
         </main>
 
