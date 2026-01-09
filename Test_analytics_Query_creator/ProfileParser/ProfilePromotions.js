@@ -90,6 +90,110 @@
 
     const list = Array.isArray(arr) ? arr : [];
 
+
+    // --- [CONDITIONS] normalize for timeline context-menu (same data as in info panel)
+    const asArr = (v) => Array.isArray(v) ? v : (v ? [v] : []);
+    const lastToken = (s) => String(s || '').split('.').filter(Boolean).pop() || String(s || '');
+    const normOp = (op, field) => {
+      const o = String(op || '').trim();
+      if (o) return o;
+      if (/level/i.test(field)) return '>=';
+      if (/version/i.test(field)) return '>=';
+      return '>=';
+    };
+    const labelFromAny = (s) => {
+      const raw = String(s || '').trim();
+      const low = raw.toLowerCase();
+      if (low.includes('level')) return 'Level';
+      if (low.includes('appversion') || low.includes('version')) return 'AppVersion';
+      const t = lastToken(raw);
+      if (!t) return 'Condition';
+      return t.charAt(0).toUpperCase() + t.slice(1);
+    };
+    const pushCond = (out, fieldRaw, op, val) => {
+      const value = (val ?? '').toString().trim();
+      if (!value) return;
+      const label = labelFromAny(fieldRaw);
+      out.push(`${label} ${normOp(op, label)} ${value}`);
+    };
+    const fromNode = (node, out) => {
+      if (!node) return;
+
+      // 1) { pathToField, operator, value } (Promotions default form)
+      if (node.pathToField || node.operator || node.value != null) {
+        pushCond(out, node.pathToField, node.operator, node.value);
+        return;
+      }
+
+      // 2) { fieldName, operator, value } (alternative)
+      if (node.fieldName || node.operator || node.value != null) {
+        pushCond(out, node.fieldName, node.operator, (node.value ?? node.serialized?.value));
+        return;
+      }
+
+      // 3) { serialized: { type, value, operator? } }
+      if (node.serialized) {
+        const s = node.serialized;
+        pushCond(out, s.type, s.operator, s.value);
+        return;
+      }
+
+      // 4) object-map: { appVersion: {operator, value}, eventLevel: {...} }
+      if (typeof node === 'object' && !Array.isArray(node)) {
+        for (const [k, v] of Object.entries(node)) {
+          if (v && (v.value != null || v.serialized?.value != null)) {
+            pushCond(out, k, v.operator || v.serialized?.operator, (v.value ?? v.serialized?.value));
+          }
+        }
+      }
+
+      // 5) already a string
+      if (typeof node === 'string') {
+        const s = node.trim();
+        if (s) out.push(s);
+      }
+    };
+    const buildPromoCondLines = (it) => {
+      const lines = [];
+
+      // main form
+      asArr(it?.conditions).forEach(n => fromNode(n, lines));
+
+      // PolyCondition / condition trees (fallbacks)
+      if (it?.polyCondition) {
+        asArr(it.polyCondition?.conditions ?? it.polyCondition).forEach(n => fromNode(n, lines));
+      }
+      if (it?.condition) {
+        asArr(it.condition?.conditions ?? it.condition).forEach(n => fromNode(n, lines));
+      }
+
+      // common alternative fields
+      const alt = {
+        level: it?.level ?? it?.minLevel ?? it?.eventLevel,
+        appVersion: it?.appVersion ?? it?.minAppVersion,
+        minAppVersion: it?.minAppVersion,
+        maxAppVersion: it?.maxAppVersion
+      };
+      for (const [k, v] of Object.entries(alt)) {
+        if (v != null && v !== '') pushCond(lines, k, undefined, v);
+      }
+
+      // dedupe + stable ordering: Level, AppVersion, others
+      const uniq = Array.from(new Set(lines.map(String)));
+
+      const rank = (s) => {
+        const low = String(s || '').toLowerCase();
+        if (low.startsWith('level ')) return 1;
+        if (low.startsWith('appversion ')) return 2;
+        return 3;
+      };
+
+      return uniq
+        .slice()
+        .sort((a, b) => (rank(a) - rank(b)) || String(a).localeCompare(String(b)));
+    };
+
+
     return list.map((it, idx) => {
       const id = it.id ?? it._id ?? it.key ?? `promo_${idx}`;
 
@@ -135,11 +239,14 @@
         endTS,
         startPretty: fmtUtc(startTS),
         endPretty: fmtUtc(endTS),
+        conditions: buildPromoCondLines(it),
         raw: it
       };
 
     }).filter(x => Number.isFinite(x.startTS) && Number.isFinite(x.endTS) && x.endTS > x.startTS);
   }
+
+
 
   // ---------- UI ----------
   function appendPromotionsUI(items) {
