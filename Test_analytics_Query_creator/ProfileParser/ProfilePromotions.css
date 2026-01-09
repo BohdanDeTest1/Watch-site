@@ -714,7 +714,7 @@
 #ppPromoLiveops.info-open #ppPromoAdminBtn.pp-admin-float {
     z-index: 1210 !important;
     /* MUST be above the detail panel */
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+
     pointer-events: auto;
 }
 

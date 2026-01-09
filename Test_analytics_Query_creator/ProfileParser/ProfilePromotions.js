@@ -1055,8 +1055,7 @@
       <span class="pp-k">Type</span>
       <span class="pp-v">
         <span class="pp-type-text">${safeType}</span>
-        <button class="pp-btn pp-showcal" type="button" data-showcal="1">Show in calendar</button>
-      </span>
+          </span>
     </div>
 
     <div class="pp-kv"><span class="pp-k">State</span>

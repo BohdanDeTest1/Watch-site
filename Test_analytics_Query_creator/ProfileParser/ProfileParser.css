@@ -1686,6 +1686,14 @@
     scrollbar-gutter: stable;
 }
 
+/* [FIX][PROD] В PROD кнопки "Events in the Admin" нет,
+   но базовая раскладка всё равно отрезала инфопанель снизу под высоту кнопки.
+   Поэтому в PROD даём панели дойти до низа, как в Promotions. */
+:root[data-pp-env="prod"] .pp-item.info-open .pp-liveops-detail {
+    bottom: 0;
+    /* чуть более комфортный низ, без “пустой зоны” */
+    padding-bottom: 16px;
+}
 
 
 .pp-item.info-open .pp-table {
