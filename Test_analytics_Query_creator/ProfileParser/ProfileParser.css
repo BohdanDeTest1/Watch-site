@@ -5365,15 +5365,18 @@ body.theme-dark .pp-cal-tick {
 /* Делаем поп-ап фиксированным во вьюпорте, чтобы он не клипался
    родителями с overflow:hidden и всегда был поверх таблицы */
 #tlDateTimePop.tl-dtp {
-    position: fixed;
-    /* вместо absolute */
+    /* ВАЖНО:
+       pop-ап живёт внутри .tl-cal-wrap (position:relative)
+       и должен «ездить» вместе со страницей, будучи приклеенным к кнопке.
+       Поэтому используем absolute (а не fixed). */
+    position: absolute;
     /* координаты задаём из JS через style.left/top */
     min-width: 280px !important;
     padding: 12px 14px;
 
     /* используем переменные темы */
     border: 1px solid var(--dtp-border, #1e3a8a);
-    border-radius: 12px;
+    border-radius: 6px;
     background: var(--dtp-bg, #0f172a);
     color: var(--dtp-fg, #e5e7eb);
     box-shadow: var(--dtp-shadow, 0 12px 32px rgba(2, 6, 23, .6));
@@ -5382,6 +5385,7 @@ body.theme-dark .pp-cal-tick {
     /* очень высокий слой */
     pointer-events: auto;
 }
+
 
 
 

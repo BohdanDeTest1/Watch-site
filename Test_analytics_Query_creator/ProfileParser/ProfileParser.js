@@ -5852,27 +5852,50 @@
                     timeInp.value = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
                 }
 
-                // --- Позиционирование поп-апа во вьюпорте ---
-                // берём геометрию кнопки Calendar
+                // --- Позиционирование поп-апа относительно кнопки Calendar ---
+                // pop-ап живёт внутри .tl-cal-wrap (position:relative), поэтому делаем absolute,
+                // чтобы он был «приклеен» к кнопке и уезжал/приезжал вместе со страницей при скролле.
+                // Плюс: по умолчанию открываем ВВЕРХ (чтобы не перекрывать заголовки таблицы снизу).
+
+                const wrapRect = wrap.getBoundingClientRect();
                 const btnRect = b.getBoundingClientRect();
-                const viewportW = window.innerWidth || document.documentElement.clientWidth;
-                const margin = 12;
-                // ширину попапа можно оценить по offsetWidth, либо взять дефолт 280
-                const popupWidth = pop.offsetWidth || 280;
 
-                // выравниваем по правому краю кнопки, но не даём уйти за левый край экрана
-                let left = btnRect.right - popupWidth;
-                if (left < margin) left = margin;
-                // топ — сразу под кнопкой
-                const top = btnRect.bottom + 6;
-
-                pop.style.position = 'fixed';
-                pop.style.left = `${Math.round(left)}px`;
-                pop.style.top = `${Math.round(top)}px`;
+                pop.style.position = 'absolute';
                 pop.style.right = 'auto';
 
+                // показать (но невидимо), чтобы измерить реальные размеры
+                pop.style.visibility = 'hidden';
                 pop.removeAttribute('hidden');
+
+                requestAnimationFrame(() => {
+                    const pr = pop.getBoundingClientRect();
+                    const popW = pr.width || pop.offsetWidth || 280;
+                    const popH = pr.height || pop.offsetHeight || 180;
+
+                    const margin = 8;
+
+                    // left: выравниваем по правому краю кнопки
+                    let left = (btnRect.right - wrapRect.left) - popW;
+
+                    // clamp по вьюпорту (в координатах wrap)
+                    const minLeft = margin;
+                    const maxLeft = (window.innerWidth - margin) - wrapRect.left - popW;
+                    left = Math.max(minLeft, Math.min(left, maxLeft));
+
+                    // top: предпочтительно ВВЕРХ
+                    let top = (btnRect.top - wrapRect.top) - popH - 6;
+                    if (top < margin) {
+                        // если сверху не помещается — открываем вниз
+                        top = (btnRect.bottom - wrapRect.top) + 6;
+                    }
+
+                    pop.style.left = `${Math.round(left)}px`;
+                    pop.style.top = `${Math.round(top)}px`;
+                    pop.style.visibility = 'visible';
+                });
+
                 return;
+
 
             }
 
