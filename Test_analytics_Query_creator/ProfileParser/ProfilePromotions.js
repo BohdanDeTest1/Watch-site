@@ -312,23 +312,26 @@
       <div class="pp-table pp-lo-table" id="ppPromoLoTable">
         <div class="pp-t-head">
 
-            <!-- State -->
-            <div class="pp-th state">
-             <button class="pp-th-btn" id="ppPromoStateBtn" type="button" aria-haspopup="true">
-  <span class="txt">State</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
-</button>
-              <div class="pp-filter-pop" id="ppPromoStatePop" hidden>
-                <div class="pp-filter-actions">
-                  <button class="pp-mini" id="ppPromoStateAll" type="button">All</button>
-                  <button class="pp-mini" id="ppPromoStateNone" type="button">None</button>
-                </div>
-                <div class="pp-filter-list" id="ppPromoStateList"></div>
-                <div class="pp-filter-actions">
-                  <button id="ppPromoStateReset" class="pp-link-btn" type="button">RESET</button>
-                  <button id="ppPromoStateApply" class="pp-btn primary" type="button">CONFIRM</button>
-                </div>
-              </div>
-            </div>
+           <!-- State -->
+<div class="pp-th state">
+  <button class="pp-th-btn" id="ppPromoStateBtn" type="button" aria-haspopup="true">
+    <span class="txt">State</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
+  </button>
+
+  <!-- Make Promotions State filter identical to LiveOps (On/Off/Freeze + same layout) -->
+  <div class="pp-filter-pop pp-state-pop" id="ppPromoStatePop" hidden>
+    <div id="ppPromoStateList" class="pp-state-list">
+      <label class="pp-check"><input type="checkbox" value="on"><span>On</span></label>
+      <label class="pp-check"><input type="checkbox" value="off"><span>Off</span></label>
+      <label class="pp-check"><input type="checkbox" value="freeze"><span>Freeze</span></label>
+    </div>
+    <div class="pp-filter-actions">
+      <button id="ppPromoStateReset" class="pp-link-btn" type="button">RESET</button>
+      <button id="ppPromoStateApply" class="pp-btn primary" type="button" disabled>CONFIRM</button>
+    </div>
+  </div>
+</div>
+
 
                         <!-- Name -->
             <div class="pp-th name">
@@ -732,16 +735,51 @@
     }
 
     // --- normalize rows to LiveEvents table columns ---
-    const base = (items || []).map((r) => ({
-      state: 'On',
-      name: r.name,
-      type: r.type,
-      startPretty: r.startPretty,
-      endPretty: r.endPretty,
-      startTS: r.startTS,
-      endTS: r.endTS,
-      raw: r.raw
-    }));
+
+    // --- normalize rows to LiveEvents table columns ---
+    // Promotions should support the same State filter options as LiveOps: On / Off / Freeze
+    function normPromoState(row) {
+      const raw = (
+        row?.displayState ??
+        row?.state ??
+        row?.status ??
+        row?.raw?.displayState ??
+        row?.raw?.state ??
+        row?.raw?.status ??
+        ''
+      );
+      const s = String(raw).toLowerCase();
+      if (s.includes('off') || s.includes('disable')) return 'off';
+      if (s.includes('freeze') || s.includes('pause')) return 'freeze';
+      return 'on';
+    }
+    function promoStateLabel(ds) {
+      if (ds === 'off') return 'Off';
+      if (ds === 'freeze') return 'Freeze';
+      return 'On';
+    }
+
+    const base = (items || []).map((r) => {
+      const displayState = normPromoState(r);
+      return {
+        // state label for the column (and sorting)
+        state: promoStateLabel(displayState),
+        // state value for filters + CSS classes
+        displayState,
+        name: r.name,
+        type: r.type,
+        startPretty: r.startPretty,
+        endPretty: r.endPretty,
+        startTS: r.startTS,
+        endTS: r.endTS,
+        raw: r.raw
+      };
+    });
+
+    const allStates = ['on', 'off', 'freeze'];
+    let stateFilter = new Set(allStates); // по умолчанию всё включено
+
+
 
     // --- state ---
     let sortKey = 'name';
@@ -758,8 +796,6 @@
     let typeFilter = new Set(); // empty = all
 
 
-    const allStates = ['On']; // promotions — всегда On (чтобы таблица 1-в-1 выглядела)
-    let stateFilter = new Set(allStates); // по умолчанию всё включено
 
     // фильтр «Active at picked time» (синяя шпилька / кнопка-табличка)
     let activeTimeFilterTs = null;
@@ -793,8 +829,9 @@
 
       // state
       if (stateFilter && stateFilter.size) {
-        rows = rows.filter(r => stateFilter.has(r.state));
+        rows = rows.filter(r => stateFilter.has(r.displayState));
       }
+
 
       // name
       if (nameFilter) {
@@ -1476,25 +1513,27 @@
       // - Info: same button classes as LiveOps to match size/spacing
       bodyEl.innerHTML = view.map((r) => {
         const label = String(r.state || 'On');
+        const ds = String(r.displayState || 'on');
         return `
-              <div class="pp-t-row" data-name="${escapeHtml(r.name)}">
-                <div class="cell">
-                  <span class="pp-state on">
-                    <span class="dot"></span><span class="lbl">${escapeHtml(label)}</span>
-                  </span>
-                </div>
+        <div class="pp-t-row" data-name="${escapeHtml(r.name)}">
+          <div class="cell">
+            <span class="pp-state ${escapeHtml(ds)}">
+              <span class="dot"></span><span class="lbl">${escapeHtml(label)}</span>
+            </span>
+          </div>
 
-                <div class="cell">${escapeHtml(r.name)}</div>
-                <div class="cell type">${escapeHtml(r.type)}</div>
-                <div class="cell">${escapeHtml(r.startPretty)}</div>
-                <div class="cell">${escapeHtml(r.endPretty)}</div>
+          <div class="cell">${escapeHtml(r.name)}</div>
+          <div class="cell type">${escapeHtml(r.type)}</div>
+          <div class="cell">${escapeHtml(r.startPretty)}</div>
+          <div class="cell">${escapeHtml(r.endPretty)}</div>
 
-                <div class="cell">
-                  <button class="pp-btn pp-info" type="button" data-info="1">Info</button>
-                </div>
-              </div>
-            `;
+          <div class="cell">
+            <button class="pp-btn pp-info" type="button" data-info="1">Info</button>
+          </div>
+        </div>
+      `;
       }).join('');
+
 
       syncPromoSortIcons();
     }
@@ -1678,24 +1717,39 @@
 
 
     // --- filter wiring (State) ---
+    // --- filter wiring (State) ---
+
+    // --- filter wiring (State) ---
     (function wireStateFilter() {
       const btn = wrap.querySelector('#ppPromoStateBtn');
       const pop = wrap.querySelector('#ppPromoStatePop');
       const list = wrap.querySelector('#ppPromoStateList');
-      const allBtn = wrap.querySelector('#ppPromoStateAll');
-      const noneBtn = wrap.querySelector('#ppPromoStateNone');
       const reset = wrap.querySelector('#ppPromoStateReset');
       const apply = wrap.querySelector('#ppPromoStateApply');
 
       if (!btn || !pop || !list) return;
 
-      let draft = new Set(stateFilter);
+      // локальный «черновик», чтобы не портить боевое состояние, пока попап открыт
+      let draft = new Set();
 
-      function renderList() {
-        list.innerHTML = allStates.map(s => {
-          const id = `ppPromoState_${s}`;
-          const checked = draft.has(s) ? 'checked' : '';
-          return `<label class="pp-chk"><input type="checkbox" data-val="${escapeHtml(s)}" ${checked}/> <span>${escapeHtml(s)}</span></label>`;
+      // синхронизация кнопки Confirm (как в LiveOps — можно всегда разрешать)
+      function syncConfirm() {
+        if (apply) apply.disabled = false;
+      }
+
+      // Рендерим список как в LiveOps: On / Off / Freeze
+      function renderStateList() {
+        // allStates в файле = ['on','off','freeze'] (значения для фильтра),
+        // а показываем капсом первую букву как в таблице
+        list.innerHTML = allStates.map((v) => {
+          const label = (v === 'off') ? 'Off' : (v === 'freeze') ? 'Freeze' : 'On';
+          const checked = draft.has(v) ? 'checked' : '';
+          return `
+        <label class="pp-chk">
+          <input type="checkbox" value="${escapeHtml(v)}" ${checked} />
+          <span>${label}</span>
+        </label>
+      `;
         }).join('');
       }
 
@@ -1704,6 +1758,7 @@
         if (!e.target.closest('.pp-filter-ico')) return;
 
         e.stopPropagation();
+
         // close others
         wrap.querySelector('#ppPromoNamePop')?.setAttribute('hidden', '');
         wrap.querySelector('#ppPromoTypePop')?.setAttribute('hidden', '');
@@ -1712,23 +1767,41 @@
 
         const willOpen = pop.hidden;
         pop.hidden = !pop.hidden;
+
         if (willOpen) {
           draft = new Set(stateFilter);
-          renderList();
+          renderStateList();     // <-- ключ: каждый раз строим корректный список
+          syncConfirm();
         }
       });
 
       list.addEventListener('change', (e) => {
-        const inp = e.target.closest('input[type="checkbox"][data-val]');
-        if (!inp) return;
-        const v = inp.getAttribute('data-val');
-        if (inp.checked) draft.add(v); else draft.delete(v);
+        const cb = e.target.closest('input[type="checkbox"]');
+        if (!cb) return;
+
+        const v = cb.value;
+        if (cb.checked) draft.add(v);
+        else draft.delete(v);
+
+        syncConfirm();
       });
 
-      allBtn?.addEventListener('click', () => { draft = new Set(allStates); renderList(); });
-      noneBtn?.addEventListener('click', () => { draft = new Set(); renderList(); });
-      reset?.addEventListener('click', () => { draft = new Set(allStates); stateFilter = new Set(allStates); pop.hidden = true; renderRows(true); });
-      apply?.addEventListener('click', () => { stateFilter = new Set(draft); pop.hidden = true; renderRows(true); });
+      // RESET: всё снять, применить и закрыть (поведение 1-в-1 как в LiveOps)
+      reset?.addEventListener('click', () => {
+        draft.clear();
+        stateFilter = new Set(); // пусто = не фильтровать (показывать всё)
+        list.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+        syncConfirm();
+        pop.hidden = true;
+        renderRows(true);
+      });
+
+      // APPLY: применить черновик → боевое
+      apply?.addEventListener('click', () => {
+        stateFilter = new Set(draft);
+        pop.hidden = true;
+        renderRows(true);
+      });
 
       document.addEventListener('click', (e) => {
         if (!document.body.contains(pop) || pop.hidden) return;
@@ -1736,6 +1809,10 @@
         pop.hidden = true;
       });
     })();
+
+
+
+
 
     // --- filter wiring (Name) ---
     (function wireNameFilter() {
@@ -2185,11 +2262,7 @@
     });
 
 
-    // initial UI defaults
-    const stateList = wrap.querySelector('#ppPromoStateList');
-    if (stateList) {
-      stateList.innerHTML = `<label class="pp-chk"><input type="checkbox" checked disabled /> <span>On</span></label>`;
-    }
+
 
     // initial render
     renderRows(true);
