@@ -486,6 +486,34 @@
     transform: translateX(22px);
 }
 
+/* ===== Fallback simulator toggle (visible only when Demo ON) ===== */
+#ppFormCard .pp-fallback-toggle {
+    margin-top: 8px;
+}
+
+#ppFormCard .pp-fallback-toggle.hidden {
+    display: none;
+}
+
+#ppFormCard #ppFallbackSim:checked+.pp-slider {
+    background: var(--accent);
+    border-color: transparent;
+}
+
+#ppFormCard #ppFallbackSim:checked+.pp-slider::before {
+    transform: translateX(22px);
+}
+
+/* показываем ON/OFF для fallback (без дергания ширины) */
+#ppFormCard #ppFallbackSim:checked~.pp-demo-state .on {
+    opacity: 1;
+}
+
+#ppFormCard #ppFallbackSim:not(:checked)~.pp-demo-state .off {
+    opacity: 1;
+}
+
+
 #ppFormCard .pp-demo-text {
     font-weight: 800;
     color: var(--text);

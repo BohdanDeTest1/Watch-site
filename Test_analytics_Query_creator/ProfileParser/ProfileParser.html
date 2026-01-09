@@ -56,11 +56,23 @@
                                 </span>
                             </label>
 
+                            <label id="ppFallbackToggle" class="pp-demo-toggle pp-fallback-toggle hidden"
+                                title="Simulate endpoints failure (shows manual JSON input cards). Works only in Demo mode.">
+                                <input type="checkbox" id="ppFallbackSim" />
+                                <span class="pp-slider" aria-hidden="true"></span>
+                                <span class="pp-demo-text">Fallback simulator</span>
+                                <span class="pp-demo-state" aria-hidden="true">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </span>
+                            </label>
+
                             <div id="ppEndpointsBanner" class="pp-endpoints-banner hidden" role="status"
                                 aria-live="polite">
                                 Endpoints are missing
                             </div>
                         </div>
+
                     </div>
 
 

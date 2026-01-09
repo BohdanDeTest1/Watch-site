@@ -115,6 +115,10 @@
     // Demo mode ON => use mocked JSON files
     let USE_MOCKS = true;
 
+    // Demo-only: simulate endpoints failure (forces manual JSON paste UI)
+    let PP_SIMULATE_FALLBACK = false;
+
+
     // === Real endpoints live in a separate file (placeholders for you to fill later)
     // That file must define: window.PP_ENDPOINTS = { stage:{state:'',liveops:'',promos:''}, rc:{...}, prod:{...} }
     const ENDPOINTS_SRC_CANDIDATES = [
@@ -193,6 +197,16 @@
             document.dispatchEvent(new CustomEvent('pp:demoChanged', { detail: { isDemo: USE_MOCKS } }));
         } catch { }
     }
+
+    function __ppSetFallbackSim(isOn) {
+        PP_SIMULATE_FALLBACK = Boolean(isOn);
+
+        // optional notify (in case other modules ever need it)
+        try {
+            document.dispatchEvent(new CustomEvent('pp:fallbackSimChanged', { detail: { isOn: PP_SIMULATE_FALLBACK } }));
+        } catch { }
+    }
+
 
 
     async function __ppEnsureEndpointsLoaded() {
@@ -4443,9 +4457,87 @@
 
 
         try {
+            // Demo ON + Simulator ON => behave like endpoints failed (show manual JSON paste UI)
+            if (USE_MOCKS && PP_SIMULATE_FALLBACK) {
+                const stateUrl = buildUrl('state', name);
+                const liveopsUrl = buildUrl('liveops', name);
+                const promosUrl = buildUrl('promos', name);
+
+                appendManualImportSection({
+                    title: 'Profile state',
+                    url: stateUrl,
+                    helpText: 'Demo fallback simulation: paste Profile state JSON here.',
+                    textareaPlaceholder: 'Paste copied JSON text here',
+                    onParsed: (json) => {
+                        const prof = json?.data?.profile || {};
+                        const profileName = prof.name ?? '—';
+                        const changePurpose = prof.change_purpose ?? '—';
+                        const updatedAtISO = prof.updated_at ?? '';
+                        const lastPublish = updatedAtISO ? formatUtcIso(updatedAtISO) : '—';
+
+                        appendKVResult(
+                            'Profile state',
+                            [
+                                ['Profile name', String(profileName)],
+                                ['Change purpose', String(changePurpose)],
+                                ['Last publish date', lastPublish],
+                            ]
+                        );
+                    }
+                });
+
+                appendManualImportSection({
+                    title: 'LiveOps',
+                    url: liveopsUrl,
+                    helpText: 'Demo fallback simulation: paste LiveOps JSON here.',
+                    textareaPlaceholder: 'Paste copied JSON text here',
+                    onParsed: (json) => {
+                        const rawItems = extractLiveOps(json);
+                        const items = aggregateByNameWithSegments(rawItems);
+
+                        if (!items.length) {
+                            appendKVResult('LiveOps', [['Status', 'No items found']]);
+                        } else {
+                            appendLiveOpsTable(items);
+                        }
+                    }
+                });
+
+                appendManualImportSection({
+                    title: 'Promotions',
+                    url: promosUrl,
+                    helpText: 'Demo fallback simulation: paste Promotions JSON here.',
+                    textareaPlaceholder: 'Paste copied JSON text here',
+                    onParsed: async (json) => {
+                        await __ppEnsureGlobal('PP_Promotions', [
+                            'ProfilePromotions.js',
+                            './ProfilePromotions.js',
+                            'ProfileParser/ProfilePromotions.js',
+                            './ProfileParser/ProfilePromotions.js',
+                        ]);
+
+                        if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
+                            const promoItems = window.PP_Promotions.extract(json);
+
+                            if (!promoItems.length) {
+                                appendKVResult('Promotions', [['Status', 'No items found']]);
+                            } else {
+                                window.PP_Promotions.appendPromotionsUI(promoItems);
+                            }
+                        } else {
+                            const raw = JSON.stringify(json);
+                            appendPromotionsSection(first10(raw), raw.length);
+                        }
+                    }
+                });
+
+                return;
+            }
+
             // 1) Profile state — пробуем всегда
             try {
                 const stateUrl = buildUrl('state', name);
+
                 const t = await fetchJsonText(stateUrl);
                 const json = JSON.parse(t);
                 const prof = json?.data?.profile || {};
@@ -6989,17 +7081,54 @@
             if (nameInput) nameInput.value = keepName;
         });
 
-
         // --- Demo toggle ---
         const demo = el('#ppDemoMode');
+
+        // --- Fallback simulator toggle (Demo-only) ---
+        const fallbackToggle = el('#ppFallbackToggle');
+        const fallbackSim = el('#ppFallbackSim');
+
+        const syncFallbackToggleVisibility = () => {
+            const demoOn = Boolean(demo && demo.checked);
+
+            // show/hide the 2nd toggle depending on Demo state
+            if (fallbackToggle) fallbackToggle.classList.toggle('hidden', !demoOn);
+
+            // if Demo is OFF => force simulator OFF (hidden anyway)
+            if (!demoOn) {
+                if (fallbackSim) fallbackSim.checked = false;
+                __ppSetFallbackSim(false);
+            }
+        };
+
         if (demo) {
             __ppSetDemoMode(demo.checked);
+            syncFallbackToggleVisibility();
+
             demo.addEventListener('change', async () => {
                 __ppSetDemoMode(demo.checked);
+                syncFallbackToggleVisibility();
                 await __ppRefreshEndpointsHint();
             });
-
+        } else {
+            // if for some reason demo toggle doesn't exist — keep simulator hidden/off
+            syncFallbackToggleVisibility();
         }
+
+        // simulator checkbox handler
+        if (fallbackSim) {
+            // default OFF (always)
+            fallbackSim.checked = false;
+            __ppSetFallbackSim(false);
+
+            fallbackSim.addEventListener('change', () => {
+                // works only when Demo is ON (otherwise it will be auto-reset)
+                __ppSetFallbackSim(Boolean(fallbackSim.checked) && Boolean(demo && demo.checked));
+            });
+        }
+
+
+
         const savedEnv = (() => {
             try { return sessionStorage.getItem('pp-env'); } catch { return null; }
         })();
