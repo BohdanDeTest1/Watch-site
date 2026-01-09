@@ -831,6 +831,18 @@
     color: #fff;
 }
 
+/* Promotions table: State dot = круг (как в инфопанели) */
+#pp-root #ppPromoLoTable .pp-state .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px !important;
+}
+
+#pp-root #ppPromoLoTable .pp-state.on .dot::after {
+    font-size: 12px;
+}
+
+
 /* Ensure Promotions Info panel admin button:
    Light theme -> WHITE text
    Dark theme  -> BLACK text */

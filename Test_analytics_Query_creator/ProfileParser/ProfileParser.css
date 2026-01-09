@@ -902,9 +902,10 @@
 }
 
 .pp-state .dot {
-    width: 17px;
-    height: 16px;
-    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    /* <-- гарантированно круг */
     position: relative;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .12) inset;
 }
@@ -937,7 +938,6 @@
     background: #60a5fa;
 }
 
-/* blue */
 .pp-state.on .dot::after {
     content: '✓';
     position: absolute;
@@ -945,7 +945,7 @@
     display: grid;
     place-items: center;
     color: #fff;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
 }
 
@@ -2147,6 +2147,10 @@
 /* убедимся, что у .dot можно что-то положить сверху */
 .pp-state .dot {
     position: relative;
+}
+
+#pp-root .pp-table .pp-state .dot {
+    border-radius: 999px !important;
 }
 
 /* PAUSE — две вертикальные полоски */
