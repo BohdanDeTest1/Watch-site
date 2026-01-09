@@ -350,7 +350,7 @@
                   <button type="button" data-val="notcontains">Not contains</button>
                   <button type="button" data-val="starts">Starts with</button>
                   <button type="button" data-val="equals">Equals to</button>
-                  <button type="button" data-val="blank">Blank</button>
+                  
                 </div>
 
                 <div class="pp-filter-actions">
@@ -1773,7 +1773,7 @@
             notcontains: 'Not contains',
             starts: 'Starts with',
             equals: 'Equals to',
-            blank: 'Blank'
+
           })[ruleBtn.dataset.val] || 'Contains';
 
           queryInput.value = nameFilter.query || '';

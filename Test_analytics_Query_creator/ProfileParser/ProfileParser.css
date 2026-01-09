@@ -1102,6 +1102,7 @@
     cursor: pointer;
 }
 
+
 #pp-root .pp-btn.primary {
     padding: 8px 14px;
     border-radius: 4px !important;
@@ -1109,6 +1110,18 @@
     background: var(--accent);
     color: var(--btn-n-field-bg);
 }
+
+/* FIX: в LiveOps фильтрах CONFIRM не должен "бледнеть" из-за disabled (как в Promotions) */
+#pp-root .pp-table .pp-btn.primary:disabled {
+    opacity: 1;
+    /* убираем побледнение */
+    background: var(--accent);
+    /* страховка */
+    color: var(--btn-n-field-bg);
+    cursor: not-allowed;
+    /* чтобы было видно, что всё ещё disabled */
+}
+
 
 #pp-root .pp-btn.primary:disabled {
     opacity: .5;

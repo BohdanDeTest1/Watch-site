@@ -1094,7 +1094,7 @@
           <button data-val="notcontains">Not contains</button>
           <button data-val="starts">Starts with</button>
           <button data-val="equals">Equals to</button>
-          <button data-val="blank">Blank</button>
+          
         </div>
 
         <div class="pp-filter-actions">
