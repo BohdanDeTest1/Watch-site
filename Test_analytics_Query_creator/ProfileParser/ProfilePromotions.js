@@ -1339,8 +1339,28 @@
         return;
       }
 
-      // --- Offers toggles ...
+      // --- Offers toggles (independent: each button controls its own panel) ---
+      const offerToggle = e.target.closest('button.pp-offer-toggle');
+      if (offerToggle) {
+        e.preventDefault();
 
+        const idx = offerToggle.getAttribute('data-offer');
+        if (idx == null) return;
+
+        const myPanel = detEl.querySelector(`.pp-offer-panel[data-offer-panel="${idx}"]`);
+        if (!myPanel) return;
+
+        const isOpen = offerToggle.getAttribute('aria-expanded') === 'true';
+        const nextOpen = !isOpen;
+
+        offerToggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+
+        const chev = offerToggle.querySelector('.pp-offer-toggle-chev');
+        if (chev) chev.textContent = nextOpen ? '▾' : '▸';
+
+        myPanel.hidden = !nextOpen;
+        return;
+      }
 
 
       // --- RAW copy button ---
