@@ -13,8 +13,8 @@
 
             // [ADMIN] holders (Demo OFF only). Fill later.
             // Use [item_id] placeholder (id of event/promotion).
-            adminLiveops: '',
-            adminPromos: ''
+            adminLiveops: 'https://admin-tt-stg-ma.stg.infra-moonactive.net/#/game-control/sections/liveops?',
+            adminPromos: 'https://admin-tt-stg-ma.stg.infra-moonactive.net/#/game-control/sections/promotionsScheduleNew?'
         },
         rc: {
             state: 'https://static.ttrc-ext.net/data/travel_town/testing-[profile_name]-all.json',
@@ -22,14 +22,14 @@
             promos: 'https://profile-provider-v2-service.ttstage-int.net/od-rc/internal-api/v2/config/profiles/[profile_name]/promotionsScheduleNew',
 
             // [ADMIN] holders (Demo OFF only). Fill later.
-            adminLiveops: '',
-            adminPromos: ''
+            adminLiveops: 'https://admin-tt-stg-ma-rc.stg.infra-moonactive.net/#/game-control/sections/liveops?',
+            adminPromos: 'https://admin-tt-stg-ma-rc.stg.infra-moonactive.net/#/game-control/sections/promotionsScheduleNew?'
         },
         prod: {
             // PROD — ничего не добавляем, кнопку скрываем на UI уровне
-            state: '',
-            liveops: '',
-            promos: ''
+            state: 'https://static.traveltowngame.net/data/travel_town/production-[profile_name]-all.json',
+            liveops: 'https://profile-provider-v2-service.ttprod-int.net/internal-api/v2/config/profiles/[profile_name]/liveops',
+            promos: 'https://profile-provider-v2-service.ttprod-int.net/internal-api/v2/config/profiles/[profile_name]/promotionsScheduleNew'
         }
     };
 
