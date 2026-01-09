@@ -180,8 +180,8 @@
 
 /* hover */
 #ppFormCard #ppRefresh.btn-refresh:hover {
-    filter: brightness(0.98);
-    opacity: 0.95;
+    filter: brightness(0.90);
+    opacity: 0.115;
 }
 
 
@@ -190,6 +190,8 @@
     filter: brightness(0.98);
     opacity: 0.95;
 }
+
+
 
 /* Empty Results message (before first Search / after Refresh) */
 #ppPanel .pp-results-empty {
@@ -1048,7 +1050,7 @@
 #pp-root .pp-input {
     width: 100%;
     padding: 8px 10px;
-    border-radius: 4px !important;
+    border-radius: 6px !important;
     border: 1px solid var(--border);
     background: var(--btn-n-field-bg);
     color: var(--text);
@@ -1126,7 +1128,7 @@
     padding: 8px 10px;
     /* высота как у .pp-input */
     border: 1px solid var(--border);
-    border-radius: 4px !important;
+    border-radius: 6px !important;
     background: var(--btn-n-field-bg);
     color: var(--text);
     outline: none;
@@ -2197,7 +2199,7 @@
 [data-theme="dark"] .pp-pager .pp-sel,
 .dark .pp-pager .pp-sel {
     color: var(--pp-dark-text);
-    background: transparent;
+    background: #13131e59;
     border: 0;
 }
 
@@ -5381,7 +5383,7 @@ body.theme-dark .pp-cal-tick {
     color: var(--dtp-fg, #e5e7eb);
     box-shadow: var(--dtp-shadow, 0 12px 32px rgba(2, 6, 23, .6));
 
-    z-index: 200010 !important;
+    z-index: 2000000 !important;
     /* очень высокий слой */
     pointer-events: auto;
 }
@@ -5586,7 +5588,7 @@ body.theme-dark .tl-dtp .fld::-webkit-time-picker-indicator {
 
 .tl-dtp-actions button {
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: 6px;
     border: 1px solid #334155;
     background: #0b1220;
     color: #e5e7eb;
@@ -6801,6 +6803,30 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     left: auto;
     transform: translateX(-60px) !important;
 }
+
+#ppResetBtn {
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
+
+    /* LIGHT theme: белый текст (фиксируем жёстко) */
+    color: #ffffff !important;
+}
+
+#ppResetBtn:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+:root.theme-dark #ppResetBtn,
+.theme-dark #ppResetBtn,
+[data-theme="dark"] #ppResetBtn,
+.dark #ppResetBtn {
+    color: #0b1120 !important;
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
+}
+
+
 
 
 /* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */

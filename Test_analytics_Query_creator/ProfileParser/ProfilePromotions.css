@@ -1278,7 +1278,7 @@
 #pp-root #ppPromoTypePop .pp-inp {
     width: 100%;
     padding: 6px 8px;
-    border-radius: 6px;
+    border-radius: 6px !important;
     margin-bottom: 8px;
     border: 1px solid var(--border);
     background: var(--btn-n-field-bg);
@@ -1392,9 +1392,10 @@
     box-shadow: none;
 
     /* делаем вид "синей кнопки" как в таблице */
-    background: var(--accent) !important;
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
     color: var(--btn-n-field-bg) !important;
-    border: none;
+
 }
 
 #pp-root #ppPromoResetBtn:hover {
@@ -1798,4 +1799,26 @@
 #pp-root .pp-item.info-open #ppPromoLoDetail.pp-liveops-detail pre {
     overflow-wrap: anywhere;
     word-break: break-word;
+}
+
+#ppPromoResetBtn {
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
+
+    /* LIGHT theme: белый текст (фиксируем жёстко) */
+    color: #ffffff !important;
+}
+
+#ppPromoResetBtn:hover {
+    filter: brightness(0.98);
+    opacity: 0.95;
+}
+
+:root.theme-dark #ppPromoResetBtn,
+.theme-dark #ppPromoResetBtn,
+[data-theme="dark"] #ppPromoResetBtn,
+.dark #ppPromoResetBtn {
+    color: #0b1120 !important;
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
 }
