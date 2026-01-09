@@ -330,32 +330,36 @@
               </div>
             </div>
 
-            <!-- Name -->
+                        <!-- Name -->
             <div class="pp-th name">
-             <button class="pp-th-btn" id="ppPromoNameBtn" type="button" aria-haspopup="true">
-  <span class="txt">Name</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
-</button>
-              <div class="pp-filter-pop" id="ppPromoNamePop" hidden>
+              <button class="pp-th-btn" id="ppPromoNameBtn" type="button" aria-haspopup="true">
+                <span class="txt">Name</span><span class="arr" aria-hidden="true">↕</span><span class="pp-filter-ico" aria-hidden="true"></span>
+              </button>
+
+              <div class="pp-filter-pop pp-name-pop" id="ppPromoNamePop" hidden>
                 <div class="pp-filter-row">
-                  <button class="pp-rule-btn" id="ppPromoNameRuleBtn" type="button" data-val="contains">
-                    <span class="txt">Contains</span><span class="arr">▾</span>
+                  <button id="ppPromoNameRuleBtn" class="pp-select" type="button" data-val="contains">
+                    <span class="txt">Contains</span><span class="chev">▾</span>
                   </button>
-                  <input class="pp-filter-inp" id="ppPromoNameQuery" placeholder="Name..." />
+
+                  <input id="ppPromoNameQuery" type="text" class="pp-input" placeholder="Search" />
                 </div>
+
+                <div id="ppPromoNameRuleMenu" class="pp-select-menu" hidden>
+                  <button type="button" data-val="contains">Contains</button>
+                  <button type="button" data-val="notcontains">Not contains</button>
+                  <button type="button" data-val="starts">Starts with</button>
+                  <button type="button" data-val="equals">Equals to</button>
+                  <button type="button" data-val="blank">Blank</button>
+                </div>
+
                 <div class="pp-filter-actions">
                   <button id="ppPromoNameReset" class="pp-link-btn" type="button">RESET</button>
                   <button id="ppPromoNameApply" class="pp-btn primary" type="button">CONFIRM</button>
                 </div>
-
-                <div class="pp-rule-pop" id="ppPromoNameRuleMenu" hidden>
-                  <button type="button" data-val="contains">Contains</button>
-                  <button type="button" data-val="eq">Equals</button>
-                  <button type="button" data-val="starts">Starts with</button>
-                  <button type="button" data-val="ends">Ends with</button>
-                  <button type="button" data-val="blank">Is blank</button>
-                </div>
               </div>
             </div>
+
 
                         <!-- Type -->
             <div class="pp-th type">
@@ -1765,8 +1769,13 @@
         if (willOpen) {
           ruleBtn.dataset.val = nameFilter.rule || 'contains';
           ruleBtn.querySelector('.txt').textContent = ({
-            contains: 'Contains', notcontains: 'Not contains', starts: 'Starts with', equals: 'Equals', blank: 'Is blank'
+            contains: 'Contains',
+            notcontains: 'Not contains',
+            starts: 'Starts with',
+            equals: 'Equals to',
+            blank: 'Blank'
           })[ruleBtn.dataset.val] || 'Contains';
+
           queryInput.value = nameFilter.query || '';
           queryInput.focus();
         }
