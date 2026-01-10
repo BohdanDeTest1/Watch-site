@@ -1791,7 +1791,7 @@ button.btn-muted {
     height: 48px;
 }
 
-/* --- CSV modal --- */
+/* --- CSV / Column mapping modal --- */
 .qc-modal.hidden {
     display: none;
 }
@@ -1800,55 +1800,37 @@ button.btn-muted {
     position: fixed;
     inset: 0;
     z-index: 3000;
+
+    /* ВАЖНО: под модалкой остаётся видимый интерфейс */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    /* чтобы на маленьких экранах не прилипало к краям */
+    padding: 24px 16px;
 }
 
 .qc-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: var(--btn-n-field-bg);
+
+    /* Полупрозрачное затемнение (работает и в light, и в dark) */
+    background: var(--how-to-back);
 }
 
 .qc-modal__card {
     position: relative;
+    z-index: 1;
+
     width: 316px;
-    max-width: calc(100vw - 32px);
-    margin: 12vh auto 0;
+    max-width: min(620px, calc(100vw - 32px));
+    margin: 10vh 0 0;
     padding: 16px;
-    border-radius: 6px;
+
+    border-radius: 12px;
     background: var(--card-bg-modal);
     border: 1px solid var(--card-bg-modal-border);
-    box-shadow: 0 12px 30px var(--how-to-back);
-}
-
-
-/* --- CSV modal --- */
-.qc-modal.hidden {
-    display: none;
-}
-
-.qc-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 3000;
-}
-
-.qc-modal__backdrop {
-    position: absolute;
-    inset: 0;
-    background: var(--btn-n-field-bg);
-}
-
-.qc-modal select,
-.qc-modal input {
-    width: 100%;
-    border-radius: 6px;
-}
-
-.field-error {
-    color: var(--validation-warn);
-    font-weight: 600;
-    font-size: 12.5px;
-    margin: 4px 4px 8px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
 }
 
 /* две равные кнопки */
@@ -1864,6 +1846,38 @@ button.btn-muted {
     height: 36px;
     border-radius: 8px;
 }
+
+
+
+
+
+/* Column mapping modal helpers */
+.colmap-card {
+    max-width: 620px;
+}
+
+.colmap-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.colmap-chip {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 12.5px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 /* утилита для скрытия */
 .hidden {

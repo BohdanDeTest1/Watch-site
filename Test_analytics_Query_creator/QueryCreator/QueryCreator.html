@@ -417,6 +417,45 @@
                 </form>
             </div>
         </div>
+        <!-- Column mapping modal (when headers are non-standard) -->
+        <div id="colMapModal" class="qc-modal hidden" role="dialog" aria-modal="true" aria-labelledby="colMapTitle">
+            <div class="qc-modal__backdrop"></div>
+            <div class="qc-modal__card card colmap-card">
+                <h3 id="colMapTitle" style="margin:0 0 10px;">Field Detecting</h3>
+
+                <div class="muted small" style="margin-bottom:10px;">
+                    We couldn't detect the <strong>Event</strong> and/or <strong>Property</strong> columns by header
+                    name.<br>
+                    Please confirm field names for events and properties.
+                </div>
+
+
+
+                <form id="colMapForm" novalidate>
+                    <label for="colMapEvent" class="label">Event column header</label>
+                    <input id="colMapEvent" type="text" placeholder="e.g., Event Name" list="colMapHeaderList" required>
+                    <div id="colMapEventError" class="field-error" aria-live="polite"></div>
+
+                    <label for="colMapProp" class="label">Property column header</label>
+                    <input id="colMapProp" type="text" placeholder="e.g., Reported Columns" list="colMapHeaderList"
+                        required>
+                    <div id="colMapPropError" class="field-error" aria-live="polite"></div>
+
+                    <datalist id="colMapHeaderList"></datalist>
+
+                    <div class="row csv-actions" style="margin-top:12px;">
+                        <button type="button" id="colMapCancel" class="btn-muted">Cancel</button>
+                        <button type="submit" id="colMapApply" class="btn-primary">Apply</button>
+                    </div>
+                </form>
+
+                <div class="colmap-headers" style="margin-bottom:12px; margin-top:12px;">
+                    <div class="label" style="margin:0 0 6px;">Detected headers</div>
+                    <div id="colMapHeaders" class="colmap-chips"></div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </section>

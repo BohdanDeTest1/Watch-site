@@ -331,6 +331,125 @@
 
         });
 
+        ////////////////////////  Column map modal start  /////////////////////////////
+
+        // --- Column mapping modal state/handlers ---
+        let colMapCtx = null; // { headersRaw:[], headersNorm:[], onApply:(eventIdx, propIdx)=>void }
+
+        function guessHeader(headersRaw, headersNorm, testerFn) {
+            for (let i = 0; i < headersNorm.length; i++) {
+                const hn = headersNorm[i] || '';
+                if (testerFn(hn)) return headersRaw[i] || '';
+            }
+            return '';
+        }
+
+        function openColMapModal(ctx) {
+            colMapCtx = ctx || {};
+            const m = document.getElementById('colMapModal'); if (!m) return;
+
+            const headersRaw = colMapCtx.headersRaw || [];
+            const headersNorm = colMapCtx.headersNorm || headersRaw.map(h => normalizeHeader(h));
+
+            // chips
+            const chips = document.getElementById('colMapHeaders');
+            if (chips) {
+                chips.innerHTML = '';
+                headersRaw.forEach(h => {
+                    const chip = document.createElement('span');
+                    chip.className = 'colmap-chip';
+                    chip.textContent = String(h || '').trim();
+                    chips.appendChild(chip);
+                });
+            }
+
+            // datalist options
+            const dl = document.getElementById('colMapHeaderList');
+            if (dl) {
+                dl.innerHTML = '';
+                headersRaw.forEach(h => {
+                    const opt = document.createElement('option');
+                    opt.value = String(h || '').trim();
+                    dl.appendChild(opt);
+                });
+            }
+
+            // reset errors
+            const eErr = document.getElementById('colMapEventError'); if (eErr) eErr.textContent = '';
+            const pErr = document.getElementById('colMapPropError'); if (pErr) pErr.textContent = '';
+
+            // prefill: try stored map → heuristic → empty
+            const evInput = document.getElementById('colMapEvent');
+            const prInput = document.getElementById('colMapProp');
+
+            const storedEv = state?.customHeaderMap?.event || '';
+            const storedPr = state?.customHeaderMap?.property || '';
+
+            const storedEvRaw = storedEv ? (headersRaw[headersNorm.indexOf(storedEv)] || '') : '';
+            const storedPrRaw = storedPr ? (headersRaw[headersNorm.indexOf(storedPr)] || '') : '';
+
+            const guessEv = guessHeader(headersRaw, headersNorm, (h) => /\bevent\b/.test(h));
+            const guessPr = guessHeader(headersRaw, headersNorm, (h) => /\b(property|properties|field|fields|column|columns)\b/.test(h));
+
+            if (evInput) evInput.value = storedEvRaw || guessEv || '';
+            if (prInput) prInput.value = storedPrRaw || guessPr || '';
+
+            // hide other warnings to reduce noise
+            try { els.errorBox?.classList.add('hidden'); if (els.errorBox) els.errorBox.innerHTML = ''; } catch (_) { }
+            try { els.infoBox?.classList.add('hidden'); if (els.infoBox) els.infoBox.innerHTML = ''; } catch (_) { }
+
+            m.classList.remove('hidden');
+        }
+
+        function closeColMapModal() {
+            const m = document.getElementById('colMapModal'); if (m) m.classList.add('hidden');
+            colMapCtx = null;
+        }
+
+        document.getElementById('colMapCancel')?.addEventListener('click', closeColMapModal);
+        document.getElementById('colMapModal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('qc-modal__backdrop')) closeColMapModal();
+        });
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeColMapModal(); });
+
+        // apply mapping
+        document.getElementById('colMapForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const headersRaw = colMapCtx?.headersRaw || [];
+            const headersNorm = colMapCtx?.headersNorm || headersRaw.map(h => normalizeHeader(h));
+
+            const evInput = document.getElementById('colMapEvent');
+            const prInput = document.getElementById('colMapProp');
+
+            const evNameRaw = (evInput?.value || '').trim();
+            const prNameRaw = (prInput?.value || '').trim();
+
+            const evName = normalizeHeader(evNameRaw);
+            const prName = normalizeHeader(prNameRaw);
+
+            const eErr = document.getElementById('colMapEventError');
+            const pErr = document.getElementById('colMapPropError');
+            if (eErr) eErr.textContent = '';
+            if (pErr) pErr.textContent = '';
+
+            const evIdx = headersNorm.indexOf(evName);
+            const prIdx = headersNorm.indexOf(prName);
+
+            let ok = true;
+            if (!evNameRaw || evIdx === -1) { ok = false; if (eErr) eErr.textContent = 'Please enter a valid header from the list above.'; }
+            if (!prNameRaw || prIdx === -1) { ok = false; if (pErr) pErr.textContent = 'Please enter a valid header from the list above.'; }
+            if (!ok) return;
+
+            // save for next parses
+            state.customHeaderMap = { event: evName, property: prName };
+
+            const apply = colMapCtx?.onApply;
+            closeColMapModal();
+            try { if (typeof apply === 'function') apply(evIdx, prIdx); } catch (_) { }
+        });
+
+        ////////////////////////  Column map modal end  /////////////////////////////
+
         ////////////////////////  Modal end  /////////////////////////////
 
         function moveRefreshToTop() {
@@ -1331,19 +1450,81 @@ ${EXAMPLES_TEMPLATE}
             renderEvents();
         }
 
+
+        // Ingest TSV rows into state.byEvent using selected column indexes (supports merged Event cells)
+        function ingestRowsFromTsv(rows, eventIdx, propIdx, sourceTag) {
+            if (!rows || !rows.length) return;
+
+            state.byEvent = state.byEvent || new Map();
+            state.eventOrder = state.eventOrder || [];
+            state.sourceOfEvent = state.sourceOfEvent || new Map();
+
+            let lastEvent = '';
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || !row.length) continue;
+
+                const ev = (row[eventIdx] ?? '').trim();
+                const pr = (row[propIdx] ?? '').trim();
+
+                if (ev) {
+                    lastEvent = ev;
+
+                    if (!state.byEvent.has(ev)) {
+                        state.byEvent.set(ev, []);
+                        state.eventOrder.push(ev);
+                    }
+                    if (!state.sourceOfEvent.has(ev)) {
+                        state.sourceOfEvent.set(ev, (sourceTag || 'none'));
+                    }
+                }
+
+                if (lastEvent && pr) {
+                    const arr = state.byEvent.get(lastEvent) || [];
+                    if (!arr.includes(pr)) arr.push(pr);
+                    state.byEvent.set(lastEvent, arr);
+                }
+            }
+        }
+
+
         function parseFromFile(file, sourceTag = 'none', done) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const text = e.target.result;
                 const rows = text.split(/\r?\n/).map(r => r.split('\t'));
 
-                const headers = rows[0].map(h => normalizeHeader(h));
-                const eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
-                const propIdx = findHeaderIndex(headers, PROP_HEADERS);
+                const headersRaw = rows[0].map(h => (h ?? '').toString().trim());
+                const headers = headersRaw.map(h => normalizeHeader(h));
+
+                // 1) try default header candidates (Event/Events + Property/Properties/Field(s))
+                let eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
+                let propIdx = findHeaderIndex(headers, PROP_HEADERS);
+
+                // 2) try stored custom mapping (if user already mapped once)
+                if ((eventIdx === -1 || propIdx === -1) && state.customHeaderMap) {
+                    const evNorm = state.customHeaderMap.event;
+                    const prNorm = state.customHeaderMap.property;
+                    const evTry = evNorm ? headers.indexOf(evNorm) : -1;
+                    const prTry = prNorm ? headers.indexOf(prNorm) : -1;
+                    if (evTry !== -1) eventIdx = evTry;
+                    if (prTry !== -1) propIdx = prTry;
+                }
+
                 if (eventIdx === -1 || propIdx === -1) {
-                    alert("Could not find 'Event(s)' and/or 'Property/Properties/Field(s)' columns in the file");
+                    // Ask user to map columns instead of hard-failing.
+                    openColMapModal({
+                        headersRaw,
+                        headersNorm: headers,
+                        onApply: (evIdx, prIdx) => {
+                            ingestRowsFromTsv(rows, evIdx, prIdx, sourceTag || 'none');
+                            renderEvents();
+                            if (typeof done === 'function') done();
+                        }
+                    });
                     return;
                 }
+
 
                 let lastEvent = '';
                 for (let i = 1; i < rows.length; i++) {
@@ -1531,6 +1712,13 @@ ${EXAMPLES_TEMPLATE}
             }
 
             // mode === 'paste'
+
+            // reset previous results
+            state.byEvent = new Map();
+            state.eventOrder = [];
+            state.sourceOfEvent = new Map();
+
+
             const text = els.pasteArea?.value || '';
             if (!text.trim()) {
                 els.infoBox.classList.remove('hidden');
@@ -1548,26 +1736,36 @@ ${EXAMPLES_TEMPLATE}
                 return;
             }
 
-            // нормализуем заголовки и находим индексы через варианты
-            const headers = rows[0].map(h => normalizeHeader(h));
-            const eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
-            const propIdx = findHeaderIndex(headers, PROP_HEADERS);
+            // normalize headers and find indexes using variants
+            const headersRaw = rows[0].map(h => (h ?? '').toString().trim());
+            const headers = headersRaw.map(h => normalizeHeader(h));
+
+            // 1) default candidates
+            let eventIdx = findHeaderIndex(headers, EVENT_HEADERS);
+            let propIdx = findHeaderIndex(headers, PROP_HEADERS);
+
+            // 2) stored custom mapping
+            if ((eventIdx === -1 || propIdx === -1) && state.customHeaderMap) {
+                const evNorm = state.customHeaderMap.event;
+                const prNorm = state.customHeaderMap.property;
+                const evTry = evNorm ? headers.indexOf(evNorm) : -1;
+                const prTry = prNorm ? headers.indexOf(prNorm) : -1;
+                if (evTry !== -1) eventIdx = evTry;
+                if (prTry !== -1) propIdx = prTry;
+            }
 
             if (eventIdx === -1 || propIdx === -1) {
-                els.errorBox.classList.remove('hidden');
-                els.errorBox.style.display = 'flex';
-                els.errorBox.innerHTML = `
-    <span class="icon">⚠️</span>
-    <div style="font-size: 14px; line-height: 1.4;">
-      <div><strong>Warning!</strong></div>
-      <div style="font-size: 14px; line-height: 1.2;">
-        Could not find the columns <strong>Event/Events</strong> and/or <strong>Property/Properties/Field(s)</strong>.
-      </div>
-      <div style="font-size: 14px; line-height: 1.2;">Please check the headers</div>
-    </div>`;
-                els.eventPicker.style.display = 'none';
+                openColMapModal({
+                    headersRaw,
+                    headersNorm: headers,
+                    onApply: (evIdx, prIdx) => {
+                        ingestRowsFromTsv(rows, evIdx, prIdx, els.eventSource?.value || 'none');
+                        renderEvents();
+                    }
+                });
                 return;
             }
+
 
             state.rows = rows.slice(1);
             state.headers = headers;

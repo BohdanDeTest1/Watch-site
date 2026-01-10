@@ -1,0 +1,490 @@
+Event Name	Event Description	Client / Server	Reported Columns	Type	Columns Description	Example
+special_event_activated	Reported when a new lava is activated (once, when the event is activated)	Server	type	STRING	special event type	lava
+			event_id	STRING	[name || start_date=local time(UTC) || segment_index]	lava_V2.4_0103_12_2023-03-01_12:00_0
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	low_a
+			configuration_name	STRING	lava configuration name	
+			theme_id	STRING	theme_id	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			overall_time	INTEGER	time left to end of the lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	0
+			number_of_subcycle	INTEGER	Number of rounds configured	5
+			resource_amount_hc	INTEGER	Reward for completing all lava rounds - grand prize	340
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+lava_event_activated	Lava event activated 	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			overall_time	INTEGER	Time left to end lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			number_of_subcycle	INTEGER	Number of lava rounds configured	
+			resource_amount_hc	INTEGER	Reward for completing all lava rounds - grand prize	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_index	INTEGER	Number of players at the begining of the round (number of competitiors)	
+lava_round_activated	lava round activated (in the event,after evey cooldown)	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of round (timestamp)	
+			overall_time	INTEGER	Time left to end lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			number_of_subcycle	INTEGER	Number of rounds configured	
+			task_index	INTEGER	The current round index	
+			event_level	INTEGER	Number of lava levels configured	
+			resource_amount_hc	INTEGER	Reward for completing lava round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_index	INTEGER	Number of players at the begining of the round (number of competitiors)	
+			item_amount	FLOAT	Round grand prize target RDS	
+			duration	FLOAT	Round cooldown time in minutes (between every round) - winning cooldown	
+			session_time	FLOAT	Round cooldown time in minutes (between every round) - losing cooldown	
+lava_level_started	lava level started (event for each level started)	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			order_id	STRING	Id for each order - Two orders with the same objective should have the same ID (in case the task is order) (can be identical among players)	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of level (timestamp)	
+			overall_time	INTEGER	Time left to end lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			task_index	INTEGER	The current round index	
+			event_level	INTEGER	Number of lava levels configured	
+			current_mission_index	INTEGER	User current level of lava event (0 based)	
+			user_index	INTEGER	Number of players at the begining of the level (number of competitiors)	
+			score	FLOAT	lava order optimal RDS	
+			number	FLOAT	lava order dynamic RDS	
+			item_amount	FLOAT	lava order  actual RDS	
+			view_id	STRING	RDS of open orders in corrent board state	Order1: 1.2, order2: 5.6
+			item_name	STRING	RDS of all previous lava orders	Order1: 3, order2: 4
+lava_level_completed	lava level completed (event for each level completed)	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			order_id	STRING	Id for each order - Two orders with the same objective should have the same ID (in case the task is order) (can be identical among players)	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			end_date	TIMESTAMP	end date of level (timestamp)	
+			overall_time	INTEGER	Time left to end lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			task_index	INTEGER	The current round index	
+			event_level	INTEGER	Number of lava levels configured	
+			current_mission_index	INTEGER	User current level of lava event (0 based)	
+			user_index	INTEGER	Number of players at the end of the level (number of competitiors)	
+			score	FLOAT	lava order optimal RDS	
+			number	FLOAT	lava order dynamic RDS	
+			item_amount	FLOAT	lava order  actual RDS	
+lava_round_completed	lava round completed (in the event,before evey cooldown)	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of round (timestamp)	
+			end_date	TIMESTAMP	end date of round (timestamp)	
+			length	FLOAT	duration of round in minutes (end_date - start_date)	
+			overall_time	INTEGER	Time left to end lava event (seconds)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			number_of_subcycle	INTEGER	Number of rounds configured	
+			task_index	INTEGER	The current round index	
+			event_level	INTEGER	Number of lava levels configured	
+			current_mission_index	INTEGER	User current level of lava event (1 based)	
+			resource_amount_hc	INTEGER	Reward for completing lava round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_index	INTEGER	Number of players at the end of the level (number of competitiors)	
+			item_amount	FLOAT	Round grand prize target RDS	
+			score	FLOAT	Round grand prize actual RDS - will be calculated as sum all RDS from round orders	
+			duration	FLOAT	Round cooldown time in minutes (between every round) - winning cooldown	
+			session_time	FLOAT	Round cooldown time in minutes (between every round) - losing cooldown	
+			slot	INTEGER	indicates whether the user entered the wildcard lottery (1 for yes 0 for no)	
+lava_event_completed_server	Lava event completed (before evey cooldown)	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			number_of_subcycle	INTEGER	Number of lava rounds configured	
+			event_level	INTEGER	Number of lava levels configured	
+			resource_amount_hc	INTEGER	Reward for completing all lava rounds - grand prize	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_index	INTEGER	Number of players at the end of the level (number of competitiors)	
+lava_event_ended	Lava event ended 	Server	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			segment	STRING	User's segment - Concationation of the segment and the external segment. External segments will be concatinated at the end of the string with under score, and only when it's not configured as 'default'.	
+			configuration_name	STRING	lava configuration name	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			number_of_subcycle	INTEGER	Number of lava rounds configured	
+			event_level	INTEGER	Number of lava levels configured	
+			user_index	INTEGER	level reached at the end of the event time	
+lava_key_order_activated	when an order gets the lava key (whether it's a new order generated or not)	Server	task_id	STRING	Unique id for each task (unique per player)	
+			task_type	STRING	Describing which task has started	
+			event_id	STRING		
+			order_id	STRING	Id for each order - Two orders with the same objective should have the same ID (in case the task is order) (can be identical among players)	
+			objective_item_1	STRING	List of all the item required to complete the order	
+			objective_item_2	STRING		
+			objective_item_3	STRING		
+			difficulty_score	FLOAT	The difficulty of the order by the order engine (The total DS of an order)	
+			resource_amount_HC	INTEGER	Will report the HC value (HC) in the case of getting it as an order\ daily challenge reward	
+			resource_amount_smiley	INTEGER	Will report the smiley value  in the case of getting it as an order\ daily challenge reward	
+			resource_amount_energy	INTEGER	Will report the energy value in the case of getting it as an order\ daily challenge reward	
+			transaction_item_*	STRING	One parameter for each item granted as a reward in the task (order\ daily challenge)	
+			transaction_item_amount_*	INTEGER	Corresponding amount of each item	
+			reason	STRING	Reports what triggered the order	
+			products_received	STRING	the 5 last producer received for the order	
+			lane	STRING	will report the id of the lane which the order come from	
+			sub_type	STRING	sub lane - for each lane we can add sub lane, and for now it will detrmine the order reward	
+			merge_item_type	STRING	In case a booster is active on order- Item id of the booster 	
+			product_id	STRING	In case a booster is active on order- Item id of the booster 	
+			booster_uuid	STRING	In case a booster is active on order- uniqe uuid for each user	
+			character_id	STRING	Numerical ID from the character as defined in the admin portal	
+			item_amount	FLOAT	lava order actual RDS	
+			number_of_subcycle	INTEGER	Number of rounds configured	
+			task_index	INTEGER	The current round index	
+			event_level	INTEGER	Number of lava levels configured	
+			current_mission_index	INTEGER	User current level of lava event (0 based)	
+order_completed_server	Lava order completed	Server	task_id	STRING	Unique id for each task (unique per player)	
+			task_type	STRING	Describing which task has started	
+			order_id	STRING	Id for each order - Two orders with the same objective should have the same ID (in case the task is order) (can be identical among players)	
+			objective_item_1	STRING	List of all the item required to complete the order	
+			objective_item_2	STRING		
+			objective_item_3	STRING		
+			difficulty_score	FLOAT	The difficulty of the order by the order engine (The total DS of an order)	
+			resource_amount_hc	INTEGER	Will report the total HC value (HC) in the case of getting it as an order 	
+			resource_amount_smiley	INTEGER	Will report the total smiley value in the case of getting it as an order\ daily challenge reward	
+			resource_amount_energy	INTEGER	Will report the total energy value in the case of getting it as an order\ daily challenge reward 	
+			transaction_item_*	STRING	One parameter for each item granted as a reward in the task (order\ daily challenge)	
+			transaction_item_amount_*	INTEGER	Corresponding amount of each item	
+			reason	STRING	Reports what triggered the order	orders_engine
+			lane	STRING	will report the id of the lane which the order come from	
+			sub_type	STRING	sub lane - for each lane we can add sub lane, and for now it will detrmine the order reward	
+			character_id	STRING	Numerical ID from the character as defined in the admin portal	
+			action_name	STRING	if its a fallback order - what is the reason for the fallback	
+			index	FLOAT	order penalty score	
+			event_id	STRING	incase the order is from OER then the event id of the orders as liveop	
+			status	STRING	incase the order was updated with OER reports updated_order 	
+			merge_item_type	STRING	In case a booster is active on order- Item id of the booster 	
+			product_id	STRING	In case a booster is active on order- Item id of the booster 	
+			booster_uuid	STRING	In case a booster is active on order- uniqe uuid for each user	
+			character_id	STRING	Numerical ID from the character as defined in the admin portal	
+			score	FLOAT	lava order actual RDS	
+			product_name	STRING	reports when The order that was completed was a lava order (on completion time)	lava_order
+lava_reward_granted		Server	name	STRING	Event name as specified in the admin	
+			task_index	INTEGER	The current round index	
+			theme_id	STRING	theme_id of the lava	
+			event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			segment	STRING	user's grand prize segment in the event	
+			start_date	TIMESTAMP	Lava event start timestamp	
+			end_date	TIMESTAMP	Lava event end timestamp	
+			configuration_name	STRING	configuration name from admin	
+			resource_amount_HC	INTEGER	Number of HC granted 	
+			resource_amount_Smiley	INTEGER	Number of smileys granted 	
+			resource_amount_Energy	INTEGER	Number of energy units granted 	
+			resource_amount_event_energy	INTEGER	Number of event energy units granted 	
+			transaction_item_*	STRING	One parameter for each item granted (tool, toolbox, crate, joker, etc.)	
+			transaction_item_amount_*	INTEGER	Corresponding amount of each item	
+			reward_items	STRING	JSON listing of all items and resources rewarded 	
+			product_amount	INTEGER	The number of distinct rewards created	
+			score	FLOAT	Round grand prize actual RDS - will be calculated as sum all RDS from round orders	
+resource_gained_server		Server	sub_reason	STRING	Reports what triggered the order	lava_event
+			event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+reward_created		Server	sub_reason	STRING	The source of the reward(where does it come from)	lava
+reward_collected		Server	sub_reason	STRING	The source of the reward(where does it come from)	lava
+lava_intro_popup_opened		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source - Popup opened trigger	lava_activation, app_loaded, badge_clicked
+			user_event_level	INTEGER	Number of current level in the lava round	
+lava_intro_popup_closed		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source	
+			user_event_level	INTEGER	Number of current level in the lava round	
+lava_order_displayed	reported each time lava order was displayed to the user	Client	task_id	STRING	Unique id for each task (unique per player)	
+			task _type		Describing which task has started	
+			lane	STRING	the name of the lane, as it is in the admin	
+			order_id	STRING	Id for each order - Two orders with the same objective should have the same ID (in case the task is order) (can be identical among players)	
+			objective_item_1	STRING	List of all the item required to complete the order	
+			objective_item_2	STRING		
+			objective_item_3	STRING		
+			difficulty_score	FLOAT	The difficulty of the order by the order engine (The total DS of an order)	
+			resource_amount_hc	INTEGER	Will report the HC value (HC) in the case of getting it as an order\ daily challenge reward	
+			resource_amount_smiley	INTEGER	Will report the smiley value in the case of getting it as an order\ daily challenge reward	
+			resource_amount_energy	INTEGER	Will report the energy value in the case of getting it as an order\ daily challenge reward	
+			transaction_item_*	STRING	One parameter for each item granted as a reward in the task (order\ daily challenge)	
+			transaction_item_amount_*	INTEGER	Corresponding amount of each item	
+lava_shuffle_screen_opened	gathering players screen	Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+			user_index	INTEGER	Number of players at the begining of the round	
+lava_shuffle_tap_to_continue_clicked		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+			user_index	INTEGER	Number of players at the begining of the round	
+lava_main_screen_opened		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source - popup trigger	icon_clicked /  winning_flow / losing_flow / lava_activation 
+			user_event_level	INTEGER	Number of current level in the lava round ( zero base, 0 is on activation )	
+			user_index	INTEGER	Number of players at the begining of the round	
+			action	STRING	Number of users left on the game	
+lava_main_screen_closed		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source	losing_flow
+			user_event_level	INTEGER	Number of current level in the lava round ( zero base, 0 is on activation )	
+			user_index	INTEGER	Number of players at the begining of the round	
+			action	STRING	Number of users left on the game	
+			name	STRING	Event name as specified in the admin (nickname in admin - event id)	
+			event_id	STRING	[name]_[segment index]_[start date=local time (UTC)] OR Name of promotion + start date+ segment index	
+			theme_id	STRING	Popup art theme	
+			reward_items	STRING	JSON list of all rewards and amount	
+			reason	STRING	what was the reason tooltip opened	icon_clicked /  pop_up_opened
+			name	STRING	Event name as specified in the admin (nickname in admin - event id)	
+			event_id	STRING	[name]_[segment index]_[start date=local time (UTC)] OR Name of promotion + start date+ segment index	
+			theme_id	STRING	Popup art theme	
+			reward_items	STRING	JSON list of all rewards and amount	
+lava_start_button_clicked		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	Location of the start button 	popup / badge
+			user_event_level	INTEGER	Number of current level in the lava round	
+			user_index	INTEGER	Number of players at the begining of the round	
+			action	STRING	Number of users left on the game	
+lava_close_button_clicked	when clicking the X button in the lava start screen	Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+			user_index	INTEGER	Number of players at the begining of the round	
+			action	STRING	Number of users left on the game	
+lava_later_button_clicked	when clicking the later button in the lava start screen	Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+			user_index	INTEGER	Number of players at the begining of the round	
+			action	STRING	Number of users left on the game	
+lava_info_popup_opened		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+lava_info_popup_closed		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+lava_round_completed_popup_opened		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			user_event_level	INTEGER	Number of current level in the lava round	
+			reward_items	STRING	actual share - the reward for each player	
+			action	STRING	Number of users left on the game, how many players finished the round (and won)	
+lava_tap_to_claim_clicked		Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source	round completion
+			user_event_level	INTEGER	Number of current level in the lava round	
+			action	STRING	Number of users left on the game, how many players finished the round (and won)	
+lava_over_screen_opened	when the user voluntary joins lava event and the event is over 	Client	event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source	
+			user_event_level	INTEGER	Number of current level in the lava round	
+			reward_items	STRING	actual share - the reward for each player	
+			action	STRING	Number of users left on the game, how many players finished the round (and won)	
+lava_over_screen_closed			event_id	STRING	[name || start_date=local time(UTC) || segment_index]	
+			name	STRING	event name as specified in the Admin system	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			theme_id	STRING	Popup theme configured in Admin	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+			resource_amount_hc	INTEGER	Grand reward for completing the round	
+			resource_amount_smiley	INTEGER		
+			resource_amount_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+			reason	STRING	The source	
+			user_event_level	INTEGER	Number of current level in the lava round	
+			reward_items	STRING	actual share - the reward for each player	
+			action	STRING	Number of users left on the game, how many players finished the round (and won)	
+screen_entered		Client	reason	STRING	FROM which screen the user entered	
+			view_id	STRING	TO what screen the user entered	
+lava_badge_clicked		Client	event_id	STRING		
+			name	STRING		
+			theme_id	STRING		
+			start_date	TIMESTAMP		
+			end_date	TIMESTAMP		
+			ends_at	STRING	Time left until end of event, as appears in popup	
+			extra_ind	INTEGER	Enrollment type: automatic=0 , voluntary=1	
+lava_event_started	reports once when event activated	Client	task_index	INTEGER	index for the spesific round	
+			theme_id	STRING	theme id 	
+			name	STRING	event name as specified in the Admin system	
+			event_id	STRING	[name]_[segment index]_[start date=local time (UTC)] (uniqe for each segment)	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			number_of_subcycle	INTEGER	number of the lava rounds configured	
+			resource_amount_Smiley	INTEGER	Reward for completing the round (grand prize)	
+			resource_amount_HC	INTEGER	Reward for completing the round (grand prize)    	
+			resource_amount_Energy	INTEGER		
+			resource_amount_event_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
+lava_event_completed 		Client	task_index	INTEGER	index for the spesific round	
+			theme_id	STRING	theme id 	
+			name	STRING	event name as specified in the Admin system	
+			event_id	STRING	[name]_[segment index]_[start date=local time (UTC)] (uniqe for each segment)	
+			start_date	TIMESTAMP	start date of event (timestamp)	
+			end_date	TIMESTAMP	end date of event (timestamp)	
+			length	FLOAT	duration of event in minutes (end_date - start_date)	
+			number_of_subcycle	INTEGER	number of the lava rounds configured	
+			resource_amount_Smiley	INTEGER	Reward for completing the round (grand prize)	
+			resource_amount_HC	INTEGER	Reward for completing the round (grand prize)    	
+			resource_amount_Energy	INTEGER		
+			resource_amount_event_energy	INTEGER		
+			transaction_item_*	STRING		
+			transaction_item_amount_*	INTEGER		
