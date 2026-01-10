@@ -414,40 +414,83 @@
             searchableText: `${key ? key : ''} ${previewValue(value)}`.trim()
         });
 
-        const appendUtcHintIfNeeded = () => {
-            if (typeof value !== 'number' || !Number.isFinite(value)) return;
-
+        const buildUtcHintIfNeeded = () => {
+            if (typeof value !== 'number' || !Number.isFinite(value)) return null;
             const hint = unixToUtcHint(value);
-            if (!hint) return;
+            if (!hint) return null;
 
             const s = document.createElement('span');
             s.className = 'jp-utcHint jp-noCopy';
             s.dataset.noCopy = '1';
             s.textContent = hint; // includes parentheses
-            line.appendChild(s);
+            return s;
+        };
+
+        const appendValueAndMaybeHint = (needComma) => {
+            // value itself
+            line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
+
+            // comma must be right after the value (to keep JSON-looking output consistent)
+            appendComma(line, needComma);
+
+            // UTC hint must appear AFTER comma (annotation, not part of JSON)
+            const hintEl = buildUtcHintIfNeeded();
+            if (hintEl) line.appendChild(hintEl);
         };
 
         if (parentKind === 'object' && key != null) {
             line.appendChild(makeTextSpan('jp-key', quoteKey(key)));
             line.appendChild(makeTextSpan('jp-sep', ': '));
 
-            line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
-            appendUtcHintIfNeeded();
-
-            appendComma(line, !isLast);
+            appendValueAndMaybeHint(!isLast);
         } else if (parentKind === 'array') {
-            line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
-            appendUtcHintIfNeeded();
-
-            appendComma(line, !isLast);
+            appendValueAndMaybeHint(!isLast);
         } else if (isRoot) {
-            line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
-            appendUtcHintIfNeeded();
+            // root primitive has no trailing comma
+            appendValueAndMaybeHint(false);
         }
 
         registerPath(path, row);
         return row;
     }
+
+    /**
+     * Detects unix timestamps in seconds/ms and returns a readable UTC annotation.
+     * Month is written as a word (Sep/Oct...), e.g. "(UTC: 20 Sep 2025 17:47:00Z)"
+     * Returns null if value doesn't look like a timestamp.
+     */
+    function unixToUtcHint(num) {
+        let ms = null;
+
+        // milliseconds: 1e12.. (2001+)
+        if (num >= 1e12) ms = num;
+        // seconds: 1e9.. (2001+) => convert
+        else if (num >= 1e9) ms = num * 1000;
+
+        if (ms == null) return null;
+
+        // sanity window: 1970-01-01 .. 2100-01-01 (in ms)
+        if (ms < 0 || ms > 4102444800000) return null;
+
+        const d = new Date(ms);
+        if (Number.isNaN(d.getTime())) return null;
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        const dd = String(d.getUTCDate()).padStart(2, '0');
+        const mon = months[d.getUTCMonth()];
+        const yyyy = String(d.getUTCFullYear());
+
+        const hh = String(d.getUTCHours()).padStart(2, '0');
+        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        const ss = String(d.getUTCSeconds()).padStart(2, '0');
+
+        // Example: "20 Sep 2025 17:47:00Z"
+        const pretty = `${dd} ${mon} ${yyyy} ${hh}:${mm}:${ss}Z`;
+
+        return ` (UTC: ${pretty})`;
+    }
+
 
     /**
      * Detects unix timestamps in seconds/ms and returns a readable UTC annotation.

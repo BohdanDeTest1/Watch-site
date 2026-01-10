@@ -1027,34 +1027,50 @@
     width: 18px;
     height: 18px;
     border-radius: 4px;
-    /* squarer */
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
     font-weight: 900;
     font-size: 13px;
     line-height: 1;
     cursor: pointer;
     user-select: none;
 
-    border: 1px solid rgba(37, 99, 235, .75);
-    /* blue */
-    color: rgba(37, 99, 235, 1);
-    background: rgba(37, 99, 235, .10);
+    /* PLUS (collapsed) — green */
+    border: 1px solid rgba(22, 163, 74, 0.65);
+    color: rgba(21, 128, 61, 1);
+    background: rgba(22, 163, 74, 0.10);
+
     margin-right: 6px;
-    /* space before token */
 }
 
+/* MINUS (open) — soft orange (not "error red") */
 .jp-toggle.is-open {
-    border-color: rgba(220, 38, 38, .75);
-    /* red */
-    color: rgba(220, 38, 38, 1);
-    background: rgba(220, 38, 38, .10);
+    border-color: rgba(249, 115, 22, 0.65);
+    color: rgba(194, 65, 12, 1);
+    background: rgba(249, 115, 22, 0.12);
+}
+
+/* Dark theme tuning: slightly brighter for contrast */
+.theme-night .jp-toggle,
+.theme-dark .jp-toggle {
+    border-color: rgba(34, 197, 94, 0.70);
+    color: rgba(74, 222, 128, 1);
+    background: rgba(34, 197, 94, 0.14);
+}
+
+.theme-night .jp-toggle.is-open,
+.theme-dark .jp-toggle.is-open {
+    border-color: rgba(251, 146, 60, 0.70);
+    color: rgba(253, 186, 116, 1);
+    background: rgba(251, 146, 60, 0.14);
 }
 
 .jp-toggle:hover {
     filter: brightness(0.98);
 }
+
 
 
 /* Line numbers (left gutter) */
