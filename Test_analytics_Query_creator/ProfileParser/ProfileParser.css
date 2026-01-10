@@ -30,6 +30,253 @@
     max-width: 1560px;
 }
 
+/* ===================== How it works (Profile Parser) ===================== */
+
+#pp-root .pp-howto-wrap {
+    position: relative;
+    margin-top: -30px !important;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* кнопка как в Query Creator (узкая, не на всю ширину) */
+#ppHowtoBtn {
+    width: auto !important;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    padding: 10px 16px;
+    min-width: 180px;
+    margin-top: 0 !important;
+}
+
+/* тултип — под кнопкой, фиксированные 400×400, скролл внутри */
+#ppHowtoTooltip.pp-howto-tooltip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    width: 400px;
+    height: 400px;
+    border-radius: 8px;
+    display: none;
+    z-index: 1200;
+    overflow: auto;
+
+    border: 1px solid var(--card-bg-modal-border, rgba(255, 255, 255, .12));
+    background: var(--howto-bg, #21273b);
+    color: var(--howto-fg, #e7eef7);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
+    scrollbar-gutter: stable both-edges;
+    padding: 0px !important;
+}
+
+#ppHowtoTooltip.pp-howto-tooltip.open {
+    display: block;
+}
+
+/* тело тултипа */
+#ppHowtoTooltip .pp-howto-tooltip__body {
+    padding: 16px 18px;
+    line-height: 1.45;
+    padding-right: 22px;
+    /* место под оверлейный скроллбар */
+}
+
+#ppHowtoTooltip .pp-howto-tooltip__body h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+#ppHowtoTooltip .pp-howto-tooltip__body ol {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 10px;
+}
+
+#ppHowtoTooltip .pp-howto-bullets {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 6px;
+}
+
+/* кастомный скроллбар (Chromium/WebKit) */
+#ppHowtoTooltip.pp-howto-tooltip::-webkit-scrollbar {
+    width: 10px;
+}
+
+#ppHowtoTooltip.pp-howto-tooltip::-webkit-scrollbar-track {
+    background: var(--btn-n-field-bg, #0e1015);
+    border-radius: 10px;
+}
+
+#ppHowtoTooltip.pp-howto-tooltip::-webkit-scrollbar-thumb {
+    background: var(--label, #cfd3db);
+    border-radius: 10px;
+    border: 2px solid var(--btn-n-field-bg, #0e1015);
+}
+
+#ppHowtoTooltip.pp-howto-tooltip::-webkit-scrollbar-thumb:hover {
+    background: var(--label, #cfd3db);
+}
+
+/* Firefox */
+#ppHowtoTooltip.pp-howto-tooltip {
+    scrollbar-width: auto;
+    scrollbar-color: var(--label, #cfd3db) var(--btn-n-field-bg, #0e1015);
+}
+
+/* fade top/bottom как в QC */
+#ppHowtoTooltip.pp-howto-tooltip::before,
+#ppHowtoTooltip.pp-howto-tooltip::after {
+    content: "";
+    position: sticky;
+    left: 0;
+    right: 0;
+    height: 22px;
+    pointer-events: none;
+    z-index: 1;
+    display: block;
+}
+
+#ppHowtoTooltip.pp-howto-tooltip::before {
+    top: 0;
+    margin-top: -1px;
+    background: linear-gradient(to bottom,
+            var(--howto-bg, #21273b) 0%,
+            var(--howto-fade-strong, rgba(33, 39, 59, .92)) 25%,
+            var(--howto-fade-mid, rgba(33, 39, 59, .55)) 65%,
+            var(--howto-fade-zero, rgba(33, 39, 59, 0)) 100%);
+}
+
+#ppHowtoTooltip.pp-howto-tooltip::after {
+    bottom: 0;
+    margin-bottom: -1px;
+    background: linear-gradient(to top,
+            var(--howto-bg, #21273b) 0%,
+            var(--howto-fade-strong, rgba(33, 39, 59, .92)) 25%,
+            var(--howto-fade-mid, rgba(33, 39, 59, .55)) 65%,
+            var(--howto-fade-zero, rgba(33, 39, 59, 0)) 100%);
+}
+
+/* ====== HowTo image zoom (как в Query Creator) ====== */
+
+/* ====== HowTo image zoom (как в Query Creator) ====== */
+
+#ppHowtoTooltip .howto-img-wrap {
+    position: relative;
+    display: inline-block;
+    margin-top: 12px;
+    cursor: zoom-in;
+
+    /* FIX: у тебя <ol> = display:grid и .howto-img-wrap местами является GRID-ITEM,
+       у grid-item по умолчанию justify-self: stretch => контейнер растягивается на всю ширину,
+       и абсолютный right/bottom считается от ширины всего ряда, из-за чего “лупа” уезжает вправо.
+    */
+    justify-self: start;
+    align-self: start;
+    width: fit-content;
+
+    line-height: 0;
+    /* чтобы бейдж не “прыгал” от line-box */
+}
+
+
+#ppHowtoTooltip .howto-img {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    margin-top: 8px;
+    border-radius: 8px;
+    opacity: .98;
+}
+
+/* Бейдж-лупа: как в Query Creator */
+#ppHowtoTooltip .howto-img-wrap .zoom-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 999px;
+    background: var(--how-to-back);
+    /* ровно как в QC */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    /* клики проходят на картинку */
+}
+
+/* Иконка-лупа с плюсиком (монохромная, повернута как в QC) */
+#ppHowtoTooltip .howto-img-wrap .zoom-badge::before {
+    content: "";
+    width: 24px;
+    height: 24px;
+    background: var(--label);
+    /* цвет иконки как в QC */
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(45 12 12)'><circle cx='10' cy='10' r='6'/><line x1='10' y1='7' x2='10' y2='13'/><line x1='7' y1='10' x2='13' y2='10'/><line x1='14.5' y1='14.5' x2='20' y2='20'/></g></svg>") center / contain no-repeat;
+    transform: rotate(-45deg);
+}
+
+
+
+/* затемнение фона при открытом тултипе */
+#ppHowtoBackdrop.pp-howto-backdrop[hidden] {
+    display: none;
+}
+
+#ppHowtoBackdrop.pp-howto-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1190;
+    background: var(--how-to-back, rgba(2, 6, 23, .24));
+}
+
+/* модалка зума картинки */
+#ppHowtoImgOverlay.pp-howto-img-overlay.hidden {
+    display: none;
+}
+
+#ppHowtoImgOverlay.pp-howto-img-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    /* как в QueryCreator: мягкое затемнение через --how-to-back */
+    background: var(--how-to-back, rgba(2, 6, 23, .24));
+
+    display: grid;
+    place-items: center;
+    padding: 16px;
+
+    /* курсор “лупа с минусом” (Chrome/Chromium) */
+    cursor: zoom-out;
+}
+
+
+#ppHowtoImgOverlay .howto-img-modal {
+    background: transparent;
+    border-radius: 12px;
+    max-width: 92vw;
+    max-height: 92vh;
+}
+
+#ppHowtoImgOverlay .howto-img-modal img {
+    display: block;
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 12px;
+
+    /* чтобы при наведении на картинку тоже был zoom-out */
+    cursor: zoom-out;
+}
+
+
+
 #pp-root .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -272,11 +519,14 @@
     height: 34px;
     padding: 0 14px;
     border-radius: 6px;
+    max-width: 100px;
     border: 1px solid var(--accent);
     background: var(--accent);
     color: var(--btn-n-field-bg);
     font-weight: 800;
     cursor: pointer;
+    max-width: 100px;
+    min-width: 100px;
 }
 
 #pp-root .pp-manual-parse:hover {

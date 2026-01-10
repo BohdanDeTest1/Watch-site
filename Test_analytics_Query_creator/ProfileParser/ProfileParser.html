@@ -4,8 +4,138 @@
         <!-- Шапка вкладки -->
         <header class="container qc-header">
             <h1 class="qc-title">Profile parser</h1>
-            <p class="muted qc-subtitle">Work-in-progress. Stay tuned</p>
+            <p class="muted qc-subtitle">
+                Parse a profile and explore LiveOps events & promotions in a single view
+            </p>
         </header>
+
+        <!-- How it works кнопка + тултип (как в Query Creator) -->
+        <div class="container pp-howto-wrap">
+            <button id="ppHowtoBtn" class="btn-refresh" type="button" aria-haspopup="dialog" aria-expanded="false">
+                How it works?
+            </button>
+
+            <div id="ppHowtoTooltip" class="pp-howto-tooltip card" role="dialog" aria-modal="false"
+                aria-labelledby="ppHowtoBtn">
+                <div class="pp-howto-tooltip__body">
+                    <h3>How it works:</h3>
+                    <ol>
+                        <li><strong>Pick an environment</strong>: </li>
+                        <ul class="pp-howto-bullets">
+                            <li>Stage</li>
+                            <li>RC</li>
+                            <li>PROD</li>
+
+                        </ul>
+                        <li><strong>Enter a profile name</strong> and click <strong>Search:</strong></li>
+
+                        <div class="howto-img-wrap">
+                            <img src="Parser_1.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                            <span class="zoom-badge" aria-hidden="true"></span>
+                        </div>
+
+                        <span class="small muted"></span>
+                        If the tool can’t fetch data automatically (fallback mode):
+                        <ul class="pp-howto-bullets">
+                            <li>Use the “Open JSON” buttons (State / LiveOps / Promotions)</li>
+                            <li>Copy JSON from the opened tabs and paste it into the input field manually <br />(cmd+A
+                                ->
+                                cmd+C)
+                            </li>
+                        </ul>
+                        </span>
+                        <div class="howto-img-wrap">
+                            <img src="tsv_tab.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                            <span class="zoom-badge" aria-hidden="true"></span>
+                        </div>
+                        <br>
+
+
+                        <li class="with-img"><strong>Explore the timeline</strong>: on the calendar you’ll see event
+                            types and event bars
+                            available for this profile.
+                            <br>
+                            You can scroll horizontally to navigate through the timeline and see where each event starts
+                            and ends
+                            <br>
+                            <div class="howto-img-wrap">
+                                <img src="Parse_4.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+
+                            <ul class="pp-howto-bullets">
+                                <li>By default, the calendar is focused on the current date in <strong>UTC</strong>.
+                                    Use the navigation controls at the top to move along the timeline and jump to any
+                                    date you need
+                                    <br>
+                                    <div class="howto-img-wrap">
+                                        <img src="Parse_31.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                        <span class="zoom-badge" aria-hidden="true"></span>
+                                    </div>
+                                </li>
+                                <li> Click anywhere on the <strong>hour timeline</strong> to place a time marker.
+                                    By clicking the action button on that marker, you can filter the Events table below
+                                    to show only events that are active at the selected moment in time
+                                    <br>
+                                    <div class="howto-img-wrap">
+                                        <img src="Parse_32.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                        <span class="zoom-badge" aria-hidden="true"></span>
+                                    </div>
+                                </li>
+
+
+                            </ul>
+                        </li>
+                        <br>
+                        <li class="with-img"><strong>Open the context menu</strong>: click an event bar to show a
+                            context menu with brief
+                            event details
+
+                            <div class="howto-img-wrap">
+                                <img src="Parse_5.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="with-img"><strong>View in table</strong>: in the context menu, click <strong>View in
+                                table</strong> -
+                            the event will be highlighted in the Events table below and the info panel will open
+                            automatically
+                            <br>
+                            <div class="howto-img-wrap">
+                                <img src="Parse_6.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="with-img"><strong>Check details</strong>: in the info panel you’ll find deeper event
+                            information
+                            (dates, assets, theme, state, etc.).
+                            Also, the <strong>Redirect</strong> button will open the Admin page with the event configs
+                            in a new browser tab (Stage/RC only)
+                            <div class="howto-img-wrap">
+                                <img src="Parse_7.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="with-img"><strong>Promotions work the same way</strong>: the same flow is available
+                            for Promotions in
+                            the Promotions calendar and Promotions table
+                            <div class="howto-img-wrap">
+                                <img src="Parse_8.jpg" alt="Save as TSV in Google Sheets" class="howto-img">
+                                <span class="zoom-badge" aria-hidden="true"></span>
+                            </div>
+                        </li>
+
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- затемнение фона при открытом тултипе -->
+        <div id="ppHowtoBackdrop" class="pp-howto-backdrop" hidden></div>
+
 
         <!-- Мини-замок (модальное окошко с паролем) -->
         <div id="ppGateBackdrop" class="pp-gate__backdrop" hidden></div>

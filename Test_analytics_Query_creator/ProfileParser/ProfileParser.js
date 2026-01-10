@@ -108,6 +108,116 @@
         });
     }
 
+    function wireHowto() {
+        const btn = document.getElementById('ppHowtoBtn');
+        const tip = document.getElementById('ppHowtoTooltip');
+        const bd = document.getElementById('ppHowtoBackdrop');
+        if (!btn || !tip || !bd) return;
+
+        const overlayId = 'ppHowtoImgOverlay';
+
+        function ensureOverlay() {
+            let ov = document.getElementById(overlayId);
+            if (ov) return ov;
+
+            ov = document.createElement('div');
+            ov.id = overlayId;
+            ov.className = 'pp-howto-img-overlay hidden';
+            ov.innerHTML = `
+                <div class="howto-img-modal" role="dialog" aria-modal="true">
+                    <img alt="Preview">
+                </div>
+            `;
+            document.body.appendChild(ov);
+
+            ov.addEventListener('click', (e) => {
+                // важно: не даём клику всплыть до document-клик-закрывалки тултипа
+                e.stopPropagation();
+
+                // FIX: закрываем zoom по клику В ЛЮБУЮ область (и по картинке тоже),
+                // Tooltip при этом остаётся открытым (document click не сработает из-за stopPropagation)
+                hideOverlay();
+            });
+
+
+
+            return ov;
+        }
+
+        function showOverlay(src, alt) {
+            const ov = ensureOverlay();
+            const img = ov.querySelector('img');
+            if (!img) return;
+            img.src = src;
+            img.alt = alt || 'Preview';
+            ov.classList.remove('hidden');
+        }
+
+        function hideOverlay() {
+            const ov = document.getElementById(overlayId);
+            if (!ov) return;
+            ov.classList.add('hidden');
+            const img = ov.querySelector('img');
+            if (img) img.src = '';
+        }
+
+        function open() {
+            tip.classList.add('open');
+            bd.hidden = false;
+            btn.setAttribute('aria-expanded', 'true');
+        }
+
+        function close() {
+            tip.classList.remove('open');
+            bd.hidden = true;
+            btn.setAttribute('aria-expanded', 'false');
+            hideOverlay();
+        }
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (tip.classList.contains('open')) close();
+            else open();
+        });
+
+        bd.addEventListener('click', () => close());
+
+        document.addEventListener('click', (e) => {
+            // если открыт zoom-оверлей — НЕ закрываем HowTo-tooltip кликом “снаружи”
+            const ov = document.getElementById(overlayId);
+            if (ov && !ov.classList.contains('hidden')) return;
+
+            if (!tip.classList.contains('open')) return;
+            const t = e.target;
+            if (tip.contains(t) || btn.contains(t)) return;
+            close();
+        });
+
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // если открыт zoom — закрываем его первым
+                const ov = document.getElementById(overlayId);
+                if (ov && !ov.classList.contains('hidden')) {
+                    hideOverlay();
+                    return;
+                }
+                if (tip.classList.contains('open')) close();
+            }
+        });
+
+        // Zoom on image click (делегированно)
+        tip.addEventListener('click', (e) => {
+            const wrap = e.target?.closest?.('.howto-img-wrap');
+            if (!wrap) return;
+            const img = wrap.querySelector('img');
+            if (!img) return;
+            showOverlay(img.getAttribute('src'), img.getAttribute('alt'));
+        });
+    }
+
+
     // === Runtime env + Demo mode ===
     // Environment: 'stage' | 'rc' | 'prod'
     let PP_ENV = 'stage';
@@ -1840,7 +1950,7 @@
   <div class="pp-ctx-title">
     <span class="txt">${title ? escapeHtml(title) : ''}</span>
     <div class="pp-title-actions">
-      <button class="pp-ico act-open" data-hint="Open in table" aria-label="Open in table" title="">
+      <button class="pp-ico act-open" data-hint="View in table" aria-label="View in table" title="">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
           <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <path d="M3 10h18M3 14h18" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -6837,7 +6947,7 @@
   <div class="pop-head" style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700;margin-bottom:6px;word-break:break-word;">
     <span class="txt" style="flex:1 1 auto;min-width:0;">${escapeHtml(title)}</span>
     <span class="pp-title-actions" style="display:inline-flex;gap:6px;">
-      <button class="pp-ico js-open-in-table" type="button" data-hint="Open in table" aria-label="Open in table"
+      <button class="pp-ico js-open-in-table" type="button" data-hint="View in table" aria-label="View in table"
         style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid var(--border,#d1d5db);background:var(--btn-n-field-bg,#fff);cursor:pointer;">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
           <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -7265,8 +7375,10 @@
             });
         })();
 
-        wireGate(); // навесим обработчики на форму
-        wireUI();   // <— подключаем обработчик submit (preventDefault + запуск моков)
+        wireGate();  // навесим обработчики на форму
+        wireHowto(); // How it works? (tooltip + backdrop + zoom)
+        wireUI();    // <— подключаем обработчик submit (preventDefault + запуск моков)
+
         // show empty Results before first Search
         __ppRenderEmptyResults();
     }
