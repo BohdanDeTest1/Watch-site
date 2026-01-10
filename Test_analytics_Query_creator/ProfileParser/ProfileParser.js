@@ -4558,8 +4558,15 @@
           <div class="pp-meta" style="color:var(--validation-warn)">Endpoints are missing</div>
           <div class="pp-meta muted small">Missing: ${miss.join(', ')} (env: ${PP_ENV.toUpperCase()})</div>`;
                 results.appendChild(item);
+
+                // вернуть кнопку в нормальное состояние и НЕ переключать на Refresh
+                btn.disabled = false;
+                btn.classList.remove('pp-loading');
+                btn.textContent = 'Search';
+
                 return;
             }
+
             __ppSetEndpointsBannerVisible(false);
         } else {
             __ppSetEndpointsBannerVisible(false);
@@ -4773,7 +4780,11 @@
 
             btn.disabled = false;
             btn.classList.remove('pp-loading');
+
+            // IMPORTANT: после выполненного поиска показываем "Refresh"
+            btn.textContent = 'Refresh';
         }
+
 
 
 
@@ -7174,6 +7185,20 @@
         const btnRc = el('#ppEnvRc');
         const btnProd = el('#ppEnvProd');
 
+        // --- Search button label mode (Search <-> Refresh) ---
+        const searchBtn = el('#ppSearch');
+
+        function __ppSetSearchBtnMode(mode /* 'search' | 'refresh' */) {
+            if (!searchBtn) return;
+            const m = (mode === 'refresh') ? 'refresh' : 'search';
+            searchBtn.dataset.mode = m;
+            searchBtn.textContent = (m === 'refresh') ? 'Refresh' : 'Search';
+        }
+
+        // default state on first load
+        __ppSetSearchBtnMode('search');
+
+
         btnStage?.addEventListener('click', async () => {
             // сохраняем то, что юзер уже ввёл — это НЕ должно перетираться
             const keepName = nameInput ? nameInput.value : '';
@@ -7183,12 +7208,16 @@
             // обновить hint по endpoints (Demo OFF + missing endpoints)
             await __ppRefreshEndpointsHint();
 
-            // как Refresh вкладки парсера, но НЕ трогаем input
+            // как Reset результатов вкладки парсера, но НЕ трогаем input
             if (err) err.style.display = 'none';
             __ppRenderEmptyResults();
 
+            // IMPORTANT: при смене окружения кнопка снова должна быть "Search"
+            __ppSetSearchBtnMode('search');
+
             if (nameInput) nameInput.value = keepName;
         });
+
 
         btnRc?.addEventListener('click', async () => {
             const keepName = nameInput ? nameInput.value : '';
@@ -7199,8 +7228,12 @@
             if (err) err.style.display = 'none';
             __ppRenderEmptyResults();
 
+            // IMPORTANT: при смене окружения кнопка снова должна быть "Search"
+            __ppSetSearchBtnMode('search');
+
             if (nameInput) nameInput.value = keepName;
         });
+
 
         btnProd?.addEventListener('click', async () => {
             const keepName = nameInput ? nameInput.value : '';
@@ -7211,8 +7244,12 @@
             if (err) err.style.display = 'none';
             __ppRenderEmptyResults();
 
+            // IMPORTANT: при смене окружения кнопка снова должна быть "Search"
+            __ppSetSearchBtnMode('search');
+
             if (nameInput) nameInput.value = keepName;
         });
+
 
         // --- Demo toggle ---
         const demo = el('#ppDemoMode');
@@ -7312,6 +7349,7 @@
         });
 
         // Refresh: reset Results + errors + input (но НЕ трогаем Demo mode и Environment)
+        // Reset: reset Results + errors + input (но НЕ трогаем Demo mode и Environment)
         const refreshBtn = el('#ppRefresh');
         refreshBtn?.addEventListener('click', () => {
             const DEFAULT_PREFIX = '2_12_master_';
@@ -7324,7 +7362,11 @@
 
             // вернуть Results в дефолтное состояние
             __ppRenderEmptyResults();
+
+            // IMPORTANT: после Reset синяя кнопка снова должна быть "Search"
+            __ppSetSearchBtnMode('search');
         });
+
 
 
     }
