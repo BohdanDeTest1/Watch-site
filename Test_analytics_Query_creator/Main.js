@@ -15,9 +15,15 @@ function switchTab(id) {
 
     const view = document.getElementById(id + 'View');
     if (view) view.classList.remove('hidden');
+
     if (id === 'tab2') {
         window.Tools.profileParser?.onActivate?.();
     }
+
+    if (id === 'tab3') {
+        window.Tools.jsonParser?.onActivate?.();
+    }
+
 }
 
 // Открывать панель кликом по пустому месту, когда она закрыта
@@ -156,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('tool-root') || document;
     window.Tools.queryCreator?.init?.(container);
     window.Tools.profileParser?.init?.(container);
+    window.Tools.jsonParser?.init?.(container);
+
 
     // === Theme toggle ===
     (function () {

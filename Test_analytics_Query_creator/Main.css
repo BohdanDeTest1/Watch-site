@@ -6,6 +6,11 @@ body.sb-collapsed {
     padding-left: 72px;
 }
 
+.hidden {
+    display: none !important;
+}
+
+
 /* Левая панель */
 #sidebar {
     position: fixed;
