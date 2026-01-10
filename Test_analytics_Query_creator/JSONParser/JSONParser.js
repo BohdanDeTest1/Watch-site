@@ -414,21 +414,69 @@
             searchableText: `${key ? key : ''} ${previewValue(value)}`.trim()
         });
 
+        const appendUtcHintIfNeeded = () => {
+            if (typeof value !== 'number' || !Number.isFinite(value)) return;
+
+            const hint = unixToUtcHint(value);
+            if (!hint) return;
+
+            const s = document.createElement('span');
+            s.className = 'jp-utcHint jp-noCopy';
+            s.dataset.noCopy = '1';
+            s.textContent = hint; // includes parentheses
+            line.appendChild(s);
+        };
+
         if (parentKind === 'object' && key != null) {
             line.appendChild(makeTextSpan('jp-key', quoteKey(key)));
             line.appendChild(makeTextSpan('jp-sep', ': '));
+
             line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
+            appendUtcHintIfNeeded();
+
             appendComma(line, !isLast);
         } else if (parentKind === 'array') {
             line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
+            appendUtcHintIfNeeded();
+
             appendComma(line, !isLast);
         } else if (isRoot) {
             line.appendChild(makeTextSpan(`jp-val ${valueClass(value)}`, previewValue(value)));
+            appendUtcHintIfNeeded();
         }
 
         registerPath(path, row);
         return row;
     }
+
+    /**
+     * Detects unix timestamps in seconds/ms and returns a readable UTC annotation.
+     * Returns null if value doesn't look like a timestamp.
+     */
+    function unixToUtcHint(num) {
+        // Support seconds and milliseconds
+        let ms = null;
+
+        // milliseconds: 1e12.. (2001+)
+        if (num >= 1e12) ms = num;
+        // seconds: 1e9.. (2001+) => convert
+        else if (num >= 1e9) ms = num * 1000;
+
+        if (ms == null) return null;
+
+        // sanity window: 1970-01-01 .. 2100-01-01 (in ms)
+        if (ms < 0 || ms > 4102444800000) return null;
+
+        const d = new Date(ms);
+        if (Number.isNaN(d.getTime())) return null;
+
+        // "2025-09-20 17:47:00Z"
+        const iso = d.toISOString(); // 2025-09-20T17:47:00.000Z
+        const pretty = iso.replace('T', ' ').replace('.000Z', 'Z');
+
+        return ` (UTC: ${pretty})`;
+    }
+
 
 
 
@@ -1087,6 +1135,39 @@
         state.input = view.querySelector('#jpInput');
         state.output = view.querySelector('.jp-output');
         state.status = view.querySelector('.jp-status');
+
+        // Strip non-copy annotations from clipboard (UTC hints, etc.)
+        state.output.addEventListener('copy', (e) => {
+            try {
+                const sel = window.getSelection?.();
+                if (!sel || sel.rangeCount === 0) return;
+
+                // only handle selections inside output
+                const range = sel.getRangeAt(0);
+                const common = range.commonAncestorContainer;
+                const root = state.output;
+
+                const isInside =
+                    (common === root) ||
+                    (common.nodeType === 1 && root.contains(common)) ||
+                    (common.nodeType === 3 && root.contains(common.parentElement));
+
+                if (!isInside) return;
+
+                const frag = range.cloneContents();
+                frag.querySelectorAll?.('[data-no-copy="1"], .jp-noCopy').forEach(n => n.remove());
+
+                const tmp = document.createElement('div');
+                tmp.appendChild(frag);
+
+                const text = tmp.textContent || '';
+                e.clipboardData?.setData('text/plain', text);
+                e.preventDefault();
+            } catch (_) {
+                // if anything fails, fall back to default copy behavior
+            }
+        });
+
 
         state.parseBtn = view.querySelector('[data-act="parse"]');
         state.clearBtn = view.querySelector('[data-act="clear"]');

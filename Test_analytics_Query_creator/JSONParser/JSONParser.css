@@ -995,6 +995,32 @@
     margin-left: 2px;
 }
 
+/* UTC annotation next to unix timestamps */
+.jp-utcHint {
+    margin-left: 6px;
+    font-size: 12px;
+    opacity: 0.55;
+    color: rgba(55, 65, 81, 0.75);
+    /* light gray (works in light theme) */
+    user-select: none;
+    /* do not select -> won't be copied in normal selection */
+    pointer-events: none;
+    /* purely visual */
+    white-space: nowrap;
+}
+
+.theme-night .jp-utcHint,
+.theme-dark .jp-utcHint {
+    color: rgba(212, 212, 212, 0.55);
+    /* gray in dark theme */
+}
+
+/* generic "do not copy" marker (used by JS copy-strip as well) */
+.jp-noCopy {
+    user-select: none;
+    pointer-events: none;
+}
+
 
 /* Toggle button (+ / -) pinned to the line (not left gutter) */
 .jp-toggle {
