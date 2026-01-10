@@ -1,0 +1,1171 @@
+.jp-wrap {
+    padding: 28px 28px 40px;
+    color: var(--text);
+}
+
+.jp-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.jp-title {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.jp-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    opacity: .7;
+}
+
+.jp-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+
+
+
+.jp-inputActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+/* Ensure Parse/Clear are compact (not full width) */
+.jp-inputActions>.jp-btn {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    display: inline-flex;
+}
+
+
+/* Orange "Clear" */
+.jp-btn.jp-warn {
+    background: #f59e0b;
+    /* nice orange */
+    border-color: transparent;
+    color: #ffffff;
+    /* Light theme: white text */
+}
+
+.theme-night .jp-btn.jp-warn,
+.theme-dark .jp-btn.jp-warn {
+    color: #111111;
+    /* Dark theme: black text */
+}
+
+
+.jp-btn:hover {
+    filter: brightness(0.98);
+}
+
+.jp-btn:active {
+    transform: scale(.99);
+}
+
+.jp-primary {
+    background: var(--accent, #3b82f6);
+    border-color: transparent;
+    color: #fff;
+}
+
+.jp-label {
+    font-weight: 800;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-inputBlock {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.jp-input {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 12px 12px;
+    outline: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-input:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+.jp-status {
+    margin-top: 10px;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-status[data-kind="ok"] {
+    opacity: 1;
+}
+
+.jp-status[data-kind="err"] {
+    opacity: 1;
+}
+
+.jp-searchBlock {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.jp-searchRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.jp-searchControls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.jp-search {
+    width: min(520px, 70vw);
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 10px 12px;
+    outline: none;
+    font-size: 13px;
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-search:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+
+
+.jp-outputBlock {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    border-radius: 12px;
+    padding: 14px;
+}
+
+
+
+.jp-output {
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: var(--bg, #fff);
+    padding: 10px 12px;
+    overflow: auto;
+    max-height: calc(100vh - 520px);
+    min-height: 320px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.jp-tree {
+    padding-bottom: 6px;
+}
+
+/* Rows */
+.jp-row {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.jp-key {
+    font-weight: 800;
+    opacity: .92;
+}
+
+.jp-sep {
+    opacity: .7;
+}
+
+.jp-meta {
+    opacity: .55;
+    font-weight: 700;
+}
+
+.jp-preview {
+    opacity: .65;
+}
+
+/* Branch */
+.jp-branch {
+    margin: 2px 0 2px 0;
+}
+
+.jp-branch>summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.jp-branch>summary::-webkit-details-marker {
+    display: none;
+}
+
+.jp-children {
+    margin-left: 18px;
+    padding-left: 10px;
+    border-left: 1px dashed var(--border, rgba(0, 0, 0, .18));
+}
+
+/* Values */
+.jp-val {
+    opacity: .9;
+    font-weight: 550;
+}
+
+.jp-val.jp-string {
+    opacity: .95;
+}
+
+.jp-val.jp-number {
+    opacity: .95;
+}
+
+.jp-val.jp-boolean {
+    opacity: .95;
+}
+
+.jp-val.jp-undefined {
+    opacity: .7;
+}
+
+/* Search highlighting */
+.jp-hit {
+    background: rgba(59, 130, 246, 0.14);
+    outline: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.jp-current {
+    background: rgba(245, 158, 11, 0.18);
+    outline: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* Dark theme friendliness (если у тебя есть .theme-dark) */
+.theme-dark .jp-wrap {
+    color: var(--text);
+}
+
+.theme-dark .jp-output,
+.theme-dark .jp-input,
+.theme-dark .jp-search,
+.theme-dark .jp-inputBlock,
+.theme-dark .jp-searchBlock,
+.theme-dark .jp-outputBlock {
+    background: var(--card);
+}
+
+.jp-wrap {
+    padding: 28px 28px 40px;
+    color: var(--text);
+}
+
+.jp-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.jp-title {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.jp-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    opacity: .7;
+}
+
+.jp-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+
+
+.jp-small {
+    padding: 8px 10px;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.jp-label {
+    font-weight: 800;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-inputBlock,
+.jp-searchBlock,
+.jp-outputBlock {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.jp-input {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 12px 12px;
+    outline: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-input:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+.jp-status {
+    margin-top: 10px;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-searchRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.jp-searchControls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.jp-search {
+    width: min(520px, 70vw);
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 10px 12px;
+    outline: none;
+    font-size: 13px;
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-search:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+
+
+
+.jp-output {
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: var(--bg, #fff);
+    padding: 10px 12px;
+    overflow: auto;
+    max-height: calc(100vh - 520px);
+    min-height: 320px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.jp-tree {
+    padding-bottom: 6px;
+}
+
+/* Row layout */
+.jp-row {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Key / type */
+.jp-key {
+    font-weight: 800;
+    color: var(--jp-key, #1f3a8a);
+    /* blue-ish */
+}
+
+.jp-type {
+    font-weight: 800;
+    font-size: 12px;
+    opacity: .7;
+    color: var(--jp-type, #6b7280);
+    /* gray */
+}
+
+.jp-sep {
+    opacity: .75;
+}
+
+
+
+.jp-string {
+    color: var(--jp-str, #15803d);
+}
+
+/* green */
+.jp-number {
+    color: var(--jp-num, #7c3aed);
+}
+
+/* purple */
+.jp-boolean {
+    color: var(--jp-bool, #dc2626);
+}
+
+/* red */
+.jp-null {
+    color: var(--jp-null, #6b7280);
+}
+
+/* gray */
+.jp-other {
+    color: var(--jp-other, #0f172a);
+}
+
+/* Branch (<details>) */
+.jp-branch {
+    margin: 2px 0;
+}
+
+/* Hide default marker */
+.jp-branch>summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.jp-branch>summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Custom disclosure arrow */
+.jp-branch>summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 14px;
+    margin-right: 4px;
+    transform: translateY(0.5px);
+    opacity: .7;
+}
+
+.jp-branch[open]>summary::before {
+    content: "▾";
+    opacity: .8;
+}
+
+.jp-children {
+    margin-left: 18px;
+    padding-left: 10px;
+    border-left: 1px dashed var(--border, rgba(0, 0, 0, .18));
+}
+
+/* Copy button (right, like tiny square icon) */
+.jp-copy {
+    margin-left: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: transparent;
+    cursor: pointer;
+    opacity: .65;
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.jp-copy:hover {
+    opacity: .95;
+}
+
+.jp-copy.ok {
+    opacity: 1;
+}
+
+.jp-copy::before,
+.jp-copy::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    opacity: .9;
+}
+
+.jp-copy::after {
+    inset: 6px;
+    opacity: .55;
+}
+
+/* Search highlighting */
+.jp-hit {
+    background: rgba(59, 130, 246, 0.14);
+    outline: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.jp-current {
+    background: rgba(245, 158, 11, 0.18);
+    outline: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* Dark theme friendliness */
+.theme-dark .jp-wrap {
+    color: var(--text);
+}
+
+.theme-dark .jp-output,
+.theme-dark .jp-input,
+.theme-dark .jp-search,
+.theme-dark .jp-inputBlock,
+.theme-dark .jp-searchBlock,
+.theme-dark .jp-outputBlock {
+    background: var(--card);
+}
+
+/* Dark theme token colors (optional, safe defaults) */
+.theme-dark {
+    --jp-key: #93c5fd;
+    --jp-type: #9ca3af;
+    --jp-str: #86efac;
+    --jp-num: #c4b5fd;
+    --jp-bool: #fca5a5;
+    --jp-null: #9ca3af;
+    --jp-other: #e5e7eb;
+}
+
+/* ========= Layout / blocks ========= */
+
+.jp-wrap {
+    padding: 28px 28px 40px;
+    color: var(--text);
+}
+
+.jp-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.jp-title {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.jp-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    opacity: .7;
+}
+
+.jp-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.jp-btn {
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: var(--card, #fff);
+    color: var(--text, #111);
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform .08s ease, filter .15s ease, background .15s ease;
+}
+
+/* Compact buttons inside toolbars */
+.jp-outputTools .jp-btn,
+.jp-inputActions .jp-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+/* Make toolbar buttons visually consistent */
+.jp-outputTools .jp-btn.jp-primary {
+    padding: 8px 14px;
+}
+
+
+.jp-btn:hover {
+    filter: brightness(0.98);
+}
+
+.jp-btn:active {
+    transform: scale(.99);
+}
+
+.jp-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.jp-primary {
+    background: var(--accent, #3b82f6);
+    border-color: transparent;
+    color: #fff;
+}
+
+.jp-small {
+    padding: 8px 10px;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.jp-label {
+    font-weight: 800;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-inputBlock,
+.jp-searchBlock,
+.jp-outputBlock {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.jp-input {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 12px 12px;
+    outline: none;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.55;
+
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-input:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+.jp-status {
+    margin-top: 10px;
+    font-size: 13px;
+    opacity: .85;
+}
+
+.jp-status[data-kind="ok"],
+.jp-status[data-kind="err"] {
+    opacity: 1;
+}
+
+.jp-searchRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.jp-searchControls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.jp-search {
+    width: min(520px, 70vw);
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    padding: 10px 12px;
+    outline: none;
+    font-size: 13px;
+    background: var(--bg, #fff);
+    color: var(--text, #111);
+}
+
+.jp-search:focus {
+    border-color: var(--accent, #3b82f6);
+}
+
+.jp-hint {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: -2px;
+}
+
+.jp-outputTop {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.jp-outputTools {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Critical: prevent buttons/inputs inside from becoming full-width */
+.jp-outputTools>.jp-btn,
+.jp-outputTools>.jp-search {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    display: inline-flex;
+}
+
+
+.jp-outputTools .jp-search {
+    width: min(420px, 40vw);
+    min-width: 220px;
+}
+
+
+/* ========= Output “code” look ========= */
+
+.jp-output.jp-outputCode {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 14, 24, 0.75);
+    padding: 10px 10px;
+    overflow: auto;
+    max-height: calc(100vh - 520px);
+    min-height: 320px;
+
+    /* VSCode-like readability */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.7;
+
+    color: #d4d4d4;
+}
+
+.jp-tree {
+    padding-bottom: 8px;
+}
+
+/* One row = one line */
+.jp-row {
+    display: flex;
+    /* IMPORTANT: was inline-flex -> caused multi-items per line */
+    align-items: baseline;
+    gap: 8px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    white-space: normal;
+}
+
+/* Line numbers (left gutter) */
+.jp-ln {
+    width: 46px;
+    flex: 0 0 46px;
+    text-align: right;
+    padding-right: 12px;
+    user-select: none;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+/* Key / punctuation */
+.jp-key {
+    font-weight: 650;
+    color: var(--jp-key, #9cdcfe);
+    /* VSCode property name */
+}
+
+.jp-sep {
+    color: rgba(212, 212, 212, 0.7);
+}
+
+.jp-type {
+    font-weight: 650;
+    font-size: 12px;
+    color: rgba(212, 212, 212, 0.42);
+}
+
+
+
+.jp-string {
+    color: var(--jp-str, #ce9178);
+}
+
+/* orange/brown */
+.jp-number {
+    color: var(--jp-num, #dcdcaa);
+}
+
+/* yellow */
+.jp-boolean {
+    color: var(--jp-bool, #569cd6);
+}
+
+/* blue */
+.jp-null {
+    color: var(--jp-null, #569cd6);
+}
+
+/* null keyword in VSCode is bluish */
+.jp-other {
+    color: #d4d4d4;
+}
+
+.jp-arr,
+.jp-obj {
+    color: rgba(212, 212, 212, 0.8);
+}
+
+/* Branch (<details>) */
+.jp-branch {
+    margin: 2px 0;
+}
+
+.jp-branch>summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.jp-branch>summary::-webkit-details-marker {
+    display: none;
+}
+
+/* disclosure arrow */
+.jp-branch>summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 14px;
+    margin-right: 4px;
+    opacity: .65;
+    color: rgba(212, 212, 212, .7);
+}
+
+.jp-branch[open]>summary::before {
+    content: "▾";
+    opacity: .85;
+}
+
+.jp-children {
+    margin-left: 18px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Search highlighting */
+.jp-hit {
+    background: rgba(86, 156, 214, 0.16);
+    outline: 1px solid rgba(86, 156, 214, 0.25);
+}
+
+.jp-current {
+    background: rgba(220, 220, 170, 0.16);
+    outline: 1px solid rgba(220, 220, 170, 0.28);
+}
+
+/* Optional: if your app uses theme-night */
+.theme-night {
+    --jp-key: #9cdcfe;
+    --jp-str: #ce9178;
+    --jp-num: #dcdcaa;
+    --jp-bool: #569cd6;
+    --jp-null: #569cd6;
+}
+
+/* ========= Output “code” look ========= */
+
+/* Default (Light mode) */
+.jp-output.jp-outputCode {
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .15));
+    background: #ffffff;
+    padding: 10px 0;
+    /* left padding handled by rows/gutter */
+    overflow: auto;
+    max-height: calc(100vh - 520px);
+    min-height: 320px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 15px;
+    /* slightly bigger for readability */
+    line-height: 1.7;
+
+    color: #1f2937;
+}
+
+/* Dark themes */
+.theme-night .jp-output.jp-outputCode,
+.theme-dark .jp-output.jp-outputCode {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(10, 14, 24, 0.75);
+    color: #d4d4d4;
+}
+
+.jp-tree {
+    padding-bottom: 8px;
+}
+
+/* One row = one line */
+.jp-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 1px 10px;
+    border-radius: 6px;
+    white-space: normal;
+}
+
+.jp-line {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+    padding-left: calc(var(--jp-depth, 0) * 20px);
+}
+
+
+.jp-token {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 650;
+    /* was 800 */
+    letter-spacing: 0.1px;
+    /* was 0.2px */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    opacity: .9;
+    margin-left: 2px;
+}
+
+
+/* Toggle button (+ / -) pinned to the line (not left gutter) */
+.jp-toggle {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    /* squarer */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+
+    border: 1px solid rgba(37, 99, 235, .75);
+    /* blue */
+    color: rgba(37, 99, 235, 1);
+    background: rgba(37, 99, 235, .10);
+    margin-right: 6px;
+    /* space before token */
+}
+
+.jp-toggle.is-open {
+    border-color: rgba(220, 38, 38, .75);
+    /* red */
+    color: rgba(220, 38, 38, 1);
+    background: rgba(220, 38, 38, .10);
+}
+
+.jp-toggle:hover {
+    filter: brightness(0.98);
+}
+
+
+/* Line numbers (left gutter) */
+.jp-ln {
+    width: 52px;
+    flex: 0 0 52px;
+    text-align: right;
+    padding-right: 14px;
+    user-select: none;
+    color: rgba(17, 24, 39, 0.28);
+}
+
+.theme-night .jp-ln,
+.theme-dark .jp-ln {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+/* Key / punctuation */
+.jp-key {
+    font-weight: 650;
+    color: var(--jp-key, #1f3a8a);
+}
+
+.jp-sep {
+    color: rgba(55, 65, 81, 0.7);
+}
+
+
+.jp-string {
+    color: var(--jp-str, #b45309);
+}
+
+/* orange/brown */
+.jp-number {
+    color: var(--jp-num, #0f766e);
+}
+
+/* yellow */
+.jp-boolean {
+    color: var(--jp-bool, #2563eb);
+}
+
+/* blue */
+.jp-null {
+    color: var(--jp-null, #2563eb);
+}
+
+/* null keyword in VSCode is bluish */
+.jp-other {
+    color: inherit;
+}
+
+.jp-arr,
+.jp-obj {
+    color: rgba(55, 65, 81, 0.9);
+}
+
+.theme-night .jp-key,
+.theme-dark .jp-key {
+    color: var(--jp-key, #9cdcfe);
+}
+
+.theme-night .jp-sep,
+.theme-dark .jp-sep {
+    color: rgba(212, 212, 212, 0.7);
+}
+
+.theme-night .jp-string,
+.theme-dark .jp-string {
+    color: var(--jp-str, #ce9178);
+}
+
+.theme-night .jp-number,
+.theme-dark .jp-number {
+    color: var(--jp-num, #dcdcaa);
+}
+
+.theme-night .jp-boolean,
+.theme-dark .jp-boolean {
+    color: var(--jp-bool, #569cd6);
+}
+
+.theme-night .jp-null,
+.theme-dark .jp-null {
+    color: var(--jp-null, #569cd6);
+}
+
+.theme-night .jp-arr,
+.theme-dark .jp-arr,
+.theme-night .jp-obj,
+.theme-dark .jp-obj {
+    color: rgba(212, 212, 212, 0.8);
+}
+
+/* Branch (<details>) */
+.jp-branch {
+    margin: 2px 0;
+}
+
+.jp-branch>summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.jp-branch>summary::-webkit-details-marker {
+    display: none;
+}
+
+.jp-branch>summary::before,
+.jp-branch[open]>summary::before {
+    content: none !important;
+    display: none !important;
+}
+
+.jp-children {
+    margin-left: 0;
+    /* indentation is handled by --jp-depth on rows */
+    padding-left: 0;
+    border-left: none;
+}
+
+/* Search highlighting */
+.jp-hit {
+    background: rgba(86, 156, 214, 0.16);
+    outline: 1px solid rgba(86, 156, 214, 0.25);
+}
+
+.jp-current {
+    background: rgba(220, 220, 170, 0.16);
+    outline: 1px solid rgba(220, 220, 170, 0.28);
+}
+
+/* Optional: if your app uses theme-night */
+.theme-night {
+    --jp-key: #9cdcfe;
+    --jp-str: #ce9178;
+    --jp-num: #dcdcaa;
+    --jp-bool: #569cd6;
+    --jp-null: #569cd6;
+}

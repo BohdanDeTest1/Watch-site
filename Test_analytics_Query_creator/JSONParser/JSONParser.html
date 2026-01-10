@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Parser</title>
+    <link rel="stylesheet" href="../Main.css">
+    <link rel="stylesheet" href="JSONParser.css">
+</head>
+
+<body>
+
+    <main id="tool-root"></main>
+
+    <script src="JSONParser.js"></script>
+    <script>
+        window.Tools.jsonParser.init(document.getElementById('tool-root'));
+        document.getElementById('tab3View')?.classList.remove('hidden');
+        window.Tools.jsonParser.onActivate();
+    </script>
+</body>
+
+</html>
