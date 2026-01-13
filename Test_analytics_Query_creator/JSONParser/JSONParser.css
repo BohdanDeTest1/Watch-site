@@ -1033,27 +1033,31 @@ body.dark .jp-outputBlock,
 
 /* ========= Output “code” look ========= */
 
-/* Default (Light mode) */
 .jp-output.jp-outputCode {
     border-radius: 10px;
     border: 1px solid var(--border, rgba(0, 0, 0, .15));
     background: #ffffff;
     padding: 10px 0;
-    /* left padding handled by rows/gutter */
     overflow: auto;
     max-height: calc(100vh - 520px);
     min-height: 320px;
 
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 15px;
-    /* slightly bigger for readability */
     line-height: 1.7;
 
     color: #1f2937;
+
+    /* IMPORTANT:
+       No "default" vertical stripes.
+       Guides are drawn ONLY via .jp-guides overlay for OPEN blocks. */
+    position: relative;
+    /* keep for overlay */
 }
 
 
-/* Dark themes (support multiple host theme systems) */
+
+
 .theme-night .jp-output.jp-outputCode,
 .theme-dark .jp-output.jp-outputCode,
 html.theme-night .jp-output.jp-outputCode,
@@ -1068,6 +1072,8 @@ body.dark .jp-output.jp-outputCode,
     background: rgba(10, 14, 24, 0.75);
     color: #d4d4d4;
 }
+
+
 
 
 .jp-tree {
@@ -1088,8 +1094,50 @@ body.dark .jp-output.jp-outputCode,
     display: inline-flex;
     align-items: baseline;
     gap: 0;
-    padding-left: calc(var(--jp-depth, 0) * 20px);
+
+    /* VSCode-like deeper indentation */
+    --jp-indent: 24px;
+    padding-left: calc(var(--jp-depth, 0) * var(--jp-indent));
 }
+
+/* ===== VSCode-like indent guides (overlay) ===== */
+
+/* Output must be positioning context for absolute guide lines */
+.jp-output.jp-outputCode {
+    position: relative;
+}
+
+/* Layer that holds vertical lines */
+.jp-guides {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    /* above background, below highlights (rows are normal flow) */
+}
+
+/* One vertical line for one open block */
+.jp-guideLine {
+    position: absolute;
+    width: 1px;
+
+    /* Light theme line */
+    background: rgba(17, 24, 39, 0.10);
+
+    /* make line crisp */
+    transform: translateZ(0);
+}
+
+/* Dark theme line */
+.theme-night .jp-guideLine,
+.theme-dark .jp-guideLine,
+html.dark .jp-guideLine,
+body.dark .jp-guideLine,
+[data-theme="dark"] .jp-guideLine,
+[data-mode="dark"] .jp-guideLine {
+    background: rgba(255, 255, 255, 0.10);
+}
+
 
 
 .jp-token {
@@ -1103,6 +1151,50 @@ body.dark .jp-output.jp-outputCode,
     opacity: .9;
     margin-left: 2px;
 }
+
+/* ===== Bracket-pair coloring (by nesting) ===== */
+.jp-bracket {
+    font-weight: 700;
+    opacity: 0.95;
+}
+
+/* Light theme palette */
+:root {
+    --jp-bracket-0: #d97706;
+    /* amber */
+    --jp-bracket-1: #7c3aed;
+    /* violet */
+    --jp-bracket-2: #2563eb;
+    /* blue */
+    --jp-bracket-3: #059669;
+    /* emerald */
+    --jp-bracket-4: #db2777;
+    /* pink */
+    --jp-bracket-5: #c2410c;
+    /* orange */
+}
+
+/* Dark theme palette (VSCode-ish) */
+.theme-night,
+.theme-dark,
+html.dark,
+body.dark,
+[data-theme="dark"],
+[data-mode="dark"] {
+    --jp-bracket-0: #dcdcaa;
+    /* yellow */
+    --jp-bracket-1: #c586c0;
+    /* purple */
+    --jp-bracket-2: #4fc1ff;
+    /* cyan */
+    --jp-bracket-3: #b5cea8;
+    /* greenish */
+    --jp-bracket-4: #ce9178;
+    /* orange/brown */
+    --jp-bracket-5: #569cd6;
+    /* blue */
+}
+
 
 /* UTC annotation next to unix timestamps */
 .jp-utcHint {

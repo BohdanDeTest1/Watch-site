@@ -4,6 +4,8 @@
     const state = {
         mounted: false,
         view: null,
+        guidesLayer: null,
+        guidesRaf: 0,
 
         input: null,
         output: null,
@@ -98,6 +100,75 @@
         if (typeof cancelIdleCallback === 'function') cancelIdleCallback(id);
         else clearTimeout(id);
     }
+
+    // ===== VSCode-like indent guides (only for OPEN blocks) =====
+
+    function clearGuides() {
+        if (!state.guidesLayer) return;
+        state.guidesLayer.innerHTML = '';
+    }
+
+    function scheduleGuidesUpdate() {
+        if (!state.output || !state.guidesLayer) return;
+        if (state.guidesRaf) return;
+
+        state.guidesRaf = requestAnimationFrame(() => {
+            state.guidesRaf = 0;
+            updateGuides();
+        });
+    }
+
+    function updateGuides() {
+        if (!state.output || !state.guidesLayer) return;
+
+        // clear old lines
+        state.guidesLayer.innerHTML = '';
+
+        // We draw a line for each open details block that has a visible closing line rendered.
+        // Line goes from summary row to closing row (last child row inside .jp-children).
+        const outRect = state.output.getBoundingClientRect();
+
+        const openBranches = state.output.querySelectorAll('details.jp-branch[open]');
+        openBranches.forEach((detailsEl) => {
+            // Must have children rendered, otherwise there is no closing row yet
+            if (detailsEl.dataset.jpRendered !== '1') return;
+
+            const summaryRow = detailsEl.querySelector(':scope > summary.jp-row');
+            const closeRow = detailsEl.querySelector(':scope > .jp-children > .jp-row:last-child');
+            if (!summaryRow || !closeRow) return;
+
+            // If closing row is not visible (shouldn't happen when [open], but guard anyway)
+            const sumRect = summaryRow.getBoundingClientRect();
+            const closeRect = closeRow.getBoundingClientRect();
+
+            if (sumRect.height === 0 || closeRect.height === 0) return;
+
+            // top: align to the first text baseline area of summary
+            const top = sumRect.top - outRect.top + state.output.scrollTop + 2;
+            // bottom: to the bottom of closing line
+            const bottom = closeRect.bottom - outRect.top + state.output.scrollTop - 2;
+
+            if (bottom <= top + 6) return;
+
+            // X position: at the "start of the line content" (like VSCode guide at block start)
+            const sumLine = summaryRow.querySelector(':scope > .jp-line') || summaryRow.querySelector('.jp-line');
+            if (!sumLine) return;
+
+            const lineRect = sumLine.getBoundingClientRect();
+
+            // Place guide near the left edge of line content (this naturally shifts with depth)
+            const x = (lineRect.left - outRect.left) + 3;
+
+            const v = document.createElement('div');
+            v.className = 'jp-guideLine';
+            v.style.left = `${x}px`;
+            v.style.top = `${top}px`;
+            v.style.height = `${Math.max(6, bottom - top)}px`;
+
+            state.guidesLayer.appendChild(v);
+        });
+    }
+
 
     // ===== Line numbers =====
 
@@ -218,7 +289,16 @@
     // ===== DOM Rendering (LAZY) =====
 
     function clearOutput() {
-        if (state.output) state.output.innerHTML = '';
+        if (state.output) {
+            state.output.innerHTML = '';
+
+            // re-create guides layer after full clear
+            const guides = document.createElement('div');
+            guides.className = 'jp-guides';
+            state.output.appendChild(guides);
+            state.guidesLayer = guides;
+        }
+
         state.data = null;
         setExpandButtonsDisabled(true);
 
@@ -237,8 +317,11 @@
         stopExpandJob();
         clearSearchVisuals();
         updateSearchUi();
+
+        clearGuides();
         requestRenumber();
     }
+
 
     function registerPath(path, el) {
         state.pathToEl.set(path, el);
@@ -308,6 +391,28 @@
         s.textContent = text;
         return s;
     }
+
+    /**
+     * Bracket color by nesting depth (VSCode-like).
+     * Open + close of the same container must have the same color => use the SAME depth.
+     */
+    function bracketLevel(depth) {
+        const d = Number(depth) || 0;
+        const mod = 6; // how many colors in palette
+        return ((d % mod) + mod) % mod;
+    }
+
+    function makeBracketSpan(text, depth) {
+        const s = document.createElement('span');
+        s.className = 'jp-bracket';
+        s.textContent = text;
+
+        // Use CSS vars: --jp-bracket-0..5
+        const lvl = bracketLevel(depth);
+        s.style.color = `var(--jp-bracket-${lvl})`;
+        return s;
+    }
+
 
     function containerTokenText(value, isOpen) {
         if (Array.isArray(value)) return isOpen ? '[' : `[${value.length}]`;
@@ -429,11 +534,13 @@
             searchableText: closeChar
         });
 
-        line.appendChild(makeTextSpan('jp-token jp-sep', closeChar));
+        // Color close bracket by the SAME depth as opener summary line
+        line.appendChild(makeBracketSpan(closeChar, depth));
         appendComma(line, needComma);
 
         return row;
     }
+
 
     function makeBranch({
         parentKind,
@@ -456,22 +563,29 @@
                 searchableText: `${key ? key : ''} ${openChar}${closeChar}`.trim()
             });
 
+            const appendEmptyBrackets = () => {
+                // Open + close must share same depth color
+                line.appendChild(makeBracketSpan(openChar, depth));
+                line.appendChild(makeBracketSpan(closeChar, depth));
+            };
+
             if (parentKind === 'object' && key != null) {
                 line.appendChild(makeTextSpan('jp-key', quoteKey(key)));
                 line.appendChild(makeTextSpan('jp-sep', ': '));
-                line.appendChild(makeTextSpan('jp-sep', `${openChar}${closeChar}`));
+                appendEmptyBrackets();
                 appendComma(line, !isLast);
             } else if (parentKind === 'array') {
-                line.appendChild(makeTextSpan('jp-sep', `${openChar}${closeChar}`));
+                appendEmptyBrackets();
                 appendComma(line, !isLast);
             } else {
-                line.appendChild(makeTextSpan('jp-sep', `${openChar}${closeChar}`));
+                appendEmptyBrackets();
             }
 
             row.classList.add('jp-leaf');
             registerPath(path, row);
             return row;
         }
+
 
         const details = document.createElement('details');
         details.className = 'jp-branch';
@@ -508,9 +622,11 @@
         applyToggleVisual(btn, details.open);
         line.appendChild(btn);
 
+        // Colored container token (like VSCode bracket pairs)
         const token = document.createElement('span');
-        token.className = 'jp-token jp-sep';
+        token.className = 'jp-token jp-sep jp-bracket';
         token.textContent = containerTokenText(value, details.open);
+        token.style.color = `var(--jp-bracket-${bracketLevel(depth)})`;
         line.appendChild(token);
 
         btn.addEventListener('click', (e) => {
@@ -531,8 +647,11 @@
             applyToggleVisual(btn, details.open);
 
             if (details.open) ensureChildrenRendered(details, value, path, depth);
+
             requestRenumber();
+            scheduleGuidesUpdate();
         });
+
 
         details.appendChild(summary);
 
@@ -598,6 +717,7 @@
 
         children.appendChild(frag);
         requestRenumber();
+        scheduleGuidesUpdate();
     }
 
     function renderNode({ parentKind, key, value, path, depth, isLast, isRoot = false }) {
@@ -669,9 +789,10 @@
                 ensureChildrenRendered(state.rootEl, data, '$', 0);
             }
 
-            clearSearchVisuals();
+            clearSearchVisuals(); requestRenumber();
             updateSearchUi();
             requestRenumber();
+            scheduleGuidesUpdate();
 
             // if there is an active query in the search input (user typed before parse)
             const q = (state.searchInput?.value || '').trim();
@@ -1261,6 +1382,7 @@
             }
 
             requestRenumber();
+            scheduleGuidesUpdate();
 
             if (queue.length) {
                 job.id = schedule(step);
@@ -1268,6 +1390,7 @@
                 setExpandButtonsDisabled(false);
                 setStatus('All expanded.', 'ok');
                 state.expandJob = null;
+                scheduleGuidesUpdate();
             }
         };
 
@@ -1293,7 +1416,10 @@
         clearSearchVisuals();
         updateSearchUi();
         setStatus('All collapsed.', 'ok');
+
+        clearGuides();
         requestRenumber();
+        scheduleGuidesUpdate();
     }
 
     // ===== UI =====
@@ -1358,6 +1484,25 @@
         state.input = view.querySelector('#jpInput');
         state.output = view.querySelector('.jp-output');
         state.status = view.querySelector('.jp-status');
+
+        // Create overlay layer for indent guides (inside output)
+        if (state.output) {
+            const guides = document.createElement('div');
+            guides.className = 'jp-guides';
+            state.output.appendChild(guides);
+            state.guidesLayer = guides;
+
+            // Guides must track scroll
+            state.output.addEventListener('scroll', () => {
+                scheduleGuidesUpdate();
+            });
+
+            // and window resize (layout changes)
+            window.addEventListener('resize', () => {
+                scheduleGuidesUpdate();
+            });
+        }
+
 
         // copy: strip non-copy annotations
         state.output.addEventListener('copy', (e) => {
