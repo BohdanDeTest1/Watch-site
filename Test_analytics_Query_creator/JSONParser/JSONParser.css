@@ -1112,9 +1112,19 @@ body.dark .jp-output.jp-outputCode,
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 3;
-    /* above background, below highlights (rows are normal flow) */
+
+    /* IMPORTANT:
+       Always above the text. Previously, in some browsers/layouts,
+       normal-flow content could paint over the overlay. */
+    z-index: 10;
 }
+
+/* Ensure tree is in its own stacking layer below guides */
+.jp-tree {
+    position: relative;
+    z-index: 1;
+}
+
 
 /* One vertical line for one open block */
 .jp-guideLine {

@@ -137,10 +137,8 @@
             const closeRow = detailsEl.querySelector(':scope > .jp-children > .jp-row:last-child');
             if (!summaryRow || !closeRow) return;
 
-            // If closing row is not visible (shouldn't happen when [open], but guard anyway)
             const sumRect = summaryRow.getBoundingClientRect();
             const closeRect = closeRow.getBoundingClientRect();
-
             if (sumRect.height === 0 || closeRect.height === 0) return;
 
             // top: align to the first text baseline area of summary
@@ -150,14 +148,38 @@
 
             if (bottom <= top + 6) return;
 
-            // X position: at the "start of the line content" (like VSCode guide at block start)
-            const sumLine = summaryRow.querySelector(':scope > .jp-line') || summaryRow.querySelector('.jp-line');
-            if (!sumLine) return;
+            // IMPORTANT (your requirement):
+            // 1) If container is a VALUE of a field => align guide under the first quote of the KEY (".jp-key")
+            // 2) If container is "standalone" (root / array item / object item without key) => align under the +/- toggle (".jp-toggle")
+            // 3) Fallback => indentation start
+            const keyEl =
+                summaryRow.querySelector(':scope .jp-key') ||
+                summaryRow.querySelector('.jp-key');
 
-            const lineRect = sumLine.getBoundingClientRect();
+            const toggleEl =
+                summaryRow.querySelector(':scope .jp-toggle') ||
+                summaryRow.querySelector('.jp-toggle');
 
-            // Place guide near the left edge of line content (this naturally shifts with depth)
-            const x = (lineRect.left - outRect.left) + 3;
+            let x = null;
+
+            if (keyEl) {
+                const kRect = keyEl.getBoundingClientRect();
+                // Under the first quote of the key (jp-key includes the quotes via quoteKey())
+                x = (kRect.left - outRect.left) + 1;
+            } else if (toggleEl) {
+                const bRect = toggleEl.getBoundingClientRect();
+                // "Under the button" — use the middle of the toggle for a stable visual anchor
+                x = (bRect.left - outRect.left) + (bRect.width / 2);
+            } else {
+                // Fallback: align to indentation start (safe)
+                const sumLine = summaryRow.querySelector(':scope > .jp-line') || summaryRow.querySelector('.jp-line');
+                if (!sumLine) return;
+
+                const lineRect = sumLine.getBoundingClientRect();
+                const padLeft = parseFloat(getComputedStyle(sumLine).paddingLeft || '0') || 0;
+                x = (lineRect.left - outRect.left) + padLeft + 4;
+            }
+
 
             const v = document.createElement('div');
             v.className = 'jp-guideLine';
@@ -168,6 +190,7 @@
             state.guidesLayer.appendChild(v);
         });
     }
+
 
 
     // ===== Line numbers =====
