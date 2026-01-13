@@ -156,13 +156,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // Сообщаем инструменту Query Creator, что он может инициализироваться.
-    // Сейчас init() — тонкий (не монтирует DOM), но оставим вызов на будущее.
+    // Сообщаем инструментам, что они могут инициализироваться.
+    // ВАЖНО: если какой-то модуль упадёт при init(), это НЕ должно ломать остальной Main.js (включая theme toggle).
     const container = document.getElementById('tool-root') || document;
-    window.Tools.queryCreator?.init?.(container);
-    window.Tools.profileParser?.init?.(container);
-    window.Tools.jsonParser?.init?.(container);
+
+    function safeInit(name, fn) {
+        try {
+            fn();
+        } catch (err) {
+            console.error(`[${name}] init failed:`, err);
+        }
+    }
+
+    safeInit('QueryCreator', () => window.Tools.queryCreator?.init?.(container));
+    safeInit('ProfileParser', () => window.Tools.profileParser?.init?.(container));
+    safeInit('JSONParser', () => window.Tools.jsonParser?.init?.(container));
+
 
 
     // === Theme toggle ===

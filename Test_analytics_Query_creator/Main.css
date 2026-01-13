@@ -10,6 +10,74 @@ body.sb-collapsed {
     display: none !important;
 }
 
+/* =========================
+   THEME TOKENS (Light/Dark)
+   ========================= */
+
+/* Default = Light */
+:root,
+html.theme-light,
+body.theme-light {
+    --bg: #f6f7fb;
+    --text: #0f172a;
+
+    --card: #ffffff;
+    --border: rgba(15, 23, 42, 0.14);
+
+    --accent: #3b82f6;
+
+    --sidebar: #0e1320;
+    --sidebar-edge: rgba(255, 255, 255, 0.10);
+    --sidebar-hover: rgba(255, 255, 255, 0.08);
+    --sidebar-pressed: rgba(255, 255, 255, 0.12);
+    --sidebar-active: rgba(59, 130, 246, 0.22);
+    --sidebar-active-fg: #e5e7eb;
+
+    --sidebar-selected: rgba(59, 130, 246, 0.28);
+    --sidebar-selected-fg: #ffffff;
+
+    --tooltip-bg: #0e1015;
+    --tooltip-fg: #e5e7eb;
+    --tooltip-border: rgba(255, 255, 255, 0.14);
+}
+
+/* Dark */
+html.theme-dark,
+body.theme-dark,
+html.theme-night,
+body.theme-night,
+html[data-theme="dark"],
+body[data-theme="dark"] {
+    --bg: #0b0f17;
+    --text: #d4d4d4;
+
+    --card: rgba(10, 14, 24, 0.75);
+    --border: rgba(255, 255, 255, 0.12);
+
+    --accent: #3b82f6;
+
+    --sidebar: #0e1320;
+    --sidebar-edge: rgba(255, 255, 255, 0.10);
+    --sidebar-hover: rgba(255, 255, 255, 0.08);
+    --sidebar-pressed: rgba(255, 255, 255, 0.12);
+    --sidebar-active: rgba(59, 130, 246, 0.22);
+    --sidebar-active-fg: #e5e7eb;
+
+    --sidebar-selected: rgba(59, 130, 246, 0.28);
+    --sidebar-selected-fg: #ffffff;
+
+    --tooltip-bg: #0e1015;
+    --tooltip-fg: #e5e7eb;
+    --tooltip-border: rgba(255, 255, 255, 0.14);
+}
+
+/* Apply base page colors */
+html,
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
 
 /* Левая панель */
 #sidebar {
