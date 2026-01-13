@@ -212,7 +212,8 @@
             let ln = row.querySelector(':scope > .jp-ln');
             if (!ln) {
                 ln = document.createElement('span');
-                ln.className = 'jp-ln';
+                ln.className = 'jp-ln jp-noCopy';
+                ln.dataset.noCopy = '1';
                 row.prepend(ln);
             }
             const n = row.dataset.jpLine;
@@ -454,7 +455,8 @@
         row.className = 'jp-row jp-searchable';
 
         const ln = document.createElement('span');
-        ln.className = 'jp-ln';
+        ln.className = 'jp-ln jp-noCopy';
+        ln.dataset.noCopy = '1';
         ln.textContent = '';
         row.appendChild(ln);
 
@@ -467,6 +469,7 @@
         setRowMeta(row, depth, lineNo);
         return { row, line };
     }
+
 
     function appendComma(lineEl, needComma) {
         if (!needComma) return;
@@ -622,7 +625,8 @@
         summary.className = 'jp-row jp-summary jp-searchable';
 
         const ln = document.createElement('span');
-        ln.className = 'jp-ln';
+        ln.className = 'jp-ln jp-noCopy';
+        ln.dataset.noCopy = '1';
         ln.textContent = '';
         summary.appendChild(ln);
 
@@ -1528,6 +1532,7 @@
 
 
         // copy: strip non-copy annotations
+        // copy: strip non-copy annotations
         state.output.addEventListener('copy', (e) => {
             try {
                 const sel = window.getSelection?.();
@@ -1545,7 +1550,12 @@
                 if (!isInside) return;
 
                 const frag = range.cloneContents();
+
+                // Remove anything explicitly marked as "do not copy"
                 frag.querySelectorAll?.('[data-no-copy="1"], .jp-noCopy').forEach(n => n.remove());
+
+                // CRITICAL: never copy line numbers from the left gutter
+                frag.querySelectorAll?.('.jp-ln').forEach(n => n.remove());
 
                 const tmp = document.createElement('div');
                 tmp.appendChild(frag);
@@ -1555,6 +1565,7 @@
                 e.preventDefault();
             } catch (_) { }
         });
+
 
         state.parseBtn = view.querySelector('[data-act="parse"]');
         state.clearBtn = view.querySelector('[data-act="clear"]');
