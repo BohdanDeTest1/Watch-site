@@ -645,7 +645,8 @@
         }
 
         const btn = document.createElement('span');
-        btn.className = 'jp-toggle';
+        btn.className = 'jp-toggle jp-noCopy';
+        btn.dataset.noCopy = '1';
         applyToggleVisual(btn, details.open);
         line.appendChild(btn);
 
@@ -1556,6 +1557,10 @@
 
                 // CRITICAL: never copy line numbers from the left gutter
                 frag.querySelectorAll?.('.jp-ln').forEach(n => n.remove());
+
+
+                // CRITICAL: never copy +/- toggle symbols
+                frag.querySelectorAll?.('.jp-toggle').forEach(n => n.remove());
 
                 const tmp = document.createElement('div');
                 tmp.appendChild(frag);

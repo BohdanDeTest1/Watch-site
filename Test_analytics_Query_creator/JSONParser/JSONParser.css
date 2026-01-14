@@ -1226,11 +1226,19 @@ body.dark,
     /* gray in dark theme */
 }
 
-/* generic "do not copy" marker (used by JS copy-strip as well) */
 .jp-noCopy {
     user-select: none;
+    /* IMPORTANT:
+       Do NOT disable pointer-events globally, иначе ломаются клики на .jp-toggle */
+    pointer-events: auto;
+}
+
+/* But still keep some purely-visual helpers non-interactive */
+.jp-utcHint {
     pointer-events: none;
 }
+
+
 
 
 /* Toggle button (+ / -) pinned to the line (not left gutter) */
