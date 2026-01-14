@@ -92,7 +92,11 @@
                 const msg = String(e.message || '');
                 const line = Number(e.line || 0);
                 const col = Number(e.col || 0);
-                const where = (line > 0) ? `Line ${line}${col > 0 ? `:${col}` : ''}` : 'Unknown position';
+
+                // Always show column when line is known (helps on long lines / formatted view)
+                const where = (line > 0)
+                    ? `Line ${line}:${Math.max(1, col || 1)}`
+                    : 'Unknown position';
 
                 return `
                     <div class="jp-errItem" data-err-idx="${idx}">
@@ -470,8 +474,11 @@
         const errors = [];
 
         const pushErr = (kind, message, pos, meta = {}) => {
-            const { line, col } = posToLineCol(lineStarts, Math.max(0, Number(pos) || 0));
-            errors.push({ kind, message, line, col, ...meta });
+            const p = Math.max(0, Number(pos) || 0);
+            const { line, col } = posToLineCol(lineStarts, p);
+
+            // keep original absolute position too (needed for mapping into formatted output)
+            errors.push({ kind, message, line, col, pos: p, ...meta });
         };
 
         // =========================
@@ -502,12 +509,37 @@
                 if (c === '"') {
                     const start = i;
                     i++;
+
+                    let closed = false;
+
                     while (i < n) {
                         const ch = src[i];
+
+                        // If a raw newline appears before closing quote -> almost always missing closing quote.
+                        // JSON does NOT allow unescaped newlines inside strings.
+                        if (ch === '\n' || ch === '\r') {
+                            pushErr(
+                                'Unterminated string',
+                                'String literal is not closed before end of line (missing closing quote).',
+                                start
+                            );
+                            // Stop this string token at line break so we can continue tokenizing next lines
+                            break;
+                        }
+
                         if (ch === '\\') { i += 2; continue; }
-                        if (ch === '"') { i++; break; }
+                        if (ch === '"') { i++; closed = true; break; }
                         i++;
                     }
+
+                    if (!closed && i >= n) {
+                        pushErr(
+                            'Unterminated string',
+                            'String literal reaches end of file without a closing quote.',
+                            start
+                        );
+                    }
+
                     tks.push({ type: 'string', start, end: i });
                     continue;
                 }
@@ -598,15 +630,11 @@
 
             // open containers
             if (tk.type === 'punc' && (tk.value === '{' || tk.value === '[')) {
-                // IMPORTANT:
-                // If parent context was expecting a VALUE, then this "{" / "[" IS that value.
-                // We must update parent state BEFORE pushing child context, otherwise missing-comma
-                // anchoring becomes wrong (we lose where previous value was).
                 const parent = top();
                 if (parent) {
                     if (parent.kind === 'object' && parent.expecting === 'value') {
                         parent.lastValueKey = parent.currentKey;
-                        parent.lastValueEndPos = tk.start; // comma should be right before this container begins (best effort)
+                        parent.lastValueEndPos = Math.max(0, tk.start - 1);
                         parent.currentKey = null;
                         parent.expecting = 'commaOrClose';
                     } else if (parent.kind === 'array' && parent.expecting === 'valueOrClose') {
@@ -622,7 +650,6 @@
                 }
                 continue;
             }
-
 
             // close containers
             if (tk.type === 'punc' && (tk.value === '}' || tk.value === ']')) {
@@ -648,26 +675,45 @@
                 if (ctx.expecting === 'colon') {
                     if (tk.type === 'punc' && tk.value === ':') {
                         ctx.expecting = 'value';
+                        continue;
+                    }
+
+                    // Missing ":" after a key (best effort)
+                    if (tk.type === 'string' || tk.type === 'number' || tk.type === 'literal' || (tk.type === 'punc' && (tk.value === '{' || tk.value === '['))) {
+                        pushErr(
+                            'Missing colon',
+                            'Missing ":" after object property name',
+                            tk.start,
+                            { anchor: { type: 'missingColonAfterKey', key: ctx.currentKey || null } }
+                        );
+                        ctx.expecting = 'value';
                     }
                     continue;
                 }
 
                 if (ctx.expecting === 'value') {
+                    // Missing value after ":"
+                    if (tk.type === 'punc' && (tk.value === ',' || tk.value === '}' || tk.value === ']')) {
+                        pushErr(
+                            'Missing value',
+                            'Missing value after ":" in object property.',
+                            tk.start,
+                            { anchor: { type: 'missingValue', key: ctx.currentKey || null } }
+                        );
+                    }
+
                     if (isValueToken(tk)) {
                         ctx.lastValueKey = ctx.currentKey;
 
-                        // Store where the value ends, so "missing comma" can point to previous line (after value),
-                        // not to the next key.
-                        ctx.lastValueEndPos = tk.end;
+                        // Point to the LAST char of the value token (end-1),
+                        // so missing comma points to the line where comma should be.
+                        ctx.lastValueEndPos = Math.max(0, (Number(tk.end) || 0) - 1);
 
                         ctx.currentKey = null;
                         ctx.expecting = 'commaOrClose';
                     }
-                    // NOTE: container values "{" / "[" are handled in the open-containers block above (before ctx),
-                    // so we don't handle them here.
                     continue;
                 }
-
 
                 if (ctx.expecting === 'commaOrClose') {
                     if (tk.type === 'punc' && tk.value === ',') {
@@ -678,11 +724,10 @@
 
                     const next = tokens[i + 1];
                     if (tk.type === 'string' && next?.type === 'punc' && next.value === ':') {
-                        // Position should point to the PREVIOUS property (after its value),
-                        // because that's where the missing comma actually is.
-                        const pos = (typeof ctx.lastValueEndPos === 'number' && ctx.lastValueEndPos >= 0)
-                            ? ctx.lastValueEndPos
-                            : tk.start;
+                        const pos =
+                            (Number.isFinite(ctx.lastValueEndPos) && ctx.lastValueEndPos >= 0)
+                                ? ctx.lastValueEndPos
+                                : Math.max(0, tk.start);
 
                         pushErr(
                             'Missing comma',
@@ -691,11 +736,10 @@
                             { anchor: { type: 'missingCommaAfterKey', key: ctx.lastValueKey || null } }
                         );
 
-                        // best effort: treat as if comma existed and continue
+                        // recovery: treat as if comma existed
                         ctx.expecting = 'keyOrClose';
                         continue;
                     }
-
                 }
             }
 
@@ -738,6 +782,140 @@
             return { data: null, errors, parsed: false, parseMessage: String(e?.message || 'Invalid JSON') };
         }
     }
+
+    /**
+     * Pretty-print JSON-like text WITHOUT fixing errors.
+     * Only inserts whitespace/newlines in the DISPLAY (Output), while keeping original text intact.
+     * Also maps selected original positions -> formatted line/col (for correct highlighting).
+     */
+    function formatJsonLikeForDisplay(rawText, positionsToMap = []) {
+        const src = String(rawText ?? '');
+        const want = Array.from(new Set((positionsToMap || []).map(n => Math.max(0, Number(n) || 0)))).sort((a, b) => a - b);
+
+        let wantIdx = 0;
+        const mapped = new Map(); // pos -> {line, col}
+
+        const out = [];
+        let depth = 0;
+        let inString = false;
+        let esc = false;
+
+        let line = 1;
+        let col = 1;
+
+        const indentUnit = '  '; // 2 spaces
+
+        const write = (ch) => {
+            out.push(ch);
+            if (ch === '\n') { line++; col = 1; }
+            else { col++; }
+        };
+
+        const writeIndent = (d) => {
+            const s = indentUnit.repeat(Math.max(0, d));
+            for (let k = 0; k < s.length; k++) write(s[k]);
+        };
+
+        const peekNextNonWs = (i) => {
+            let j = i;
+            while (j < src.length) {
+                const c = src[j];
+                if (c !== ' ' && c !== '\t' && c !== '\r' && c !== '\n') return c;
+                j++;
+            }
+            return '';
+        };
+
+        // Helper: normalize existing whitespace in src to a single space when inside "layout"
+        // BUT: we only apply this when NOT inString.
+        const shouldSkipWs = (c) => (c === ' ' || c === '\t' || c === '\r' || c === '\n');
+
+        for (let i = 0; i < src.length; i++) {
+            // map requested positions BEFORE consuming src[i]
+            while (wantIdx < want.length && want[wantIdx] === i) {
+                mapped.set(want[wantIdx], { line, col });
+                wantIdx++;
+            }
+
+            const ch = src[i];
+
+            if (inString) {
+                write(ch);
+                if (esc) {
+                    esc = false;
+                } else if (ch === '\\') {
+                    esc = true;
+                } else if (ch === '"') {
+                    inString = false;
+                }
+                continue;
+            }
+
+            // outside string: collapse whitespace from input (display only)
+            if (shouldSkipWs(ch)) {
+                // skip all original ws, we manage formatting ourselves
+                continue;
+            }
+
+            if (ch === '"') {
+                inString = true;
+                write(ch);
+                continue;
+            }
+
+            if (ch === '{' || ch === '[') {
+                write(ch);
+
+                const next = peekNextNonWs(i + 1);
+                depth++;
+
+                if (next && next !== '}' && next !== ']') {
+                    write('\n');
+                    writeIndent(depth);
+                }
+                continue;
+            }
+
+            if (ch === '}' || ch === ']') {
+                depth = Math.max(0, depth - 1);
+
+                // if previous char in output isn't newline and we're closing, go new line
+                const prevOut = out.length ? out[out.length - 1] : '';
+                if (prevOut !== '\n') {
+                    write('\n');
+                    writeIndent(depth);
+                }
+
+                write(ch);
+                continue;
+            }
+
+            if (ch === ',') {
+                write(ch);
+                write('\n');
+                writeIndent(depth);
+                continue;
+            }
+
+            if (ch === ':') {
+                write(ch);
+                write(' ');
+                continue;
+            }
+
+            // default
+            write(ch);
+        }
+
+        // map positions that equal src.length (rare, but safe)
+        while (wantIdx < want.length && want[wantIdx] >= src.length) {
+            mapped.set(want[wantIdx], { line, col });
+            wantIdx++;
+        }
+
+        return { formattedText: out.join(''), mappedPositions: mapped };
+    }
+
 
 
 
@@ -1469,23 +1647,61 @@
         const issuesCount = Array.isArray(state.parseErrors) ? state.parseErrors.length : 0;
 
         // If strict JSON.parse failed -> show RAW text as-is + errors
+        // If strict JSON.parse failed -> show RAW text as-is + errors
         if (!parsed.parsed) {
-            setStatus(
-                issuesCount
-                    ? `Invalid JSON • ${issuesCount} issue(s) found.`
-                    : `Invalid JSON • ${parsed.parseMessage || 'Parse error'}`,
-                'err'
-            );
-
             // In invalid mode we don't have data for tree rendering/search index.
             state.data = null;
             state.openLine = null;
             state.closeLine = null;
 
-            renderRawTextOutput(rawOriginal);
+            // If the input is minified (single very long line), format it FOR DISPLAY only.
+            const raw = String(rawOriginal ?? '');
+            const isLikelyMinified = !raw.includes('\n') && raw.length > 220;
 
-            // Highlight parse issues in output (jump by line)
-            applyParseErrorHighlights();
+            if (isLikelyMinified) {
+                // Map error positions into formatted output line/col
+                const posList = (parsed.errors || []).map(e => e?.pos).filter(n => Number.isFinite(n));
+                const fmt = formatJsonLikeForDisplay(raw, posList);
+
+                // rewrite displayed errors line/col to match OUTPUT lines
+                state.parseErrors = (parsed.errors || []).map((e) => {
+                    const mp = fmt.mappedPositions.get(e.pos);
+                    if (!mp) return e;
+                    return {
+                        ...e,
+                        rawLine: e.line,
+                        rawCol: e.col,
+                        line: mp.line,
+                        col: mp.col,
+                    };
+                });
+
+                updateErrorsUi();
+
+                setStatus(
+                    state.parseErrors.length
+                        ? `Invalid JSON • ${state.parseErrors.length} issue(s) found.`
+                        : `Invalid JSON • ${parsed.parseMessage || 'Parse error'}`,
+                    'err'
+                );
+
+                renderRawTextOutput(fmt.formattedText);
+                applyParseErrorHighlights();
+            } else {
+                // Non-minified: keep exactly as typed (newlines already there)
+                state.parseErrors = parsed.errors || [];
+                updateErrorsUi();
+
+                setStatus(
+                    issuesCount
+                        ? `Invalid JSON • ${issuesCount} issue(s) found.`
+                        : `Invalid JSON • ${parsed.parseMessage || 'Parse error'}`,
+                    'err'
+                );
+
+                renderRawTextOutput(rawOriginal);
+                applyParseErrorHighlights();
+            }
 
             // Disable expand/collapse since we have no tree
             setExpandButtonsDisabled(true);
@@ -1495,6 +1711,7 @@
             scheduleGuidesUpdate();
             return;
         }
+
 
         // ===== Valid JSON -> render the tree as before =====
         state.output?.classList.remove('jp-rawMode');
