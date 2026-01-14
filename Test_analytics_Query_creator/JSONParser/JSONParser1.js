@@ -57,7 +57,14 @@
         // live-search debounce
         searchDebounceT: 0,
         lastInlineMarkedEl: null,
+
+        // tolerant parse errors UI
+        parseErrors: [],
+        errBtn: null,
+        errPanel: null,
+        errPanelOpen: false,
     };
+
 
     // ===== Utilities =====
 
@@ -66,6 +73,183 @@
         state.status.textContent = text || '';
         state.status.dataset.kind = kind;
     }
+
+    function renderErrorsPanel(errors) {
+        if (!state.errPanel) return;
+
+        const list = Array.isArray(errors) ? errors : [];
+        if (!list.length) {
+            state.errPanel.innerHTML = '';
+            state.errPanel.hidden = true;
+            state.errPanelOpen = false;
+            return;
+        }
+
+        const itemsHtml = list
+            .slice(0, 500)
+            .map((e, idx) => {
+                const kind = String(e.kind || 'Syntax');
+                const msg = String(e.message || '');
+                const line = Number(e.line || 0);
+                const col = Number(e.col || 0);
+                const where = (line > 0) ? `Line ${line}${col > 0 ? `:${col}` : ''}` : 'Unknown position';
+
+                return `
+                    <div class="jp-errItem" data-err-idx="${idx}">
+                        <div class="jp-errTop">
+                            <span class="jp-errKind">${kind}</span>
+                            <span class="jp-errWhere">${where}</span>
+                        </div>
+                        <div class="jp-errMsg">${msg}</div>
+                    </div>
+                `;
+            })
+            .join('');
+
+        const extra = list.length > 500
+            ? `<div class="jp-errMore">Showing first 500 issues…</div>`
+            : '';
+
+        state.errPanel.innerHTML = `
+            <div class="jp-errPanelInner">
+                <div class="jp-errTitle">Parse issues</div>
+                ${itemsHtml}
+                ${extra}
+            </div>
+        `;
+
+        // Click on issue -> jump to line
+        state.errPanel.onclick = (ev) => {
+            const item = ev.target.closest?.('.jp-errItem');
+            if (!item) return;
+
+            const idx = Number(item.dataset.errIdx);
+            const err = Array.isArray(state.parseErrors) ? state.parseErrors[idx] : null;
+            const line = Number(err?.line || 0);
+            if (!line) return;
+
+            // open panel can stay open — just jump
+            const row = state.output?.querySelector(`.jp-row[data-jp-line="${line}"]`);
+            if (row) {
+                // make it "current" like search does
+                activateEl(row, '');
+            }
+        };
+
+    }
+
+    function updateErrorsUi() {
+        if (!state.errBtn || !state.errPanel) return;
+
+        const n = Array.isArray(state.parseErrors) ? state.parseErrors.length : 0;
+
+        if (!n) {
+            state.errBtn.style.display = 'none';
+            state.errPanel.hidden = true;
+            state.errPanelOpen = false;
+            state.errPanel.innerHTML = '';
+            return;
+        }
+
+        state.errBtn.style.display = 'inline-flex';
+        state.errBtn.textContent = `${n} issue${n === 1 ? '' : 's'} • click to view`;
+
+        renderErrorsPanel(state.parseErrors);
+
+        // Keep current open/closed state
+        state.errPanel.hidden = !state.errPanelOpen;
+    }
+
+    function clearParseErrorHighlights() {
+        if (!state.output) return;
+        state.output.querySelectorAll('.jp-parseErr').forEach(el => el.classList.remove('jp-parseErr'));
+        state.output.querySelectorAll('.jp-errMark').forEach(el => el.remove());
+    }
+
+    function addErrMarkToRow(rowEl, message) {
+        if (!rowEl) return;
+        rowEl.classList.add('jp-parseErr');
+
+        const line = rowEl.querySelector?.(':scope > .jp-line') || rowEl.querySelector?.('.jp-line');
+        if (!line) return;
+
+        // Don't duplicate marks
+        const existing = line.querySelector(':scope > .jp-errMark');
+        if (existing) return;
+
+        const mark = document.createElement('span');
+        mark.className = 'jp-errMark jp-noCopy';
+        mark.dataset.noCopy = '1';
+        mark.textContent = '!';
+        mark.title = message || 'Parse issue';
+        line.appendChild(mark);
+    }
+
+    function applyParseErrorHighlights() {
+        if (!state.output) return;
+        clearParseErrorHighlights();
+
+        const errs = Array.isArray(state.parseErrors) ? state.parseErrors : [];
+        if (!errs.length) return;
+
+        const findRowByLine = (line) => {
+            const ln = Number(line || 0);
+            if (!ln) return null;
+            return state.output.querySelector(`.jp-row[data-jp-line="${ln}"]`);
+        };
+
+        // Helper: find first row for a given key name
+        const findRowByKey = (key) => {
+            if (!key) return null;
+            const q = quoteKey(key); // includes quotes
+            const keys = state.output.querySelectorAll('.jp-row .jp-key');
+            for (const el of keys) {
+                if ((el.textContent || '') === q) {
+                    return el.closest('.jp-row');
+                }
+            }
+            return null;
+        };
+
+        errs.forEach((e) => {
+            const msg = `${e.kind || 'Issue'}: ${e.message || ''} (Line ${e.line || '?'})`;
+            const anchor = e.anchor || null;
+
+            // 1) Prefer semantic anchors FIRST (they point to the "real" place)
+            if (anchor?.type === 'missingCommaAfterKey') {
+                const row = findRowByKey(anchor.key);
+                if (row) {
+                    addErrMarkToRow(row, msg);
+                    return;
+                }
+            }
+
+            // 2) Then try exact line match
+            const byLine = findRowByLine(e.line);
+            if (byLine) {
+                addErrMarkToRow(byLine, msg);
+                return;
+            }
+
+            // 3) Root trailing comma: mark last row
+            if (anchor?.type === 'rootClose') {
+                const rows = state.output.querySelectorAll('.jp-row');
+                const lastRow = rows.length ? rows[rows.length - 1] : null;
+                if (lastRow) addErrMarkToRow(lastRow, msg);
+                return;
+            }
+
+            // fallback
+            const rows = state.output.querySelectorAll('.jp-row');
+            const lastRow = rows.length ? rows[rows.length - 1] : null;
+            if (lastRow) addErrMarkToRow(lastRow, msg);
+        });
+
+    }
+
+
+
+
 
     function isObject(v) {
         return v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -251,6 +435,314 @@
         throw new Error('Invalid JSON. Please paste a valid JSON string/object/array.');
     }
 
+    // ===== Tolerant parse: try to fix common JSON mistakes and still parse =====
+
+    function makeLineIndex(text) {
+        const starts = [0];
+        for (let i = 0; i < text.length; i++) {
+            if (text[i] === '\n') starts.push(i + 1);
+        }
+        return starts;
+    }
+
+    function posToLineCol(lineStarts, pos) {
+        // binary search last start <= pos
+        let lo = 0, hi = lineStarts.length - 1, ans = 0;
+        while (lo <= hi) {
+            const mid = (lo + hi) >> 1;
+            if (lineStarts[mid] <= pos) { ans = mid; lo = mid + 1; }
+            else hi = mid - 1;
+        }
+        const line = ans + 1;
+        const col = (pos - lineStarts[ans]) + 1;
+        return { line, col };
+    }
+
+
+    function tolerantParseJson(rawText) {
+        // IMPORTANT:
+        // - We DO NOT “repair” JSON at all.
+        // - We only DETECT issues and (if possible) parse STRICTLY as-is.
+        // - Line/col must match the exact text user pasted -> no unwrapping, no trimming for detection.
+        const text = String(rawText ?? '');
+
+        const lineStarts = makeLineIndex(text);
+        const errors = [];
+
+        const pushErr = (kind, message, pos, meta = {}) => {
+            const { line, col } = posToLineCol(lineStarts, Math.max(0, Number(pos) || 0));
+            errors.push({ kind, message, line, col, ...meta });
+        };
+
+        // =========================
+        // Tokenizer (JSON-like)
+        // =========================
+        // We don't "fix" anything here — only detect.
+        const tokenize = (src) => {
+            const tks = [];
+            const n = src.length;
+            let i = 0;
+
+            const isWS = (c) => c === ' ' || c === '\t' || c === '\r' || c === '\n';
+            const isDigit = (c) => c >= '0' && c <= '9';
+
+            while (i < n) {
+                const c = src[i];
+
+                if (isWS(c)) { i++; continue; }
+
+                // punctuation
+                if (c === '{' || c === '}' || c === '[' || c === ']' || c === ':' || c === ',') {
+                    tks.push({ type: 'punc', value: c, start: i, end: i + 1 });
+                    i++;
+                    continue;
+                }
+
+                // string
+                if (c === '"') {
+                    const start = i;
+                    i++;
+                    while (i < n) {
+                        const ch = src[i];
+                        if (ch === '\\') { i += 2; continue; }
+                        if (ch === '"') { i++; break; }
+                        i++;
+                    }
+                    tks.push({ type: 'string', start, end: i });
+                    continue;
+                }
+
+                // number
+                if (c === '-' || isDigit(c)) {
+                    const start = i;
+                    i++;
+                    while (i < n) {
+                        const ch = src[i];
+                        if (isDigit(ch) || ch === '.' || ch === 'e' || ch === 'E' || ch === '+' || ch === '-') i++;
+                        else break;
+                    }
+                    tks.push({ type: 'number', start, end: i });
+                    continue;
+                }
+
+                // literals: true/false/null
+                if (src.startsWith('true', i) || src.startsWith('false', i) || src.startsWith('null', i)) {
+                    const start = i;
+                    if (src.startsWith('true', i)) i += 4;
+                    else if (src.startsWith('false', i)) i += 5;
+                    else i += 4; // null
+                    tks.push({ type: 'literal', start, end: i });
+                    continue;
+                }
+
+                // unknown char (advance to avoid infinite loop)
+                tks.push({ type: 'unknown', start: i, end: i + 1 });
+                i++;
+            }
+
+            return tks;
+        };
+
+        const tokens = tokenize(text);
+
+        // =========================
+        // Detect issues via state machine (best effort)
+        // =========================
+        const stack = []; // { kind:'object'|'array', expecting:'keyOrClose'|'colon'|'value'|'commaOrClose', currentKey, lastValueKey }
+        const top = () => stack[stack.length - 1];
+
+        const tokenTextSlice = (tk) => text.slice(tk.start, tk.end);
+        const readStringValue = (tk) => {
+            const raw = tokenTextSlice(tk);
+            try { return JSON.parse(raw); } catch (_) { return raw.replace(/^"|"$/g, ''); }
+        };
+
+        const isValueToken = (tk) => {
+            if (!tk) return false;
+            if (tk.type === 'string' || tk.type === 'number' || tk.type === 'literal') return true;
+            if (tk.type === 'punc' && (tk.value === '}' || tk.value === ']')) return true;
+            return false;
+        };
+
+        // A) trailing comma before } or ]
+        for (let i = 0; i < tokens.length - 1; i++) {
+            const a = tokens[i];
+            const b = tokens[i + 1];
+            if (a.type === 'punc' && a.value === ',' && b.type === 'punc' && (b.value === '}' || b.value === ']')) {
+                pushErr(
+                    'Trailing comma',
+                    'Trailing comma before a closing bracket.',
+                    a.start,
+                    { anchor: { type: 'close' } }
+                );
+            }
+        }
+
+        // B) trailing comma after root: last non-ws token is comma and previous is } or ]
+        {
+            const last = tokens.length ? tokens[tokens.length - 1] : null;
+            const prev = tokens.length > 1 ? tokens[tokens.length - 2] : null;
+            if (last?.type === 'punc' && last.value === ',' && prev?.type === 'punc' && (prev.value === '}' || prev.value === ']')) {
+                pushErr(
+                    'Trailing comma',
+                    'Trailing comma after the root JSON value.',
+                    last.start,
+                    { anchor: { type: 'rootClose' } }
+                );
+            }
+        }
+
+        // C) missing comma between properties / array items
+        for (let i = 0; i < tokens.length; i++) {
+            const tk = tokens[i];
+
+            // open containers
+            if (tk.type === 'punc' && (tk.value === '{' || tk.value === '[')) {
+                // IMPORTANT:
+                // If parent context was expecting a VALUE, then this "{" / "[" IS that value.
+                // We must update parent state BEFORE pushing child context, otherwise missing-comma
+                // anchoring becomes wrong (we lose where previous value was).
+                const parent = top();
+                if (parent) {
+                    if (parent.kind === 'object' && parent.expecting === 'value') {
+                        parent.lastValueKey = parent.currentKey;
+                        parent.lastValueEndPos = tk.start; // comma should be right before this container begins (best effort)
+                        parent.currentKey = null;
+                        parent.expecting = 'commaOrClose';
+                    } else if (parent.kind === 'array' && parent.expecting === 'valueOrClose') {
+                        parent.lastValueEndPos = tk.start;
+                        parent.expecting = 'commaOrClose';
+                    }
+                }
+
+                if (tk.value === '{') {
+                    stack.push({ kind: 'object', expecting: 'keyOrClose', currentKey: null, lastValueKey: null, lastValueEndPos: null });
+                } else {
+                    stack.push({ kind: 'array', expecting: 'valueOrClose', currentKey: null, lastValueKey: null, lastValueEndPos: null });
+                }
+                continue;
+            }
+
+
+            // close containers
+            if (tk.type === 'punc' && (tk.value === '}' || tk.value === ']')) {
+                stack.pop();
+                const p = top();
+                if (p) p.expecting = 'commaOrClose';
+                continue;
+            }
+
+            const ctx = top();
+            if (!ctx) continue;
+
+            // OBJECT
+            if (ctx.kind === 'object') {
+                if (ctx.expecting === 'keyOrClose') {
+                    if (tk.type === 'string') {
+                        ctx.currentKey = readStringValue(tk);
+                        ctx.expecting = 'colon';
+                    }
+                    continue;
+                }
+
+                if (ctx.expecting === 'colon') {
+                    if (tk.type === 'punc' && tk.value === ':') {
+                        ctx.expecting = 'value';
+                    }
+                    continue;
+                }
+
+                if (ctx.expecting === 'value') {
+                    if (isValueToken(tk)) {
+                        ctx.lastValueKey = ctx.currentKey;
+
+                        // Store where the value ends, so "missing comma" can point to previous line (after value),
+                        // not to the next key.
+                        ctx.lastValueEndPos = tk.end;
+
+                        ctx.currentKey = null;
+                        ctx.expecting = 'commaOrClose';
+                    }
+                    // NOTE: container values "{" / "[" are handled in the open-containers block above (before ctx),
+                    // so we don't handle them here.
+                    continue;
+                }
+
+
+                if (ctx.expecting === 'commaOrClose') {
+                    if (tk.type === 'punc' && tk.value === ',') {
+                        ctx.expecting = 'keyOrClose';
+                        continue;
+                    }
+                    if (tk.type === 'punc' && tk.value === '}') continue;
+
+                    const next = tokens[i + 1];
+                    if (tk.type === 'string' && next?.type === 'punc' && next.value === ':') {
+                        // Position should point to the PREVIOUS property (after its value),
+                        // because that's where the missing comma actually is.
+                        const pos = (typeof ctx.lastValueEndPos === 'number' && ctx.lastValueEndPos >= 0)
+                            ? ctx.lastValueEndPos
+                            : tk.start;
+
+                        pushErr(
+                            'Missing comma',
+                            'Missing comma between object properties.',
+                            pos,
+                            { anchor: { type: 'missingCommaAfterKey', key: ctx.lastValueKey || null } }
+                        );
+
+                        // best effort: treat as if comma existed and continue
+                        ctx.expecting = 'keyOrClose';
+                        continue;
+                    }
+
+                }
+            }
+
+            // ARRAY
+            if (ctx.kind === 'array') {
+                if (ctx.expecting === 'valueOrClose') {
+                    if (isValueToken(tk) || (tk.type === 'punc' && (tk.value === '{' || tk.value === '['))) {
+                        ctx.expecting = 'commaOrClose';
+                    }
+                    continue;
+                }
+
+                if (ctx.expecting === 'commaOrClose') {
+                    if (tk.type === 'punc' && tk.value === ',') {
+                        ctx.expecting = 'valueOrClose';
+                        continue;
+                    }
+                    if (tk.type === 'punc' && tk.value === ']') continue;
+
+                    if (isValueToken(tk) || (tk.type === 'punc' && (tk.value === '{' || tk.value === '['))) {
+                        pushErr(
+                            'Missing comma',
+                            'Missing comma between array items.',
+                            tk.start,
+                            { anchor: { type: 'arrayMissingComma' } }
+                        );
+                        ctx.expecting = 'valueOrClose';
+                    }
+                }
+            }
+        }
+
+        // =========================
+        // Strict parse attempt (NO REPAIR)
+        // =========================
+        try {
+            const data = JSON.parse(text);
+            return { data, errors, parsed: true };
+        } catch (e) {
+            return { data: null, errors, parsed: false, parseMessage: String(e?.message || 'Invalid JSON') };
+        }
+    }
+
+
+
+
+
     function buildIndex(data, maxItems) {
         const index = [];
         const stack = [{ path: '$', key: '(root)', value: data }];
@@ -316,6 +808,11 @@
         if (state.output) {
             state.output.innerHTML = '';
 
+            // clear error highlights if any
+            // (output was cleared, but keep it safe for future)
+            // no-op here, real cleanup happens after re-render too
+
+
             // re-create guides layer after full clear
             const guides = document.createElement('div');
             guides.className = 'jp-guides';
@@ -325,6 +822,12 @@
 
         state.data = null;
         setExpandButtonsDisabled(true);
+
+        // reset tolerant-parse errors UI
+        state.parseErrors = [];
+        state.errPanelOpen = false;
+        updateErrorsUi();
+
 
         state.index = [];
         state.indexBuilt = false;
@@ -772,9 +1275,181 @@
         });
     }
 
+    function renderRawTextOutput(rawText) {
+        if (!state.output) return;
+
+        state.output.classList.add('jp-rawMode');
+
+        const text = String(rawText ?? '');
+        const tree = document.createElement('div');
+        tree.className = 'jp-tree';
+
+        const lines = text.split('\n');
+
+        // Keep a running depth for bracket coloring across lines (best effort),
+        // ignoring brackets inside strings.
+        let depth = 0;
+
+        const makeSpan = (cls, txt) => {
+            const s = document.createElement('span');
+            s.className = cls;
+            s.textContent = txt;
+            return s;
+        };
+
+        // Tokenize a single line into colored spans, preserving whitespace as-is.
+        const renderColoredLine = (lineEl, rawLine) => {
+            const s = rawLine.replace(/\r$/, '');
+
+            let i = 0;
+            let inString = false;
+            let strStart = 0;
+
+            // small helper: flush plain chunk
+            const appendPlain = (chunk) => {
+                if (!chunk) return;
+                lineEl.appendChild(document.createTextNode(chunk));
+            };
+
+            while (i < s.length) {
+                const ch = s[i];
+
+                if (inString) {
+                    if (ch === '\\') {
+                        i += 2;
+                        continue;
+                    }
+                    if (ch === '"') {
+                        // end string
+                        const rawStr = s.slice(strStart, i + 1);
+                        inString = false;
+
+                        // classify as key if next non-ws char is ':'
+                        let j = i + 1;
+                        while (j < s.length && (s[j] === ' ' || s[j] === '\t')) j++;
+                        const isKey = s[j] === ':';
+
+                        lineEl.appendChild(makeSpan(isKey ? 'jp-key' : 'jp-string', rawStr));
+                        i++;
+                        continue;
+                    }
+                    i++;
+                    continue;
+                }
+
+                // start string
+                if (ch === '"') {
+                    strStart = i;
+                    inString = true;
+                    i++;
+                    continue;
+                }
+
+                // numbers
+                if ((ch >= '0' && ch <= '9') || (ch === '-' && i + 1 < s.length && s[i + 1] >= '0' && s[i + 1] <= '9')) {
+                    let j = i + 1;
+                    while (j < s.length) {
+                        const c = s[j];
+                        const ok =
+                            (c >= '0' && c <= '9') || c === '.' || c === 'e' || c === 'E' || c === '+' || c === '-';
+                        if (!ok) break;
+                        j++;
+                    }
+                    lineEl.appendChild(makeSpan('jp-number', s.slice(i, j)));
+                    i = j;
+                    continue;
+                }
+
+                // literals true/false/null
+                if (s.startsWith('true', i)) {
+                    lineEl.appendChild(makeSpan('jp-boolean', 'true'));
+                    i += 4;
+                    continue;
+                }
+                if (s.startsWith('false', i)) {
+                    lineEl.appendChild(makeSpan('jp-boolean', 'false'));
+                    i += 5;
+                    continue;
+                }
+                if (s.startsWith('null', i)) {
+                    lineEl.appendChild(makeSpan('jp-null', 'null'));
+                    i += 4;
+                    continue;
+                }
+
+                // punctuation & brackets
+                if (ch === '{' || ch === '[') {
+                    // open uses current depth color
+                    const br = document.createElement('span');
+                    br.className = 'jp-bracket';
+                    br.textContent = ch;
+                    br.style.color = `var(--jp-bracket-${bracketLevel(depth)})`;
+                    lineEl.appendChild(br);
+
+                    depth++;
+                    i++;
+                    continue;
+                }
+                if (ch === '}' || ch === ']') {
+                    // close uses depth-1 color
+                    depth = Math.max(0, depth - 1);
+
+                    const br = document.createElement('span');
+                    br.className = 'jp-bracket';
+                    br.textContent = ch;
+                    br.style.color = `var(--jp-bracket-${bracketLevel(depth)})`;
+                    lineEl.appendChild(br);
+
+                    i++;
+                    continue;
+                }
+
+                if (ch === ':' || ch === ',') {
+                    lineEl.appendChild(makeSpan('jp-sep', ch));
+                    i++;
+                    continue;
+                }
+
+                // everything else (spaces, tabs, other chars)
+                // We append char-by-char to preserve whitespace exactly.
+                appendPlain(ch);
+                i++;
+            }
+
+            // if string was unterminated, just append remaining raw part as jp-string
+            if (inString) {
+                const rawStr = s.slice(strStart);
+                lineEl.appendChild(makeSpan('jp-string', rawStr));
+            }
+        };
+
+        for (let i = 0; i < lines.length; i++) {
+            const lineNo = i + 1;
+
+            const { row, line } = makeLineRow({
+                depth: 0,
+                lineNo,
+                searchableText: lines[i]
+            });
+
+            row.classList.add('jp-rawRow');
+            line.classList.add('jp-rawLine');
+
+            // preserve whitespace + colorize tokens
+            line.style.whiteSpace = 'pre';
+            renderColoredLine(line, lines[i]);
+
+            tree.appendChild(row);
+        }
+
+        state.output.appendChild(tree);
+        requestRenumber();
+    }
+
+
     function parseAndRender() {
-        const raw = (state.input?.value || '').trim();
-        if (!raw) {
+        const rawOriginal = (state.input?.value ?? '');
+        if (!String(rawOriginal).trim()) {
             clearOutput();
             setStatus('Paste JSON into the input and click Parse.', 'info');
             return;
@@ -782,55 +1457,100 @@
 
         stopExpandJob();
 
-        try {
-            const data = tryParseJson(raw);
+        // Always clear first (resets UI, guides, search, etc.)
+        clearOutput();
 
-            clearOutput();
-            state.data = data;
+        // Detect issues + try strict parse (NO REPAIR)
+        const parsed = tolerantParseJson(rawOriginal);
 
-            setStatus('Parsed successfully.', 'ok');
-            setExpandButtonsDisabled(false);
+        state.parseErrors = parsed.errors || [];
+        updateErrorsUi();
 
-            const maps = computeLineMaps(data);
-            state.openLine = maps.openLine;
-            state.closeLine = maps.closeLine;
+        const issuesCount = Array.isArray(state.parseErrors) ? state.parseErrors.length : 0;
 
-            const tree = document.createElement('div');
-            tree.className = 'jp-tree';
+        // If strict JSON.parse failed -> show RAW text as-is + errors
+        if (!parsed.parsed) {
+            setStatus(
+                issuesCount
+                    ? `Invalid JSON • ${issuesCount} issue(s) found.`
+                    : `Invalid JSON • ${parsed.parseMessage || 'Parse error'}`,
+                'err'
+            );
 
-            const root = renderNode({
-                parentKind: null,
-                key: null,
-                value: data,
-                path: '$',
-                depth: 0,
-                isLast: true,
-                isRoot: true
-            });
+            // In invalid mode we don't have data for tree rendering/search index.
+            state.data = null;
+            state.openLine = null;
+            state.closeLine = null;
 
-            tree.appendChild(root);
-            state.output.appendChild(tree);
+            renderRawTextOutput(rawOriginal);
 
-            state.rootEl = root && root.tagName === 'DETAILS' ? root : null;
+            // Highlight parse issues in output (jump by line)
+            applyParseErrorHighlights();
 
-            if (state.rootEl && state.rootEl.open) {
-                ensureChildrenRendered(state.rootEl, data, '$', 0);
-            }
+            // Disable expand/collapse since we have no tree
+            setExpandButtonsDisabled(true);
 
-            clearSearchVisuals(); requestRenumber();
+            clearSearchVisuals();
             updateSearchUi();
-            requestRenumber();
             scheduleGuidesUpdate();
-
-            // if there is an active query in the search input (user typed before parse)
-            const q = (state.searchInput?.value || '').trim();
-            if (q) runSearch(q, { silentStatus: true, autoJump: true });
-
-        } catch (e) {
-            clearOutput();
-            setStatus(e?.message || 'Parse error', 'err');
+            return;
         }
+
+        // ===== Valid JSON -> render the tree as before =====
+        state.output?.classList.remove('jp-rawMode');
+
+        const data = parsed.data;
+        state.data = data;
+
+        if (issuesCount) {
+            // Rare case: detector found something but JSON still parsed (keep info)
+            setStatus(`Parsed with ${issuesCount} issue(s).`, 'err');
+        } else {
+            setStatus('Parsed successfully.', 'ok');
+        }
+
+        setExpandButtonsDisabled(false);
+
+        const maps = computeLineMaps(data);
+        state.openLine = maps.openLine;
+        state.closeLine = maps.closeLine;
+
+        const tree = document.createElement('div');
+        tree.className = 'jp-tree';
+
+        const root = renderNode({
+            parentKind: null,
+            key: null,
+            value: data,
+            path: '$',
+            depth: 0,
+            isLast: true,
+            isRoot: true
+        });
+
+        tree.appendChild(root);
+        state.output.appendChild(tree);
+
+        // highlight parse issues in output (best effort)
+        applyParseErrorHighlights();
+
+        state.rootEl = root && root.tagName === 'DETAILS' ? root : null;
+
+        if (state.rootEl && state.rootEl.open) {
+            ensureChildrenRendered(state.rootEl, data, '$', 0);
+        }
+
+        clearSearchVisuals();
+        updateSearchUi();
+        requestRenumber();
+        scheduleGuidesUpdate();
+
+        // if there is an active query in the search input (user typed before parse)
+        const q = (state.searchInput?.value || '').trim();
+        if (q) runSearch(q, { silentStatus: true, autoJump: true });
     }
+
+
 
     // ===== Search visuals + “VSCode-like” inline highlight =====
 
@@ -1482,7 +2202,7 @@
                 <div class="jp-outputTop">
                     <div class="jp-label">Output</div>
 
-                    <div class="jp-outputTools">
+                                        <div class="jp-outputTools">
                         <button class="jp-btn jp-small" type="button" data-act="expandAll">Expand all</button>
                         <button class="jp-btn jp-small" type="button" data-act="collapseAll">Collapse all</button>
 
@@ -1496,10 +2216,16 @@
                             <button class="jp-navBtn" type="button" data-act="searchUp" aria-label="Previous match" title="Previous (Shift+Enter)">▲</button>
                             <button class="jp-navBtn" type="button" data-act="searchDown" aria-label="Next match" title="Next (Enter)">▼</button>
                         </div>
+
+                        <!-- Error summary (shows only when tolerant parse found issues) -->
+                        <button class="jp-errBtn" type="button" data-act="errors" style="display:none"></button>
                     </div>
+
+                    <div class="jp-errPanel" hidden></div>
 
                     <div class="jp-hint">Live search • Enter = next • Shift+Enter = previous • Esc = clear</div>
                 </div>
+
 
                 <div class="jp-output jp-outputCode" tabindex="0"></div>
             </div>
@@ -1583,6 +2309,19 @@
 
         state.expandAllBtn = view.querySelector('[data-act="expandAll"]');
         state.collapseAllBtn = view.querySelector('[data-act="collapseAll"]');
+
+        state.errBtn = view.querySelector('[data-act="errors"]');
+        state.errPanel = view.querySelector('.jp-errPanel');
+
+        if (state.errBtn) {
+            state.errBtn.addEventListener('click', () => {
+                state.errPanelOpen = !state.errPanelOpen;
+                updateErrorsUi();
+            });
+        }
+
+        updateErrorsUi();
+
 
         state.parseBtn.addEventListener('click', parseAndRender);
 

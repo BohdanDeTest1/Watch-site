@@ -1107,6 +1107,21 @@ body.dark .jp-output.jp-outputCode,
     position: relative;
 }
 
+.jp-output.jp-outputCode.jp-rawMode .jp-line {
+    white-space: pre;
+    /* keep spaces/tabs exactly */
+    padding-left: 0 !important;
+    display: block;
+    /* safer for token spans */
+}
+
+.jp-output.jp-outputCode.jp-rawMode .jp-row {
+    white-space: pre;
+    /* preserve indentation */
+}
+
+
+
 /* Layer that holds vertical lines */
 .jp-guides {
     position: absolute;
@@ -1429,4 +1444,188 @@ body.dark,
     --jp-num: #dcdcaa;
     --jp-bool: #569cd6;
     --jp-null: #569cd6;
+}
+
+/* ========= Tolerant parse: Error summary ========= */
+
+.jp-errBtn {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    background: rgba(245, 158, 11, 0.10);
+
+    color: rgba(180, 83, 9, 1);
+    font-weight: 900;
+    font-size: 13px;
+
+    cursor: pointer;
+    user-select: none;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    white-space: nowrap;
+}
+
+.jp-errBtn:hover {
+    filter: brightness(0.98);
+}
+
+.theme-night .jp-errBtn,
+.theme-dark .jp-errBtn,
+html.dark .jp-errBtn,
+body.dark .jp-errBtn,
+[data-theme="dark"] .jp-errBtn,
+[data-mode="dark"] .jp-errBtn {
+    border: 1px solid rgba(251, 146, 60, 0.35);
+    background: rgba(251, 146, 60, 0.10);
+    color: rgba(253, 186, 116, 0.95);
+}
+
+.jp-errPanel {
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(245, 158, 11, 0.20);
+    background: rgba(245, 158, 11, 0.06);
+    padding: 10px;
+}
+
+.theme-night .jp-errPanel,
+.theme-dark .jp-errPanel,
+html.dark .jp-errPanel,
+body.dark .jp-errPanel,
+[data-theme="dark"] .jp-errPanel,
+[data-mode="dark"] .jp-errPanel {
+    border: 1px solid rgba(251, 146, 60, 0.18);
+    background: rgba(251, 146, 60, 0.08);
+}
+
+.jp-errPanelInner {
+    max-height: 220px;
+    overflow: auto;
+    padding-right: 6px;
+}
+
+.jp-errTitle {
+    font-weight: 900;
+    font-size: 13px;
+    margin: 0 0 8px 0;
+    opacity: 0.95;
+}
+
+.jp-errItem {
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin: 6px 0;
+
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.theme-night .jp-errItem,
+.theme-dark .jp-errItem,
+html.dark .jp-errItem,
+body.dark .jp-errItem,
+[data-theme="dark"] .jp-errItem,
+[data-mode="dark"] .jp-errItem {
+    background: rgba(10, 14, 24, 0.35);
+    border: 1px solid rgba(251, 146, 60, 0.14);
+}
+
+.jp-errTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.jp-errKind {
+    font-weight: 900;
+    font-size: 12px;
+    color: rgba(180, 83, 9, 1);
+}
+
+.theme-night .jp-errKind,
+.theme-dark .jp-errKind,
+html.dark .jp-errKind,
+body.dark .jp-errKind,
+[data-theme="dark"] .jp-errKind,
+[data-mode="dark"] .jp-errKind {
+    color: rgba(253, 186, 116, 0.95);
+}
+
+.jp-errWhere {
+    font-weight: 800;
+    font-size: 12px;
+    opacity: 0.75;
+    white-space: nowrap;
+}
+
+.jp-errMsg {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.85;
+    line-height: 1.35;
+}
+
+.jp-errMore {
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+/* ========= Parse issue highlight in Output ========= */
+
+.jp-parseErr {
+    background: rgba(245, 158, 11, 0.14);
+    outline: 1px solid rgba(245, 158, 11, 0.30);
+    box-shadow: inset 3px 0 0 rgba(245, 158, 11, 0.55);
+}
+
+.theme-night .jp-parseErr,
+.theme-dark .jp-parseErr,
+html.dark .jp-parseErr,
+body.dark .jp-parseErr,
+[data-theme="dark"] .jp-parseErr,
+[data-mode="dark"] .jp-parseErr {
+    background: rgba(251, 146, 60, 0.16);
+    outline: 1px solid rgba(251, 146, 60, 0.28);
+    box-shadow: inset 3px 0 0 rgba(251, 146, 60, 0.55);
+}
+
+
+.jp-errMark {
+    margin-left: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 1000;
+    font-size: 12px;
+    line-height: 1;
+
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    background: rgba(245, 158, 11, 0.18);
+    color: rgba(180, 83, 9, 1);
+
+    cursor: help;
+    user-select: none;
+}
+
+.theme-night .jp-errMark,
+.theme-dark .jp-errMark,
+html.dark .jp-errMark,
+body.dark .jp-errMark,
+[data-theme="dark"] .jp-errMark,
+[data-mode="dark"] .jp-errMark {
+    border: 1px solid rgba(251, 146, 60, 0.40);
+    background: rgba(251, 146, 60, 0.18);
+    color: rgba(253, 186, 116, 0.95);
 }
