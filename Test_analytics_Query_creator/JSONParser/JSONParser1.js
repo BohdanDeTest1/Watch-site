@@ -1012,8 +1012,8 @@
                 state.indexBuilt = true;
                 setStatus(
                     state.index.length >= maxItems
-                        ? `Search index ready (limited to ${maxItems} nodes).`
-                        : 'Search index ready.',
+                        ? `Search index ready (limited to ${maxItems} nodes)`
+                        : 'Search index ready',
                     'ok'
                 );
             } finally {
@@ -1785,7 +1785,7 @@
             // Rare case: detector found something but JSON still parsed (keep info)
             setStatus(`Parsed with ${issuesCount} issue(s).`, 'err');
         } else {
-            setStatus('Parsed successfully.', 'ok');
+            setStatus('Parsed successfully', 'ok');
         }
 
         setExpandButtonsDisabled(false);
@@ -2478,14 +2478,14 @@
             <div class="jp-head">
                 <div>
                     <div class="jp-title">JSON Parser</div>
-                    <div class="jp-sub">Paste JSON → Parse → expand nodes. Search jumps to matches and opens nested blocks.</div>
+                    <div class="jp-sub">Paste JSON → Parse → expand nodes. Search jumps to matches and opens nested blocks</div>
                 </div>
             </div>
 
             <div class="jp-inputBlock">
                 <label class="jp-label" for="jpInput">Input</label>
                 <textarea id="jpInput" class="jp-input" spellcheck="false"
-                    placeholder="Paste JSON here (object or array). Tip: Ctrl+Enter to parse."></textarea>
+                    placeholder="Paste JSON here (object or array). Tip: Ctrl+Enter to parse"></textarea>
 
                 <div class="jp-inputActions">
                     <button class="jp-btn jp-primary" type="button" data-act="parse">Parse</button>
@@ -2692,7 +2692,7 @@
             }
         });
 
-        setStatus('Paste JSON into the input and click Parse.', 'info');
+        setStatus('Paste JSON into the input and click Parse', 'info');
         updateSearchUi();
     }
 

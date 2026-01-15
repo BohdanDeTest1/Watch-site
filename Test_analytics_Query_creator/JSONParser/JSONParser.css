@@ -823,6 +823,70 @@ body.dark .jp-searchWrap,
     background: rgba(10, 14, 24, 0.55);
 }
 
+/* ===== Dark theme: make Input / Output / Search match the sidebar panel ===== */
+.theme-night,
+.theme-dark,
+html.dark,
+body.dark,
+[data-theme="dark"],
+[data-mode="dark"] {
+    /* “Sidebar-like” panel background */
+    --jp-panel-bg: rgba(11, 16, 28, 0.92);
+    --jp-panel-border: rgba(255, 255, 255, 0.12);
+    --jp-panel-border-strong: rgba(255, 255, 255, 0.18);
+}
+
+/* Input textarea (top JSON input) */
+.theme-night .jp-input,
+.theme-dark .jp-input,
+html.dark .jp-input,
+body.dark .jp-input,
+[data-theme="dark"] .jp-input,
+[data-mode="dark"] .jp-input {
+    background: var(--jp-panel-bg) !important;
+    border-color: var(--jp-panel-border) !important;
+    color: rgba(212, 212, 212, 0.95) !important;
+}
+
+/* Output code area */
+.theme-night .jp-output.jp-outputCode,
+.theme-dark .jp-output.jp-outputCode,
+html.dark .jp-output.jp-outputCode,
+body.dark .jp-output.jp-outputCode,
+[data-theme="dark"] .jp-output.jp-outputCode,
+[data-mode="dark"] .jp-output.jp-outputCode {
+    background: var(--jp-panel-bg) !important;
+    border-color: var(--jp-panel-border) !important;
+}
+
+/* Search field wrapper (the “field” itself) */
+.theme-night .jp-searchWrap,
+.theme-dark .jp-searchWrap,
+html.dark .jp-searchWrap,
+body.dark .jp-searchWrap,
+[data-theme="dark"] .jp-searchWrap,
+[data-mode="dark"] .jp-searchWrap {
+    background: var(--jp-panel-bg) !important;
+    border-color: var(--jp-panel-border) !important;
+}
+
+/* Placeholder text readability */
+.theme-night .jp-input::placeholder,
+.theme-dark .jp-input::placeholder,
+html.dark .jp-input::placeholder,
+body.dark .jp-input::placeholder,
+[data-theme="dark"] .jp-input::placeholder,
+[data-mode="dark"] .jp-input::placeholder,
+.theme-night .jp-search::placeholder,
+.theme-dark .jp-search::placeholder,
+html.dark .jp-search::placeholder,
+body.dark .jp-search::placeholder,
+[data-theme="dark"] .jp-search::placeholder,
+[data-mode="dark"] .jp-search::placeholder {
+    color: rgba(212, 212, 212, 0.45);
+}
+
+
 
 .jp-searchX:hover {
     opacity: .9;
@@ -914,6 +978,29 @@ body.dark .jp-searchNoResults,
     background: rgba(10, 14, 24, 0.55);
     color: rgba(212, 212, 212, 0.95);
 }
+
+/* Slightly lift toolbar buttons (Expand/Collapse) so they don't blend into dark UI */
+.theme-night .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
+.theme-dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
+html.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
+body.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
+[data-theme="dark"] .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
+[data-mode="dark"] .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn) {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: rgba(230, 230, 230, 0.92);
+}
+
+.theme-night .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
+.theme-dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
+html.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
+body.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
+[data-theme="dark"] .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
+[data-mode="dark"] .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover {
+    background: rgba(255, 255, 255, 0.065);
+    border-color: rgba(255, 255, 255, 0.20);
+}
+
 
 /* BUT: X button must stay borderless like in light theme */
 .theme-night .jp-searchX,
