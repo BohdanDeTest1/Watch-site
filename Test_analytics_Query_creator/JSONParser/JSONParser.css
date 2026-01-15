@@ -721,7 +721,30 @@ body.dark .jp-searchWrap .jp-searchIcon,
 .jp-inputArea {
     position: relative;
     margin-top: 10px;
-    /* keeps same spacing as before */
+
+    /* Контейнер становится "полем" (как jp-searchWrap):
+       рамка/фон живут здесь, чтобы ничего не могло залезать на border */
+    border-radius: 10px;
+    overflow: hidden;
+
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: var(--bg, #fff);
+}
+
+/* Focus ring на весь контейнер (а не на textarea) */
+.jp-inputArea:focus-within {
+    border-color: var(--accent, #3b82f6);
+}
+
+/* Dark theme: фон/бордер как "panel" */
+.theme-night .jp-inputArea,
+.theme-dark .jp-inputArea,
+html.dark .jp-inputArea,
+body.dark .jp-inputArea,
+[data-theme="dark"] .jp-inputArea,
+[data-mode="dark"] .jp-inputArea {
+    background: var(--jp-panel-bg, rgba(11, 16, 28, 0.92));
+    border-color: var(--jp-panel-border, rgba(255, 255, 255, 0.12));
 }
 
 /* The overlay sits under the textarea and renders highlighted HTML */
@@ -732,20 +755,40 @@ body.dark .jp-searchWrap .jp-searchIcon,
     overflow: auto;
     pointer-events: none;
     z-index: 1;
+
+    /* Фон теперь у контейнера, здесь делаем прозрачным */
+    background: transparent;
 }
 
-/* Inner mirrors textarea typography/spacing */
+/* IMPORTANT:
+   textarea внутри inputArea не должна иметь свою рамку,
+   иначе "визуально" появляются пересечения с текстом/подсветкой */
+.jp-inputArea .jp-input {
+    margin-top: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+
+    /* Fix: чтобы символы/подсветка не касались border сверху/снизу */
+    padding: 14px 12px !important;
+    line-height: 1.6 !important;
+}
+
+
+
 .jp-inputOverlayInner {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.6;
 
-    padding: 12px 12px;
+    /* Fix: чуть больше воздуха, чтобы текст не “упирался” в границу */
+    padding: 14px 12px;
+
     white-space: pre-wrap;
     word-break: break-word;
 
     color: var(--text, #111);
 }
+
 
 /* Put textarea above the overlay, but make its text transparent (caret stays visible) */
 .jp-input.jp-inputHasOverlay {
@@ -903,6 +946,14 @@ body.dark .jp-input.jp-inputHasOverlay,
     width: 100%;
 }
 
+/* Input-top search: force the tools row to shrink and hug the right edge (override width:100%) */
+.jp-inputTop .jp-outputTools.jp-inputTools {
+    width: auto !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto;
+}
+
+
 /* ========= Search toolbar v2 (VSCode-like) ========= */
 
 /* Make all controls the same height */
@@ -999,29 +1050,57 @@ body.dark .jp-searchWrap,
     background: rgba(10, 14, 24, 0.55);
 }
 
-/* ===== Dark theme: make Input / Output / Search match the sidebar panel ===== */
+/* ===== Dark theme: higher contrast (card ≠ field) like your reference ===== */
 .theme-night,
 .theme-dark,
 html.dark,
 body.dark,
 [data-theme="dark"],
 [data-mode="dark"] {
-    /* “Sidebar-like” panel background */
-    --jp-panel-bg: rgba(11, 16, 28, 0.92);
-    --jp-panel-border: rgba(255, 255, 255, 0.12);
-    --jp-panel-border-strong: rgba(255, 255, 255, 0.18);
+    /* Light-ish (bluish) cards + near-black fields */
+    --jp-card-bg: rgba(20, 28, 45, 0.92);
+    /* block background (like your reference form) */
+    --jp-card-border: rgba(255, 255, 255, 0.10);
+
+    --jp-field-bg: rgba(8, 12, 20, 0.92);
+    /* input/output/search background */
+    --jp-field-border: rgba(255, 255, 255, 0.12);
+    --jp-field-border-strong: rgba(255, 255, 255, 0.18);
+
+    /* Keep old var names too (used in a few places) */
+    --jp-panel-bg: var(--jp-field-bg);
+    --jp-panel-border: var(--jp-field-border);
+    --jp-panel-border-strong: var(--jp-field-border-strong);
 }
 
-/* Input textarea (top JSON input) */
-.theme-night .jp-input,
-.theme-dark .jp-input,
-html.dark .jp-input,
-body.dark .jp-input,
-[data-theme="dark"] .jp-input,
-[data-mode="dark"] .jp-input {
-    background: var(--jp-panel-bg) !important;
-    border-color: var(--jp-panel-border) !important;
-    color: rgba(212, 212, 212, 0.95) !important;
+/* Blocks (Input/Output containers) */
+.theme-night .jp-inputBlock,
+.theme-dark .jp-inputBlock,
+.theme-night .jp-outputBlock,
+.theme-dark .jp-outputBlock,
+.theme-night .jp-searchBlock,
+.theme-dark .jp-searchBlock,
+html.dark .jp-inputBlock,
+body.dark .jp-inputBlock,
+[data-theme="dark"] .jp-inputBlock,
+[data-mode="dark"] .jp-inputBlock,
+html.dark .jp-outputBlock,
+body.dark .jp-outputBlock,
+[data-theme="dark"] .jp-outputBlock,
+[data-mode="dark"] .jp-outputBlock {
+    background: var(--jp-card-bg) !important;
+    border-color: var(--jp-card-border) !important;
+}
+
+/* Input textarea wrapper (overlay container) */
+.theme-night .jp-inputArea,
+.theme-dark .jp-inputArea,
+html.dark .jp-inputArea,
+body.dark .jp-inputArea,
+[data-theme="dark"] .jp-inputArea,
+[data-mode="dark"] .jp-inputArea {
+    background: var(--jp-field-bg) !important;
+    border-color: var(--jp-field-border) !important;
 }
 
 /* Output code area */
@@ -1031,8 +1110,8 @@ html.dark .jp-output.jp-outputCode,
 body.dark .jp-output.jp-outputCode,
 [data-theme="dark"] .jp-output.jp-outputCode,
 [data-mode="dark"] .jp-output.jp-outputCode {
-    background: var(--jp-panel-bg) !important;
-    border-color: var(--jp-panel-border) !important;
+    background: var(--jp-field-bg) !important;
+    border-color: var(--jp-field-border) !important;
 }
 
 /* Search field wrapper (the “field” itself) */
@@ -1042,9 +1121,10 @@ html.dark .jp-searchWrap,
 body.dark .jp-searchWrap,
 [data-theme="dark"] .jp-searchWrap,
 [data-mode="dark"] .jp-searchWrap {
-    background: var(--jp-panel-bg) !important;
-    border-color: var(--jp-panel-border) !important;
+    background: var(--jp-field-bg) !important;
+    border-color: var(--jp-field-border) !important;
 }
+
 
 /* Placeholder text readability */
 .theme-night .jp-input::placeholder,
@@ -1140,10 +1220,15 @@ body.dark .jp-searchNoResults,
 /* Stronger “hit inside line” highlight (brighter than row highlight) */
 .jp-hitText {
     background: rgba(245, 158, 11, 0.35);
-    outline: 1px solid rgba(245, 158, 11, 0.55);
+
+    /* outline НЕ клипается по overflow и “вылезает” за верх/низ textarea.
+       Поэтому делаем рамку inset-shadow (он всегда внутри). */
+    box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.60);
+
     border-radius: 3px;
     padding: 0 1px;
 }
+
 
 /* Dark theme tune */
 
@@ -1195,10 +1280,21 @@ body.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
 }
 
 .theme-night .jp-hitText,
-.theme-dark .jp-hitText {
-    background: rgba(220, 220, 170, 0.35);
-    outline: 1px solid rgba(220, 220, 170, 0.55);
+.theme-dark .jp-hitText,
+html.dark .jp-hitText,
+body.dark .jp-hitText,
+[data-theme="dark"] .jp-hitText,
+[data-mode="dark"] .jp-hitText {
+    /* Ярко-оранжевый фон */
+    background: rgba(245, 158, 11, 0.95);
+
+    /* рамка внутри (без outline, чтобы ничего не вылезало) */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.30);
+
+    /* по требованию — текст на совпадении чёрный */
+    color: #111111 !important;
 }
+
 
 
 /* Critical: prevent buttons/inputs inside from becoming full-width */
@@ -1977,4 +2073,44 @@ body.dark .jp-errMark,
     border: 1px solid rgba(251, 146, 60, 0.40);
     background: rgba(251, 146, 60, 0.18);
     color: rgba(253, 186, 116, 0.95);
+}
+
+/* Match highlight inside Input */
+
+/* IMPORTANT:
+   outline НЕ клипается overflow'ом и может “вылезать” за верх/низ.
+   Поэтому используем inset box-shadow (всегда внутри). */
+.jp-inputHitText {
+    background: rgba(245, 158, 11, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.55);
+    border-radius: 3px;
+    padding: 0 1px;
+}
+
+.jp-inputHitText.jp-inputHitCurrent {
+    background: rgba(245, 158, 11, 0.45);
+    box-shadow: inset 0 0 0 2px rgba(245, 158, 11, 0.75);
+}
+
+/* Dark theme: ярко-оранжевый фон + чёрный текст */
+.theme-night .jp-inputHitText,
+.theme-dark .jp-inputHitText,
+html.dark .jp-inputHitText,
+body.dark .jp-inputHitText,
+[data-theme="dark"] .jp-inputHitText,
+[data-mode="dark"] .jp-inputHitText {
+    background: rgba(245, 158, 11, 0.95);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+    color: #111111 !important;
+}
+
+.theme-night .jp-inputHitText.jp-inputHitCurrent,
+.theme-dark .jp-inputHitText.jp-inputHitCurrent,
+html.dark .jp-inputHitText.jp-inputHitCurrent,
+body.dark .jp-inputHitText.jp-inputHitCurrent,
+[data-theme="dark"] .jp-inputHitText.jp-inputHitCurrent,
+[data-mode="dark"] .jp-inputHitText.jp-inputHitCurrent {
+    background: rgba(245, 158, 11, 0.98);
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.45);
+    color: #111111 !important;
 }
