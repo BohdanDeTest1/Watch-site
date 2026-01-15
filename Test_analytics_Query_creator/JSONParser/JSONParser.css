@@ -97,7 +97,7 @@
     width: 100%;
     min-height: 160px;
     resize: vertical;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     padding: 12px 12px;
     outline: none;
@@ -589,7 +589,7 @@ body.dark .jp-outputBlock,
 .jp-outputTools .jp-btn,
 .jp-inputActions .jp-btn {
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 800;
 }
 
@@ -757,7 +757,7 @@ body.dark .jp-outputBlock,
     align-items: center;
     gap: 6px;
 
-    border-radius: 10px;
+    border-radius: 6px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--bg, #fff);
 
@@ -877,7 +877,7 @@ body.dark .jp-searchNoResults,
     width: 36px;
     min-width: 36px;
 
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--card, #fff);
     color: var(--text, #111);
@@ -956,7 +956,7 @@ body.dark .jp-searchNoResults,
 /* ========= Output “code” look ========= */
 
 .jp-output.jp-outputCode {
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(10, 14, 24, 0.75);
     padding: 10px 10px;

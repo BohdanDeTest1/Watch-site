@@ -2194,10 +2194,16 @@
             else state.searchCounter.textContent = `${cur} of ${total}`;
         }
 
+        // ✅ Hide nav buttons completely when nothing is being searched
+        if (state.searchUpBtn) state.searchUpBtn.style.display = hasText ? 'inline-flex' : 'none';
+        if (state.searchDownBtn) state.searchDownBtn.style.display = hasText ? 'inline-flex' : 'none';
+
+        // When visible: keep existing disable logic
         const disableNav = !hasText || total <= 0;
         if (state.searchUpBtn) state.searchUpBtn.disabled = disableNav;
         if (state.searchDownBtn) state.searchDownBtn.disabled = disableNav;
     }
+
 
 
     function runSearch(query, opts = {}) {
