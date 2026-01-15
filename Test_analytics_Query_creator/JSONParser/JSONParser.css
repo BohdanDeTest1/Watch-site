@@ -906,14 +906,25 @@ body.dark .jp-searchNoResults,
 }
 
 /* Dark theme tune */
-.theme-night .jp-searchX,
-.theme-dark .jp-searchX,
+
+/* Keep borders for nav buttons */
 .theme-night .jp-navBtn,
 .theme-dark .jp-navBtn {
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(10, 14, 24, 0.55);
     color: rgba(212, 212, 212, 0.95);
 }
+
+/* BUT: X button must stay borderless like in light theme */
+.theme-night .jp-searchX,
+.theme-dark .jp-searchX {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none;
+    color: rgba(212, 212, 212, 0.95);
+}
+
 
 .theme-night .jp-searchCounter,
 .theme-dark .jp-searchCounter {
