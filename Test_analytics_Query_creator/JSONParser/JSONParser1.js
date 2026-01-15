@@ -8,14 +8,30 @@
         guidesRaf: 0,
 
         input: null,
+        inputOverlay: null,
+        inputOverlayInner: null,
         output: null,
         status: null,
 
         parseBtn: null,
         clearBtn: null,
 
+        // Input Search UI (search inside textarea)
+        inputSearchInput: null,
+        inputSearchClearX: null,
+        inputSearchCounter: null,
+        inputSearchNoResults: null,
+        inputSearchUpBtn: null,
+        inputSearchDownBtn: null,
+
+        // input hits
+        inputHitStarts: [],
+        inputHitIndex: -1,
+        inputLastQuery: '',
+
         // Search UI
         searchInput: null,
+
         searchClearX: null,
         searchCounter: null,
         searchNoResults: null,
@@ -2167,6 +2183,306 @@
 
     }
 
+    // ===== Input textarea overlay highlighting (VSCode-like) =====
+
+    function escapeHtml(s) {
+        return String(s ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function renderInputOverlay() {
+        const ta = state.input;
+        const inner = state.inputOverlayInner;
+
+        if (!ta || !inner) return;
+
+        const text = String(ta.value || '');
+        const q = String(state.inputLastQuery || '').trim();
+
+        // Always render text (textarea text will be transparent)
+        if (!q || !state.inputHitStarts.length) {
+            inner.textContent = text;
+            return;
+        }
+
+        const starts = state.inputHitStarts;
+        const qLen = q.length;
+
+        // Build highlighted HTML using pre-wrap preserving whitespace
+        let html = '';
+        let last = 0;
+
+        for (let i = 0; i < starts.length; i++) {
+            const start = starts[i];
+            const end = start + qLen;
+
+            if (start < last) continue; // safety
+
+            html += escapeHtml(text.slice(last, start));
+
+            const hitText = text.slice(start, end);
+            const isCur = (i === state.inputHitIndex);
+
+            html += `<span class="jp-inputHitText${isCur ? ' jp-inputHitCurrent' : ''}" data-jp-ihit="${i}">${escapeHtml(hitText)}</span>`;
+
+            last = end;
+
+            // Safety cap (avoid huge DOM on insane match counts)
+            if (i >= 4999) break;
+        }
+
+        html += escapeHtml(text.slice(last));
+        inner.innerHTML = html;
+    }
+
+    function syncInputOverlayScroll() {
+        const ta = state.input;
+        const ov = state.inputOverlay;
+        if (!ta || !ov) return;
+
+        ov.scrollTop = ta.scrollTop;
+        ov.scrollLeft = ta.scrollLeft;
+    }
+
+    function scrollTextareaToCurrentInputHit() {
+        const ta = state.input;
+        const inner = state.inputOverlayInner;
+        if (!ta || !inner) return;
+
+        const idx = Number(state.inputHitIndex);
+        if (!Number.isFinite(idx) || idx < 0) return;
+
+        const el = inner.querySelector?.(`[data-jp-ihit="${idx}"]`);
+        if (!el) {
+            // Fallback to old logic if overlay element is not found
+            const starts = state.inputHitStarts;
+            if (starts && starts.length) scrollTextareaToPos(ta, starts[idx] || 0);
+            return;
+        }
+
+        const maxTop = Math.max(0, ta.scrollHeight - ta.clientHeight);
+        const maxLeft = Math.max(0, ta.scrollWidth - ta.clientWidth);
+
+        const targetTop = el.offsetTop - (ta.clientHeight * 0.35);
+        const targetLeft = el.offsetLeft - (ta.clientWidth * 0.35);
+
+        ta.scrollTop = Math.max(0, Math.min(maxTop, targetTop));
+        ta.scrollLeft = Math.max(0, Math.min(maxLeft, targetLeft));
+
+        syncInputOverlayScroll();
+    }
+
+
+    // ===== Input textarea search =====
+
+    function updateInputSearchUi() {
+        const q = String(state.inputSearchInput?.value || '');
+        const hasText = q.length > 0;
+
+        if (state.inputSearchClearX) {
+            state.inputSearchClearX.style.display = hasText ? 'inline-flex' : 'none';
+        }
+
+        const total = state.inputHitStarts.length;
+        const cur = total > 0 && state.inputHitIndex >= 0 ? (state.inputHitIndex + 1) : 0;
+
+        if (state.inputSearchNoResults) {
+            if (hasText && total <= 0) {
+                state.inputSearchNoResults.textContent = 'No results';
+                state.inputSearchNoResults.style.display = 'inline-flex';
+            } else {
+                state.inputSearchNoResults.textContent = '';
+                state.inputSearchNoResults.style.display = 'none';
+            }
+        }
+
+        if (state.inputSearchCounter) {
+            if (!hasText) state.inputSearchCounter.textContent = '';
+            else state.inputSearchCounter.textContent = `${cur} of ${total}`;
+        }
+
+        // Hide nav buttons completely when nothing typed
+        if (state.inputSearchUpBtn) state.inputSearchUpBtn.style.display = hasText ? 'inline-flex' : 'none';
+        if (state.inputSearchDownBtn) state.inputSearchDownBtn.style.display = hasText ? 'inline-flex' : 'none';
+
+        const disableNav = !hasText || total <= 0;
+        if (state.inputSearchUpBtn) state.inputSearchUpBtn.disabled = disableNav;
+        if (state.inputSearchDownBtn) state.inputSearchDownBtn.disabled = disableNav;
+    }
+
+    function runInputSearch(query, opts = {}) {
+        const { autoJump = true, keepFocusEl = null } = opts;
+
+        const q = String(query || '');
+        const trimmed = q.trim();
+        state.inputLastQuery = trimmed;
+
+        state.inputHitStarts = [];
+        state.inputHitIndex = -1;
+
+        if (!trimmed) {
+            updateInputSearchUi();
+            renderInputOverlay();      // <- ensure overlay resets to plain text
+            syncInputOverlayScroll();
+            return;
+        }
+
+        const text = String(state.input?.value || '');
+        if (!text) {
+            updateInputSearchUi();
+            renderInputOverlay();      // <- keep overlay in sync even when textarea is empty
+            syncInputOverlayScroll();
+            return;
+        }
+
+
+        const qLower = trimmed.toLowerCase();
+        const tLower = text.toLowerCase();
+
+        // collect all match starts
+        let from = 0;
+        while (true) {
+            const idx = tLower.indexOf(qLower, from);
+            if (idx === -1) break;
+            state.inputHitStarts.push(idx);
+            from = idx + Math.max(1, qLower.length);
+            if (state.inputHitStarts.length >= 5000) break;
+        }
+
+        if (!state.inputHitStarts.length) {
+            updateInputSearchUi();
+            return;
+        }
+
+        state.inputHitIndex = 0;
+        updateInputSearchUi();
+
+        // Render highlights in the overlay (so it stays visible even when focus is in the search input)
+        renderInputOverlay();
+
+        if (autoJump) {
+            jumpToInputHit(0, { keepFocusEl: keepFocusEl || state.inputSearchInput });
+            scrollTextareaToCurrentInputHit();
+        }
+
+    }
+
+
+    function getTextareaLineHeightPx(textarea) {
+        try {
+            const lh = getComputedStyle(textarea).lineHeight;
+            const v = parseFloat(lh || '0');
+            if (Number.isFinite(v) && v > 0) return v;
+        } catch (_) { }
+        return 18; // safe fallback
+    }
+
+    function scrollTextareaToPos(textarea, pos) {
+        if (!textarea) return;
+
+        const text = String(textarea.value || '');
+        const p = Math.max(0, Math.min(Number(pos) || 0, text.length));
+
+        // count lines before pos (fast enough for this use)
+        let lineIdx = 0;
+        for (let i = 0; i < p; i++) {
+            if (text.charCodeAt(i) === 10) lineIdx++; // '\n'
+        }
+
+        const lh = getTextareaLineHeightPx(textarea);
+        const target = (lineIdx * lh) - (textarea.clientHeight * 0.35);
+
+        const maxScroll = Math.max(0, textarea.scrollHeight - textarea.clientHeight);
+        textarea.scrollTop = Math.max(0, Math.min(maxScroll, target));
+    }
+
+    function jumpToInputHit(idx, opts = {}) {
+        const starts = state.inputHitStarts;
+        if (!starts.length) return;
+
+        const q = String(state.inputLastQuery || '');
+        if (!q) return;
+
+        const start = starts[idx];
+        const end = start + q.length;
+
+        const ta = state.input;
+        if (!ta) return;
+
+        // Keep focus/caret in the INPUT-SEARCH field (VSCode-like),
+        // but still scroll textarea and set selection so user sees the hit.
+        const keepFocusEl = opts.keepFocusEl || state.inputSearchInput || null;
+
+        let keepSelStart = null;
+        let keepSelEnd = null;
+
+        if (keepFocusEl && typeof keepFocusEl.selectionStart === 'number') {
+            keepSelStart = keepFocusEl.selectionStart;
+            keepSelEnd = keepFocusEl.selectionEnd;
+        }
+
+        try {
+            // set selection (some browsers require focus on textarea)
+            ta.focus({ preventScroll: true });
+            ta.setSelectionRange(start, end);
+        } catch (_) { }
+
+        // always ensure match becomes visible in the textarea viewport
+        scrollTextareaToPos(ta, start);
+        scrollTextareaToCurrentInputHit();
+
+        // restore focus back to the search input so typing continues there
+        if (keepFocusEl) {
+            try {
+                keepFocusEl.focus({ preventScroll: true });
+                if (typeof keepFocusEl.setSelectionRange === 'function' && keepSelStart != null && keepSelEnd != null) {
+                    keepFocusEl.setSelectionRange(keepSelStart, keepSelEnd);
+                }
+            } catch (_) { }
+        }
+    }
+
+
+    function nextInputHit() {
+        const q = (state.inputSearchInput?.value || '').trim();
+        if (!q) return;
+
+        if (!state.inputHitStarts.length) {
+            runInputSearch(q, { autoJump: true, keepFocusEl: state.inputSearchInput });
+            return;
+        }
+
+        state.inputHitIndex = (state.inputHitIndex + 1) % state.inputHitStarts.length;
+        updateInputSearchUi();
+        renderInputOverlay();
+        jumpToInputHit(state.inputHitIndex, { keepFocusEl: state.inputSearchInput });
+        scrollTextareaToCurrentInputHit();
+
+    }
+
+    function prevInputHit() {
+        const q = (state.inputSearchInput?.value || '').trim();
+        if (!q) return;
+
+        if (!state.inputHitStarts.length) {
+            runInputSearch(q, { autoJump: true, keepFocusEl: state.inputSearchInput });
+            return;
+        }
+
+        state.inputHitIndex = (state.inputHitIndex - 1 + state.inputHitStarts.length) % state.inputHitStarts.length;
+        updateInputSearchUi();
+
+        renderInputOverlay();
+        jumpToInputHit(state.inputHitIndex, { keepFocusEl: state.inputSearchInput });
+        scrollTextareaToCurrentInputHit();
+    }
+
+
+
     function updateSearchUi() {
         const q = String(state.searchInput?.value || '');
         const hasText = q.length > 0;
@@ -2482,10 +2798,35 @@
                 </div>
             </div>
 
-            <div class="jp-inputBlock">
-                <label class="jp-label" for="jpInput">Input</label>
-                <textarea id="jpInput" class="jp-input" spellcheck="false"
-                    placeholder="Paste JSON here (object or array). Tip: Ctrl+Enter to parse"></textarea>
+                           <div class="jp-inputBlock">
+                <div class="jp-inputTop">
+                    <label class="jp-label" for="jpInput">Input</label>
+
+                    <!-- Input search (search inside the raw textarea) -->
+                    <div class="jp-outputTools jp-inputTools" role="search" aria-label="Search in Input">
+                        <div class="jp-searchWrap">
+                            <span class="jp-searchIcon jp-noCopy" aria-hidden="true" data-no-copy="1">🔍</span>
+                            <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input..." autocomplete="off" />
+                            <button class="jp-searchX jp-inputSearchX" type="button" aria-label="Clear input search" title="Clear">×</button>
+                        </div>
+
+                        <div class="jp-searchMeta" aria-label="Input search matches">
+                            <div class="jp-searchNoResults jp-inputNoResults" aria-live="polite"></div>
+                            <div class="jp-searchCounter jp-inputCounter"></div>
+                            <button class="jp-navBtn" type="button" data-act="inputSearchUp" aria-label="Previous match" title="Previous (Shift+Enter)">▲</button>
+                            <button class="jp-navBtn" type="button" data-act="inputSearchDown" aria-label="Next match" title="Next (Enter)">▼</button>
+                        </div>
+                    </div>
+                </div>
+
+                                <div class="jp-inputArea">
+                    <div class="jp-inputOverlay" aria-hidden="true">
+                        <div class="jp-inputOverlayInner"></div>
+                    </div>
+
+                    <textarea id="jpInput" class="jp-input jp-inputHasOverlay" spellcheck="false"
+                        placeholder="Paste JSON here (object or array). Tip: Ctrl+Enter to parse"></textarea>
+                </div>
 
                 <div class="jp-inputActions">
                     <button class="jp-btn jp-primary" type="button" data-act="parse">Parse</button>
@@ -2494,6 +2835,8 @@
 
                 <div class="jp-status" data-kind="info"></div>
             </div>
+
+
 
             <div class="jp-outputBlock">
                 <div class="jp-outputTop">
@@ -2537,6 +2880,30 @@
         state.input = view.querySelector('#jpInput');
         state.output = view.querySelector('.jp-output');
         state.status = view.querySelector('.jp-status');
+        state.inputOverlay = view.querySelector('.jp-inputOverlay');
+        state.inputOverlayInner = view.querySelector('.jp-inputOverlayInner');
+
+        if (state.input) {
+            // keep overlay scrolled exactly like textarea
+            state.input.addEventListener('scroll', () => {
+                syncInputOverlayScroll();
+            });
+
+            // initial render
+            renderInputOverlay();
+            syncInputOverlayScroll();
+
+            // If user edits input while query exists, recompute hits + overlay
+            state.input.addEventListener('input', () => {
+                renderInputOverlay();
+
+                const qNow = String(state.inputSearchInput?.value || '').trim();
+                if (qNow) {
+                    runInputSearch(qNow, { autoJump: false, keepFocusEl: state.inputSearchInput });
+                }
+            });
+        }
+
 
         // Create overlay layer for indent guides (inside output)
         if (state.output) {
@@ -2600,13 +2967,23 @@
         state.parseBtn = view.querySelector('[data-act="parse"]');
         state.clearBtn = view.querySelector('[data-act="clear"]');
 
+        // ===== Input search refs =====
+        state.inputSearchInput = view.querySelector('#jpInputSearch');
+        state.inputSearchClearX = view.querySelector('.jp-inputSearchX');
+        state.inputSearchCounter = view.querySelector('.jp-inputCounter');
+        state.inputSearchNoResults = view.querySelector('.jp-inputNoResults');
+        state.inputSearchUpBtn = view.querySelector('[data-act="inputSearchUp"]');
+        state.inputSearchDownBtn = view.querySelector('[data-act="inputSearchDown"]');
+
+        // ===== Output (tree) search refs =====
         state.searchInput = view.querySelector('#jpSearch');
-        state.searchClearX = view.querySelector('.jp-searchX');
-        state.searchCounter = view.querySelector('.jp-searchCounter');
-        state.searchNoResults = view.querySelector('.jp-searchNoResults');
+        state.searchClearX = view.querySelector('.jp-searchX:not(.jp-inputSearchX)');
+        state.searchCounter = view.querySelector('.jp-searchCounter:not(.jp-inputCounter)');
+        state.searchNoResults = view.querySelector('.jp-searchNoResults:not(.jp-inputNoResults)');
 
         state.searchUpBtn = view.querySelector('[data-act="searchUp"]');
         state.searchDownBtn = view.querySelector('[data-act="searchDown"]');
+
 
         state.expandAllBtn = view.querySelector('[data-act="expandAll"]');
         state.collapseAllBtn = view.querySelector('[data-act="collapseAll"]');
@@ -2628,11 +3005,25 @@
 
         state.clearBtn.addEventListener('click', () => {
             state.input.value = '';
+
+            // clear input-search too
+            if (state.inputSearchInput) state.inputSearchInput.value = '';
+            state.inputLastQuery = '';
+            state.inputHitStarts = [];
+            state.inputHitIndex = -1;
+            updateInputSearchUi();
+            renderInputOverlay();
+            syncInputOverlayScroll();
+
+
+            // clear output-search too
             if (state.searchInput) state.searchInput.value = '';
+
             clearOutput();
             setStatus('Cleared.', 'info');
             state.input.focus();
         });
+
 
         state.expandAllBtn.addEventListener('click', expandAllChunked);
         state.collapseAllBtn.addEventListener('click', collapseAll);
@@ -2644,6 +3035,66 @@
                 parseAndRender();
             }
         });
+
+        function triggerInputLiveSearch() {
+            const qRaw = String(state.inputSearchInput?.value || '');
+            updateInputSearchUi();
+
+            // small debounce (separate from output search)
+            if (state.searchDebounceT) clearTimeout(state.searchDebounceT);
+            state.searchDebounceT = setTimeout(() => {
+                state.searchDebounceT = 0;
+
+                // Auto-jump is OK, but MUST NOT steal focus from the search input
+                runInputSearch(qRaw, { autoJump: true, keepFocusEl: state.inputSearchInput });
+            }, 70);
+        }
+
+
+        if (state.inputSearchInput) {
+            state.inputSearchInput.addEventListener('input', triggerInputLiveSearch);
+
+            state.inputSearchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    state.inputSearchInput.value = '';
+                    state.inputLastQuery = '';
+                    state.inputHitStarts = [];
+                    state.inputHitIndex = -1;
+                    updateInputSearchUi();
+                    renderInputOverlay();      // <- clear highlights visually
+                    syncInputOverlayScroll();
+                    return;
+                }
+
+
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (e.shiftKey) prevInputHit();
+                    else nextInputHit();
+                }
+            });
+        }
+
+        if (state.inputSearchClearX) {
+            state.inputSearchClearX.addEventListener('click', () => {
+                if (!state.inputSearchInput) return;
+                state.inputSearchInput.value = '';
+                state.inputLastQuery = '';
+                state.inputHitStarts = [];
+                state.inputHitIndex = -1;
+                updateInputSearchUi();
+                renderInputOverlay();      // <- clear highlights visually
+                syncInputOverlayScroll();
+                state.inputSearchInput.focus();
+            });
+        }
+
+        if (state.inputSearchDownBtn) state.inputSearchDownBtn.addEventListener('click', nextInputHit);
+        if (state.inputSearchUpBtn) state.inputSearchUpBtn.addEventListener('click', prevInputHit);
+
+        updateInputSearchUi();
+
 
         // ===== VSCode-like live search =====
 
@@ -2693,7 +3144,9 @@
         });
 
         setStatus('Paste JSON into the input and click Parse', 'info');
+        updateInputSearchUi();
         updateSearchUi();
+
     }
 
     function init(container) {

@@ -149,14 +149,21 @@
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--bg, #fff);
     padding: 10px 12px;
+
+    /* required for native resize handle */
     overflow: auto;
-    max-height: calc(100vh - 520px);
+    resize: vertical;
+
+    /* make resizing predictable */
+    height: 420px;
     min-height: 320px;
+    max-height: 80vh;
 
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 13px;
     line-height: 1.55;
 }
+
 
 .jp-tree {
     padding-bottom: 6px;
@@ -345,6 +352,56 @@ body.dark .jp-outputBlock,
     background: var(--bg, #fff);
     color: var(--text, #111);
 }
+
+/* Input search toolbar spacing */
+.jp-inputTools {
+    margin-top: 10px;
+}
+
+/* ===== Input top row: label (left) + input-search (right) ===== */
+.jp-inputTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* When search is in the top row, remove extra top margin */
+.jp-inputTop .jp-inputTools {
+    margin-top: 0;
+    width: auto;
+    justify-content: flex-end;
+}
+
+/* Small magnifier inside the input-search field */
+.jp-searchIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.55;
+    user-select: none;
+}
+
+/* Match placeholder-ish color in light/dark themes */
+.jp-searchWrap .jp-searchIcon {
+    color: rgba(55, 65, 81, 0.65);
+}
+
+.theme-night .jp-searchWrap .jp-searchIcon,
+.theme-dark .jp-searchWrap .jp-searchIcon,
+html.dark .jp-searchWrap .jp-searchIcon,
+body.dark .jp-searchWrap .jp-searchIcon,
+[data-theme="dark"] .jp-searchWrap .jp-searchIcon,
+[data-mode="dark"] .jp-searchWrap .jp-searchIcon {
+    color: rgba(212, 212, 212, 0.65);
+}
+
+
 
 .jp-input:focus {
     border-color: var(--accent, #3b82f6);
@@ -658,6 +715,125 @@ body.dark .jp-outputBlock,
     background: var(--bg, #fff);
     color: var(--text, #111);
 }
+
+/* ===== Input textarea: overlay highlighting (so matches stay visible without focus) ===== */
+
+.jp-inputArea {
+    position: relative;
+    margin-top: 10px;
+    /* keeps same spacing as before */
+}
+
+/* The overlay sits under the textarea and renders highlighted HTML */
+.jp-inputOverlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    overflow: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Inner mirrors textarea typography/spacing */
+.jp-inputOverlayInner {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.55;
+
+    padding: 12px 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    color: var(--text, #111);
+}
+
+/* Put textarea above the overlay, but make its text transparent (caret stays visible) */
+.jp-input.jp-inputHasOverlay {
+    position: relative;
+    z-index: 2;
+
+    background: transparent !important;
+    color: transparent !important;
+    caret-color: var(--text, #111);
+}
+
+/* FIX: textarea must NEVER paint its own background/text when overlay mode is enabled.
+   In your file, later dark-theme rules override .jp-input color/background -> that causes "double text".
+   So we:
+   1) draw the background on the overlay layer
+   2) force textarea to stay transparent even in dark theme. */
+
+/* Overlay provides the visible background */
+.jp-inputOverlay {
+    background: var(--bg, #fff);
+}
+
+/* Dark theme: use the same “panel bg” as your sidebar-like style */
+.theme-night .jp-inputOverlay,
+.theme-dark .jp-inputOverlay,
+html.dark .jp-inputOverlay,
+body.dark .jp-inputOverlay,
+[data-theme="dark"] .jp-inputOverlay,
+[data-mode="dark"] .jp-inputOverlay {
+    background: var(--jp-panel-bg, rgba(11, 16, 28, 0.92));
+}
+
+/* Strong override after dark-theme textarea rules */
+.theme-night .jp-input.jp-inputHasOverlay,
+.theme-dark .jp-input.jp-inputHasOverlay,
+html.dark .jp-input.jp-inputHasOverlay,
+body.dark .jp-input.jp-inputHasOverlay,
+[data-theme="dark"] .jp-input.jp-inputHasOverlay,
+[data-mode="dark"] .jp-input.jp-inputHasOverlay {
+    background: transparent !important;
+    color: transparent !important;
+}
+
+
+/* Match highlight inside Input */
+.jp-inputHitText {
+    background: rgba(245, 158, 11, 0.28);
+    outline: 1px solid rgba(245, 158, 11, 0.45);
+    border-radius: 3px;
+    padding: 0 1px;
+}
+
+.jp-inputHitText.jp-inputHitCurrent {
+    background: rgba(245, 158, 11, 0.42);
+    outline: 1px solid rgba(245, 158, 11, 0.70);
+}
+
+/* Dark theme: keep caret and overlay readable */
+.theme-night .jp-inputOverlayInner,
+.theme-dark .jp-inputOverlayInner,
+html.dark .jp-inputOverlayInner,
+body.dark .jp-inputOverlayInner,
+[data-theme="dark"] .jp-inputOverlayInner,
+[data-mode="dark"] .jp-inputOverlayInner {
+    color: rgba(212, 212, 212, 0.95);
+}
+
+.theme-night .jp-input.jp-inputHasOverlay,
+.theme-dark .jp-input.jp-inputHasOverlay,
+html.dark .jp-input.jp-inputHasOverlay,
+body.dark .jp-input.jp-inputHasOverlay,
+[data-theme="dark"] .jp-input.jp-inputHasOverlay,
+[data-mode="dark"] .jp-input.jp-inputHasOverlay {
+    caret-color: rgba(212, 212, 212, 0.95);
+}
+
+.theme-night .jp-inputHitText,
+.theme-dark .jp-inputHitText {
+    background: rgba(220, 220, 170, 0.30);
+    outline: 1px solid rgba(220, 220, 170, 0.55);
+}
+
+.theme-night .jp-inputHitText.jp-inputHitCurrent,
+.theme-dark .jp-inputHitText.jp-inputHitCurrent {
+    background: rgba(220, 220, 170, 0.45);
+    outline: 1px solid rgba(220, 220, 170, 0.75);
+}
+
 
 .jp-input:focus {
     border-color: var(--accent, #3b82f6);
