@@ -23,6 +23,7 @@
         inputSearchNoResults: null,
         inputSearchUpBtn: null,
         inputSearchDownBtn: null,
+        inputSearchWrap: null,
 
         // input hits
         inputHitStarts: [],
@@ -2283,6 +2284,12 @@
         const q = String(state.inputSearchInput?.value || '');
         const hasText = q.length > 0;
 
+        // NEW: toggle wrapper class so icon can hide when text exists
+        if (state.inputSearchWrap) {
+            state.inputSearchWrap.classList.toggle('jp-hasText', hasText);
+        }
+
+
         if (state.inputSearchClearX) {
             state.inputSearchClearX.style.display = hasText ? 'inline-flex' : 'none';
         }
@@ -2486,6 +2493,11 @@
     function updateSearchUi() {
         const q = String(state.searchInput?.value || '');
         const hasText = q.length > 0;
+
+        // NEW: toggle wrapper class so icon can hide when text exists
+        const wrap = state.searchInput?.closest('.jp-searchWrap') || null;
+        if (wrap) wrap.classList.toggle('jp-hasText', hasText);
+
 
         if (state.searchClearX) {
             state.searchClearX.style.display = hasText ? 'inline-flex' : 'none';
@@ -2805,10 +2817,17 @@
                     <!-- Input search (search inside the raw textarea) -->
                     <div class="jp-outputTools jp-inputTools" role="search" aria-label="Search in Input">
                         <div class="jp-searchWrap">
-                            <span class="jp-searchIcon jp-noCopy" aria-hidden="true" data-no-copy="1">🔍</span>
-                            <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input..." autocomplete="off" />
-                            <button class="jp-searchX jp-inputSearchX" type="button" aria-label="Clear input search" title="Clear">×</button>
-                        </div>
+                         <span class="jp-searchIcon jp-noCopy" aria-hidden="true" data-no-copy="1">
+                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                             <circle cx="11" cy="11" r="7"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          </svg>
+                         </span>
+                   <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input..." autocomplete="off" />
+                  <button class="jp-searchX jp-inputSearchX" type="button" aria-label="Clear input search" title="Clear">×</button>
+                    </div>
+
 
                         <div class="jp-searchMeta" aria-label="Input search matches">
                             <div class="jp-searchNoResults jp-inputNoResults" aria-live="polite"></div>
@@ -2847,9 +2866,17 @@
                         <button class="jp-btn jp-small" type="button" data-act="collapseAll">Collapse all</button>
 
                         <div class="jp-searchWrap" role="search">
-                            <input id="jpSearch" class="jp-search" type="text" placeholder="Search in JSON..." autocomplete="off" />
-                            <button class="jp-searchX" type="button" aria-label="Clear search" title="Clear">×</button>
-                        </div>
+    <span class="jp-searchIcon jp-noCopy" aria-hidden="true" data-no-copy="1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </span>
+    <input id="jpSearch" class="jp-search" type="text" placeholder="Search in JSON..." autocomplete="off" />
+    <button class="jp-searchX" type="button" aria-label="Clear search" title="Clear">×</button>
+</div>
+
 
                                                <div class="jp-searchMeta" aria-label="Search matches">
                             <div class="jp-searchNoResults" aria-live="polite"></div>
@@ -2967,6 +2994,7 @@
         state.parseBtn = view.querySelector('[data-act="parse"]');
         state.clearBtn = view.querySelector('[data-act="clear"]');
 
+
         // ===== Input search refs =====
         state.inputSearchInput = view.querySelector('#jpInputSearch');
         state.inputSearchClearX = view.querySelector('.jp-inputSearchX');
@@ -2975,8 +3003,12 @@
         state.inputSearchUpBtn = view.querySelector('[data-act="inputSearchUp"]');
         state.inputSearchDownBtn = view.querySelector('[data-act="inputSearchDown"]');
 
+        // NEW: wrapper for icon hide-on-text
+        state.inputSearchWrap = state.inputSearchInput?.closest('.jp-searchWrap') || null;
+
         // ===== Output (tree) search refs =====
         state.searchInput = view.querySelector('#jpSearch');
+
         state.searchClearX = view.querySelector('.jp-searchX:not(.jp-inputSearchX)');
         state.searchCounter = view.querySelector('.jp-searchCounter:not(.jp-inputCounter)');
         state.searchNoResults = view.querySelector('.jp-searchNoResults:not(.jp-inputNoResults)');
