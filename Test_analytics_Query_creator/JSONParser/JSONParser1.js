@@ -18,6 +18,7 @@
         searchInput: null,
         searchClearX: null,
         searchCounter: null,
+        searchNoResults: null,
         searchUpBtn: null,
         searchDownBtn: null,
 
@@ -325,14 +326,55 @@
             const closeRow = detailsEl.querySelector(':scope > .jp-children > .jp-row:last-child');
             if (!summaryRow || !closeRow) return;
 
-            const sumRect = summaryRow.getBoundingClientRect();
-            const closeRect = closeRow.getBoundingClientRect();
+            const sumLine =
+                summaryRow.querySelector(':scope > .jp-line') ||
+                summaryRow.querySelector('.jp-line');
+
+            const closeLine =
+                closeRow.querySelector(':scope > .jp-line') ||
+                closeRow.querySelector('.jp-line');
+
+            if (!sumLine || !closeLine) return;
+
+            const sumRect = sumLine.getBoundingClientRect();
+            const closeRect = closeLine.getBoundingClientRect();
+
             if (sumRect.height === 0 || closeRect.height === 0) return;
 
-            // top: align to the first text baseline area of summary
-            const top = sumRect.top - outRect.top + state.output.scrollTop + 2;
-            // bottom: to the bottom of closing line
-            const bottom = closeRect.bottom - outRect.top + state.output.scrollTop - 2;
+            // ===== TOP: start BELOW the anchor (toggle or key quotes), not through it =====
+            const keyElTop =
+                summaryRow.querySelector(':scope .jp-key') ||
+                summaryRow.querySelector('.jp-key');
+
+            const toggleElTop =
+                summaryRow.querySelector(':scope .jp-toggle') ||
+                summaryRow.querySelector('.jp-toggle');
+
+            let topAnchorBottom = sumRect.top;
+
+            if (keyElTop) {
+                const r = keyElTop.getBoundingClientRect();
+                topAnchorBottom = Math.max(topAnchorBottom, r.bottom);
+            } else if (toggleElTop) {
+                const r = toggleElTop.getBoundingClientRect();
+                topAnchorBottom = Math.max(topAnchorBottom, r.bottom);
+            }
+
+            const top = (topAnchorBottom - outRect.top) + state.output.scrollTop + 2;
+
+            // ===== BOTTOM: stop AT the closing bracket (do not cross it) =====
+            const closeBracketEl =
+                closeRow.querySelector(':scope > .jp-line .jp-bracket') ||
+                closeRow.querySelector('.jp-line .jp-bracket');
+
+            let bottomAnchorTop = closeRect.bottom;
+
+            if (closeBracketEl) {
+                const br = closeBracketEl.getBoundingClientRect();
+                bottomAnchorTop = Math.min(bottomAnchorTop, br.top);
+            }
+
+            const bottom = (bottomAnchorTop - outRect.top) + state.output.scrollTop - 1;
 
             if (bottom <= top + 6) return;
 
@@ -371,7 +413,8 @@
 
             const v = document.createElement('div');
             v.className = 'jp-guideLine';
-            v.style.left = `${x}px`;
+            const crispX = Math.round(x) + 0.5;
+            v.style.left = `${crispX}px`;
             v.style.top = `${top}px`;
             v.style.height = `${Math.max(6, bottom - top)}px`;
 
@@ -1233,7 +1276,7 @@
         return row;
     }
 
-    function renderClosingLine({ depth, path, closeChar, needComma }) {
+    function renderClosingLine({ depth, path, closeChar, needComma, hasKey }) {
         const lineNo = state.closeLine?.get(path) || '';
         const { row, line } = makeLineRow({
             depth,
@@ -1241,12 +1284,23 @@
             searchableText: closeChar
         });
 
+        // If the opening summary had NO key (root / array item), it had a toggle before "{/["
+        // To keep closing bracket aligned under the same column, add an invisible placeholder.
+        if (!hasKey) {
+            const ph = document.createElement('span');
+            ph.className = 'jp-togglePlaceholder jp-noCopy';
+            ph.dataset.noCopy = '1';
+            ph.textContent = '−'; // irrelevant, hidden; just stabilizes width in older browsers too
+            line.appendChild(ph);
+        }
+
         // Color close bracket by the SAME depth as opener summary line
         line.appendChild(makeBracketSpan(closeChar, depth));
         appendComma(line, needComma);
 
         return row;
     }
+
 
 
     function makeBranch({
@@ -1301,6 +1355,10 @@
         details.dataset.jpRendered = '0';
         details.dataset.jpCloseChar = closeChar;
         details.dataset.jpNeedCommaOnClose = (!isLast ? '1' : '0');
+
+        // Needed to align closing bracket under the toggle for "standalone" containers (root/array items)
+        details.dataset.jpHasKey = (parentKind === 'object' && key != null) ? '1' : '0';
+
 
         const summary = document.createElement('summary');
         summary.className = 'jp-row jp-summary jp-searchable';
@@ -1417,12 +1475,16 @@
         const needCommaOnClose = details.dataset.jpNeedCommaOnClose === '1';
         const closeChar = details.dataset.jpCloseChar || (Array.isArray(value) ? ']' : '}');
 
+        const hasKeyOnSummary = details.dataset.jpHasKey === '1';
+
         frag.appendChild(renderClosingLine({
             depth: parentDepth || 0,
             path,
             closeChar,
-            needComma: needCommaOnClose
+            needComma: needCommaOnClose,
+            hasKey: hasKeyOnSummary
         }));
+
 
         children.appendChild(frag);
         requestRenumber();
@@ -2116,6 +2178,17 @@
         const total = state.hitPaths.length;
         const cur = total > 0 && state.hitIndex >= 0 ? (state.hitIndex + 1) : 0;
 
+        // VSCode-like: show red "No results" when query exists but 0 matches
+        if (state.searchNoResults) {
+            if (hasText && total <= 0) {
+                state.searchNoResults.textContent = 'No results';
+                state.searchNoResults.style.display = 'inline-flex';
+            } else {
+                state.searchNoResults.textContent = '';
+                state.searchNoResults.style.display = 'none';
+            }
+        }
+
         if (state.searchCounter) {
             if (!hasText) state.searchCounter.textContent = '';
             else state.searchCounter.textContent = `${cur} of ${total}`;
@@ -2125,6 +2198,7 @@
         if (state.searchUpBtn) state.searchUpBtn.disabled = disableNav;
         if (state.searchDownBtn) state.searchDownBtn.disabled = disableNav;
     }
+
 
     function runSearch(query, opts = {}) {
         const { silentStatus = false, autoJump = true } = opts;
@@ -2428,11 +2502,13 @@
                             <button class="jp-searchX" type="button" aria-label="Clear search" title="Clear">×</button>
                         </div>
 
-                        <div class="jp-searchMeta" aria-label="Search matches">
+                                               <div class="jp-searchMeta" aria-label="Search matches">
+                            <div class="jp-searchNoResults" aria-live="polite"></div>
                             <div class="jp-searchCounter"></div>
                             <button class="jp-navBtn" type="button" data-act="searchUp" aria-label="Previous match" title="Previous (Shift+Enter)">▲</button>
                             <button class="jp-navBtn" type="button" data-act="searchDown" aria-label="Next match" title="Next (Enter)">▼</button>
                         </div>
+
 
                         <!-- Error summary (shows only when tolerant parse found issues) -->
                         <button class="jp-errBtn" type="button" data-act="errors" style="display:none"></button>
@@ -2521,6 +2597,8 @@
         state.searchInput = view.querySelector('#jpSearch');
         state.searchClearX = view.querySelector('.jp-searchX');
         state.searchCounter = view.querySelector('.jp-searchCounter');
+        state.searchNoResults = view.querySelector('.jp-searchNoResults');
+
         state.searchUpBtn = view.querySelector('[data-act="searchUp"]');
         state.searchDownBtn = view.querySelector('[data-act="searchDown"]');
 

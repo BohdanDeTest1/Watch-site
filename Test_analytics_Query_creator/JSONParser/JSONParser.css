@@ -749,28 +749,44 @@ body.dark .jp-outputBlock,
     justify-content: center;
 }
 
-/* Search input wrapper with inner clear (X) */
+/* Search input wrapper with inner clear (X)
+   IMPORTANT: make it a real "field" with flex layout,
+   so input text never goes under the X (no overlay). */
 .jp-searchWrap {
-    position: relative;
     display: inline-flex;
     align-items: center;
+    gap: 6px;
+
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, .18));
+    background: var(--bg, #fff);
+
+    padding: 0 6px;
 }
 
-/* Add right padding so text won't overlap X */
+/* Focus ring on the whole field */
+.jp-searchWrap:focus-within {
+    border-color: var(--accent, #3b82f6);
+}
+
+/* The input becomes borderless inside the wrapper */
 .jp-searchWrap .jp-search {
-    padding-right: 54px;
-    /* enough room so text never goes under the X */
+    border: none !important;
+    background: transparent !important;
+
+    flex: 1 1 auto;
+    min-width: 180px;
+
+    padding: 0 6px;
+    /* vertical height handled by toolbar height rule */
     font-size: 15px;
-    /* slightly bigger typed text */
+    outline: none;
 }
 
-
-/* The inner clear X */
+/* The clear X is a normal element in the row (no absolute positioning) */
 .jp-searchX {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
+    transform: none;
 
     width: 28px;
     height: 28px;
@@ -796,6 +812,23 @@ body.dark .jp-outputBlock,
     filter: none;
 }
 
+/* Dark theme tune: wrapper border/bg should look like other controls */
+.theme-night .jp-searchWrap,
+.theme-dark .jp-searchWrap,
+html.dark .jp-searchWrap,
+body.dark .jp-searchWrap,
+[data-theme="dark"] .jp-searchWrap,
+[data-mode="dark"] .jp-searchWrap {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(10, 14, 24, 0.55);
+}
+
+
+.jp-searchX:hover {
+    opacity: .9;
+    filter: none;
+}
+
 
 /* Counter + arrows block (between input and anything on the right) */
 .jp-searchMeta {
@@ -803,6 +836,31 @@ body.dark .jp-outputBlock,
     align-items: center;
     gap: 8px;
 }
+
+/* Red "No results" label (VSCode-like) */
+.jp-searchNoResults {
+    display: none;
+    align-items: center;
+
+    font-size: 13px;
+    font-weight: 900;
+    white-space: nowrap;
+
+    color: #dc2626;
+    /* red */
+    opacity: 0.95;
+}
+
+.theme-night .jp-searchNoResults,
+.theme-dark .jp-searchNoResults,
+html.dark .jp-searchNoResults,
+body.dark .jp-searchNoResults,
+[data-theme="dark"] .jp-searchNoResults,
+[data-mode="dark"] .jp-searchNoResults {
+    color: #f87171;
+    /* softer red in dark */
+}
+
 
 /* "1 of 118" */
 .jp-searchCounter {
@@ -1278,6 +1336,23 @@ body.dark,
 
     margin-right: 6px;
 }
+
+/* Invisible placeholder to align closing } / ] under the same column as toggle */
+.jp-togglePlaceholder {
+    /* Shift close bracket slightly, but not as wide as the whole toggle.
+       This keeps closing braces from drifting too far right in some blocks. */
+    width: 9px;
+    height: 18px;
+
+    display: inline-block;
+    margin-right: 0;
+
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+}
+
+
 
 /* MINUS (open) — soft orange (not "error red") */
 .jp-toggle.is-open {
