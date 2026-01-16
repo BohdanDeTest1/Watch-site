@@ -411,10 +411,10 @@ body.dark .jp-outputBlock,
     color: transparent !important;
 }
 
-/* Icon visibility rules (no layout impact because it's absolute) */
+/* Icon visibility rules (KEEP icon always visible) */
 .jp-searchWrap:focus-within .jp-searchIcon,
 .jp-searchWrap.jp-hasText .jp-searchIcon {
-    opacity: 0;
+    opacity: 1;
 }
 
 
@@ -1051,19 +1051,22 @@ body.dark .jp-input.jp-inputHasOverlay,
     /* IMPORTANT: needed for absolute magnifier positioning */
     position: relative;
 
-    /* Make the whole field size stable (so it doesn't grow/shrink on first char) */
-    width: min(520px, 70vw);
+    /* Вернули компактную ширину как раньше (не на пол-экрана) */
+    width: min(265px, 40vw);
     flex: 0 0 auto;
 
-    /* Default text start when icon is visible (more space so placeholder never overlaps the icon) */
-    --jp-search-pl: 40px;
+    /* Лупа стоит left:10px и svg ~16px.
+       Хотим gap ~5px => 10 + 16 + 5 = 31px (округляем до 32) */
+    --jp-search-pl: 32px;
 }
 
-/* When focused OR has text: icon disappears, text should start from the left */
+/* Лупа всегда видна => padding слева не меняем при фокусе/вводе */
 .jp-searchWrap:focus-within,
 .jp-searchWrap.jp-hasText {
-    --jp-search-pl: 10px;
+    --jp-search-pl: 32px;
 }
+
+
 
 /* Focus ring on the whole field */
 .jp-searchWrap:focus-within {
@@ -1075,15 +1078,19 @@ body.dark .jp-input.jp-inputHasOverlay,
     background: transparent !important;
 
     flex: 1 1 auto;
-    min-width: 180px;
+    min-width: 0;
+    /* чтобы input не раздувал обёртку */
 
-    /* left padding adapts: with icon (default) / without icon (focus or hasText)
-       field width stays the same */
-    padding: 0 6px 0 var(--jp-search-pl);
+    /* Текст/placeholder: 4–5px от лупы обеспечивается --jp-search-pl (32px) */
+    padding: 10px 12px 10px var(--jp-search-pl) !important;
 
     font-size: 15px;
     outline: none;
 }
+
+
+
+
 
 /* The clear X ALWAYS takes space (so width never changes),
    but becomes visible/clickable only when wrapper has text. */
@@ -1398,8 +1405,10 @@ body.dark .jp-hitText,
 
 
 .jp-outputTools .jp-search {
-    width: min(420px, 40vw);
-    min-width: 220px;
+    /* ВАЖНО: ширину контролирует .jp-searchWrap, а не сам input.
+       Иначе поле разъезжается на пол-экрана. */
+    width: 100%;
+    min-width: 0;
 }
 
 
