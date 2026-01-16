@@ -358,13 +358,15 @@ body.dark .jp-outputBlock,
     margin-top: 10px;
 }
 
-/* ===== Input top row: label (left) + input-search (right) ===== */
 .jp-inputTop {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* label left, tools hard-right */
     gap: 12px;
 }
+
+
 
 /* When search is in the top row, remove extra top margin */
 .jp-inputTop .jp-inputTools {
@@ -388,6 +390,13 @@ body.dark .jp-outputBlock,
 
     /* NEW: force grey (no colored emoji) */
     color: rgba(156, 163, 175, 0.95);
+
+    /* IMPORTANT: do NOT take layout space (prevents "typing starts from the middle") */
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 /* SVG sizing */
@@ -397,19 +406,15 @@ body.dark .jp-outputBlock,
     display: block;
 }
 
-/* NEW: hide icon when field is focused */
-.jp-searchWrap:focus-within .jp-searchIcon {
-    display: none;
-}
-
-/* NEW: hide placeholder text when focused (Input + Output search) */
+/* Hide placeholder text when focused (Input + Output search) */
 .jp-searchWrap:focus-within .jp-search::placeholder {
     color: transparent !important;
 }
 
-/* NEW: hide icon when there is text (even after blur) */
+/* Icon visibility rules (no layout impact because it's absolute) */
+.jp-searchWrap:focus-within .jp-searchIcon,
 .jp-searchWrap.jp-hasText .jp-searchIcon {
-    display: none;
+    opacity: 0;
 }
 
 
@@ -453,6 +458,12 @@ body.dark .jp-searchWrap .jp-searchIcon,
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 13px;
     line-height: 1.55;
+}
+
+/* Force output "code field" background to match input field in LIGHT theme as well */
+.jp-output,
+.jp-output.jp-outputCode {
+    background: var(--bg, #fff) !important;
 }
 
 .jp-tree {
@@ -972,15 +983,34 @@ body.dark .jp-input.jp-inputHasOverlay,
     width: 100%;
 }
 
-/* Input-top search: force the tools row to shrink and hug the right edge (override width:100%) */
+/* Input-top search: tools pinned to the right edge, meta (counter+nav) on the LEFT of the field */
 .jp-inputTop .jp-outputTools.jp-inputTools {
     width: auto !important;
     justify-content: flex-end !important;
     flex: 0 0 auto;
 
-    /* NEW: push a bit to the right so it aligns with the block edge like in your screenshot */
+    /* hard-right align */
     margin-left: auto;
-    transform: translateX(6px);
+
+    /* never shift horizontally */
+    transform: none;
+
+    /* align to the same right edge as the textarea */
+    padding-right: 0;
+}
+
+/* Reorder inside input-tools so the SEARCH FIELD stays at the far right,
+   while "1 of N" and arrows live to the LEFT (and can grow leftwards). */
+.jp-outputTools.jp-inputTools .jp-searchWrap {
+    order: 3;
+}
+
+.jp-outputTools.jp-inputTools .jp-searchMeta {
+    order: 2;
+}
+
+.jp-outputTools.jp-inputTools .jp-searchNoResults.jp-inputNoResults {
+    order: 1;
 }
 
 
@@ -1007,9 +1037,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     justify-content: center;
 }
 
-/* Search input wrapper with inner clear (X)
-   IMPORTANT: make it a real "field" with flex layout,
-   so input text never goes under the X (no overlay). */
 .jp-searchWrap {
     display: inline-flex;
     align-items: center;
@@ -1020,6 +1047,22 @@ body.dark .jp-input.jp-inputHasOverlay,
     background: var(--bg, #fff);
 
     padding: 0 6px;
+
+    /* IMPORTANT: needed for absolute magnifier positioning */
+    position: relative;
+
+    /* Make the whole field size stable (so it doesn't grow/shrink on first char) */
+    width: min(520px, 70vw);
+    flex: 0 0 auto;
+
+    /* Default text start when icon is visible (more space so placeholder never overlaps the icon) */
+    --jp-search-pl: 40px;
+}
+
+/* When focused OR has text: icon disappears, text should start from the left */
+.jp-searchWrap:focus-within,
+.jp-searchWrap.jp-hasText {
+    --jp-search-pl: 10px;
 }
 
 /* Focus ring on the whole field */
@@ -1027,7 +1070,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     border-color: var(--accent, #3b82f6);
 }
 
-/* The input becomes borderless inside the wrapper */
 .jp-searchWrap .jp-search {
     border: none !important;
     background: transparent !important;
@@ -1035,13 +1077,16 @@ body.dark .jp-input.jp-inputHasOverlay,
     flex: 1 1 auto;
     min-width: 180px;
 
-    padding: 0 6px;
-    /* vertical height handled by toolbar height rule */
+    /* left padding adapts: with icon (default) / without icon (focus or hasText)
+       field width stays the same */
+    padding: 0 6px 0 var(--jp-search-pl);
+
     font-size: 15px;
     outline: none;
 }
 
-/* The clear X is a normal element in the row (no absolute positioning) */
+/* The clear X ALWAYS takes space (so width never changes),
+   but becomes visible/clickable only when wrapper has text. */
 .jp-searchX {
     position: static;
     transform: none;
@@ -1059,16 +1104,28 @@ body.dark .jp-input.jp-inputHasOverlay,
     font-size: 20px;
     line-height: 1;
 
-    opacity: .55;
-    display: none;
-    /* shown via JS */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     padding: 0;
+
+    /* hidden by default (but still occupies width) */
+    opacity: 0;
+    pointer-events: none;
 }
 
-.jp-searchX:hover {
+.jp-searchWrap.jp-hasText .jp-searchX {
+    opacity: .55;
+    pointer-events: auto;
+}
+
+.jp-searchWrap.jp-hasText .jp-searchX:hover {
     opacity: .9;
     filter: none;
 }
+
+
 
 /* Dark theme tune: wrapper border/bg should look like other controls */
 .theme-night .jp-searchWrap,
@@ -1078,8 +1135,11 @@ body.dark .jp-searchWrap,
 [data-theme="dark"] .jp-searchWrap,
 [data-mode="dark"] .jp-searchWrap {
     border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(10, 14, 24, 0.55);
+
+    /* keep consistent with the main "field" background used by input/output */
+    background: var(--jp-field-bg, rgba(8, 12, 20, 0.92));
 }
+
 
 /* ===== Dark theme: higher contrast (card ≠ field) like your reference ===== */
 .theme-night,

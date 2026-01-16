@@ -2291,7 +2291,9 @@
 
 
         if (state.inputSearchClearX) {
-            state.inputSearchClearX.style.display = hasText ? 'inline-flex' : 'none';
+            // Keep space reserved so the search field width never changes.
+            // Visibility/interaction are controlled via CSS + .jp-hasText on wrapper.
+            state.inputSearchClearX.style.display = 'inline-flex';
         }
 
         const total = state.inputHitStarts.length;
@@ -2500,8 +2502,11 @@
 
 
         if (state.searchClearX) {
-            state.searchClearX.style.display = hasText ? 'inline-flex' : 'none';
+            // Keep space reserved so the search field width never changes.
+            // Visibility/interaction are controlled via CSS + .jp-hasText on wrapper.
+            state.searchClearX.style.display = 'inline-flex';
         }
+
 
         const total = state.hitPaths.length;
         const cur = total > 0 && state.hitIndex >= 0 ? (state.hitIndex + 1) : 0;
@@ -2815,7 +2820,10 @@
                     <label class="jp-label" for="jpInput">Input</label>
 
                     <!-- Input search (search inside the raw textarea) -->
-                    <div class="jp-outputTools jp-inputTools" role="search" aria-label="Search in Input">
+                                       <div class="jp-outputTools jp-inputTools" role="search" aria-label="Search in Input">
+                        <!-- No results MUST be on the left so the field never shifts -->
+                        <div class="jp-searchNoResults jp-inputNoResults" aria-live="polite"></div>
+
                         <div class="jp-searchWrap">
                          <span class="jp-searchIcon jp-noCopy" aria-hidden="true" data-no-copy="1">
                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -2824,18 +2832,17 @@
                           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                           </svg>
                          </span>
-                   <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input..." autocomplete="off" />
+                   <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input." autocomplete="off" />
                   <button class="jp-searchX jp-inputSearchX" type="button" aria-label="Clear input search" title="Clear">×</button>
                     </div>
 
-
                         <div class="jp-searchMeta" aria-label="Input search matches">
-                            <div class="jp-searchNoResults jp-inputNoResults" aria-live="polite"></div>
                             <div class="jp-searchCounter jp-inputCounter"></div>
                             <button class="jp-navBtn" type="button" data-act="inputSearchUp" aria-label="Previous match" title="Previous (Shift+Enter)">▲</button>
                             <button class="jp-navBtn" type="button" data-act="inputSearchDown" aria-label="Next match" title="Next (Enter)">▼</button>
                         </div>
                     </div>
+
                 </div>
 
                                 <div class="jp-inputArea">
