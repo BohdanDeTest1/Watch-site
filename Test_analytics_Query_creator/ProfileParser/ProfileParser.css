@@ -515,19 +515,51 @@
     justify-content: flex-end;
 }
 
+/* Manual fallback: Open link button must be compact (no full-width stretch) */
+#pp-root .pp-manual-open-btn,
+#pp-root .pp-open-json {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    /* “10px по ширине” = паддинг слева/справа */
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    white-space: nowrap;
+}
+
+
 #pp-root .pp-manual-parse {
     height: 34px;
-    padding: 0 14px;
+
+    /* компактно, без растяжения */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* “10px по ширине” = паддинг слева/справа */
+    padding: 0 10px;
+
     border-radius: 6px;
-    max-width: 100px;
     border: 1px solid var(--accent);
     background: var(--accent);
+
+    /* у btn-primary часто белый текст, но тут оставляем как было */
     color: var(--btn-n-field-bg);
+
     font-weight: 800;
     cursor: pointer;
-    max-width: 100px;
-    min-width: 100px;
+
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    white-space: nowrap;
 }
+
 
 #pp-root .pp-manual-parse:hover {
     opacity: .85;
