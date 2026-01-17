@@ -2832,7 +2832,7 @@
                           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                           </svg>
                          </span>
-                   <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input." autocomplete="off" />
+                   <input id="jpInputSearch" class="jp-search" type="text" placeholder="Search in Input..." autocomplete="off" />
                   <button class="jp-searchX jp-inputSearchX" type="button" aria-label="Clear input search" title="Clear">×</button>
                     </div>
 

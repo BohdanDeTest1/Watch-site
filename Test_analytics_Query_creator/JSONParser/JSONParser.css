@@ -687,6 +687,10 @@ body.dark .jp-searchWrap .jp-searchIcon,
     font-weight: 800;
 }
 
+
+
+
+
 /* Make toolbar buttons visually consistent */
 .jp-outputTools .jp-btn.jp-primary {
     padding: 8px 14px;
@@ -1395,13 +1399,19 @@ body.dark .jp-hitText,
 
 
 
-/* Critical: prevent buttons/inputs inside from becoming full-width */
-.jp-outputTools>.jp-btn,
+/* Critical: prevent controls inside from becoming full-width */
+/* IMPORTANT: do NOT override button width here, иначе кнопки нельзя фиксировать */
+.jp-outputTools>.jp-btn {
+    flex: 0 0 auto !important;
+    display: inline-flex;
+}
+
 .jp-outputTools>.jp-search {
     width: auto !important;
     flex: 0 0 auto !important;
     display: inline-flex;
 }
+
 
 
 .jp-outputTools .jp-search {
@@ -2213,4 +2223,52 @@ body.dark .jp-inputHitText.jp-inputHitCurrent,
     background: rgba(245, 158, 11, 0.98);
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.45);
     color: #111111 !important;
+}
+
+/* Critical: prevent buttons/inputs inside from becoming full-width */
+/* IMPORTANT: don't force width:auto for buttons — it blocks fixed/min width rules above */
+.jp-outputTools>.jp-btn {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+
+    /* Center text inside (fixes your "text not centered" when min-width is used) */
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.jp-outputTools>.jp-search {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+}
+
+/* Expand all / Collapse all buttons — fixed width + centered text */
+.jp-outputTools .jp-btn.jp-small {
+    width: 100px !important;
+    min-width: 100px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+    line-height: 1 !important;
+}
+
+/* Critical: prevent buttons/inputs inside from becoming full-width */
+.jp-outputTools>.jp-btn,
+.jp-outputTools>.jp-search {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    display: inline-flex;
+
+    /* FIX: центрирование содержимого (text-align не работает на flex) */
+    align-items: center;
+    justify-content: center;
+}
+
+/* FIX: Expand/Collapse (это jp-btn jp-small) — минимальная ширина 100px */
+.jp-outputTools>.jp-btn.jp-small {
+    min-width: 100px;
 }
