@@ -483,10 +483,17 @@
       
     </div>
 
-    <div class="pp-pager" id="ppPromoPager">
-      <button id="ppPromoResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
-        Reset Filters
-      </button>
+       <div class="pp-pager" id="ppPromoPager">
+      <div class="pp-pager-left">
+        <button id="ppPromoResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
+          Reset Filters
+        </button>
+
+        <button id="ppPromoShowJsonBtn" class="pp-btn primary pp-show-json" type="button" title="Show full JSON in the parser" disabled>
+          Show full JSON in the parser
+        </button>
+      </div>
+
 
       <span class="pp-label">Rows per page</span>
       <span class="pp-sel-wrap">
@@ -1429,6 +1436,32 @@
     const nextBtn = wrap.querySelector('#ppPromoNext');
     const lastBtn = wrap.querySelector('#ppPromoLast');
     const resetBtn = wrap.querySelector('#ppPromoResetBtn');
+
+    // NEW: Show full JSON in the parser (Promotions)
+    const showJsonBtn = wrap.querySelector('#ppPromoShowJsonBtn');
+    if (showJsonBtn) {
+      showJsonBtn.disabled = !(window.PP_FULL_JSON && window.PP_FULL_JSON.promos);
+      showJsonBtn.addEventListener('click', () => {
+        const text = window.PP_FULL_JSON && window.PP_FULL_JSON.promos;
+        if (!text) return;
+
+        // Prefer shared helper from ProfileParser
+        if (typeof window.__ppOpenJsonParserWithText === 'function') {
+          window.__ppOpenJsonParserWithText(text);
+          return;
+        }
+
+        // Fallback: localStorage + best-effort nav click
+        try { localStorage.setItem('pp:jsonParser:autoLoad', String(text)); } catch { }
+        try {
+          const want = 'json parser';
+          const nodes = Array.from(document.querySelectorAll('button,a,[role="button"],.nav-item,.menu-item'));
+          const hit = nodes.find(n => (n.textContent || '').trim().toLowerCase().includes(want));
+          hit?.click();
+        } catch { }
+      });
+    }
+
 
     // --- header click sort by column ---
     function syncPromoSortIcons() {

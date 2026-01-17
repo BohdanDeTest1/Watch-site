@@ -1364,6 +1364,32 @@
     order: 0;
 }
 
+/* NEW: left group inside pager (Reset + Show full JSON) */
+#pp-root #ppPromoPager .pp-pager-left {
+    margin-right: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#pp-root #ppPromoPager .pp-pager-left #ppPromoResetBtn {
+    margin-right: 0;
+}
+
+#pp-root #ppPromoPager .pp-show-json {
+    white-space: nowrap;
+    color: #fff;
+}
+
+/* In dark theme: button text should be black */
+:root.theme-dark #pp-root #ppPromoPager .pp-show-json,
+.theme-dark #pp-root #ppPromoPager .pp-show-json,
+[data-theme="dark"] #pp-root #ppPromoPager .pp-show-json,
+.dark #pp-root #ppPromoPager .pp-show-json {
+    color: #000;
+}
+
+
 /* Rows per page (label + select) — рядом, справа от reset */
 #pp-root #ppPromoPager .pp-label,
 #pp-root #ppPromoPager .pp-sel-wrap {

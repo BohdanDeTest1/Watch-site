@@ -248,6 +248,99 @@
         promos: 'ProfileParser/Stage_01_promo.json',
     };
 
+    // ===== Full source JSON bridge → JSON Parser =====
+    // We keep last loaded FULL source JSON (not table page) so other modules (Promotions) can reuse it.
+    window.PP_FULL_JSON = window.PP_FULL_JSON || { liveops: '', promos: '' };
+
+    function __ppPrettyJsonText(v) {
+        if (typeof v === 'string') {
+            // try to format, but keep original if it's not valid JSON
+            try { return JSON.stringify(JSON.parse(v), null, 2); } catch { return v; }
+        }
+        try { return JSON.stringify(v, null, 2); } catch { return ''; }
+    }
+
+    function __ppSetFullJson(kind, v) {
+        if (kind !== 'liveops' && kind !== 'promos') return;
+        const text = __ppPrettyJsonText(v);
+        window.PP_FULL_JSON[kind] = text;
+
+        // Enable соответствующую кнопку, если она уже отрисована
+        try {
+            const id = (kind === 'liveops') ? 'ppShowJsonBtn' : 'ppPromoShowJsonBtn';
+            const btn = document.getElementById(id);
+            if (btn) btn.disabled = !text;
+        } catch { }
+
+        try {
+            document.dispatchEvent(new CustomEvent('pp:fullJsonUpdated', { detail: { kind, has: !!text } }));
+        } catch { }
+    }
+
+    function __ppFindAndClickJsonParserNav() {
+        // 0) super explicit: if project has switchTab()
+        try {
+            if (typeof window.switchTab === 'function') {
+                window.switchTab('tab3');
+                return true;
+            }
+        } catch { }
+
+        // 1) try known global navigators (if exist)
+        const fns = [
+            ['openTool', 'jsonParser'],
+            ['showTool', 'jsonParser'],
+            ['setActiveTool', 'jsonParser'],
+            ['activateTool', 'jsonParser'],
+        ];
+        for (const [fn, arg] of fns) {
+            try {
+                if (typeof window[fn] === 'function') { window[fn](arg); return true; }
+            } catch { }
+        }
+
+        // 2) try common ids / attributes (no text dependency)
+        const directSelectors = [
+            '[data-tool="jsonParser"]',
+            '[data-tab="tab3"]',
+            '#tab3',
+            '#tab3Btn',
+            '#jsonParser',
+            '#json-parser',
+        ];
+        for (const sel of directSelectors) {
+            try {
+                const n = document.querySelector(sel);
+                if (n && typeof n.click === 'function') { n.click(); return true; }
+            } catch { }
+        }
+
+        // 3) fallback: click sidebar/menu button by text
+        const want = 'json parser';
+        const nodes = Array.from(document.querySelectorAll('button,a,[role="button"],.nav-item,.menu-item'));
+        const hit = nodes.find(n => {
+            const t = (n.textContent || '').trim().toLowerCase();
+            return t === want || t.includes(want);
+        });
+        if (hit) {
+            try { hit.click(); return true; } catch { }
+        }
+
+        return false;
+    }
+
+
+    // Expose bridge so Promotions module can reuse it
+    window.__ppOpenJsonParserWithText = function (text) {
+        const payload = String(text || '').trim();
+        if (!payload) return false;
+
+        try { localStorage.setItem('pp:jsonParser:autoLoad', payload); } catch { }
+        __ppFindAndClickJsonParserNav();
+        return true;
+    };
+
+
     function __ppBannerEl() {
         return document.getElementById('ppEndpointsBanner');
     }
@@ -1332,11 +1425,17 @@
 
     </div> <!-- /.pp-liveops -->
 
-    <div class="pp-pager" id="ppPager">
-  <!-- Новая кнопка глобального сброса фильтров -->
-  <button id="ppResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
-    Reset Filters
-  </button>
+        <div class="pp-pager" id="ppPager">
+  <div class="pp-pager-left">
+    <!-- Новая кнопка глобального сброса фильтров -->
+    <button id="ppResetBtn" class="pp-btn pp-reset" type="button" title="Reset all table filters">
+      Reset Filters
+    </button>
+
+    <button id="ppShowJsonBtn" class="pp-btn primary pp-show-json" type="button" title="Show full JSON in the parser" disabled>
+      Show full JSON in the parser
+    </button>
+  </div>
 
   <span class="pp-label">Rows per page</span>
 <span class="pp-sel-wrap">
@@ -1353,6 +1452,7 @@
     <button class="pp-icon" id="ppLast"  title="Last"><span>›|</span></button>
   </span>
 </div>
+
 
   </div> <!-- /.pp-body -->
 `;
@@ -2857,6 +2957,19 @@
 
         // Глобальная кнопка сброса фильтров
         const resetAllBtn = wrap.querySelector('#ppResetBtn');
+
+        // NEW: Show full JSON in the parser (LiveOps)
+        const showJsonBtn = wrap.querySelector('#ppShowJsonBtn');
+        if (showJsonBtn) {
+            // enable/disable based on last loaded source JSON
+            showJsonBtn.disabled = !(window.PP_FULL_JSON && window.PP_FULL_JSON.liveops);
+            showJsonBtn.addEventListener('click', () => {
+                const text = window.PP_FULL_JSON && window.PP_FULL_JSON.liveops;
+                if (!text) return;
+                window.__ppOpenJsonParserWithText?.(text);
+            });
+        }
+
 
         function resetAllTableFilters(opts = {}) {
             const { silent = false, keepActiveTime = false } = opts;
@@ -4609,8 +4722,10 @@
                     helpText: 'Demo fallback simulation: paste LiveOps JSON here.',
                     textareaPlaceholder: 'Paste copied JSON text here',
                     onParsed: (json) => {
+                        __ppSetFullJson('liveops', json);
                         const rawItems = extractLiveOps(json);
                         const items = aggregateByNameWithSegments(rawItems);
+
 
                         if (!items.length) {
                             appendKVResult('LiveOps', [['Status', 'No items found']]);
@@ -4677,6 +4792,7 @@
                 appendKVResult('Profile state', [['Status', 'Failed to load']]);
             }
 
+
             // 2) LiveOps — если CORS/VPN блок, показываем manual import
             {
                 const liveopsUrl = buildUrl('liveops', name);
@@ -4684,6 +4800,9 @@
                 try {
                     const t = await fetchJsonText(liveopsUrl);
                     const json = JSON.parse(t);
+
+                    __ppSetFullJson('liveops', json);
+
                     const rawItems = extractLiveOps(json);
                     const items = aggregateByNameWithSegments(rawItems);
 
@@ -4700,6 +4819,8 @@
                         helpText: 'Open the page and copy JSON here (CMD-C, CMD-V).',
                         textareaPlaceholder: 'Paste copied JSON text here',
                         onParsed: (json) => {
+                            __ppSetFullJson('liveops', json);
+
                             const rawItems = extractLiveOps(json);
                             const items = aggregateByNameWithSegments(rawItems);
 
@@ -4712,6 +4833,7 @@
                     });
                 }
             }
+
 
             // 3) Promotions — аналогично
             {
@@ -4730,6 +4852,10 @@
 
                     if (window.PP_Promotions && typeof window.PP_Promotions.extract === 'function' && typeof window.PP_Promotions.appendPromotionsUI === 'function') {
                         const json = JSON.parse(t);
+
+                        // ВАЖНО: сохраняем полный JSON, чтобы кнопка под таблицей работала
+                        __ppSetFullJson('promos', json);
+
                         const promoItems = window.PP_Promotions.extract(json);
 
                         if (!promoItems.length) {
@@ -4739,8 +4865,11 @@
                         }
                     } else {
                         // fallback (твой старый)
+                        __ppSetFullJson('promos', t);
                         appendPromotionsSection(first10(t), t.length);
                     }
+
+
                 } catch (e) {
                     appendManualImportSection({
                         title: 'Promotions',
@@ -4748,8 +4877,10 @@
                         helpText: 'Open the page and copy JSON here (CMD-C, CMD-V).',
                         textareaPlaceholder: 'Paste copied JSON text here',
                         onParsed: async (json) => {
+                            __ppSetFullJson('promos', json);
                             // модуль Promotions может быть еще не загружен
                             await __ppEnsureGlobal('PP_Promotions', [
+
                                 'ProfilePromotions.js',
                                 './ProfilePromotions.js',
                                 'ProfileParser/ProfilePromotions.js',

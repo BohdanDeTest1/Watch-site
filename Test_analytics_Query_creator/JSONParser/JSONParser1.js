@@ -3197,10 +3197,30 @@
     }
 
     function onActivate() {
+        // ===== Auto-load JSON from ProfileParser bridge (if present) =====
+        try {
+            const key = 'pp:jsonParser:autoLoad';
+            const payload = localStorage.getItem(key);
+            if (payload && typeof payload === 'string' && payload.trim()) {
+                localStorage.removeItem(key);
+
+                // Ensure input exists (tool should already be mounted)
+                const inp = document.getElementById('jpInput');
+                if (inp) {
+                    inp.value = payload;
+
+                    // Trigger parse (best effort)
+                    const parseBtn = document.querySelector('[data-act="parse"]');
+                    parseBtn?.click();
+                }
+            }
+        } catch { }
+
         const hasOutput = !!state.output && state.output.textContent.trim().length > 0;
         if (hasOutput) state.searchInput?.focus();
         else state.input?.focus();
     }
+
 
     window.Tools.jsonParser = { init, onActivate };
 })();
