@@ -609,6 +609,16 @@
         } catch { }
 
         // 4) Last resort: extract substring between first {/[ and last }/]
+        // 4) Try to rebuild JSON from "tree text" (like your test11.txt)
+        // This covers cases where the copied content is NOT JSON at all, but a viewer UI dump.
+        try {
+            const rebuilt = __ppParseJsonViewerTreeText(cleaned);
+            if (rebuilt != null) {
+                return { json: rebuilt, rawText: JSON.stringify(rebuilt) };
+            }
+        } catch { }
+
+        // 5) Last resort: extract substring between first {/[ and last }/]
         try {
             const extracted = __ppExtractLikelyJsonSubstring(cleaned);
             const json = JSON.parse(extracted);
@@ -617,6 +627,7 @@
 
         return null;
     }
+
 
     function __ppCleanJsonViewerText(input) {
         let s = String(input || '');
@@ -646,18 +657,27 @@
             // remove array index prefixes like: 0: { ... }  or 12 : "x"
             t = t.replace(/^\s*\d+\s*:\s*/g, '');
 
-            // remove "{ 46 items" / "[ 3 items" tails (viewer counters)
-            // Example: `"root": { 2 items` -> `"root": {`
-            t = t.replace(/(\{|\[)\s*\d+\s*items?\s*$/i, '$1');
+            // drop pure "item/items" garbage lines from viewer
+            // (your test11.txt contains standalone "item" lines)
+            if (/^\s*items?\s*$/i.test(t)) {
+                continue;
+            }
 
-            // some variants: "{2 items" (no space) or "(2 items)"
-            t = t.replace(/(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, '$1');
-
-            // some viewers add "items" right after value on same line:
-            // `{ 2 items` but with extra spaces before EOL
-            t = t.replace(/\s+items?\s*$/i, '');
+            // normalize viewer counters:
+            //   "{2 items" / "{ 2 items" / "[1 item" / "[ 1 item"
+            // and also handle counters after ":" like  "key":{2 items
+            t = t
+                // after colon
+                .replace(/:\s*(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, ': $1')
+                // standalone container line
+                .replace(/^\s*(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, '$1')
+                // legacy tails (keep)
+                .replace(/(\{|\[)\s*\d+\s*items?\s*$/i, '$1')
+                .replace(/(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, '$1')
+                .replace(/\s+items?\s*$/i, '');
 
             out.push(t);
+
         }
 
         return out.join('\n').trim();
@@ -686,6 +706,158 @@
         if (end < start) return s.slice(start).trim();
         return s.slice(start, end + 1).trim();
     }
+
+    // ===== Rebuild JSON from viewer "tree dump" text (like test11.txt) =====
+    // The format has lines such as:
+    //   "someKey":{2 items
+    //   "subKey":[1 item
+    //   0:"value"
+    //   ]
+    //   }
+    // which is NOT JSON. We rebuild it using a stack.
+    function __ppParseJsonViewerTreeText(input) {
+        const lines = String(input || '')
+            .split(/\r?\n/)
+            .map(l => String(l).trim())
+            .filter(Boolean);
+
+        if (!lines.length) return null;
+
+        // If it already looks like JSON, don't touch it
+        const joined = lines.join('\n').trim();
+        if (joined.startsWith('{') || joined.startsWith('[')) {
+            // still may be invalid JSON; but we let upper layers handle JSON.parse
+        }
+
+        // Top-level in your copied dumps is almost always an object
+        const root = {};
+        const stack = [{ type: 'object', value: root }];
+
+        const cur = () => stack[stack.length - 1];
+
+        function pushContainer(type, v) {
+            stack.push({ type, value: v });
+        }
+
+        function popExpected(closeCh) {
+            const c = cur();
+            if (!c) return;
+            if (closeCh === '}' && c.type === 'object') stack.pop();
+            else if (closeCh === ']' && c.type === 'array') stack.pop();
+            else {
+                // if mismatched, still pop to avoid deadlock (best-effort)
+                stack.pop();
+            }
+        }
+
+        for (let rawLine of lines) {
+            let line = rawLine;
+
+            // ignore viewer footer lines
+            if (/^Visible:\s*\d+%/i.test(line)) continue;
+
+            // normalize: "key":{2 items  -> "key":{
+            line = line
+                .replace(/:\s*(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, ': $1')
+                .replace(/^\s*(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, '$1');
+
+            // skip "item/items"
+            if (/^items?$/i.test(line)) continue;
+
+            // Close containers
+            if (line === '}' || line === ']') {
+                popExpected(line);
+                continue;
+            }
+
+            const c = cur();
+            if (!c) return root;
+
+            // ----- Object key + container start:  "key":{   or  "key":[
+            let m = line.match(/^"([^"]+)"\s*:\s*(\{|\[)\s*$/);
+            if (m && c.type === 'object') {
+                const key = m[1];
+                const open = m[2];
+
+                if (open === '{') {
+                    const obj = {};
+                    c.value[key] = obj;
+                    pushContainer('object', obj);
+                    continue;
+                } else {
+                    const arr = [];
+                    c.value[key] = arr;
+                    pushContainer('array', arr);
+                    continue;
+                }
+            }
+
+            // ----- Object key + scalar:  "key":"v"  or "key":123  or "key":true
+            m = line.match(/^"([^"]+)"\s*:\s*(.+)\s*$/);
+            if (m && c.type === 'object') {
+                const key = m[1];
+                const rhs = m[2];
+                c.value[key] = __ppParseScalar(rhs);
+                continue;
+            }
+
+            // ----- Array item: container start "{"/"["
+            if (c.type === 'array' && (line === '{' || line === '[')) {
+                if (line === '{') {
+                    const obj = {};
+                    c.value.push(obj);
+                    pushContainer('object', obj);
+                } else {
+                    const arr = [];
+                    c.value.push(arr);
+                    pushContainer('array', arr);
+                }
+                continue;
+            }
+
+            // ----- Array item: scalar (often it's `"something"` after cleaning `0:`)
+            if (c.type === 'array') {
+                c.value.push(__ppParseScalar(line));
+                continue;
+            }
+
+            // If we are inside object and encounter "{" or "["
+            // (rare, but some dumps may split `"key":{` into two lines)
+            if (c.type === 'object' && (line === '{' || line === '[')) {
+                // can't attach without key => ignore (best-effort)
+                continue;
+            }
+
+            // Otherwise: ignore unknown lines (best-effort)
+        }
+
+        return root;
+    }
+
+    function __ppParseScalar(text) {
+        const t = String(text || '').trim();
+
+        if (t === 'null') return null;
+        if (t === 'true') return true;
+        if (t === 'false') return false;
+
+        // quoted string
+        if (t.startsWith('"') && t.endsWith('"') && t.length >= 2) {
+            // unescape minimal (viewer text usually already contains real escapes)
+            const inner = t.slice(1, -1);
+            return inner.replace(/\\"/g, '"');
+        }
+
+        // number
+        if (/^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(t)) {
+            const n = Number(t);
+            if (!Number.isNaN(n)) return n;
+        }
+
+        // fallback: keep as string
+        return t;
+    }
+
 
 
     // формат: 12 Mar 2025, 17:19 UTC
@@ -757,14 +929,31 @@
     <div class="small" style="opacity:.85; word-break:break-all;">${safeUrl}</div>
   </div>
 
-  <textarea class="pp-manual-input" rows="10" style="width:100%; resize:vertical;" spellcheck="false"
+    <textarea class="pp-manual-input" rows="10" style="width:100%; resize:vertical;" spellcheck="false"
     placeholder="${safePh}"></textarea>
 
-  <div style="margin-top:10px;">
+    <div class="pp-manual-actions" style="margin-top:10px;">
     <button type="button" class="btn-primary pp-manual-parse">Parsing</button>
+
+    <button type="button" class="btn-primary btn-refresh pp-manual-reset" style="display:none;">Reset</button>
+
+    <div class="pp-manual-warn" role="status" aria-live="polite" style="display:none;">
+      <span class="pp-manual-warn-text">
+        Invalid JSON. Please paste the raw JSON response (unprocessed). Avoid copying JSON reformatted by browser extensions or other tools
+      </span>
+
+      <span class="pp-info-wrap" tabindex="0">
+      <button type="button" class="pp-info-btn" aria-label="Info">i</button>
+ 
+      <span class="pp-mini-tooltip" role="tooltip">
+          It looks like a JSON viewer extension may be reformatting the response. Please disable the extension and copy the raw JSON
+        </span>
+      </span>
+    </div>
   </div>
-</div>
+
 `;
+
 
         wireCollapser(wrap);
 
@@ -777,31 +966,67 @@
         const ta = wrap.querySelector('.pp-manual-input');
         const btn = wrap.querySelector('.pp-manual-parse');
 
+        const warn = wrap.querySelector('.pp-manual-warn');
+        const resetBtn = wrap.querySelector('.pp-manual-reset');
+
+        function __ppLooksLikeExtensionFormattedText(s) {
+            const t = String(s || '');
+            // сигнатуры “viewer dump”: "{ 2 items", "[1 item", индексы "0:", "1:" и т.п.
+            return (
+                /\bitems?\b/i.test(t) ||
+                /(\{|\[)\s*\d+\s*items?\b/i.test(t) ||
+                /(^|\n)\s*\d+\s*:\s*/.test(t)
+            );
+        }
+
+        function hideWarnAndReset() {
+            if (warn) warn.style.display = 'none';
+            if (resetBtn) resetBtn.style.display = 'none';
+        }
+
+        // Reset: чистим textarea + прячем предупреждение
+        resetBtn?.addEventListener('click', () => {
+            if (ta) ta.value = '';
+            hideWarnAndReset();
+            ta?.focus();
+        });
+
         btn?.addEventListener('click', async () => {
             const raw = String(ta?.value || '').trim();
             if (!raw) return;
 
-            const parsed = __ppParsePastedJson(raw);
-            if (!parsed || !parsed.json) {
-                // по требованиям: текст ошибки визуально НЕ показываем
-                // просто подсветим textarea, чтобы юзер понял что не так
+            hideWarnAndReset();
+
+            let json;
+            try {
+                json = JSON.parse(raw);
+            } catch (_) {
+                // минимальная подсветка
                 if (ta) {
                     ta.focus();
                     ta.style.outline = '2px solid var(--validation-warn)';
                     setTimeout(() => { ta.style.outline = ''; }, 1200);
                 }
+
+                // warning показываем только если похоже на текст из extension
+                // warning + tooltip показываем ВСЕГДА при неуспешном Parsing
+                if (warn) warn.style.display = 'inline-flex';
+
+                // Reset показываем только после неуспешного Parsing
+                if (resetBtn) resetBtn.style.display = 'inline-flex';
                 return;
+
             }
 
             try {
-                // если распарсилось — убираем manual-блок и рендерим нормальный UI
                 wrap.remove();
-                if (onParsed) await onParsed(parsed.json, parsed.rawText);
+                if (onParsed) await onParsed(json, raw);
                 __ppExpandAllResults();
             } catch (_) {
                 // визуально ошибку НЕ показываем
             }
         });
+
 
 
         el('#ppResults')?.appendChild(wrap);

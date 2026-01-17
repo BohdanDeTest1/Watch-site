@@ -511,9 +511,22 @@
 }
 
 #pp-root .pp-manual-actions {
-    display: flex;
-    justify-content: flex-end;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 10px !important;
+    flex-wrap: wrap;
+    /* если места мало — переносим на следующую строку */
 }
+
+/* make Parsing compact too (in case some global styles try to stretch it) */
+#pp-root .pp-manual-parse {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+}
+
 
 /* Manual fallback: Open link button must be compact (no full-width stretch) */
 #pp-root .pp-manual-open-btn,
@@ -559,6 +572,149 @@
     max-width: none !important;
     white-space: nowrap;
 }
+
+#pp-root .pp-manual-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#pp-root .pp-manual-reset {
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+    border-radius: 6px;
+
+    /* ALWAYS orange button */
+    border: 1px solid #f59e0b !important;
+    background: #f59e0b !important;
+
+    /* force compact sizing (prevents full-width stretch) */
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    white-space: nowrap;
+
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Light theme: white text */
+#pp-root .pp-manual-reset {
+    color: #ffffff !important;
+}
+
+/* Dark theme: black text */
+:root.theme-dark #pp-root .pp-manual-reset,
+.theme-dark #pp-root .pp-manual-reset,
+[data-theme="dark"] #pp-root .pp-manual-reset,
+.dark #pp-root .pp-manual-reset {
+    color: #0b1120 !important;
+}
+
+#pp-root .pp-manual-reset:hover {
+    opacity: .95;
+    filter: brightness(0.96);
+}
+
+
+#pp-root .pp-manual-warn {
+    margin-top: 0;
+    /* important: now it's inline near buttons */
+    display: inline-flex;
+    /* shown/hidden via inline styles in JS */
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 900;
+    font-size: 13px;
+    line-height: 1.35;
+
+    color: #ff8a00;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .12);
+}
+
+
+/* Info button */
+#pp-root .pp-info-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+#pp-root .pp-info-btn {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+
+    /* НЕ "help", чтобы не было вопросика */
+    cursor: pointer;
+}
+
+
+#pp-root .pp-mini-tooltip {
+    position: absolute;
+    left: 50%;
+
+    /* показываем НАД iButton */
+    top: auto;
+    bottom: calc(100% + 8px);
+
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 360px;
+
+    padding: 8px 10px;
+    border-radius: 7px;
+
+    /* LIGHT THEME (default) */
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid rgba(17, 24, 39, .14);
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .18);
+    z-index: 50;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+}
+
+/* DARK THEME override: как сейчас на твоём скрине */
+:root.theme-dark #pp-root .pp-mini-tooltip,
+.theme-dark #pp-root .pp-mini-tooltip,
+[data-theme="dark"] #pp-root .pp-mini-tooltip,
+.dark #pp-root .pp-mini-tooltip {
+    background: rgba(0, 0, 0, .92);
+    color: #ffffff;
+    border-color: rgba(148, 163, 184, .28);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+}
+
+
+/* show tooltip on hover OR keyboard focus */
+#pp-root .pp-info-wrap:hover .pp-mini-tooltip,
+#pp-root .pp-info-wrap:focus-within .pp-mini-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 
 
 #pp-root .pp-manual-parse:hover {
