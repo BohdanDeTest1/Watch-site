@@ -564,6 +564,130 @@
         const t = (str || '').replace(/^\s+/, '');
         return t.slice(0, 10);
     }
+
+    // ===== Parse JSON from "pretty" viewer copies (Chrome extensions like JSON Viewer)
+    // Some viewers copy tree UI text like:
+    //   "root": { 2 items
+    //   0: { 28 items
+    // with disclosure arrows, "items" counters, etc.
+    // This helper cleans such text and returns { json, rawText } (rawText = cleaned JSON string).
+    function __ppParsePastedJson(rawInput) {
+        const original = String(rawInput || '').trim();
+        if (!original) return null;
+
+        // 1) Try strict JSON first (raw or pretty-printed JSON is valid)
+        try {
+            const json = JSON.parse(original);
+            return { json, rawText: original };
+        } catch { }
+
+        // 2) Normalize typical "viewer" artifacts line-by-line
+        const cleaned = __ppCleanJsonViewerText(original);
+
+        // 2.1) Try parse after cleaning
+        try {
+            const json = JSON.parse(cleaned);
+            return { json, rawText: cleaned };
+        } catch { }
+
+        // 3) If the viewer wrapped everything in "root": { ... } (not real JSON),
+        // try to unwrap the value after "root":
+        // This is best-effort and safe because we still JSON.parse afterwards.
+        try {
+            const s = cleaned.trim();
+
+            // matches: "root": { ... }  OR  root: { ... }
+            const m = s.match(/^\s*(?:"root"|root)\s*:\s*([\s\S]+)$/i);
+            if (m && m[1]) {
+                const candidate = m[1].trim();
+
+                // if candidate doesn't start with { or [, try extracting JSON substring
+                const unwrapped = __ppExtractLikelyJsonSubstring(candidate);
+                const json = JSON.parse(unwrapped);
+                return { json, rawText: unwrapped };
+            }
+        } catch { }
+
+        // 4) Last resort: extract substring between first {/[ and last }/]
+        try {
+            const extracted = __ppExtractLikelyJsonSubstring(cleaned);
+            const json = JSON.parse(extracted);
+            return { json, rawText: extracted };
+        } catch { }
+
+        return null;
+    }
+
+    function __ppCleanJsonViewerText(input) {
+        let s = String(input || '');
+
+        // normalize whitespace / invisible chars that sometimes appear in copied text
+        s = s
+            .replace(/\u00A0/g, ' ')     // NBSP -> space
+            .replace(/[\u200B-\u200D\uFEFF]/g, ''); // zero-width chars
+
+        // normalize smart quotes (rare but happens when copying from some UIs)
+        s = s
+            .replace(/[“”]/g, '"')
+            .replace(/[‘’]/g, "'");
+
+        const lines = s.split(/\r?\n/);
+
+        const out = [];
+        for (let line of lines) {
+            let t = String(line);
+
+            // drop leading tree glyphs / disclosure arrows / bullets
+            // keep regular JSON characters intact
+            t = t.replace(/^\s*[▾▸▶►⯈⮞➤•·]+\s*/g, '');
+            t = t.replace(/^\s*\+\s*/g, ''); // some viewers show "+" for expand
+            // do NOT remove "-" globally (can be part of numbers)
+
+            // remove array index prefixes like: 0: { ... }  or 12 : "x"
+            t = t.replace(/^\s*\d+\s*:\s*/g, '');
+
+            // remove "{ 46 items" / "[ 3 items" tails (viewer counters)
+            // Example: `"root": { 2 items` -> `"root": {`
+            t = t.replace(/(\{|\[)\s*\d+\s*items?\s*$/i, '$1');
+
+            // some variants: "{2 items" (no space) or "(2 items)"
+            t = t.replace(/(\{|\[)\s*\(?\s*\d+\s*items?\s*\)?\s*$/i, '$1');
+
+            // some viewers add "items" right after value on same line:
+            // `{ 2 items` but with extra spaces before EOL
+            t = t.replace(/\s+items?\s*$/i, '');
+
+            out.push(t);
+        }
+
+        return out.join('\n').trim();
+    }
+
+    function __ppExtractLikelyJsonSubstring(input) {
+        const s = String(input || '');
+        const firstObj = s.indexOf('{');
+        const firstArr = s.indexOf('[');
+
+        let start = -1;
+        if (firstObj === -1) start = firstArr;
+        else if (firstArr === -1) start = firstObj;
+        else start = Math.min(firstObj, firstArr);
+
+        if (start < 0) return s.trim();
+
+        const lastObj = s.lastIndexOf('}');
+        const lastArr = s.lastIndexOf(']');
+
+        let end = -1;
+        if (lastObj === -1) end = lastArr;
+        else if (lastArr === -1) end = lastObj;
+        else end = Math.max(lastObj, lastArr);
+
+        if (end < start) return s.slice(start).trim();
+        return s.slice(start, end + 1).trim();
+    }
+
+
     // формат: 12 Mar 2025, 17:19 UTC
     function formatUtcIso(isoStr) {
         try {
@@ -657,10 +781,8 @@
             const raw = String(ta?.value || '').trim();
             if (!raw) return;
 
-            let json;
-            try {
-                json = JSON.parse(raw);
-            } catch (_) {
+            const parsed = __ppParsePastedJson(raw);
+            if (!parsed || !parsed.json) {
                 // по требованиям: текст ошибки визуально НЕ показываем
                 // просто подсветим textarea, чтобы юзер понял что не так
                 if (ta) {
@@ -674,12 +796,13 @@
             try {
                 // если распарсилось — убираем manual-блок и рендерим нормальный UI
                 wrap.remove();
-                if (onParsed) await onParsed(json, raw);
+                if (onParsed) await onParsed(parsed.json, parsed.rawText);
                 __ppExpandAllResults();
             } catch (_) {
                 // визуально ошибку НЕ показываем
             }
         });
+
 
         el('#ppResults')?.appendChild(wrap);
         return wrap;
@@ -4616,21 +4739,27 @@
             const raw = (ta?.value || '').trim();
             if (!raw) return;
 
-            try {
-                const json = JSON.parse(raw);
-                // remove this manual card before rendering real UI (clean)
-                wrap.remove();
-                await onParsed(json);
-                __ppExpandAllResults();
-            } catch (_) {
+            const parsed = __ppParsePastedJson(raw);
+            if (!parsed || !parsed.json) {
                 // silently ignore visually (по требованию), но можно подсветить textarea минимально:
                 if (ta) {
                     ta.focus();
                     ta.style.outline = '2px solid var(--validation-warn)';
                     setTimeout(() => { ta.style.outline = ''; }, 1200);
                 }
+                return;
+            }
+
+            try {
+                // remove this manual card before rendering real UI (clean)
+                wrap.remove();
+                await onParsed(parsed.json);
+                __ppExpandAllResults();
+            } catch (_) {
+                // no UI error
             }
         });
+
 
         el('#ppResults')?.appendChild(wrap);
     }
