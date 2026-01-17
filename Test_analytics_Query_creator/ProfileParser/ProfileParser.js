@@ -613,7 +613,7 @@
         wrap.dataset.defaultOpen = '1';
 
         const safeUrl = url || '';
-        const safeHelp = helpText || 'Open the page and copy JSON here (CMD-C, CMD-V).';
+        const safeHelp = helpText || 'Open the page and copy JSON here (CMD+A -> CMD+C -> CMD+V)';
         const safePh = textareaPlaceholder || 'Paste copied JSON text here';
 
         wrap.innerHTML = `
@@ -4586,7 +4586,7 @@
 
       <div class="pp-body">
         <div class="pp-meta" style="margin-bottom:10px;">
-          ${helpText || 'Open the page and copy JSON here (CMD-C, CMD-V).'}
+          ${helpText || 'Open the page and copy JSON here (CMD+A -> CMD+C -> CMD+V)'}
         </div>
 
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
@@ -4824,7 +4824,7 @@
                     appendManualImportSection({
                         title: 'LiveOps',
                         url: liveopsUrl,
-                        helpText: 'Open the page and copy JSON here (CMD-C, CMD-V).',
+                        helpText: 'Open the page and copy JSON here (CMD+A -> CMD+C -> CMD+V)',
                         textareaPlaceholder: 'Paste copied JSON text here',
                         onParsed: (json) => {
                             __ppSetFullJson('liveops', json);

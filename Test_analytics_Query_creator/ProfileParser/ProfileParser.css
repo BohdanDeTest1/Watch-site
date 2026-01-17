@@ -6578,13 +6578,20 @@ body.pp-has-pop #ppPromoCal .tl-grid-header {
 #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-chevron {
     font-size: 22px;
     opacity: .8;
-    transform: translateY(1px);
+
+    /* FIX: центрируем стрелку по вертикали относительно текста */
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+
+    transform: translateY(-1px);
     transition: transform .12s ease;
 }
 
 #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details[open] .pp-raw-chevron {
-    transform: translateY(1px) rotate(90deg);
+    transform: translateY(-1px) rotate(90deg);
 }
+
 
 /* copy icon pinned right (without shifting centered title) */
 #pp-root #ppLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-copy {

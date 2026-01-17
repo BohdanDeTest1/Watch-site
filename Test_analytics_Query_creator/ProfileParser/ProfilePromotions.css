@@ -1719,17 +1719,23 @@
     color: var(--text);
 }
 
-/* треугольник стоит ПОСЛЕ текста, и поворачивается при open */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-chevron {
     font-size: 22px;
     opacity: .8;
-    transform: translateY(1px);
+
+    /* FIX: центрируем стрелку по вертикали относительно текста */
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+
+    transform: translateY(-1px);
     transition: transform .12s ease;
 }
 
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw .pp-raw-details[open] .pp-raw-chevron {
-    transform: translateY(1px) rotate(90deg);
+    transform: translateY(-1px) rotate(90deg);
 }
+
 
 /* 5) Сам JSON (pre) делаем “карточкой” и full width */
 #ppPromoLiveops.info-open #ppPromoLoDetail.pp-liveops-detail .pp-kv.pp-kv-raw pre.pp-raw {
