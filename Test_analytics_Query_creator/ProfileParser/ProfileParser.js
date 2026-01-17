@@ -7910,7 +7910,7 @@
             });
         })();
 
-        wireGate();  // навесим обработчики на форму
+
         wireHowto(); // How it works? (tooltip + backdrop + zoom)
         wireUI();    // <— подключаем обработчик submit (preventDefault + запуск моков)
 
@@ -7919,12 +7919,10 @@
     }
 
 
-    // вызывается при активации вкладки (см. правку switchTab в Main.js)
     function onActivate() {
         // Вставка готова? (если вдруг init ещё не успел)
         if (!document.getElementById('pp-root')) return;
-        // Показать «замок», если не разблокировано
-        if (!isUnlocked()) showGate();
+        // gate отключён — ничего не делаем
     }
 
     // Экспорт для Main.js

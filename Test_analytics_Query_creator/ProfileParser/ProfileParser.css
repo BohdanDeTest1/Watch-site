@@ -75,6 +75,37 @@
     display: block;
 }
 
+/* ===== DARK THEME: match Query Creator HowTo tooltip look (bg + top/bottom fades) ===== */
+:root.theme-dark #ppHowtoTooltip.pp-howto-tooltip,
+.theme-dark #ppHowtoTooltip.pp-howto-tooltip,
+[data-theme="dark"] #ppHowtoTooltip.pp-howto-tooltip,
+.dark #ppHowtoTooltip.pp-howto-tooltip {
+    /* 1) Переменные — КАК в QueryCreator.css (dark) */
+    --howto-bg: #21273b;
+    --howto-fg: #e7eef7;
+    --how-to-back: #0e101580;
+
+    --howto-fade-strong: rgba(33, 39, 59, .92);
+    --howto-fade-mid: rgba(33, 39, 59, .55);
+    --howto-fade-zero: rgba(33, 39, 59, 0);
+
+    /* 2) Сам тултип — непрозрачный фон именно через переменную,
+          чтобы ::before/::after (fade) совпадали 1-в-1 с QC */
+    background: var(--howto-bg) !important;
+    color: var(--howto-fg) !important;
+
+    /* 3) страховка от любых “стеклянных” эффектов/прозрачности */
+    opacity: 1 !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+
+    /* 4) тень оставляем мягкую, как в QC */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35) !important;
+}
+
+
+
 /* тело тултипа */
 #ppHowtoTooltip .pp-howto-tooltip__body {
     padding: 16px 18px;
