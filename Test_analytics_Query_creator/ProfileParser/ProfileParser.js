@@ -253,12 +253,15 @@
     window.PP_FULL_JSON = window.PP_FULL_JSON || { liveops: '', promos: '' };
 
     function __ppPrettyJsonText(v) {
+        // NOTE: we intentionally keep FULL JSON as a single-line (minified) string
+        // to avoid browser freezes when selecting/copying huge payloads in textarea.
         if (typeof v === 'string') {
-            // try to format, but keep original if it's not valid JSON
-            try { return JSON.stringify(JSON.parse(v), null, 2); } catch { return v; }
+            // try to minify, but keep original if it's not valid JSON
+            try { return JSON.stringify(JSON.parse(v)); } catch { return v; }
         }
-        try { return JSON.stringify(v, null, 2); } catch { return ''; }
+        try { return JSON.stringify(v); } catch { return ''; }
     }
+
 
     function __ppSetFullJson(kind, v) {
         if (kind !== 'liveops' && kind !== 'promos') return;
@@ -330,15 +333,20 @@
     }
 
 
-    // Expose bridge so Promotions module can reuse it
     window.__ppOpenJsonParserWithText = function (text) {
-        const payload = String(text || '').trim();
+        let payload = String(text || '').trim();
         if (!payload) return false;
+
+        // Force single-line JSON to avoid textarea freezes (Cmd+A / selection)
+        try {
+            payload = JSON.stringify(JSON.parse(payload));
+        } catch { }
 
         try { localStorage.setItem('pp:jsonParser:autoLoad', payload); } catch { }
         __ppFindAndClickJsonParserNav();
         return true;
     };
+
 
 
     function __ppBannerEl() {

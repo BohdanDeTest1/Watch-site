@@ -3201,15 +3201,29 @@
         try {
             const key = 'pp:jsonParser:autoLoad';
             const payload = localStorage.getItem(key);
+
             if (payload && typeof payload === 'string' && payload.trim()) {
                 localStorage.removeItem(key);
 
                 // Ensure input exists (tool should already be mounted)
                 const inp = document.getElementById('jpInput');
                 if (inp) {
-                    inp.value = payload;
+                    // 1) Put JSON into INPUT (minified one-line to avoid freezes on large payloads)
+                    let oneLine = payload;
+                    try { oneLine = JSON.stringify(JSON.parse(payload)); } catch { }
+                    inp.value = oneLine;
+                    // 2) If input overlay is used (highlight layer) — refresh it so text is visible
+                    try {
+                        // clear input-search state so overlay doesn't stay "empty" due to stale query/highlights
+                        state.inputLastQuery = '';
+                        state.inputHitStarts = [];
+                        state.inputHitIndex = -1;
+                        updateInputSearchUi();
+                        renderInputOverlay();
+                        syncInputOverlayScroll();
+                    } catch { }
 
-                    // Trigger parse (best effort)
+                    // 3) Trigger parse (best effort)
                     const parseBtn = document.querySelector('[data-act="parse"]');
                     parseBtn?.click();
                 }
@@ -3224,3 +3238,4 @@
 
     window.Tools.jsonParser = { init, onActivate };
 })();
+
