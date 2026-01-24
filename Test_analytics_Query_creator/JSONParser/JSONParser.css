@@ -29,9 +29,6 @@
     align-items: center;
 }
 
-
-
-
 .jp-inputActions {
     display: flex;
     gap: 10px;
@@ -40,27 +37,21 @@
     margin-top: 10px;
 }
 
-/* Ensure Parse/Clear are compact (not full width) */
 .jp-inputActions>.jp-btn {
     width: auto !important;
     flex: 0 0 auto !important;
     display: inline-flex;
 }
 
-
-/* Orange "Clear" */
 .jp-btn.jp-warn {
     background: #f59e0b;
-    /* nice orange */
     border-color: transparent;
     color: #ffffff;
-    /* Light theme: white text */
 }
 
 .theme-night .jp-btn.jp-warn,
 .theme-dark .jp-btn.jp-warn {
     color: #111111;
-    /* Dark theme: black text */
 }
 
 
@@ -134,7 +125,6 @@
     margin-bottom: 14px;
 }
 
-
 .jp-outputBlock {
     background: var(--card, #fff);
     border: 1px solid var(--border, rgba(0, 0, 0, .15));
@@ -142,23 +132,16 @@
     padding: 14px;
 }
 
-
-
 .jp-output {
     border-radius: 10px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--bg, #fff);
     padding: 10px 12px;
-
-    /* required for native resize handle */
     overflow: auto;
     resize: vertical;
-
-    /* make resizing predictable */
     height: 420px;
     min-height: 320px;
     max-height: 80vh;
-
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 13px;
     line-height: 1.55;
@@ -169,7 +152,6 @@
     padding-bottom: 6px;
 }
 
-/* Rows */
 .jp-row {
     display: inline-flex;
     align-items: baseline;
@@ -196,7 +178,6 @@
     opacity: .65;
 }
 
-/* Branch */
 .jp-branch {
     margin: 2px 0 2px 0;
 }
@@ -216,7 +197,6 @@
     border-left: 1px dashed var(--border, rgba(0, 0, 0, .18));
 }
 
-/* Values */
 .jp-val {
     opacity: .9;
     font-weight: 550;
@@ -238,7 +218,6 @@
     opacity: .7;
 }
 
-/* Search highlighting */
 .jp-hit {
     background: rgba(59, 130, 246, 0.14);
     outline: 1px solid rgba(59, 130, 246, 0.25);
@@ -249,7 +228,6 @@
     outline: 1px solid rgba(245, 158, 11, 0.35);
 }
 
-/* Dark theme friendliness (если у тебя есть .theme-dark) */
 .theme-dark .jp-wrap {
     color: var(--text);
 }
@@ -281,7 +259,6 @@ body.dark .jp-outputBlock,
     background: var(--card);
 }
 
-
 .jp-wrap {
     padding: 28px 28px 40px;
     color: var(--text);
@@ -312,8 +289,6 @@ body.dark .jp-outputBlock,
     gap: 10px;
     align-items: center;
 }
-
-
 
 .jp-small {
     padding: 8px 10px;
@@ -353,7 +328,6 @@ body.dark .jp-outputBlock,
     color: var(--text, #111);
 }
 
-/* Input search toolbar spacing */
 .jp-inputTools {
     margin-top: 10px;
 }
@@ -362,36 +336,25 @@ body.dark .jp-outputBlock,
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* label left, tools hard-right */
     gap: 12px;
 }
 
-
-
-/* When search is in the top row, remove extra top margin */
 .jp-inputTop .jp-inputTools {
     margin-top: 0;
     width: auto;
     justify-content: flex-end;
 }
 
-/* Small magnifier inside the search field (SVG, always grey) */
 .jp-searchIcon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     width: 18px;
     min-width: 18px;
     height: 18px;
-
     opacity: 0.75;
     user-select: none;
-
-    /* NEW: force grey (no colored emoji) */
     color: rgba(156, 163, 175, 0.95);
-
-    /* IMPORTANT: do NOT take layout space (prevents "typing starts from the middle") */
     position: absolute;
     left: 10px;
     top: 50%;
@@ -399,26 +362,21 @@ body.dark .jp-outputBlock,
     pointer-events: none;
 }
 
-/* SVG sizing */
 .jp-searchIcon svg {
     width: 16px;
     height: 16px;
     display: block;
 }
 
-/* Hide placeholder text when focused (Input + Output search) */
 .jp-searchWrap:focus-within .jp-search::placeholder {
     color: transparent !important;
 }
 
-/* Icon visibility rules (KEEP icon always visible) */
 .jp-searchWrap:focus-within .jp-searchIcon,
 .jp-searchWrap.jp-hasText .jp-searchIcon {
     opacity: 1;
 }
 
-
-/* Match placeholder-ish color in light/dark themes */
 .jp-searchWrap .jp-searchIcon {
     color: rgba(55, 65, 81, 0.65);
 }
@@ -444,8 +402,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     opacity: .85;
 }
 
-
-
 .jp-output {
     border-radius: 10px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
@@ -460,7 +416,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     line-height: 1.55;
 }
 
-/* Force output "code field" background to match input field in LIGHT theme as well */
 .jp-output,
 .jp-output.jp-outputCode {
     background: var(--bg, #fff) !important;
@@ -470,7 +425,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     padding-bottom: 6px;
 }
 
-/* Row layout */
 .jp-row {
     display: inline-flex;
     align-items: baseline;
@@ -481,11 +435,9 @@ body.dark .jp-searchWrap .jp-searchIcon,
     white-space: nowrap;
 }
 
-/* Key / type */
 .jp-key {
     font-weight: 800;
     color: var(--jp-key, #1f3a8a);
-    /* blue-ish */
 }
 
 .jp-type {
@@ -493,45 +445,36 @@ body.dark .jp-searchWrap .jp-searchIcon,
     font-size: 12px;
     opacity: .7;
     color: var(--jp-type, #6b7280);
-    /* gray */
 }
 
 .jp-sep {
     opacity: .75;
 }
 
-
-
 .jp-string {
     color: var(--jp-str, #15803d);
 }
 
-/* green */
 .jp-number {
     color: var(--jp-num, #7c3aed);
 }
 
-/* purple */
 .jp-boolean {
     color: var(--jp-bool, #dc2626);
 }
 
-/* red */
 .jp-null {
     color: var(--jp-null, #6b7280);
 }
 
-/* gray */
 .jp-other {
     color: var(--jp-other, #0f172a);
 }
 
-/* Branch (<details>) */
 .jp-branch {
     margin: 2px 0;
 }
 
-/* Hide default marker */
 .jp-branch>summary {
     cursor: pointer;
     list-style: none;
@@ -541,7 +484,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     display: none;
 }
 
-/* Custom disclosure arrow */
 .jp-branch>summary::before {
     content: "▸";
     display: inline-block;
@@ -562,7 +504,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     border-left: 1px dashed var(--border, rgba(0, 0, 0, .18));
 }
 
-/* Copy button (right, like tiny square icon) */
 .jp-copy {
     margin-left: 8px;
     width: 18px;
@@ -599,7 +540,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     opacity: .55;
 }
 
-/* Search highlighting */
 .jp-hit {
     background: rgba(59, 130, 246, 0.14);
     outline: 1px solid rgba(59, 130, 246, 0.25);
@@ -610,7 +550,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     outline: 1px solid rgba(245, 158, 11, 0.35);
 }
 
-/* Dark theme friendliness */
 .theme-dark .jp-wrap {
     color: var(--text);
 }
@@ -624,7 +563,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     background: var(--card);
 }
 
-/* Dark theme token colors (optional, safe defaults) */
 .theme-dark {
     --jp-key: #93c5fd;
     --jp-type: #9ca3af;
@@ -634,8 +572,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     --jp-null: #9ca3af;
     --jp-other: #e5e7eb;
 }
-
-/* ========= Layout / blocks ========= */
 
 .jp-wrap {
     padding: 28px 28px 40px;
@@ -679,7 +615,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     transition: transform .08s ease, filter .15s ease, background .15s ease;
 }
 
-/* Compact buttons inside toolbars */
 .jp-outputTools .jp-btn,
 .jp-inputActions .jp-btn {
     padding: 8px 12px;
@@ -687,11 +622,6 @@ body.dark .jp-searchWrap .jp-searchIcon,
     font-weight: 800;
 }
 
-
-
-
-
-/* Make toolbar buttons visually consistent */
 .jp-outputTools .jp-btn.jp-primary {
     padding: 8px 14px;
 }
@@ -757,27 +687,19 @@ body.dark .jp-searchWrap .jp-searchIcon,
     color: var(--text, #111);
 }
 
-/* ===== Input textarea: overlay highlighting (so matches stay visible without focus) ===== */
-
 .jp-inputArea {
     position: relative;
     margin-top: 10px;
-
-    /* Контейнер становится "полем" (как jp-searchWrap):
-       рамка/фон живут здесь, чтобы ничего не могло залезать на border */
     border-radius: 10px;
     overflow: hidden;
-
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--bg, #fff);
 }
 
-/* Focus ring на весь контейнер (а не на textarea) */
 .jp-inputArea:focus-within {
     border-color: var(--accent, #3b82f6);
 }
 
-/* Dark theme: фон/бордер как "panel" */
 .theme-night .jp-inputArea,
 .theme-dark .jp-inputArea,
 html.dark .jp-inputArea,
@@ -788,7 +710,6 @@ body.dark .jp-inputArea,
     border-color: var(--jp-panel-border, rgba(255, 255, 255, 0.12));
 }
 
-/* The overlay sits under the textarea and renders highlighted HTML */
 .jp-inputOverlay {
     position: absolute;
     inset: 0;
@@ -796,20 +717,13 @@ body.dark .jp-inputArea,
     overflow: auto;
     pointer-events: none;
     z-index: 1;
-
-    /* Фон теперь у контейнера, здесь делаем прозрачным */
     background: transparent;
 }
 
-/* IMPORTANT:
-   textarea внутри inputArea не должна иметь свою рамку,
-   иначе "визуально" появляются пересечения с текстом/подсветкой */
 .jp-inputArea .jp-input {
     margin-top: 0 !important;
     border: none !important;
     border-radius: 0 !important;
-
-    /* Fix: чтобы символы/подсветка не касались border сверху/снизу */
     padding: 14px 12px !important;
     line-height: 1.6 !important;
 }
@@ -820,18 +734,12 @@ body.dark .jp-inputArea,
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 14px;
     line-height: 1.6;
-
-    /* Fix: чуть больше воздуха, чтобы текст не “упирался” в границу */
     padding: 14px 12px;
-
     white-space: pre-wrap;
     word-break: break-word;
-
     color: var(--text, #111);
 }
 
-
-/* Put textarea above the overlay, but make its text transparent (caret stays visible) */
 .jp-input.jp-inputHasOverlay {
     position: relative;
     z-index: 2;
@@ -841,18 +749,10 @@ body.dark .jp-inputArea,
     caret-color: var(--text, #111);
 }
 
-/* FIX: textarea must NEVER paint its own background/text when overlay mode is enabled.
-   In your file, later dark-theme rules override .jp-input color/background -> that causes "double text".
-   So we:
-   1) draw the background on the overlay layer
-   2) force textarea to stay transparent even in dark theme. */
-
-/* Overlay provides the visible background */
 .jp-inputOverlay {
     background: var(--bg, #fff);
 }
 
-/* Dark theme: use the same “panel bg” as your sidebar-like style */
 .theme-night .jp-inputOverlay,
 .theme-dark .jp-inputOverlay,
 html.dark .jp-inputOverlay,
@@ -862,7 +762,6 @@ body.dark .jp-inputOverlay,
     background: var(--jp-panel-bg, rgba(11, 16, 28, 0.92));
 }
 
-/* Strong override after dark-theme textarea rules */
 .theme-night .jp-input.jp-inputHasOverlay,
 .theme-dark .jp-input.jp-inputHasOverlay,
 html.dark .jp-input.jp-inputHasOverlay,
@@ -873,8 +772,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     color: transparent !important;
 }
 
-
-/* Match highlight inside Input */
 .jp-inputHitText {
     background: rgba(245, 158, 11, 0.28);
     outline: 1px solid rgba(245, 158, 11, 0.45);
@@ -887,7 +784,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     outline: 1px solid rgba(245, 158, 11, 0.70);
 }
 
-/* Dark theme: keep caret and overlay readable */
 .theme-night .jp-inputOverlayInner,
 .theme-dark .jp-inputOverlayInner,
 html.dark .jp-inputOverlayInner,
@@ -987,24 +883,15 @@ body.dark .jp-input.jp-inputHasOverlay,
     width: 100%;
 }
 
-/* Input-top search: tools pinned to the right edge, meta (counter+nav) on the LEFT of the field */
 .jp-inputTop .jp-outputTools.jp-inputTools {
     width: auto !important;
     justify-content: flex-end !important;
     flex: 0 0 auto;
-
-    /* hard-right align */
     margin-left: auto;
-
-    /* never shift horizontally */
     transform: none;
-
-    /* align to the same right edge as the textarea */
     padding-right: 0;
 }
 
-/* Reorder inside input-tools so the SEARCH FIELD stays at the far right,
-   while "1 of N" and arrows live to the LEFT (and can grow leftwards). */
 .jp-outputTools.jp-inputTools .jp-searchWrap {
     order: 3;
 }
@@ -1017,11 +904,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     order: 1;
 }
 
-
-
-/* ========= Search toolbar v2 (VSCode-like) ========= */
-
-/* Make all controls the same height */
 .jp-outputTools .jp-btn,
 .jp-outputTools .jp-search,
 .jp-outputTools .jp-navBtn,
@@ -1030,7 +912,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     box-sizing: border-box;
 }
 
-/* Normalize button padding so it matches input height */
 .jp-outputTools .jp-btn,
 .jp-outputTools .jp-navBtn,
 .jp-outputTools .jp-searchX {
@@ -1045,34 +926,21 @@ body.dark .jp-input.jp-inputHasOverlay,
     display: inline-flex;
     align-items: center;
     gap: 6px;
-
     border-radius: 6px;
     border: 1px solid var(--border, rgba(0, 0, 0, .18));
     background: var(--bg, #fff);
-
     padding: 0 6px;
-
-    /* IMPORTANT: needed for absolute magnifier positioning */
     position: relative;
-
-    /* Вернули компактную ширину как раньше (не на пол-экрана) */
     width: min(265px, 40vw);
     flex: 0 0 auto;
-
-    /* Лупа стоит left:10px и svg ~16px.
-       Хотим gap ~5px => 10 + 16 + 5 = 31px (округляем до 32) */
     --jp-search-pl: 32px;
 }
 
-/* Лупа всегда видна => padding слева не меняем при фокусе/вводе */
 .jp-searchWrap:focus-within,
 .jp-searchWrap.jp-hasText {
     --jp-search-pl: 32px;
 }
 
-
-
-/* Focus ring on the whole field */
 .jp-searchWrap:focus-within {
     border-color: var(--accent, #3b82f6);
 }
@@ -1080,48 +948,30 @@ body.dark .jp-input.jp-inputHasOverlay,
 .jp-searchWrap .jp-search {
     border: none !important;
     background: transparent !important;
-
     flex: 1 1 auto;
     min-width: 0;
-    /* чтобы input не раздувал обёртку */
-
-    /* Текст/placeholder: 4–5px от лупы обеспечивается --jp-search-pl (32px) */
     padding: 10px 12px 10px var(--jp-search-pl) !important;
-
     font-size: 15px;
     outline: none;
 }
 
-
-
-
-
-/* The clear X ALWAYS takes space (so width never changes),
-   but becomes visible/clickable only when wrapper has text. */
 .jp-searchX {
     position: static;
     transform: none;
-
     width: 28px;
     height: 28px;
     min-width: 28px;
-
     border: none;
     background: transparent;
     box-shadow: none;
-
     cursor: pointer;
     font-weight: 900;
     font-size: 20px;
     line-height: 1;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
-    /* hidden by default (but still occupies width) */
     opacity: 0;
     pointer-events: none;
 }
@@ -1136,9 +986,6 @@ body.dark .jp-input.jp-inputHasOverlay,
     filter: none;
 }
 
-
-
-/* Dark theme tune: wrapper border/bg should look like other controls */
 .theme-night .jp-searchWrap,
 .theme-dark .jp-searchWrap,
 html.dark .jp-searchWrap,
@@ -1146,36 +993,25 @@ body.dark .jp-searchWrap,
 [data-theme="dark"] .jp-searchWrap,
 [data-mode="dark"] .jp-searchWrap {
     border: 1px solid rgba(255, 255, 255, 0.12);
-
-    /* keep consistent with the main "field" background used by input/output */
     background: var(--jp-field-bg, rgba(8, 12, 20, 0.92));
 }
 
-
-/* ===== Dark theme: higher contrast (card ≠ field) like your reference ===== */
 .theme-night,
 .theme-dark,
 html.dark,
 body.dark,
 [data-theme="dark"],
 [data-mode="dark"] {
-    /* Light-ish (bluish) cards + near-black fields */
     --jp-card-bg: rgba(20, 28, 45, 0.92);
-    /* block background (like your reference form) */
     --jp-card-border: rgba(255, 255, 255, 0.10);
-
     --jp-field-bg: rgba(8, 12, 20, 0.92);
-    /* input/output/search background */
     --jp-field-border: rgba(255, 255, 255, 0.12);
     --jp-field-border-strong: rgba(255, 255, 255, 0.18);
-
-    /* Keep old var names too (used in a few places) */
     --jp-panel-bg: var(--jp-field-bg);
     --jp-panel-border: var(--jp-field-border);
     --jp-panel-border-strong: var(--jp-field-border-strong);
 }
 
-/* Blocks (Input/Output containers) */
 .theme-night .jp-inputBlock,
 .theme-dark .jp-inputBlock,
 .theme-night .jp-outputBlock,
@@ -1194,7 +1030,6 @@ body.dark .jp-outputBlock,
     border-color: var(--jp-card-border) !important;
 }
 
-/* Input textarea wrapper (overlay container) */
 .theme-night .jp-inputArea,
 .theme-dark .jp-inputArea,
 html.dark .jp-inputArea,
@@ -1205,7 +1040,6 @@ body.dark .jp-inputArea,
     border-color: var(--jp-field-border) !important;
 }
 
-/* Output code area */
 .theme-night .jp-output.jp-outputCode,
 .theme-dark .jp-output.jp-outputCode,
 html.dark .jp-output.jp-outputCode,
@@ -1216,7 +1050,6 @@ body.dark .jp-output.jp-outputCode,
     border-color: var(--jp-field-border) !important;
 }
 
-/* Search field wrapper (the “field” itself) */
 .theme-night .jp-searchWrap,
 .theme-dark .jp-searchWrap,
 html.dark .jp-searchWrap,
@@ -1227,8 +1060,6 @@ body.dark .jp-searchWrap,
     border-color: var(--jp-field-border) !important;
 }
 
-
-/* Placeholder text readability */
 .theme-night .jp-input::placeholder,
 .theme-dark .jp-input::placeholder,
 html.dark .jp-input::placeholder,
@@ -1244,32 +1075,24 @@ body.dark .jp-search::placeholder,
     color: rgba(212, 212, 212, 0.45);
 }
 
-
-
 .jp-searchX:hover {
     opacity: .9;
     filter: none;
 }
 
-
-/* Counter + arrows block (between input and anything on the right) */
 .jp-searchMeta {
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-/* Red "No results" label (VSCode-like) */
 .jp-searchNoResults {
     display: none;
     align-items: center;
-
     font-size: 13px;
     font-weight: 900;
     white-space: nowrap;
-
     color: #dc2626;
-    /* red */
     opacity: 0.95;
 }
 
@@ -1280,11 +1103,8 @@ body.dark .jp-searchNoResults,
 [data-theme="dark"] .jp-searchNoResults,
 [data-mode="dark"] .jp-searchNoResults {
     color: #f87171;
-    /* softer red in dark */
 }
 
-
-/* "1 of 118" */
 .jp-searchCounter {
     min-width: 72px;
     text-align: center;
@@ -1294,7 +1114,6 @@ body.dark .jp-searchNoResults,
     user-select: none;
 }
 
-/* Up/Down nav buttons */
 .jp-navBtn {
     width: 36px;
     min-width: 36px;
@@ -1319,22 +1138,13 @@ body.dark .jp-searchNoResults,
     filter: none;
 }
 
-/* Stronger “hit inside line” highlight (brighter than row highlight) */
 .jp-hitText {
     background: rgba(245, 158, 11, 0.35);
-
-    /* outline НЕ клипается по overflow и “вылезает” за верх/низ textarea.
-       Поэтому делаем рамку inset-shadow (он всегда внутри). */
     box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.60);
-
     border-radius: 3px;
     padding: 0 1px;
 }
 
-
-/* Dark theme tune */
-
-/* Keep borders for nav buttons */
 .theme-night .jp-navBtn,
 .theme-dark .jp-navBtn {
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1342,7 +1152,6 @@ body.dark .jp-searchNoResults,
     color: rgba(212, 212, 212, 0.95);
 }
 
-/* Slightly lift toolbar buttons (Expand/Collapse) so they don't blend into dark UI */
 .theme-night .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
 .theme-dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
 html.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn),
@@ -1364,8 +1173,6 @@ body.dark .jp-outputTools .jp-btn.jp-small:not(.jp-primary):not(.jp-warn):hover,
     border-color: rgba(255, 255, 255, 0.20);
 }
 
-
-/* BUT: X button must stay borderless like in light theme */
 .theme-night .jp-searchX,
 .theme-dark .jp-searchX {
     border: none !important;
@@ -1387,20 +1194,11 @@ html.dark .jp-hitText,
 body.dark .jp-hitText,
 [data-theme="dark"] .jp-hitText,
 [data-mode="dark"] .jp-hitText {
-    /* Ярко-оранжевый фон */
     background: rgba(245, 158, 11, 0.95);
-
-    /* рамка внутри (без outline, чтобы ничего не вылезало) */
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.30);
-
-    /* по требованию — текст на совпадении чёрный */
     color: #111111 !important;
 }
 
-
-
-/* Critical: prevent controls inside from becoming full-width */
-/* IMPORTANT: do NOT override button width here, иначе кнопки нельзя фиксировать */
 .jp-outputTools>.jp-btn {
     flex: 0 0 auto !important;
     display: inline-flex;
@@ -1412,17 +1210,10 @@ body.dark .jp-hitText,
     display: inline-flex;
 }
 
-
-
 .jp-outputTools .jp-search {
-    /* ВАЖНО: ширину контролирует .jp-searchWrap, а не сам input.
-       Иначе поле разъезжается на пол-экрана. */
     width: 100%;
     min-width: 0;
 }
-
-
-/* ========= Output “code” look ========= */
 
 .jp-output.jp-outputCode {
     border-radius: 8px;
@@ -1432,12 +1223,9 @@ body.dark .jp-hitText,
     overflow: auto;
     max-height: calc(100vh - 520px);
     min-height: 320px;
-
-    /* VSCode-like readability */
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 14px;
     line-height: 1.7;
-
     color: #d4d4d4;
 }
 
@@ -1445,10 +1233,8 @@ body.dark .jp-hitText,
     padding-bottom: 8px;
 }
 
-/* One row = one line */
 .jp-row {
     display: flex;
-    /* IMPORTANT: was inline-flex -> caused multi-items per line */
     align-items: baseline;
     gap: 8px;
     padding: 1px 6px;
@@ -1456,7 +1242,6 @@ body.dark .jp-hitText,
     white-space: normal;
 }
 
-/* Line numbers (left gutter) */
 .jp-ln {
     width: 46px;
     flex: 0 0 46px;
@@ -1466,11 +1251,9 @@ body.dark .jp-hitText,
     color: rgba(255, 255, 255, 0.28);
 }
 
-/* Key / punctuation */
 .jp-key {
     font-weight: 650;
     color: var(--jp-key, #9cdcfe);
-    /* VSCode property name */
 }
 
 .jp-sep {
@@ -1483,28 +1266,22 @@ body.dark .jp-hitText,
     color: rgba(212, 212, 212, 0.42);
 }
 
-
-
 .jp-string {
     color: var(--jp-str, #ce9178);
 }
 
-/* orange/brown */
 .jp-number {
     color: var(--jp-num, #dcdcaa);
 }
 
-/* yellow */
 .jp-boolean {
     color: var(--jp-bool, #569cd6);
 }
 
-/* blue */
 .jp-null {
     color: var(--jp-null, #569cd6);
 }
 
-/* null keyword in VSCode is bluish */
 .jp-other {
     color: #d4d4d4;
 }
@@ -1514,7 +1291,6 @@ body.dark .jp-hitText,
     color: rgba(212, 212, 212, 0.8);
 }
 
-/* Branch (<details>) */
 .jp-branch {
     margin: 2px 0;
 }
@@ -1528,7 +1304,6 @@ body.dark .jp-hitText,
     display: none;
 }
 
-/* disclosure arrow */
 .jp-branch>summary::before {
     content: "▸";
     display: inline-block;
@@ -1549,7 +1324,6 @@ body.dark .jp-hitText,
     border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Search highlighting */
 .jp-hit {
     background: rgba(86, 156, 214, 0.16);
     outline: 1px solid rgba(86, 156, 214, 0.25);
@@ -1560,7 +1334,6 @@ body.dark .jp-hitText,
     outline: 1px solid rgba(220, 220, 170, 0.28);
 }
 
-/* Optional: if your app uses theme-night */
 .theme-night {
     --jp-key: #9cdcfe;
     --jp-str: #ce9178;
@@ -1568,8 +1341,6 @@ body.dark .jp-hitText,
     --jp-bool: #569cd6;
     --jp-null: #569cd6;
 }
-
-/* ========= Output “code” look ========= */
 
 .jp-output.jp-outputCode {
     border-radius: 10px;
@@ -1579,22 +1350,12 @@ body.dark .jp-hitText,
     overflow: auto;
     max-height: calc(100vh - 520px);
     min-height: 320px;
-
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 15px;
     line-height: 1.7;
-
     color: #1f2937;
-
-    /* IMPORTANT:
-       No "default" vertical stripes.
-       Guides are drawn ONLY via .jp-guides overlay for OPEN blocks. */
     position: relative;
-    /* keep for overlay */
 }
-
-
-
 
 .theme-night .jp-output.jp-outputCode,
 .theme-dark .jp-output.jp-outputCode,
@@ -1611,14 +1372,10 @@ body.dark .jp-output.jp-outputCode,
     color: #d4d4d4;
 }
 
-
-
-
 .jp-tree {
     padding-bottom: 8px;
 }
 
-/* One row = one line */
 .jp-row {
     display: flex;
     align-items: baseline;
@@ -1632,66 +1389,43 @@ body.dark .jp-output.jp-outputCode,
     display: inline-flex;
     align-items: baseline;
     gap: 0;
-
-    /* VSCode-like deeper indentation */
     --jp-indent: 24px;
     padding-left: calc(var(--jp-depth, 0) * var(--jp-indent));
 }
 
-/* ===== VSCode-like indent guides (overlay) ===== */
-
-/* Output must be positioning context for absolute guide lines */
 .jp-output.jp-outputCode {
     position: relative;
 }
 
 .jp-output.jp-outputCode.jp-rawMode .jp-line {
     white-space: pre;
-    /* keep spaces/tabs exactly */
     padding-left: 0 !important;
     display: block;
-    /* safer for token spans */
 }
 
 .jp-output.jp-outputCode.jp-rawMode .jp-row {
     white-space: pre;
-    /* preserve indentation */
 }
 
-
-
-/* Layer that holds vertical lines */
 .jp-guides {
     position: absolute;
     inset: 0;
     pointer-events: none;
-
-    /* IMPORTANT:
-       Always above the text. Previously, in some browsers/layouts,
-       normal-flow content could paint over the overlay. */
     z-index: 10;
 }
 
-/* Ensure tree is in its own stacking layer below guides */
 .jp-tree {
     position: relative;
     z-index: 1;
 }
 
-
-/* One vertical line for one open block */
 .jp-guideLine {
     position: absolute;
     width: 1px;
-
-    /* Light theme line */
     background: rgba(17, 24, 39, 0.10);
-
-    /* make line crisp */
     transform: translateZ(0);
 }
 
-/* Dark theme line */
 .theme-night .jp-guideLine,
 .theme-dark .jp-guideLine,
 html.dark .jp-guideLine,
@@ -1707,37 +1441,27 @@ body.dark .jp-guideLine,
     display: inline-flex;
     align-items: center;
     font-weight: 650;
-    /* was 800 */
     letter-spacing: 0.1px;
-    /* was 0.2px */
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     opacity: .9;
     margin-left: 2px;
 }
 
-/* ===== Bracket-pair coloring (by nesting) ===== */
 .jp-bracket {
     font-weight: 700;
     opacity: 0.95;
 }
 
-/* Light theme palette */
 :root {
     --jp-bracket-0: #d97706;
-    /* amber */
     --jp-bracket-1: #7c3aed;
-    /* violet */
     --jp-bracket-2: #2563eb;
-    /* blue */
     --jp-bracket-3: #059669;
-    /* emerald */
     --jp-bracket-4: #db2777;
-    /* pink */
     --jp-bracket-5: #c2410c;
-    /* orange */
+
 }
 
-/* Dark theme palette (VSCode-ish) */
 .theme-night,
 .theme-dark,
 html.dark,
@@ -1745,56 +1469,38 @@ body.dark,
 [data-theme="dark"],
 [data-mode="dark"] {
     --jp-bracket-0: #dcdcaa;
-    /* yellow */
     --jp-bracket-1: #c586c0;
-    /* purple */
     --jp-bracket-2: #4fc1ff;
-    /* cyan */
     --jp-bracket-3: #b5cea8;
-    /* greenish */
     --jp-bracket-4: #ce9178;
-    /* orange/brown */
     --jp-bracket-5: #569cd6;
-    /* blue */
 }
 
-
-/* UTC annotation next to unix timestamps */
 .jp-utcHint {
     margin-left: 6px;
     font-size: 12px;
     opacity: 0.55;
     color: rgba(55, 65, 81, 0.75);
-    /* light gray (works in light theme) */
     user-select: none;
-    /* do not select -> won't be copied in normal selection */
     pointer-events: none;
-    /* purely visual */
     white-space: nowrap;
 }
 
 .theme-night .jp-utcHint,
 .theme-dark .jp-utcHint {
     color: rgba(212, 212, 212, 0.55);
-    /* gray in dark theme */
+
 }
 
 .jp-noCopy {
     user-select: none;
-    /* IMPORTANT:
-       Do NOT disable pointer-events globally, иначе ломаются клики на .jp-toggle */
     pointer-events: auto;
 }
 
-/* But still keep some purely-visual helpers non-interactive */
 .jp-utcHint {
     pointer-events: none;
 }
 
-
-
-
-/* Toggle button (+ / -) pinned to the line (not left gutter) */
 .jp-toggle {
     width: 18px;
     height: 18px;
@@ -1809,7 +1515,6 @@ body.dark,
     cursor: pointer;
     user-select: none;
 
-    /* PLUS (collapsed) — green */
     border: 1px solid rgba(22, 163, 74, 0.65);
     color: rgba(21, 128, 61, 1);
     background: rgba(22, 163, 74, 0.10);
@@ -1817,10 +1522,7 @@ body.dark,
     margin-right: 6px;
 }
 
-/* Invisible placeholder to align closing } / ] under the same column as toggle */
 .jp-togglePlaceholder {
-    /* Shift close bracket slightly, but not as wide as the whole toggle.
-       This keeps closing braces from drifting too far right in some blocks. */
     width: 9px;
     height: 18px;
 
@@ -1832,16 +1534,12 @@ body.dark,
     user-select: none;
 }
 
-
-
-/* MINUS (open) — soft orange (not "error red") */
 .jp-toggle.is-open {
     border-color: rgba(249, 115, 22, 0.65);
     color: rgba(194, 65, 12, 1);
     background: rgba(249, 115, 22, 0.12);
 }
 
-/* Dark theme tuning: slightly brighter for contrast */
 .theme-night .jp-toggle,
 .theme-dark .jp-toggle {
     border-color: rgba(34, 197, 94, 0.70);
@@ -1860,9 +1558,6 @@ body.dark,
     filter: brightness(0.98);
 }
 
-
-
-/* Line numbers (left gutter) */
 .jp-ln {
     width: 52px;
     flex: 0 0 52px;
@@ -1877,7 +1572,6 @@ body.dark,
     color: rgba(255, 255, 255, 0.28);
 }
 
-/* Key / punctuation */
 .jp-key {
     font-weight: 650;
     color: var(--jp-key, #1f3a8a);
@@ -1887,27 +1581,22 @@ body.dark,
     color: rgba(55, 65, 81, 0.7);
 }
 
-
 .jp-string {
     color: var(--jp-str, #b45309);
 }
 
-/* orange/brown */
 .jp-number {
     color: var(--jp-num, #0f766e);
 }
 
-/* yellow */
 .jp-boolean {
     color: var(--jp-bool, #2563eb);
 }
 
-/* blue */
 .jp-null {
     color: var(--jp-null, #2563eb);
 }
 
-/* null keyword in VSCode is bluish */
 .jp-other {
     color: inherit;
 }
@@ -1954,7 +1643,6 @@ body.dark,
     color: rgba(212, 212, 212, 0.8);
 }
 
-/* Branch (<details>) */
 .jp-branch {
     margin: 2px 0;
 }
@@ -1976,12 +1664,10 @@ body.dark,
 
 .jp-children {
     margin-left: 0;
-    /* indentation is handled by --jp-depth on rows */
     padding-left: 0;
     border-left: none;
 }
 
-/* Search highlighting */
 .jp-hit {
     background: rgba(86, 156, 214, 0.16);
     outline: 1px solid rgba(86, 156, 214, 0.25);
@@ -1992,7 +1678,6 @@ body.dark,
     outline: 1px solid rgba(220, 220, 170, 0.28);
 }
 
-/* Optional: if your app uses theme-night */
 .theme-night {
     --jp-key: #9cdcfe;
     --jp-str: #ce9178;
@@ -2000,8 +1685,6 @@ body.dark,
     --jp-bool: #569cd6;
     --jp-null: #569cd6;
 }
-
-/* ========= Tolerant parse: Error summary ========= */
 
 .jp-errBtn {
     height: 36px;
@@ -2132,8 +1815,6 @@ body.dark .jp-errKind,
     opacity: 0.75;
 }
 
-/* ========= Parse issue highlight in Output ========= */
-
 .jp-parseErr {
     background: rgba(245, 158, 11, 0.14);
     outline: 1px solid rgba(245, 158, 11, 0.30);
@@ -2185,11 +1866,6 @@ body.dark .jp-errMark,
     color: rgba(253, 186, 116, 0.95);
 }
 
-/* Match highlight inside Input */
-
-/* IMPORTANT:
-   outline НЕ клипается overflow'ом и может “вылезать” за верх/низ.
-   Поэтому используем inset box-shadow (всегда внутри). */
 .jp-inputHitText {
     background: rgba(245, 158, 11, 0.28);
     box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.55);
@@ -2202,7 +1878,6 @@ body.dark .jp-errMark,
     box-shadow: inset 0 0 0 2px rgba(245, 158, 11, 0.75);
 }
 
-/* Dark theme: ярко-оранжевый фон + чёрный текст */
 .theme-night .jp-inputHitText,
 .theme-dark .jp-inputHitText,
 html.dark .jp-inputHitText,
@@ -2225,13 +1900,10 @@ body.dark .jp-inputHitText.jp-inputHitCurrent,
     color: #111111 !important;
 }
 
-/* Critical: prevent buttons/inputs inside from becoming full-width */
-/* IMPORTANT: don't force width:auto for buttons — it blocks fixed/min width rules above */
 .jp-outputTools>.jp-btn {
     flex: 0 0 auto !important;
     display: inline-flex !important;
 
-    /* Center text inside (fixes your "text not centered" when min-width is used) */
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
@@ -2243,7 +1915,6 @@ body.dark .jp-inputHitText.jp-inputHitCurrent,
     display: inline-flex !important;
 }
 
-/* Expand all / Collapse all buttons — fixed width + centered text */
 .jp-outputTools .jp-btn.jp-small {
     width: 100px !important;
     min-width: 100px !important;
@@ -2256,19 +1927,16 @@ body.dark .jp-inputHitText.jp-inputHitCurrent,
     line-height: 1 !important;
 }
 
-/* Critical: prevent buttons/inputs inside from becoming full-width */
 .jp-outputTools>.jp-btn,
 .jp-outputTools>.jp-search {
     width: auto !important;
     flex: 0 0 auto !important;
     display: inline-flex;
 
-    /* FIX: центрирование содержимого (text-align не работает на flex) */
     align-items: center;
     justify-content: center;
 }
 
-/* FIX: Expand/Collapse (это jp-btn jp-small) — минимальная ширина 100px */
 .jp-outputTools>.jp-btn.jp-small {
     min-width: 100px;
 }

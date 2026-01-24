@@ -1,0 +1,292 @@
+/* Uses global tokens from Main.css:
+   --card, --border, --text, --accent, etc. */
+
+.utt-view {
+    padding: 22px 22px 40px;
+}
+
+.utt-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.utt-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.utt-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.utt-subtitle {
+    margin-top: 6px;
+    opacity: 0.72;
+    font-size: 13px;
+}
+
+.utt-now {
+    min-width: 320px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .12);
+}
+
+.utt-now-label {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-bottom: 8px;
+}
+
+.utt-now-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.utt-now-value {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.utt-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .10);
+    margin-bottom: 14px;
+}
+
+.utt-card-title {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    opacity: 0.92;
+}
+
+.utt-label {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+.utt-input,
+.utt-select {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+}
+
+.utt-input:focus,
+.utt-select:focus {
+    border-color: rgba(59, 130, 246, 0.65);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.utt-btn {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    padding: 10px 14px;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .05s ease, filter .12s ease, background .12s ease;
+    white-space: nowrap;
+}
+
+body.theme-light .utt-btn {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+.utt-btn:hover {
+    filter: brightness(1.05);
+}
+
+.utt-btn:active {
+    transform: translateY(1px);
+}
+
+.utt-btn-primary {
+    background: var(--accent);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #fff;
+}
+
+.utt-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 12px;
+    align-items: end;
+}
+
+.utt-grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+}
+
+.utt-grid-date {
+    display: grid;
+    grid-template-columns: 110px 1fr 90px 90px 90px 90px 220px;
+    gap: 10px;
+    align-items: end;
+}
+
+.utt-grid-diff {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 220px;
+    gap: 12px;
+    align-items: end;
+}
+
+.utt-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+}
+
+.utt-results {
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+}
+
+.utt-result-row {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.utt-result-k {
+    font-size: 12px;
+    opacity: 0.75;
+    font-weight: 700;
+}
+
+.utt-result-v {
+    font-size: 13px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.utt-inline-out {
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+}
+
+.utt-inline-label {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.utt-inline-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.utt-inline-row-tight {
+    margin-left: auto;
+}
+
+.utt-inline-value {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+}
+
+.utt-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.utt-error {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #ef4444;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity .12s ease;
+}
+
+.utt-error.show {
+    opacity: 1;
+    height: auto;
+}
+
+/* responsive */
+@media (max-width: 1100px) {
+    .utt-grid-date {
+        grid-template-columns: 110px 1fr 90px 90px 90px 90px;
+    }
+
+    .utt-grid-date .utt-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 900px) {
+    .utt-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .utt-now {
+        min-width: 0;
+    }
+
+    .utt-grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    .utt-grid2 .utt-actions {
+        justify-content: flex-start;
+    }
+
+    .utt-grid3 {
+        grid-template-columns: 1fr;
+    }
+
+    .utt-grid-diff {
+        grid-template-columns: 1fr;
+    }
+
+    .utt-grid-diff .utt-actions {
+        justify-content: flex-start;
+    }
+
+    .utt-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .utt-inline-row-tight {
+        margin-left: 0;
+    }
+}

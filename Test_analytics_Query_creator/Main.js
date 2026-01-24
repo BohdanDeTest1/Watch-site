@@ -24,6 +24,10 @@ function switchTab(id) {
         window.Tools.jsonParser?.onActivate?.();
     }
 
+    if (id === 'tab4') {
+        window.Tools.unixTimeTools?.onActivate?.();
+    }
+
 }
 
 // Открывать панель кликом по пустому месту, когда она закрыта
@@ -171,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     safeInit('QueryCreator', () => window.Tools.queryCreator?.init?.(container));
     safeInit('ProfileParser', () => window.Tools.profileParser?.init?.(container));
     safeInit('JSONParser', () => window.Tools.jsonParser?.init?.(container));
-
+    safeInit('UnixTimeTools', () => window.Tools.unixTimeTools?.init?.(container));
 
 
     // === Theme toggle ===

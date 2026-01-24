@@ -1,0 +1,199 @@
+<div class="utt-wrap">
+    <div class="utt-top">
+        <div class="utt-top-left">
+            <div class="utt-title">Unix Time Tools</div>
+            <div class="utt-subtitle">Convert timestamps, dates, units and differences.</div>
+        </div>
+
+        <div class="utt-now">
+            <div class="utt-now-label">Current Unix epoch (seconds)</div>
+            <div class="utt-now-row">
+                <div id="uttNowEpoch" class="utt-now-value">—</div>
+                <button type="button" id="uttNowCopy" class="utt-btn">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1) Unix -> Human -->
+    <section class="utt-card">
+        <div class="utt-card-title">Convert Unix timestamp → Human readable</div>
+
+        <div class="utt-grid2">
+            <div class="utt-field">
+                <label class="utt-label" for="uttUnixInput">Unix timestamp</label>
+                <input id="uttUnixInput" class="utt-input" type="text" placeholder="e.g. 1769282930" />
+                <div id="uttUnixErr" class="utt-error"></div>
+            </div>
+
+            <div class="utt-field utt-actions">
+                <button type="button" id="uttUnixConvert" class="utt-btn utt-btn-primary">Convert</button>
+            </div>
+        </div>
+
+        <div class="utt-results">
+            <div class="utt-result-row">
+                <div class="utt-result-k">UTC:</div>
+                <div id="uttUtcOut" class="utt-result-v">—</div>
+            </div>
+            <div class="utt-result-row">
+                <div class="utt-result-k">Local:</div>
+                <div id="uttLocalOut" class="utt-result-v">—</div>
+            </div>
+            <div class="utt-result-row">
+                <div class="utt-result-k">Relative:</div>
+                <div id="uttRelOut" class="utt-result-v">—</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2) Human -> Unix -->
+    <section class="utt-card">
+        <div class="utt-card-title">Convert Human readable (UTC) → Unix timestamp</div>
+
+        <div class="utt-grid-date">
+            <div class="utt-field">
+                <label class="utt-label" for="uttY">Year</label>
+                <input id="uttY" class="utt-input" type="number" min="1970" max="2100" value="2026" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttM">Month</label>
+                <select id="uttM" class="utt-select">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttD">Day</label>
+                <input id="uttD" class="utt-input" type="number" min="1" max="31" value="1" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttH">Hour</label>
+                <input id="uttH" class="utt-input" type="number" min="0" max="23" value="0" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttMin">Min</label>
+                <input id="uttMin" class="utt-input" type="number" min="0" max="59" value="0" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttS">Sec</label>
+                <input id="uttS" class="utt-input" type="number" min="0" max="59" value="0" />
+            </div>
+
+            <div class="utt-field utt-actions">
+                <button type="button" id="uttHumanConvert" class="utt-btn utt-btn-primary">Convert</button>
+            </div>
+        </div>
+
+        <div class="utt-inline-out">
+            <div class="utt-inline-label">Unix timestamp (seconds):</div>
+            <div class="utt-inline-row">
+                <div id="uttHumanOut" class="utt-inline-value">—</div>
+                <button type="button" id="uttHumanCopy" class="utt-btn">Copy</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3) Unit converter -->
+    <section class="utt-card">
+        <div class="utt-card-title">Convert time units</div>
+
+        <div class="utt-grid3">
+            <div class="utt-field">
+                <label class="utt-label" for="uttUnitVal">Value</label>
+                <input id="uttUnitVal" class="utt-input" type="number" step="any" placeholder="e.g. 100" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttUnitFrom">From</label>
+                <select id="uttUnitFrom" class="utt-select">
+                    <option value="ms">Milliseconds</option>
+                    <option value="sec" selected>Seconds</option>
+                    <option value="min">Minutes</option>
+                    <option value="hour">Hours</option>
+                    <option value="day">Days</option>
+                    <option value="year">Years</option>
+                </select>
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttUnitTo">To</label>
+                <select id="uttUnitTo" class="utt-select">
+                    <option value="ms">Milliseconds</option>
+                    <option value="sec">Seconds</option>
+                    <option value="min">Minutes</option>
+                    <option value="hour" selected>Hours</option>
+                    <option value="day">Days</option>
+                    <option value="year">Years</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="utt-actions-row">
+            <button type="button" id="uttUnitConvert" class="utt-btn utt-btn-primary">Convert</button>
+            <div class="utt-inline-row utt-inline-row-tight">
+                <div class="utt-inline-label">Result:</div>
+                <div id="uttUnitOut" class="utt-inline-value">—</div>
+                <button type="button" id="uttUnitCopy" class="utt-btn">Copy</button>
+            </div>
+        </div>
+
+        <div id="uttUnitErr" class="utt-error"></div>
+    </section>
+
+    <!-- 4) Difference -->
+    <section class="utt-card">
+        <div class="utt-card-title">Difference between two Unix timestamps</div>
+
+        <div class="utt-grid-diff">
+            <div class="utt-field">
+                <label class="utt-label" for="uttDiffA">1st unix timestamp</label>
+                <input id="uttDiffA" class="utt-input" type="text" placeholder="e.g. 1769282930" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttDiffB">2nd unix timestamp</label>
+                <input id="uttDiffB" class="utt-input" type="text" placeholder="e.g. 1769283016" />
+            </div>
+
+            <div class="utt-field">
+                <label class="utt-label" for="uttDiffUnit">Show difference in</label>
+                <select id="uttDiffUnit" class="utt-select">
+                    <option value="ms">Milliseconds</option>
+                    <option value="sec" selected>Seconds</option>
+                    <option value="min">Minutes</option>
+                    <option value="hour">Hours</option>
+                    <option value="day">Days</option>
+                    <option value="year">Years</option>
+                </select>
+            </div>
+
+            <div class="utt-field utt-actions">
+                <button type="button" id="uttDiffCalc" class="utt-btn utt-btn-primary">Calculate</button>
+            </div>
+        </div>
+
+        <div class="utt-inline-out">
+            <div class="utt-inline-label">Result:</div>
+            <div class="utt-inline-row">
+                <div id="uttDiffOut" class="utt-inline-value">—</div>
+                <button type="button" id="uttDiffCopy" class="utt-btn">Copy</button>
+            </div>
+            <div id="uttDiffErr" class="utt-error"></div>
+        </div>
+    </section>
+</div>
