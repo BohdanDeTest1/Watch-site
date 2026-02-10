@@ -16,12 +16,22 @@
     --border-2: #aab3d25e;
 }
 
+/* FIX: не включаем "тёмный" фон автоматически, если пользователь явно выбрал light */
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.theme-light):not([data-theme="light"]):not(.light) :not(.theme-dark):not(.dark):not([data-theme="dark"]) {
         --pp-side-bg: #1a1c25;
         /* или #0d1117, если хочешь совсем тёмную */
     }
 }
+
+/* Явный LIGHT должен всегда побеждать */
+:root.theme-light,
+.theme-light,
+[data-theme="light"],
+.light {
+    --pp-side-bg: #fff;
+}
+
 
 
 
@@ -744,6 +754,55 @@
 #pp-root .pp-info-wrap:focus-within .pp-mini-tooltip {
     opacity: 1;
     pointer-events: auto;
+}
+
+/* =========================
+   Levels hover tooltip (Min/Max level under cursor)
+   ========================= */
+.pp-lvl-hover-tip {
+    position: fixed;
+    z-index: 400000;
+    left: 0;
+    top: 0;
+
+    padding: 8px 10px;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid rgba(17, 24, 39, .14);
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .18);
+    pointer-events: none;
+
+    font-size: 12px;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.pp-lvl-hover-tip .r {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+.pp-lvl-hover-tip .k {
+    opacity: .75;
+}
+
+.pp-lvl-hover-tip .v {
+    font-weight: 800;
+}
+
+/* dark theme */
+:root.theme-dark .pp-lvl-hover-tip,
+.theme-dark .pp-lvl-hover-tip,
+[data-theme="dark"] .pp-lvl-hover-tip,
+.dark .pp-lvl-hover-tip {
+    background: rgba(0, 0, 0, .92);
+    color: #ffffff;
+    border-color: rgba(148, 163, 184, .28);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
 }
 
 
@@ -6282,15 +6341,69 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
 }
 
 
-/* иконка-таблица через mask, цвет берётся из currentColor (голубой) */
-.pp-picked-btn::before {
-    content: "";
-    width: 14px;
-    height: 14px;
-    background-color: currentColor;
-    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 4h18v16H3zM3 9h18v1H3zM3 14h18v1H3zM9 4h1v16H9zM15 4h1v16h-1z'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 4h18v16H3zM3 9h18v1H3zM3 14h18v1H3zM9 4h1v16H9zM15 4h1v16h-1z'/%3E%3C/svg%3E") center/contain no-repeat;
+.pp-picked-menu {
+    position: absolute;
+    bottom: 36px;
+    /* над кнопкой */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, .35);
+    background: #ffffff;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+
+    /* ВЫШЕ кнопок/пагинации календаря */
+    z-index: 500000;
+
+    min-width: 190px;
+    pointer-events: auto;
 }
+
+
+.pp-picked-action {
+    width: 100%;
+    text-align: left;
+    border: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(96, 161, 244, .14);
+    color: #0b1120;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pp-picked-action:hover {
+    background: rgba(96, 161, 244, .22);
+}
+
+:root.theme-dark .pp-picked-menu,
+.theme-dark .pp-picked-menu,
+[data-theme="dark"] .pp-picked-menu,
+.dark .pp-picked-menu {
+    background: #0f172a;
+    border-color: rgba(148, 163, 184, .35);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .55);
+}
+
+:root.theme-dark .pp-picked-action,
+.theme-dark .pp-picked-action,
+[data-theme="dark"] .pp-picked-action,
+.dark .pp-picked-action {
+    background: rgba(96, 161, 244, .16);
+    color: #e5e7eb;
+}
+
+:root.theme-dark .pp-picked-action:hover,
+.theme-dark .pp-picked-action:hover,
+[data-theme="dark"] .pp-picked-action:hover,
+.dark .pp-picked-action:hover {
+    background: rgba(96, 161, 244, .26);
+}
+
 
 
 /* Управляем темой нативного пикера через color-scheme */
@@ -7345,7 +7458,711 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     background: #f59e0b !important;
 }
 
+/* ===================== Levels graph (Events by levels) ===================== */
+.pp-levels {
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid rgba(83, 103, 124, .35);
+    border-radius: 14px;
+    background: var(--pp-side-bg);
+}
+
+.pp-levels-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.pp-levels-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pp-levels-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    line-height: 1;
+    font-size: 18px;
+}
+
+.pp-levels-shell {
+    display: flex;
+    gap: 10px;
+    min-height: 120px;
+}
+
+.pp-levels-names {
+    width: 260px;
+    flex: 0 0 260px;
+    overflow: hidden;
+}
+
+.pp-lvl-name {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--pp-text, #0b1120);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pp-levels-gridwrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    /* важно для flex */
+    max-width: 100%;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border-radius: 12px;
+
+    /* ВАЖНО: border даёт визуальный “сдвиг” старта (контент начинается после border).
+       Поэтому убираем border и рисуем рамку inset-shadow (не влияет на layout). */
+    border: none;
+    box-shadow: inset 0 0 0 1px rgba(83, 103, 124, .25);
+
+    /* УБИРАЕМ любые полосы/сетку */
+    background: transparent;
+    background-image: none;
+
+    overscroll-behavior-x: contain;
+    cursor: grab;
+}
 
 
+
+.pp-levels-gridwrap.pp-lvl-dragging {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.pp-levels-scale {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    /* чтобы не было “полос” и рамок */
+    background: transparent;
+    border-bottom: 0;
+
+    /* убираем любые возможные смещения */
+    margin: 0;
+    padding: 0;
+}
+
+/* === Levels graph: размер клетки левела в пикселях (меняй тут) === */
+#pp-root .pp-levels-gridwrap {
+    /* было "авто" от JS, теперь можно зафиксировать пикселями */
+    --pp-lvl-cell: 24px;
+    /* <-- СДЕЛАЙ БОЛЬШЕ (например 28px/32px), если нужно шире */
+}
+
+
+.pp-lvl-tick {
+    width: var(--pp-lvl-cell, 28px);
+    flex: 0 0 var(--pp-lvl-cell, 28px);
+    text-align: center;
+    font-size: 9px;
+    padding: 6px 0;
+    color: rgba(15, 23, 42, .7);
+
+    /* УБИРАЕМ вертикальные линии */
+    border-right: none;
+
+    user-select: none;
+}
+
+
+
+.pp-levels-grid {
+    position: relative;
+
+    /* убрать возможный микро-сдвиг старта */
+    margin: 0;
+    padding: 0;
+}
+
+.pp-lvl-row {
+    position: relative;
+    height: 30px;
+
+    /* УБИРАЕМ горизонтальные линии */
+    border-bottom: none;
+
+    background: transparent;
+    background-image: none;
+}
+
+
+
+.pp-lvl-bar {
+    position: absolute;
+    top: 4px;
+    height: 22px;
+    border-radius: 10px;
+}
+
+:root.theme-dark .pp-levels-gridwrap,
+.theme-dark .pp-levels-gridwrap,
+[data-theme="dark"] .pp-levels-gridwrap,
+.dark .pp-levels-gridwrap {
+    /* фон — нейтральный, без сетки/полос */
+    background: transparent;
+    border-color: rgba(148, 163, 184, .22);
+}
+
+
+:root.theme-dark .pp-lvl-tick,
+.theme-dark .pp-lvl-tick,
+[data-theme="dark"] .pp-lvl-tick,
+.dark .pp-lvl-tick {
+    color: rgba(226, 232, 240, .7);
+    border-right-color: rgba(148, 163, 184, .18);
+}
+
+.pp-lvl-empty {
+    padding: 8px;
+}
+
+
+/* =========================
+   Events by levels (Levels graph)
+   ========================= */
+
+#pp-root .pp-levels {
+    margin-top: 10px;
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+    overflow: hidden;
+}
+
+#pp-root .pp-levels-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--panel-border);
+}
+
+#pp-root .pp-levels-title {
+    font-weight: 700;
+    color: var(--text);
+}
+
+#pp-root .pp-levels-body {
+    display: flex;
+    min-height: 220px;
+}
+
+/* FIX: levels grid MUST NOT expand page width (only inner horizontal scroll) */
+#pp-root .pp-levels {
+    max-width: 100%;
+}
+
+/* ключ для flex: разрешаем сжиматься и запрещаем "min-content = 8000px" */
+#pp-root .pp-levels-shell {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    /* всё лишнее — только внутри gridwrap */
+}
+
+/* gridwrap — единственное место, где появляется горизонтальный скролл */
+#pp-root .pp-levels-gridwrap {
+    flex: 1 1 0;
+    /* важно: basis=0, иначе flex может тянуться под контент */
+    min-width: 0;
+    /* важно: разрешаем сжиматься */
+    max-width: 1084px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* изоляция, чтобы огромная ширина полотна не влияля на внешний layout */
+    contain: layout paint;
+}
+
+
+#pp-root .pp-levels-names {
+    flex: 0 0 320px;
+    max-width: 320px;
+    border-right: 1px solid var(--panel-border);
+    padding: 6px 8px;
+}
+
+#pp-root .pp-lvl-name {
+    /* ОДНИ И ТЕ ЖЕ размеры, что и строки/бары справа */
+    height: var(--pp-lvl-row-h, 40px);
+
+    /* вместо line-height (который визуально часто "уезжает") — честный flex-центр */
+    display: flex;
+    align-items: center;
+
+    padding: 0 10px;
+
+    /* чуть крупнее, как в обычном календаре */
+    font-size: 13px;
+    line-height: 1.2;
+
+    color: var(--text);
+
+    /* ellipsis для длинных названий */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.pp-levels-gridwrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    /* важно для flex */
+    max-width: 100%;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border-radius: 12px;
+
+    /* ВАЖНО: border даёт визуальный “сдвиг” старта (контент начинается после border).
+       Поэтому убираем border и рисуем рамку inset-shadow (не влияет на layout). */
+    border: none;
+    box-shadow: inset 0 0 0 1px rgba(83, 103, 124, .25);
+
+    /* УБИРАЕМ любые полосы/сетку */
+    background: transparent;
+    background-image: none;
+
+    overscroll-behavior-x: contain;
+    cursor: grab;
+}
+
+
+
+#pp-root .pp-levels-gridwrap.pp-lvl-dragging {
+    cursor: grabbing;
+}
+
+/* шкала уровней */
+#pp-root .pp-levels-scale {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    height: 26px;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--panel-border);
+
+    /* такие же линии, как на полотне — чтобы совпадали с клетками */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(15, 23, 42, 0.10) 0px,
+            rgba(15, 23, 42, 0.10) 1px,
+            transparent 1px,
+            transparent var(--pp-lvl-cell, 24px));
+    background-repeat: repeat;
+    background-position: 0 0;
+}
+
+
+#pp-root .pp-lvl-tick {
+    flex: 0 0 var(--pp-lvl-cell, 24px);
+    width: var(--pp-lvl-cell, 24px);
+    font-size: 11px;
+    line-height: 26px;
+    text-align: center;
+    color: var(--muted);
+
+    /* УБИРАЕМ вертикальные линии */
+    border-left: none;
+}
+
+
+/* полотно (именно оно скроллится внутри gridwrap вместе с барами) */
+#pp-root .pp-levels-grid {
+    position: relative;
+
+    /* вертикальные линии строго по шагу клетки */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(15, 23, 42, 0.10) 0px,
+            /* линия */
+            rgba(15, 23, 42, 0.10) 1px,
+            transparent 1px,
+            transparent var(--pp-lvl-cell, 24px)
+            /* шаг клетки */
+        );
+    background-repeat: repeat;
+    background-position: 0 0;
+}
+
+
+/* Общие размеры для идеальной синхронизации "имена слева" <-> "бары справа" */
+#pp-root .pp-levels {
+    /* можешь менять тут, если захочешь плотнее/выше */
+    --pp-lvl-row-h: 40px;
+    --pp-lvl-bar-h: 28px;
+}
+
+#pp-root .pp-lvl-row {
+    position: relative;
+    height: var(--pp-lvl-row-h, 40px);
+
+    /* УБИРАЕМ горизонтальные линии */
+    border-bottom: none;
+
+    /* УБИРАЕМ вертикальные полосы/сетки */
+    background: transparent;
+    background-image: none;
+}
+
+#pp-root .pp-lvl-bar {
+    position: absolute;
+
+    /* КЛЮЧ: центрируем бар математически внутри строки */
+    top: calc((var(--pp-lvl-row-h, 40px) - var(--pp-lvl-bar-h, 28px)) / 2);
+    height: var(--pp-lvl-bar-h, 28px);
+
+    border-radius: 6px;
+
+    /* flat */
+    box-shadow: none !important;
+    filter: none !important;
+    background-image: none !important;
+}
+
+
+#pp-root .pp-lvl-bar .txt {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+    line-height: 28px;
+    font-size: 12px;
+}
+
+
+/* тёмная тема — сетка/тики чуть мягче */
+:root.theme-dark #pp-root .pp-lvl-tick,
+.theme-dark #pp-root .pp-lvl-tick,
+[data-theme="dark"] #pp-root .pp-lvl-tick,
+.dark #pp-root .pp-lvl-tick {
+    color: rgba(226, 232, 240, 0.75);
+    border-left-color: rgba(148, 163, 184, 0.18);
+}
+
+:root.theme-dark #pp-root .pp-lvl-row,
+.theme-dark #pp-root .pp-lvl-row,
+[data-theme="dark"] #pp-root .pp-lvl-row,
+.dark #pp-root .pp-lvl-row {
+    border-bottom-color: rgba(148, 163, 184, 0.14);
+
+    background-image:
+        /* полосы: чуть заметнее в dark */
+        repeating-linear-gradient(to right,
+            rgba(148, 163, 184, 0.10) 0,
+            rgba(148, 163, 184, 0.10) var(--pp-lvl-cell, 24px),
+            rgba(148, 163, 184, 0.04) var(--pp-lvl-cell, 24px),
+            rgba(148, 163, 184, 0.04) calc(var(--pp-lvl-cell, 24px) * 2)),
+        /* линии между level */
+        repeating-linear-gradient(to right,
+            rgba(148, 163, 184, 0.14) 0px,
+            rgba(148, 163, 184, 0.14) 1px,
+            transparent 1px,
+            transparent var(--pp-lvl-cell, 24px));
+}
+
+
+
+#pp-root .pp-levels-gridwrap {
+    position: relative;
+    flex: 1 1 auto;
+
+    /* НЕ расширяем страницу */
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* ВАЖНО: без отступов -> Level 0 с самого края */
+    padding: 0;
+
+    cursor: grab;
+
+    /* без сетки/полос */
+    background: transparent;
+    background-image: none;
+
+    /* рамка без смещения */
+    border: none;
+    box-shadow: inset 0 0 0 1px rgba(83, 103, 124, .25);
+    border-radius: 12px;
+}
 
 /* страховка: если поля имеют не класс .fld, мы всё равно попадаем селекторами выше */
+
+/* =========================
+   Levels graph FINAL overrides
+   (same “calendar-like” stripes + fixed alignment + no layout breaking)
+   ========================= */
+
+#pp-root .pp-levels-body {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ВАЖНО: слева должен быть такой же вертикальный сдвиг, как высота шкалы уровней,
+   иначе названия “уезжают” вверх относительно баров */
+#pp-root .pp-levels-names {
+    /* 6px (как было) + высота шкалы уровней */
+    padding: calc(6px + var(--pp-lvl-scale-h, 26px)) 8px 6px;
+}
+
+/* Держим ширину графика строго в пределах контейнера (как верхний календарь),
+   а всё лишнее — только внутри горизонтального скролла */
+#pp-root .pp-levels-gridwrap {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* без отступов -> level 0 начинается ровно с края */
+    padding: 0;
+
+    /* “полосы” как в календаре (светлая тема) */
+    background-color: var(--panel-bg);
+    background-image:
+        /* мягкие вертикальные бэнды (светло/чуть темнее) */
+        repeating-linear-gradient(to right,
+            rgba(15, 23, 42, 0.04) 0,
+            rgba(15, 23, 42, 0.04) var(--pp-lvl-cell, 28px),
+            rgba(15, 23, 42, 0.00) var(--pp-lvl-cell, 28px),
+            rgba(15, 23, 42, 0.00) calc(var(--pp-lvl-cell, 28px) * 2));
+
+    /* КЛЮЧ: фон едет вместе со скроллом */
+    background-repeat: repeat;
+    background-attachment: local;
+
+    /* ВАЖНО: НЕ двигаем background-position через JS.
+       Иначе получится “двойной сдвиг” и фон поедет быстрее, чем scrollLeft. */
+    background-position: 0 0;
+}
+
+
+
+/* Чтобы тики читались и был “ритм” между уровнями */
+#pp-root .pp-levels-scale {
+    height: var(--pp-lvl-scale-h, 26px);
+}
+
+#pp-root .pp-lvl-tick {
+    border-left: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#pp-root .pp-lvl-tick:first-child {
+    border-left: none;
+}
+
+/* Убираем горизонтальные линии (ты просил), но оставляем чистый фон — полосы идут от gridwrap */
+#pp-root .pp-lvl-row {
+    border-bottom: none;
+    background: transparent;
+    background-image: none;
+}
+
+/* DARK: полосы/линии в тёмной теме мягче и светлее */
+:root.theme-dark #pp-root .pp-levels-gridwrap,
+.theme-dark #pp-root .pp-levels-gridwrap,
+[data-theme="dark"] #pp-root .pp-levels-gridwrap,
+.dark #pp-root .pp-levels-gridwrap {
+    background-color: var(--panel-bg);
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(148, 163, 184, 0.10) 0,
+            rgba(148, 163, 184, 0.10) var(--pp-lvl-cell, 28px),
+            rgba(148, 163, 184, 0.04) var(--pp-lvl-cell, 28px),
+            rgba(148, 163, 184, 0.04) calc(var(--pp-lvl-cell, 28px) * 2));
+}
+
+:root.theme-dark #pp-root .pp-lvl-tick,
+.theme-dark #pp-root .pp-lvl-tick,
+[data-theme="dark"] #pp-root .pp-lvl-tick,
+.dark #pp-root .pp-lvl-tick {
+    border-left-color: rgba(148, 163, 184, 0.18);
+}
+
+/* =========================
+   Levels graph — FIXED WIDTH like calendar + inner scroll only
+   ========================= */
+
+/* Внешняя рамка и запрет раздувать страницу */
+#pp-root .pp-levels,
+.pp-levels {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    /* важное: наружу ничего не вылезает */
+    overflow: hidden;
+
+    /* явная рамка как у календаря */
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+}
+
+/* flex-контейнер обязан уметь сжиматься (иначе тянется под 0..300) */
+#pp-root .pp-levels-shell,
+.pp-levels-shell {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    /* КЛЮЧ */
+    overflow: hidden;
+    /* КЛЮЧ: всё лишнее — только внутри gridwrap */
+    gap: 10px;
+}
+
+/* Левая колонка фиксирована */
+#pp-root .pp-levels-names,
+.pp-levels-names {
+    flex: 0 0 320px;
+    max-width: 320px;
+    box-sizing: border-box;
+    border-right: 1px solid var(--panel-border);
+
+    /* (опционально) чтобы при длинном списке был вертикальный скролл внутри рамки */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Единственное место горизонтального скролла — gridwrap */
+#pp-root .pp-levels-gridwrap,
+.pp-levels-gridwrap,
+#ppLevelsGridWrap {
+    flex: 1 1 0;
+    /* КЛЮЧ: basis=0 */
+    min-width: 0;
+    /* КЛЮЧ: разрешаем сжиматься */
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+
+    overflow-x: auto;
+    /* КЛЮЧ: горизонтальный скролл только тут */
+    overflow-y: auto;
+    /* чтобы высота была фиксируемой при длинном списке */
+
+    /* огромная ширина "полотна" не влияет на layout страницы */
+    contain: layout paint;
+
+    /* видимая рамка “внутренняя”, без смещения контента */
+    border: none;
+    box-shadow: inset 0 0 0 1px rgba(83, 103, 124, .25);
+    border-radius: 12px;
+
+    -webkit-overflow-scrolling: touch;
+    /* X: не даём “проталкивать” горизонтальный скролл в страницу
+       Y: разрешаем scroll chaining, чтобы на верх/низ дальше скроллилась страница */
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+}
+
+/* Внутреннее полотно может быть очень широким — это ОК */
+#pp-root #ppLevelsScale,
+#pp-root #ppLevelsGrid,
+#ppLevelsScale,
+#ppLevelsGrid {
+    max-width: none;
+}
+
+/* === Fixed width: Levels view (and below area) must match calendar width === */
+/* JS sets: --pp-cal-fixed-w = width(#ppCal) */
+#pp-root .pp-levels,
+#pp-root .pp-levels-below {
+    width: min(100%, var(--pp-cal-fixed-w, 100%));
+    max-width: min(100%, var(--pp-cal-fixed-w, 100%));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* small spacing between levels and the below area */
+#pp-root .pp-levels-below {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    overflow: hidden;
+}
+
+#pp-root .pp-levels-below-head {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#pp-root .pp-levels-below-title {
+    font-weight: 700;
+    color: var(--text);
+}
+
+#pp-root .pp-levels-below-body {
+    padding: 12px;
+}
+
+/* =========================
+   FINAL HARD LOCK:
+   Events by levels MUST NOT expand page width.
+   Width = calendar width (when levels is closed) and stays fixed.
+   JS sets: --pp-cal-fixed-w from #ppCal
+   ========================= */
+#pp-root .pp-levels,
+#pp-root .pp-levels-below {
+    width: min(100%, var(--pp-cal-fixed-w, 100%)) !important;
+    max-width: min(100%, var(--pp-cal-fixed-w, 100%)) !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: hidden !important;
+    /* ничего наружу */
+}
+
+/* Внутренний flex обязан сжиматься — иначе тянется под 0..300 */
+#pp-root .pp-levels-shell {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Единственное место горизонтального скролла — gridwrap */
+#pp-root .pp-levels-gridwrap {
+    flex: 1 1 0 !important;
+    /* basis=0 — ключ */
+    min-width: 0 !important;
+    max-width: 1084px !important;
+    width: 100% !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    contain: layout paint !important;
+    /* чтобы 8000px полотна не влияло на страницу */
+}

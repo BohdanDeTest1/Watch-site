@@ -1193,12 +1193,12 @@
     }
 
     // градиент для больших баров/«dot» (верх светлее, низ темнее)
+    // FIX: FLAT цвет (без 3D/градиента) — как ты просил
+    // оставляем имя функции, чтобы не переписывать все места использования
     function gradientForType(typeRaw) {
-        const base = colorForType(typeRaw);
-        const top = __adjustLightness(base, +0.10);   // +10% светлее
-        const bot = __adjustLightness(base, -0.12);   // −12% темнее
-        return `linear-gradient(to bottom, ${top}, ${bot})`;
+        return colorForType(typeRaw);
     }
+
 
     // опционально — сброс кэша (можно вызвать из консоли)
     window.__ppResetTypeColors = function () {
@@ -1809,9 +1809,36 @@
   </span>
 </div>
 
+  <!-- [LEVELS GRAPH] показываем только по кнопке "Events by levels" -->
+  <section class="pp-levels" id="ppLevelsWrap" hidden>
+    <div class="pp-levels-head">
+      <div class="pp-levels-title">Events by levels</div>
+      <button id="ppLevelsClose" class="pp-icon-btn pp-levels-close" type="button" aria-label="Close levels view">×</button>
+    </div>
+
+    <div class="pp-levels-shell">
+      <div class="pp-levels-names" id="ppLevelsNames"></div>
+      <div class="pp-levels-gridwrap" id="ppLevelsGridWrap">
+        <div class="pp-levels-scale" id="ppLevelsScale"></div>
+        <div class="pp-levels-grid" id="ppLevelsGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: fixed-width area under Events by levels -->
+  <div class="pp-levels-below" id="ppLevelsBelow" hidden>
+    <div class="pp-levels-below-head">
+      <div class="pp-levels-below-title">Level details</div>
+    </div>
+    <div class="pp-levels-below-body muted">
+      This area opens under “Events by levels”. (Placeholder)
+    </div>
+  </div>
 
   </div> <!-- /.pp-body -->
 `;
+
+
 
         function stripUTC(s) { return (s || '').replace(/\s*UTC$/, ''); }
 
@@ -2489,12 +2516,6 @@
                 });
 
 
-                // Если вылезает за край — сместим влево/вверх
-                const pr = pop.getBoundingClientRect();
-                const overflowX = pr.right - (rect.right);
-                const overflowY = pr.bottom - (rect.bottom);
-                if (overflowX > 0) pop.style.left = (x - overflowX - 12) + 'px';
-                if (overflowY > 0) pop.style.top = (y - overflowY - 12) + 'px';
 
                 // Закрытие по клику вне + защита от мгновенного переоткрытия
                 const onDocClick = (evt) => {
@@ -2509,6 +2530,11 @@
                 document.addEventListener('click', onDocClick, true);
 
             }
+
+            // expose helpers for other modules (Levels graph uses the same ctx + colors)
+            window.ppOpenCtxPopup = openCtxPopup;
+            window.ppCloseCtxPopup = closeCtxPopup;
+            window.ppGradientForType = gradientForType;
 
 
             // ================================================================================
@@ -2601,12 +2627,14 @@
                         }
 
                         // Подстраховка: если по какой-то причине попап ещё открыт — закрываем и не открываем новый
-                        if (mainEl.querySelector('.pp-ctx')) {
+                        // FIX: попап вставляется в document.body, поэтому ищем глобально
+                        if (document.querySelector('.pp-ctx')) {
                             calState._preventOpenOnce = true;
                             closeCtxPopup();
                             setTimeout(() => { calState._preventOpenOnce = false; }, 0);
                             return;
                         }
+
 
                         const data = {
                             title: bar.dataset.title,
@@ -3411,6 +3439,473 @@
             // прокручиваем страницу к таблице, чтобы пользователь сразу видел результат
             document.querySelector('#ppLoTable')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
+
+        // === Levels graph (Events by levels) =============================================
+        const levelsWrap = wrap.querySelector('#ppLevelsWrap');
+        const levelsClose = wrap.querySelector('#ppLevelsClose');
+        const levelsNames = wrap.querySelector('#ppLevelsNames');
+        const levelsGridWrap = wrap.querySelector('#ppLevelsGridWrap');
+        const levelsScale = wrap.querySelector('#ppLevelsScale');
+        const levelsGrid = wrap.querySelector('#ppLevelsGrid');
+        const levelsBelow = wrap.querySelector('#ppLevelsBelow');
+
+        // === Fixed width sync: Levels width = Calendar width (when Levels is closed) ===
+        const calEl = wrap.querySelector('#ppCal') || document.querySelector('#ppCal');
+
+        function __ppSyncLevelsFixedWidth() {
+            // базовый источник ширины — календарь
+            const w = Math.floor(calEl?.getBoundingClientRect?.().width || 0);
+
+            // если календаря нет/0 — не ломаемся: пусть будет "как есть"
+            if (!w) return;
+
+            // задаём CSS-переменную на корне Profile Parser
+            wrap.style.setProperty('--pp-cal-fixed-w', w + 'px');
+        }
+
+
+
+
+        // первичная установка + реакция на ресайз календаря/страницы
+        try {
+            __ppSyncLevelsFixedWidth();
+            if (calEl && typeof ResizeObserver !== 'undefined') {
+                new ResizeObserver(__ppSyncLevelsFixedWidth).observe(calEl);
+            } else {
+                window.addEventListener('resize', __ppSyncLevelsFixedWidth, { passive: true });
+            }
+        } catch (_) { }
+
+
+        const LEVEL_MIN = 0;
+        const LEVEL_MAX = 300;
+
+        // 40 уровней в видимой области, остальное — горизонтальный скролл
+        const VISIBLE_LEVELS = 40;
+
+        // === Hover tooltip for Levels bars (min/max level under cursor) ==================
+        let __ppLevelsHoverTipEl = null;
+
+        function __ppEnsureLevelsHoverTip() {
+            if (__ppLevelsHoverTipEl && document.body.contains(__ppLevelsHoverTipEl)) return __ppLevelsHoverTipEl;
+
+            const el = document.createElement('div');
+            el.className = 'pp-lvl-hover-tip';
+            el.hidden = true;
+            document.body.appendChild(el);
+
+            __ppLevelsHoverTipEl = el;
+            return el;
+        }
+
+        function __ppSetLevelsHoverTipContent(minLvl, maxLvl, hasMax) {
+            const el = __ppEnsureLevelsHoverTip();
+            const maxRow = hasMax
+                ? `<div class="r"><span class="k">Max level:</span><span class="v">${String(maxLvl)}</span></div>`
+                : '';
+
+            el.innerHTML =
+                `<div class="r"><span class="k">Min level:</span><span class="v">${String(minLvl)}</span></div>` +
+                maxRow;
+        }
+
+        function __ppPositionLevelsHoverTip(evt) {
+            const el = __ppEnsureLevelsHoverTip();
+
+            // сначала покажем, чтобы были корректные размеры для clamp
+            el.hidden = false;
+
+            const pad = 12;
+            const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+            const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+            const rect = el.getBoundingClientRect();
+
+            let x = evt.clientX + pad;
+            let y = evt.clientY + pad;
+
+            // clamp по экрану
+            if (vw) x = Math.min(x, vw - rect.width - pad);
+            if (vh) y = Math.min(y, vh - rect.height - pad);
+
+            x = Math.max(pad, x);
+            y = Math.max(pad, y);
+
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+        }
+
+        function __ppHideLevelsHoverTip() {
+            if (!__ppLevelsHoverTipEl) return;
+            __ppLevelsHoverTipEl.hidden = true;
+        }
+
+
+
+        // понимаем: level / minLevel / maxLevel / eventLevel (и "=" / ":" / сравнения)
+        // + возвращаем флаги hasMin/hasMax, чтобы в тултипе показывать maxLevel только когда он реально задан условиями
+        function parseLevelRange(conditions) {
+            let min = LEVEL_MIN;
+            let max = LEVEL_MAX;
+
+            let hasMin = false;
+            let hasMax = false;
+
+            const arr = Array.isArray(conditions) ? conditions : [];
+            arr.forEach(c => {
+                const s = String(c || '').trim();
+
+                // 1) level >= 3 / level <= 16 / level = 10
+                let m = s.match(/\b(level)\b\s*(>=|<=|>|<|==|=|:)\s*(\d+)/i);
+                if (m) {
+                    const op = m[2] === ':' ? '=' : m[2];
+                    const v = Number(m[3]);
+                    if (Number.isFinite(v)) {
+                        if (op === '>=') { min = Math.max(min, v); hasMin = true; }
+                        else if (op === '>') { min = Math.max(min, v + 1); hasMin = true; }
+                        else if (op === '<=') { max = Math.min(max, v); hasMax = true; }
+                        else if (op === '<') { max = Math.min(max, v - 1); hasMax = true; }
+                        else if (op === '=' || op === '==') {
+                            min = Math.max(min, v); max = Math.min(max, v);
+                            hasMin = true; hasMax = true;
+                        }
+                    }
+                    return;
+                }
+
+                // 2) minLevel = 3 / maxLevel = 16 / eventLevel = 3
+                m = s.match(/\b(minLevel|maxLevel|eventLevel)\b\s*(>=|<=|>|<|==|=|:)\s*(\d+)/i);
+                if (!m) return;
+
+                const key = m[1].toLowerCase();
+                const op = m[2] === ':' ? '=' : m[2];
+                const v = Number(m[3]);
+                if (!Number.isFinite(v)) return;
+
+                if (key === 'minlevel' || key === 'eventlevel') {
+                    // трактуем как минимальный доступ (eventLevel тоже)
+                    if (op === '>') { min = Math.max(min, v + 1); hasMin = true; }
+                    else if (op === '>=' || op === '=' || op === '==') { min = Math.max(min, v); hasMin = true; }
+                    else if (op === '<') { max = Math.min(max, v - 1); hasMax = true; }
+                    else if (op === '<=') { max = Math.min(max, v); hasMax = true; }
+                } else if (key === 'maxlevel') {
+                    // трактуем как верхняя граница
+                    if (op === '<') { max = Math.min(max, v - 1); hasMax = true; }
+                    else if (op === '<=' || op === '=' || op === '==') { max = Math.min(max, v); hasMax = true; }
+                    else if (op === '>') { min = Math.max(min, v + 1); hasMin = true; }
+                    else if (op === '>=') { min = Math.max(min, v); hasMin = true; }
+                }
+            });
+
+            min = Math.max(LEVEL_MIN, Math.min(LEVEL_MAX, min));
+            max = Math.max(LEVEL_MIN, Math.min(LEVEL_MAX, max));
+            if (max < min) max = min;
+
+            return { min, max, hasMin, hasMax };
+        }
+
+
+        function ensureLevelsScale() {
+            if (!levelsScale) return;
+
+            const need = (LEVEL_MAX - LEVEL_MIN + 1);
+            if (levelsScale.childElementCount !== need) levelsScale.innerHTML = '';
+            if (levelsScale.childElementCount) return;
+
+            const frag = document.createDocumentFragment();
+            for (let i = LEVEL_MIN; i <= LEVEL_MAX; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'pp-lvl-tick';
+                cell.textContent = String(i);
+                frag.appendChild(cell);
+            }
+            levelsScale.appendChild(frag);
+        }
+
+        function renderLevelsGraph(ts) {
+            if (!levelsWrap || !levelsNames || !levelsGrid || !levelsGridWrap || !levelsScale) return;
+
+            // запомним ts, чтобы корректно пересчитать ширины (например, на resize)
+            renderLevelsGraph._lastTs = ts;
+
+            // сохранить горизонтальный скролл при перерисовке
+            const prevScrollLeft = levelsGridWrap.scrollLeft || 0;
+
+            ensureLevelsScale();
+
+            // активные LiveOps на выбранный момент
+            let active = items.slice();
+            if (Number.isFinite(ts)) {
+                active = active.filter(r =>
+                    Number.isFinite(r.startTS) && Number.isFinite(r.endTS) &&
+                    r.startTS <= ts && ts <= r.endTS
+                );
+            }
+
+            const enriched = active.map(r => {
+                const range = parseLevelRange(r.conditions || []);
+                return { r, range };
+            }).sort((a, b) => a.range.min - b.range.min);
+
+            levelsNames.innerHTML = '';
+            levelsGrid.innerHTML = '';
+
+            if (!enriched.length) {
+                __ppSyncLevelsFixedWidth();
+                levelsWrap.hidden = false;
+                if (levelsBelow) levelsBelow.hidden = false;
+
+                levelsNames.innerHTML = '<div class="pp-lvl-empty muted">No active events for this time</div>';
+                return;
+            }
+
+
+            // Берём ширину именно ВИДИМОЙ области (viewport), а не "раздутой" контентом ширины.
+            // clientWidth = ширина видимой части внутри рамок/скролла.
+            // Берём ширину именно ВИДИМОЙ области (viewport), а не "раздутой" контентом ширины.
+            // clientWidth = ширина видимой части внутри рамок/скролла.
+            const viewportW = Math.max(
+                1,
+                Math.floor(levelsGridWrap.clientWidth || levelsGridWrap.getBoundingClientRect().width || 1)
+            );
+
+            // Страховка: сам блок levels тоже не должен раздувать страницу
+            // Страховка: сам блок levels тоже не должен раздувать страницу
+            levelsWrap.style.maxWidth = '100%';
+            levelsWrap.style.overflow = 'hidden';
+            levelsWrap.style.boxSizing = 'border-box';
+
+            // === Ширина клетки левела — ТОЛЬКО из CSS (в пикселях) ===
+            // Настраивается в ProfileParser.css через: --pp-lvl-cell
+            const cssCell = parseInt(getComputedStyle(levelsGridWrap).getPropertyValue('--pp-lvl-cell'), 10);
+
+            // если почему-то не прочиталось — даём дефолт
+            const cellW = Number.isFinite(cssCell) && cssCell > 0 ? cssCell : 24;
+
+            // ширина полотна (даёт горизонтальный скролл до 300)
+            const totalW = (LEVEL_MAX - LEVEL_MIN + 1) * cellW;
+            levelsScale.style.width = totalW + 'px';
+            levelsGrid.style.width = totalW + 'px';
+
+            // Гарантия: “полотно” расширяется ТОЛЬКО внутри levelsGridWrap, не раздувая страницу
+            levelsGridWrap.style.maxWidth = '100%';
+            levelsGridWrap.style.minWidth = '0';
+
+            // Как в календаре: flex-item не имеет права тянуть родителя под контентную ширину
+            levelsGridWrap.style.flexBasis = '0';
+            levelsGridWrap.style.flexGrow = '1';
+            levelsGridWrap.style.flexShrink = '1';
+
+            // изоляция layout: огромная ширина 0..300 не влияет на внешнюю верстку
+            levelsGridWrap.style.contain = 'layout paint';
+
+            // скролл только внутри gridwrap
+            levelsGridWrap.style.overflowX = 'auto';
+            levelsGridWrap.style.overflowY = 'hidden';
+
+
+
+            // КЛЮЧ: как в liveops calendar — flex-basis=0, иначе flex-item может тянуться под "контентную" ширину
+            levelsGridWrap.style.flexBasis = '0';
+
+            // изоляция layout, чтобы ширина 8k+ px не раздувала внешнюю верстку
+            levelsGridWrap.style.contain = 'layout paint';
+
+            // страховка: скролл только внутри
+            levelsGridWrap.style.overflowX = 'auto';
+            levelsGridWrap.style.overflowY = 'hidden';
+
+
+
+            const namesFrag = document.createDocumentFragment();
+            const gridFrag = document.createDocumentFragment();
+
+
+            enriched.forEach(({ r, range }) => {
+                const fullTitle = (r.name || r.title || r.id || '—');
+
+                const nameRow = document.createElement('div');
+                nameRow.className = 'pp-lvl-name';
+                nameRow.textContent = fullTitle;
+
+                // Tooltip для полного названия при наведении на текст слева
+                nameRow.title = fullTitle;
+
+                namesFrag.appendChild(nameRow);
+
+                const row = document.createElement('div');
+                row.className = 'pp-lvl-row';
+
+                const bar = document.createElement('div');
+                bar.className = 'pp-cal-bar pp-lvl-bar';
+
+                const t = document.createElement('div');
+                t.className = 'txt';
+                t.textContent = fullTitle;
+                bar.appendChild(t);
+
+                // Tooltip для полного названия при наведении на бар
+                bar.title = fullTitle;
+
+                bar.style.left = (range.min * cellW) + 'px';
+                bar.style.width = ((range.max - range.min + 1) * cellW) + 'px';
+
+                // FLAT цвет (без градиента/3D)
+                const type = r.type || r.eventType || '';
+                const flatFn =
+                    (typeof colorForType === 'function') ? colorForType :
+                        (typeof window.ppColorForType === 'function') ? window.ppColorForType :
+                            null;
+                if (flatFn) {
+                    bar.style.background = flatFn(type);
+                }
+
+                // данные для контекстного меню (как в календаре)
+                // данные для тултипа уровней (min/max)
+                bar.dataset.lvlMin = String(range.min);
+                bar.dataset.lvlMax = String(range.max);
+                bar.dataset.lvlHasMax = range.hasMax ? '1' : '0';
+
+                bar.addEventListener('mouseenter', (e) => {
+                    const minLvl = Number(bar.dataset.lvlMin);
+                    const maxLvl = Number(bar.dataset.lvlMax);
+                    const hasMax = bar.dataset.lvlHasMax === '1';
+
+                    __ppSetLevelsHoverTipContent(
+                        Number.isFinite(minLvl) ? minLvl : 0,
+                        Number.isFinite(maxLvl) ? maxLvl : 0,
+                        hasMax
+                    );
+                    __ppPositionLevelsHoverTip(e);
+                });
+
+                bar.addEventListener('mousemove', (e) => {
+                    __ppPositionLevelsHoverTip(e);
+                });
+
+                bar.addEventListener('mouseleave', () => {
+                    __ppHideLevelsHoverTip();
+                });
+
+
+                // данные для контекстного меню (как в календаре)
+                bar.dataset.startUtc = r.startPretty || '';
+                bar.dataset.endUtc = r.endPretty || '';
+                try { bar.dataset.segments = JSON.stringify(r.segments || []); } catch { bar.dataset.segments = '[]'; }
+                try { bar.dataset.conditions = JSON.stringify(r.conditions || []); } catch { bar.dataset.conditions = '[]'; }
+                bar._externalsBySegment = r.externalsBySegment || r._externalsBySegment || {};
+
+                try { bar.dataset.segments = JSON.stringify(r.segments || []); } catch { bar.dataset.segments = '[]'; }
+                try { bar.dataset.conditions = JSON.stringify(r.conditions || []); } catch { bar.dataset.conditions = '[]'; }
+                bar._externalsBySegment = r.externalsBySegment || r._externalsBySegment || {};
+
+                bar.addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    const data = {
+                        title: (r.name || r.title || r.id || ''),
+                        start: bar.dataset.startUtc,
+                        end: bar.dataset.endUtc,
+                        segments: (() => { try { return JSON.parse(bar.dataset.segments || '[]'); } catch { return []; } })(),
+                        conditions: (() => { try { return JSON.parse(bar.dataset.conditions || '[]'); } catch { return []; } })(),
+                        externalsBySegment: bar._externalsBySegment
+                    };
+
+                    if (typeof window.ppOpenCtxPopup === 'function') {
+                        window.ppOpenCtxPopup(evt, data);
+                    }
+                });
+
+                row.appendChild(bar);
+                gridFrag.appendChild(row);
+            });
+
+            levelsNames.appendChild(namesFrag);
+            levelsGrid.appendChild(gridFrag);
+
+
+            // фиксируем ширину по календарю перед показом (чтобы не раздувало страницу)
+            __ppSyncLevelsFixedWidth();
+
+            levelsWrap.hidden = false;
+            if (levelsBelow) levelsBelow.hidden = false;
+
+            // вернуть скролл-позицию
+            requestAnimationFrame(() => {
+                levelsGridWrap.scrollLeft = prevScrollLeft;
+                // фон теперь едет сам (background-attachment: local), без JS
+            });
+
+
+
+        }
+
+        levelsClose?.addEventListener('click', () => {
+            if (levelsWrap) levelsWrap.hidden = true;
+            if (levelsBelow) levelsBelow.hidden = true;
+        });
+
+
+        // слушаем событие из меню шпильки
+        document.addEventListener('pp:showLevelsByTime', (ev) => {
+            const ts = ev.detail && Number(ev.detail.ts);
+            if (!Number.isFinite(ts)) return;
+
+            renderLevelsGraph(ts);
+            levelsWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // drag-to-scroll для levels (как “свайпами”)
+        // ВАЖНО: не стартуем drag, если клик начался по бару (иначе меню не откроется)
+        (function enableLevelsDragScroll() {
+            if (!levelsGridWrap) return;
+
+            let down = false;
+            let startX = 0;
+            let startScroll = 0;
+
+            const onDown = (e) => {
+                if (e.button != null && e.button !== 0) return;
+                if (e.target && e.target.closest && e.target.closest('.pp-lvl-bar')) return; // клики по барам не перехватываем
+
+                down = true;
+                startX = e.clientX;
+                startScroll = levelsGridWrap.scrollLeft;
+                levelsGridWrap.classList.add('pp-lvl-dragging');
+            };
+
+            const onMove = (e) => {
+                if (!down) return;
+                e.preventDefault();
+                const dx = e.clientX - startX;
+                levelsGridWrap.scrollLeft = startScroll - dx;
+                // фон едет сам (background-attachment: local), без JS
+            };
+
+
+            const onUp = () => {
+                down = false;
+                levelsGridWrap.classList.remove('pp-lvl-dragging');
+            };
+
+            // НИКАКИХ scroll-listener'ов для фона: иначе будет рассинхрон/двойной сдвиг
+
+
+
+            // на resize пересчёт cellW, но сохраняем текущую позицию скролла
+            window.addEventListener('resize', () => {
+                if (levelsWrap && !levelsWrap.hidden && Number.isFinite(renderLevelsGraph._lastTs)) {
+                    renderLevelsGraph(renderLevelsGraph._lastTs);
+                }
+            });
+        })();
+
+
+
+
+        // ================================================================================
+
 
 
 
@@ -5304,6 +5799,9 @@
         // 2) Фильтр таблицы по «picked time» (по синей круглой кнопке на шпильке)
         const FILTER_BY_TIME_EVENT = ids.filterEvent || 'pp:filterByTime';
 
+        // 2b) Показать график доступности по левелам для picked time
+        const SHOW_LEVELS_EVENT = ids.levelsEvent || 'pp:showLevelsByTime';
+
         // 3) Текст подсказки для синей круглой кнопки
         const PICKED_HINT = ids.pickedHint || 'Show active events in the table';
 
@@ -6971,9 +7469,8 @@
 
                         // используем data-hint вместо title, чтобы подсказка показывалась мгновенно
                         // IMPORTANT: текст подсказки берём из ids.pickedHint (PICKED_HINT)
-                        btn.setAttribute('data-hint', PICKED_HINT);
-                        btn.setAttribute('aria-label', PICKED_HINT);
-
+                        // tooltip больше не показываем — вместо него открываем меню действий над шпилькой
+                        btn.setAttribute('aria-label', 'Picked time actions');
                         btn.style.left = `${xPick}px`;
 
                         // общий контекст для drag
@@ -6985,25 +7482,89 @@
                         // drag по линии
                         pickEl.addEventListener('pointerdown', (ev) => beginPickedDrag(ev, ui), true);
 
-                        // кликом по кнопке фильтруем таблицу по выбранному моменту
-                        btn.addEventListener('click', (ev) => {
-                            // если это “клик” после drag — игнорируем один раз
-                            if (btn._suppressClick) { btn._suppressClick = false; return; }
+                        // меню действий над шпилькой (tooltip больше не используем)
+                        const closePickedMenu = () => {
+                            document.querySelectorAll('.pp-picked-menu').forEach(n => n.remove());
+                        };
 
-                            ev.preventDefault();
-                            ev.stopPropagation();
+                        const openPickedMenu = () => {
+                            closePickedMenu();
 
                             const ts = state.pickedMs;
                             if (!Number.isFinite(ts)) return;
 
-                            // IMPORTANT: календарь может быть LiveOps или Promotions,
-                            // поэтому событие берём из ids.filterEvent (FILTER_BY_TIME_EVENT)
-                            document.dispatchEvent(new CustomEvent(FILTER_BY_TIME_EVENT, {
-                                detail: { ts }
-                            }));
+                            const menu = document.createElement('div');
+                            menu.className = 'pp-picked-menu';
+                            menu.innerHTML = `
+<button type="button" class="pp-picked-action" data-act="table">LiveOps in the table</button>
+<button type="button" class="pp-picked-action" data-act="levels">Events by levels</button>
+`;
+
+                            // позиционируем над кнопкой, в координатах topScale
+                            const btnRect = btn.getBoundingClientRect();
+                            const scaleRect = topScale.getBoundingClientRect();
+                            const left = (btnRect.left - scaleRect.left) + (btnRect.width / 2);
+                            menu.style.left = left + 'px';
+
+                            // вставляем в шкалу, чтобы меню ехало вместе со скроллом
+                            topScale.appendChild(menu);
+
+                            // действия
+                            menu.addEventListener('click', (ev) => {
+                                const act = ev.target && ev.target.closest('.pp-picked-action')?.dataset?.act;
+                                if (!act) return;
+
+                                ev.preventDefault();
+                                ev.stopPropagation();
+
+                                if (act === 'table') {
+                                    document.dispatchEvent(new CustomEvent(FILTER_BY_TIME_EVENT, { detail: { ts } }));
+                                }
+                                if (act === 'levels') {
+                                    document.dispatchEvent(new CustomEvent(SHOW_LEVELS_EVENT, { detail: { ts } }));
+                                }
+
+                                closePickedMenu();
+                            });
+
+                            // закрытие по уходу мыши
+                            const armClose = () => {
+                                clearTimeout(btn._pmCloseT);
+                                // даём время спокойно перевести курсор с пина на меню
+                                btn._pmCloseT = setTimeout(() => closePickedMenu(), 450);
+                            };
+                            const cancelClose = () => {
+                                clearTimeout(btn._pmCloseT);
+                            };
+
+                            // ВАЖНО: не { once:true } — иначе после первого ухода меню начнет вести себя “одноразово”
+                            btn.addEventListener('mouseleave', armClose);
+                            btn.addEventListener('mouseenter', cancelClose);
+
+                            menu.addEventListener('mouseenter', cancelClose);
+                            menu.addEventListener('mouseleave', armClose);
+
+                            // чтобы клики внутри меню не “проваливались” в календарь/drag
+                            menu.addEventListener('click', (e) => e.stopPropagation());
+
+                        };
+
+                        // hover открывает меню
+                        btn.addEventListener('mouseenter', () => {
+                            if (btn._suppressClick) { btn._suppressClick = false; return; }
+                            openPickedMenu();
+                        });
+
+                        // click нужен для тача/тачпада: тоже открываем меню
+                        btn.addEventListener('click', (ev) => {
+                            if (btn._suppressClick) { btn._suppressClick = false; return; }
+                            ev.preventDefault();
+                            ev.stopPropagation();
+                            openPickedMenu();
                         });
 
                         topScale.appendChild(btn);
+
 
                     }
 
