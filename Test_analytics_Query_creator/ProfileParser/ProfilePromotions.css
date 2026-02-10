@@ -10,9 +10,17 @@
     margin-top: 6px;
 }
 
-#pp-root #ppPromoCal {
-    margin-top: 6px;
+/* [DARK] Promotions timeline container border — match LiveOps tables */
+:root.theme-dark #pp-root #ppPromoCal,
+.theme-dark #pp-root #ppPromoCal,
+[data-theme="dark"] #pp-root #ppPromoCal,
+.dark #pp-root #ppPromoCal {
+    border: 1px solid rgba(148, 163, 184, 0.28) !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    overflow: hidden;
 }
+
 
 /* [FIX] Promotions table: allow filter popups to overflow outside table bounds (same behavior as LiveOps)
    + draw proper rounded corners (border) without clipping popups */
@@ -1358,6 +1366,17 @@
     box-shadow: inset 0 0.1px 0 var(--border-2);
 }
 
+/* [DARK] Promotions pager — без “подложки” (прозрачный фон как на общем фоне страницы) */
+:root.theme-dark #pp-root #ppPromoPager,
+.theme-dark #pp-root #ppPromoPager,
+[data-theme="dark"] #pp-root #ppPromoPager,
+.dark #pp-root #ppPromoPager {
+    background: transparent !important;
+    box-shadow: none !important;
+    /* убираем тонкую подсветку/линию */
+}
+
+
 /* Reset — слева */
 #pp-root #ppPromoResetBtn {
     margin-right: auto;
@@ -1865,4 +1884,17 @@
     color: #0b1120 !important;
     border: 1px solid #f59e0b !important;
     background: #f59e0b !important;
+}
+
+/* [DARK] Promotions calendar — рамка как у таблиц */
+:root.theme-dark .pp-promo-calendar,
+:root.theme-dark #ppPromoCalendar,
+:root.theme-dark .promotions-calendar,
+.theme-dark .pp-promo-calendar,
+.theme-dark #ppPromoCalendar,
+.theme-dark .promotions-calendar,
+[data-theme="dark"] .pp-promo-calendar,
+[data-theme="dark"] #ppPromoCalendar,
+[data-theme="dark"] .promotions-calendar {
+    border-color: var(--border-2) !important;
 }

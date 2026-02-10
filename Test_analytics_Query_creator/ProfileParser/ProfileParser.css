@@ -2295,6 +2295,16 @@
     background: var(--card-bg);
 }
 
+/* [DARK] LiveOps pager — без “подложки” (прозрачный фон как на общем фоне страницы) */
+:root.theme-dark .pp-pager,
+.theme-dark .pp-pager,
+[data-theme="dark"] .pp-pager,
+.dark .pp-pager {
+    background: transparent !important;
+    box-shadow: none !important;
+    /* чтобы не было “полосы”/подсветки */
+}
+
 
 .pp-pager .pp-reset {
     margin-right: auto;
@@ -6431,45 +6441,37 @@ html:not(.dark) #ppPromoCal #promoTlDateInput,
 #ppCal,
 #ppPromoCal {
     --cal-left-bg: var(--card-bg);
+
+    /* ВАЖНО: реальная рамка (а не только border-color) */
+    border: 1px solid var(--tl-border, var(--border, #334155));
+    border-radius: 12px;
+
+    /* календарь сам по себе не должен быть “плиткой” в dark —
+       фон держим прозрачным, а плотный фон даём только левой панели/шапке
+       через --cal-left-solid (он у тебя уже используется в tl-toolbar/tl-res-header) */
+    background: transparent;
+    overflow: hidden;
+    /* чтобы углы выглядели аккуратно */
 }
 
+/* Dark theme: делаем рамку именно серой, как у таблиц */
 :root.theme-dark #ppCal,
 .theme-dark #ppCal,
 [data-theme="dark"] #ppCal,
-.dark #ppCal {
-    --cal-left-bg: var(--card-bg);
-    /* новый «твёрдый» фон без прозрачности только для левой панели/шапки */
-    --cal-left-solid: #0f172a;
-    /* тёмно-синий без альфы */
-}
-
-:root.theme-dark #ppCal,
-.theme-dark #ppCal,
-[data-theme="dark"] #ppCal,
-.dark #ppCal {
-    /* рамка в тон панели Events */
-    border-color: var(--cal-left-solid, #0f172a) !important;
-    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
-}
-
+.dark #ppCal,
 :root.theme-dark #ppPromoCal,
 .theme-dark #ppPromoCal,
 [data-theme="dark"] #ppPromoCal,
 .dark #ppPromoCal {
-    --cal-left-bg: var(--card-bg);
-    /* новый «твёрдый» фон без прозрачности только для левой панели/шапки */
+    /* плотный фон только для левой панели/шапки */
     --cal-left-solid: #0f172a;
-    /* тёмно-синий без альфы */
+
+    /* серенькая рамка (как на таблицах) */
+    border-color: rgba(148, 163, 184, 0.28) !important;
 }
 
-:root.theme-dark #ppPromoCal,
-.theme-dark #ppPromoCal,
-[data-theme="dark"] #ppPromoCal,
-.dark #ppPromoCal {
-    /* рамка в тон панели Events */
-    border-color: var(--cal-left-solid, #0f172a) !important;
-    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
-}
+
+
 
 /* === Fix Info button color for light theme === */
 body.light-theme .pp-btn.pp-info {
@@ -7481,12 +7483,42 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 }
 
 .pp-levels-close {
+    /* сбрасываем дефолтные стили button, чтобы не было рамки */
+    all: unset;
+
     width: 28px;
     height: 28px;
     border-radius: 10px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     line-height: 1;
-    font-size: 18px;
+    font-size: 22px;
+    /* ближе к твоему “верхнему” кресту */
+    font-weight: 600;
+
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+
+    cursor: pointer;
+    color: var(--text);
 }
+
+.pp-levels-close:hover {
+    background: rgba(17, 24, 39, .08);
+    transform: scale(1.04);
+}
+
+:root.theme-dark .pp-levels-close:hover,
+.theme-dark .pp-levels-close:hover,
+[data-theme="dark"] .pp-levels-close:hover,
+.dark .pp-levels-close:hover {
+    background: rgba(255, 255, 255, .06);
+}
+
 
 .pp-levels-shell {
     display: flex;
@@ -7642,7 +7674,8 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 
 #pp-root .pp-levels {
     margin-top: 10px;
-    border: 1px solid var(--panel-border);
+    /* делаем рамку такой же по тону, как у верхней таблицы (.pp-table) */
+    border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--panel-bg);
     overflow: hidden;
@@ -7653,13 +7686,15 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    border-bottom: 1px solid var(--panel-border);
+    /* тот же цвет рамки/разделителя, что и у верхней таблицы */
+    border-bottom: 1px solid var(--border);
 }
 
 #pp-root .pp-levels-title {
     font-weight: 700;
     color: var(--text);
 }
+
 
 #pp-root .pp-levels-body {
     display: flex;
@@ -7737,10 +7772,10 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 
     border-radius: 12px;
 
-    /* ВАЖНО: border даёт визуальный “сдвиг” старта (контент начинается после border).
-       Поэтому убираем border и рисуем рамку inset-shadow (не влияет на layout). */
+    /* border убран, чтобы не было визуального “сдвига” старта;
+       рамку рисуем inset-shadow тем же цветом, что у верхней таблицы */
     border: none;
-    box-shadow: inset 0 0 0 1px rgba(83, 103, 124, .25);
+    box-shadow: inset 0 0 0 1px var(--border);
 
     /* УБИРАЕМ любые полосы/сетку */
     background: transparent;
@@ -7749,6 +7784,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     overscroll-behavior-x: contain;
     cursor: grab;
 }
+
 
 
 
@@ -8033,11 +8069,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 }
 
 /* Разделитель шапки внутри рамки (чтобы выглядело “как таблица”) */
-#pp-root .pp-levels-head,
-.pp-levels-head {
-    border-bottom: 1px solid var(--tl-border, var(--panel-border, #e5e7eb)) !important;
-    background: var(--card-bg, var(--panel-bg, #ffffff));
-}
+
 
 /* Dark theme: чуть мягче рамка/фон */
 :root.theme-dark #pp-root .pp-levels,
@@ -8142,19 +8174,26 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 /* small spacing between levels and the below area */
 #pp-root .pp-levels-below {
     margin-top: 10px;
-    border: 1px solid var(--border);
+
+    /* было var(--border) — слишком светлая рамка */
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
+
     background: var(--card);
     overflow: hidden;
 }
 
 #pp-root .pp-levels-below-head {
     padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
+
+    /* было var(--border) — делаем как у остальных “табличных” контейнеров */
+    border-bottom: 1px solid var(--panel-border);
+
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 
 #pp-root .pp-levels-below-title {
     font-weight: 700;
@@ -8202,4 +8241,17 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
 
     contain: layout paint !important;
     /* чтобы 8000px полотна не влияло на страницу */
+}
+
+/* [DARK] Labels / Events calendar — рамка как у таблиц */
+:root.theme-dark .events-by-levels,
+:root.theme-dark .pp-labels-calendar,
+:root.theme-dark .pp-events-calendar,
+.theme-dark .events-by-levels,
+.theme-dark .pp-labels-calendar,
+.theme-dark .pp-events-calendar,
+[data-theme="dark"] .events-by-levels,
+[data-theme="dark"] .pp-labels-calendar,
+[data-theme="dark"] .pp-events-calendar {
+    border-color: var(--border-2) !important;
 }
