@@ -8011,7 +8011,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
    Levels graph — FIXED WIDTH like calendar + inner scroll only
    ========================= */
 
-/* Внешняя рамка и запрет раздувать страницу */
+/* Внешняя рамка (как у календаря/таймлайна) */
 #pp-root .pp-levels,
 .pp-levels {
     width: 100%;
@@ -8021,11 +8021,48 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     /* важное: наружу ничего не вылезает */
     overflow: hidden;
 
-    /* явная рамка как у календаря */
-    border: 1px solid var(--panel-border);
+    /* ЯВНАЯ рамка с фолбэком, чтобы никогда не была “прозрачной” */
+    border: 1px solid var(--tl-border, var(--panel-border, #e5e7eb)) !important;
     border-radius: 12px;
-    background: var(--panel-bg);
+
+    /* фон как у “табличных” блоков */
+    background: var(--card-bg, var(--panel-bg, #ffffff)) !important;
+
+    /* лёгкий объём, чтобы блок не “висел в воздухе” */
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
 }
+
+/* Разделитель шапки внутри рамки (чтобы выглядело “как таблица”) */
+#pp-root .pp-levels-head,
+.pp-levels-head {
+    border-bottom: 1px solid var(--tl-border, var(--panel-border, #e5e7eb)) !important;
+    background: var(--card-bg, var(--panel-bg, #ffffff));
+}
+
+/* Dark theme: чуть мягче рамка/фон */
+:root.theme-dark #pp-root .pp-levels,
+.theme-dark #pp-root .pp-levels,
+[data-theme="dark"] #pp-root .pp-levels,
+.dark #pp-root .pp-levels,
+:root.theme-dark .pp-levels,
+.theme-dark .pp-levels,
+[data-theme="dark"] .pp-levels,
+.dark .pp-levels {
+    border-color: rgba(148, 163, 184, 0.28) !important;
+    background: var(--panel-bg, #0f172a) !important;
+}
+
+:root.theme-dark #pp-root .pp-levels-head,
+.theme-dark #pp-root .pp-levels-head,
+[data-theme="dark"] #pp-root .pp-levels-head,
+.dark #pp-root .pp-levels-head,
+:root.theme-dark .pp-levels-head,
+.theme-dark .pp-levels-head,
+[data-theme="dark"] .pp-levels-head,
+.dark .pp-levels-head {
+    border-bottom-color: rgba(148, 163, 184, 0.22) !important;
+}
+
 
 /* flex-контейнер обязан уметь сжиматься (иначе тянется под 0..300) */
 #pp-root .pp-levels-shell,
