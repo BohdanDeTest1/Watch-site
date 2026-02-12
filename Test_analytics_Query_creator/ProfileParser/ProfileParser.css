@@ -6442,8 +6442,9 @@ html:not(.dark) #ppPromoCal #promoTlDateInput,
 #ppPromoCal {
     --cal-left-bg: var(--card-bg);
 
-    /* ВАЖНО: реальная рамка (а не только border-color) */
-    border: 1px solid var(--tl-border, var(--border, #334155));
+    /* ВАЖНО: реальная рамка (а не только border-color)
+       В светлой теме рамка должна быть как у центральной таблицы => var(--border) */
+    border: 1px solid var(--border, #334155);
     border-radius: 12px;
 
     /* календарь сам по себе не должен быть “плиткой” в dark —
@@ -6453,6 +6454,7 @@ html:not(.dark) #ppPromoCal #promoTlDateInput,
     overflow: hidden;
     /* чтобы углы выглядели аккуратно */
 }
+
 
 /* Dark theme: делаем рамку именно серой, как у таблиц */
 :root.theme-dark #ppCal,
@@ -6468,6 +6470,7 @@ html:not(.dark) #ppPromoCal #promoTlDateInput,
 
     /* серенькая рамка (как на таблицах) */
     border-color: rgba(148, 163, 184, 0.28) !important;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important
 }
 
 
@@ -8048,6 +8051,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
    ========================= */
 
 /* Внешняя рамка (как у календаря/таймлайна) */
+/* Внешняя рамка (как у календаря/таймлайна) */
 #pp-root .pp-levels,
 .pp-levels {
     width: 100%;
@@ -8057,8 +8061,8 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     /* важное: наружу ничего не вылезает */
     overflow: hidden;
 
-    /* ЯВНАЯ рамка с фолбэком, чтобы никогда не была “прозрачной” */
-    border: 1px solid var(--tl-border, var(--panel-border, #e5e7eb)) !important;
+    /* В светлой теме рамка должна быть как у центральной таблицы => var(--border) */
+    border: 1px solid var(--border, #334155) !important;
     border-radius: 12px;
 
     /* фон как у “табличных” блоков */
@@ -8067,6 +8071,7 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     /* лёгкий объём, чтобы блок не “висел в воздухе” */
     box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
 }
+
 
 /* Разделитель шапки внутри рамки (чтобы выглядело “как таблица”) */
 

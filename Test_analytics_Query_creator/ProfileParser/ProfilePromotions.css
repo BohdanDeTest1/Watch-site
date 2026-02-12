@@ -17,7 +17,7 @@
 .dark #pp-root #ppPromoCal {
     border: 1px solid rgba(148, 163, 184, 0.28) !important;
     border-radius: 12px !important;
-    background: transparent !important;
+    background: var(--cal-left-solid, var(--cal-left-bg, var(--card-bg))) !important;
     overflow: hidden;
 }
 
