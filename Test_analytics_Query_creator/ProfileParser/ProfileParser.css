@@ -4227,16 +4227,18 @@ body.theme-dark .pp-cal-tick {
 }
 
 
-
 #ppCal .tl-left {
     display: flex;
     gap: 6px;
     padding: 5px;
-    justify-content: center;
-    /* центрируем всю группу кнопок */
+
+    justify-content: stretch;
     width: 100%;
-    /* чтобы центрирование работало по всей ширине панели */
 }
+
+
+
+
 
 #ppCal .tl-right {
     display: flex;
@@ -4250,22 +4252,27 @@ body.theme-dark .pp-cal-tick {
     text-align: center
 }
 
-/* Кнопки панели таймлайна — одна ширина и тема-зависимые цвета */
-/* Кнопки панели таймлайна — одна ширина и тема-зависимые цвета */
 #ppCal .tl-btn {
     position: relative;
-    /* якорь для всплывающей подсказки */
-    display: inline-grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     height: 30px;
     padding: 0 12px;
+
     border: 0.5px solid var(--border-2);
     border-radius: 8px;
+
     background: var(--btn-n-field-bg);
     color: var(--text);
     cursor: pointer;
-    width: var(--tl-btn-w, 260px);
+
+    /* КЛЮЧЕВОЕ */
+    flex: 1 1 0;
+    min-width: 0;
 }
+
 
 
 :root.theme-dark #ppCal .tl-toolbar .tl-btn,
