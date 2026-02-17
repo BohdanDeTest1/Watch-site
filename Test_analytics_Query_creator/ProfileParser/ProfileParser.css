@@ -5599,10 +5599,12 @@ body.theme-dark .pp-cal-tick {
     -webkit-backdrop-filter: blur(6px);
     /* убираем сдвиг, чтобы точка позиционирования соответствовала месту клика */
     transform: none;
-    z-index: 5000 !important;
-    /* поверх календаря */
+
+    z-index: 500001 !important;
+    /* выше тулбара */
     pointer-events: auto;
 }
+
 
 .pp-ctx .pp-ctx-title {
     display: flex;
@@ -5754,7 +5756,8 @@ body.theme-dark .pp-cal-tick {
    Оставляем высокий z-index и кликабельность. */
 .pp-ctx {
     position: fixed !important;
-    z-index: 5000 !important;
+    z-index: 500001 !important;
+    /* выше #ppCal/#ppPromoCal .tl-toolbar (z-index: 300000/300020) */
     pointer-events: auto;
 }
 
@@ -6352,10 +6355,13 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
 
 
 .pp-picked-menu {
-    position: absolute;
-    bottom: 36px;
-    /* над кнопкой */
-    transform: translateX(-50%);
+    /* ВАЖНО: теперь меню живёт в body и позиционируется fixed */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: auto;
+
+    /* JS выставляет transform: translate(-50%, -100%) */
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -6365,30 +6371,45 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) .pp-picked-btn {
     background: #ffffff;
     box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
 
-    /* ВЫШЕ кнопок/пагинации календаря */
-    z-index: 500000;
+    /* СУПЕР-ВЕРХНИЙ слой: перекрывает toolbar/sticky/transform слои */
+    z-index: 2147483647;
 
     min-width: 190px;
     pointer-events: auto;
 }
 
 
+
 .pp-picked-action {
     width: 100%;
-    text-align: left;
-    border: 0;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: rgba(96, 161, 244, .14);
-    color: #0b1120;
+
+    /* одинаковая высота кнопок */
+    height: 30px;
+    padding: 0 12px;
+
+    /* центрируем текст */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    /* сероватые, как кнопки на верхней панели */
+    background: var(--btn-n-field-bg, #eef2f7);
+    border: 0.5px solid var(--border-2, rgba(170, 179, 210, .37));
+    color: var(--text, #0b1120);
+
+    /* радиус 6px */
+    border-radius: 6px;
+
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
 }
 
 .pp-picked-action:hover {
-    background: rgba(96, 161, 244, .22);
+    background: var(--btn-n-field-bg-hover, #e6ebf3);
 }
+
 
 :root.theme-dark .pp-picked-menu,
 .theme-dark .pp-picked-menu,

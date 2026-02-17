@@ -1825,15 +1825,6 @@
     </div>
   </section>
 
-  <!-- NEW: fixed-width area under Events by levels -->
-  <div class="pp-levels-below" id="ppLevelsBelow" hidden>
-    <div class="pp-levels-below-head">
-      <div class="pp-levels-below-title">Level details</div>
-    </div>
-    <div class="pp-levels-below-body muted">
-      This area opens under “Events by levels”. (Placeholder)
-    </div>
-  </div>
 
   </div> <!-- /.pp-body -->
 `;
@@ -3766,6 +3757,53 @@
                 bar.dataset.lvlMax = String(range.max);
                 bar.dataset.lvlHasMax = range.hasMax ? '1' : '0';
 
+                // === CTX POPUP for Levels bars (same UI as calendar) ===
+                bar.dataset.title = fullTitle;
+                bar.dataset.startUtc = r.startPretty || '';
+                bar.dataset.endUtc = r.endPretty || '';
+                bar.dataset.conditions = JSON.stringify(Array.isArray(r.conditions) ? r.conditions : []);
+
+                bar.addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    // если попап уже открыт — закрываем и НЕ открываем заново (как в календаре)
+                    if (renderLevelsGraph._preventOpenOnce) {
+                        renderLevelsGraph._preventOpenOnce = false;
+                        return;
+                    }
+
+                    if (document.querySelector('.pp-ctx')) {
+                        renderLevelsGraph._preventOpenOnce = true;
+                        try { window.ppCloseCtxPopup?.(); } catch (_) { }
+                        setTimeout(() => { renderLevelsGraph._preventOpenOnce = false; }, 0);
+                        return;
+                    }
+
+                    const data = {
+                        title: bar.dataset.title || '',
+                        start: bar.dataset.startUtc || '',
+                        end: bar.dataset.endUtc || '',
+                        // в уровнях сегментов обычно нет — но структура попапа это поддерживает
+                        segments: [],
+                        externalsBySegment: {},
+                        conditions: (() => { try { return JSON.parse(bar.dataset.conditions || '[]'); } catch { return []; } })()
+                    };
+
+                    // используем уже существующий попап календаря (тот самый, как на твоём 2-м скрине)
+                    if (typeof window.ppOpenCtxPopup === 'function') {
+                        window.ppOpenCtxPopup(evt, data);
+                    }
+                });
+
+                // блокируем нативное контекст-меню по правому клику (чтобы не мешало)
+                bar.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+
+
+                // === Hover tooltip (min/max level under cursor) ===
                 bar.addEventListener('mouseenter', (e) => {
                     const minLvl = Number(bar.dataset.lvlMin);
                     const maxLvl = Number(bar.dataset.lvlMax);
@@ -3786,6 +3824,7 @@
                 bar.addEventListener('mouseleave', () => {
                     __ppHideLevelsHoverTip();
                 });
+
 
 
                 // данные для контекстного меню (как в календаре)
@@ -7484,6 +7523,14 @@
 
                         // меню действий над шпилькой (tooltip больше не используем)
                         const closePickedMenu = () => {
+                            // снять глобальные слушатели, если были
+                            if (closePickedMenu._onAnyScroll) {
+                                window.removeEventListener('scroll', closePickedMenu._onAnyScroll, true);
+                                window.removeEventListener('resize', closePickedMenu._onAnyScroll, true);
+                                closePickedMenu._onAnyScroll = null;
+                            }
+
+                            document.body.classList.remove('pp-has-picked-menu');
                             document.querySelectorAll('.pp-picked-menu').forEach(n => n.remove());
                         };
 
@@ -7500,14 +7547,25 @@
 <button type="button" class="pp-picked-action" data-act="levels">Events by levels</button>
 `;
 
-                            // позиционируем над кнопкой, в координатах topScale
+                            // --- КЛЮЧЕВОЕ ИЗМЕНЕНИЕ ---
+                            // Рендерим меню в body (вне слоёв таймлайна), позиционируем fixed по viewport.
                             const btnRect = btn.getBoundingClientRect();
-                            const scaleRect = topScale.getBoundingClientRect();
-                            const left = (btnRect.left - scaleRect.left) + (btnRect.width / 2);
-                            menu.style.left = left + 'px';
+                            const cx = btnRect.left + (btnRect.width / 2);
 
-                            // вставляем в шкалу, чтобы меню ехало вместе со скроллом
-                            topScale.appendChild(menu);
+                            menu.style.position = 'fixed';
+                            menu.style.left = `${Math.round(cx)}px`;
+                            // ставим "якорь" по top кнопки, а сам блок уедет вверх через transform
+                            menu.style.top = `${Math.round(btnRect.top - 8)}px`;
+                            menu.style.transform = 'translate(-50%, -100%)';
+
+                            document.body.classList.add('pp-has-picked-menu');
+                            document.body.appendChild(menu);
+
+                            // закрываем меню при любом скролле/ресайзе (иначе оно "оторвётся" от пина)
+                            const onAnyScroll = () => closePickedMenu();
+                            closePickedMenu._onAnyScroll = onAnyScroll;
+                            window.addEventListener('scroll', onAnyScroll, true);
+                            window.addEventListener('resize', onAnyScroll, true);
 
                             // действия
                             menu.addEventListener('click', (ev) => {
@@ -7546,8 +7604,8 @@
 
                             // чтобы клики внутри меню не “проваливались” в календарь/drag
                             menu.addEventListener('click', (e) => e.stopPropagation());
-
                         };
+
 
                         // hover открывает меню
                         btn.addEventListener('mouseenter', () => {
