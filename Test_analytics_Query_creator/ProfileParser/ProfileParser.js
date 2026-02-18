@@ -3997,7 +3997,9 @@
                 bar.appendChild(t);
 
                 // Tooltip для полного названия при наведении на бар
-                bar.title = fullTitle;
+                // НЕ показываем нативный tooltip браузера с полным названием
+                // (оставляем только наш tooltip с Min/Max level)
+                bar.removeAttribute('title');
 
                 bar.style.left = (range.min * cellW) + 'px';
                 bar.style.width = ((range.max - range.min + 1) * cellW) + 'px';
