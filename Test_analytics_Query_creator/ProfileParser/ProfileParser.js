@@ -3542,51 +3542,33 @@
         }
 
         function __ppPositionLevelsTypePop() {
-            if (!levelsTypePop || !levelsTypeBtn || levelsTypePop.hidden) return;
+            // Больше НЕ позиционируем попап через fixed.
+            // Он должен быть "пришит" к кнопке и ехать вместе с ней при любом скролле.
+            // Позицию задаёт CSS (absolute внутри #ppLevelsTypeWrap / .pp-lvltype).
+            if (!levelsTypePop || levelsTypePop.hidden) return;
 
-            // попап рисуем "поверх всего" (fixed), чтобы его не резал overflow родителя
-            const r = levelsTypeBtn.getBoundingClientRect();
-
-            // базовая позиция — под кнопкой
-            const gap = 8;
-            levelsTypePop.style.position = 'fixed';
-            levelsTypePop.style.zIndex = '1000000';
-
-            // временно ставим в расчётную точку
-            let left = r.left;
-            let top = r.bottom + gap;
-
-            // после открытия нам нужно знать реальные размеры попапа, чтобы clamp-нуть
-            // поэтому сначала покажем, потом измерим
-            const vw = window.innerWidth || document.documentElement.clientWidth || 0;
-            const vh = window.innerHeight || document.documentElement.clientHeight || 0;
-
-            // ширина попапа (если в CSS задана) — оставляем, но clamp делаем по факту
-            levelsTypePop.style.left = left + 'px';
-            levelsTypePop.style.top = top + 'px';
-
-            const popRect = levelsTypePop.getBoundingClientRect();
-            const pad = 12;
-
-            // clamp по экрану
-            if (vw) left = Math.min(left, vw - popRect.width - pad);
-            if (vh) top = Math.min(top, vh - popRect.height - pad);
-
-            left = Math.max(pad, left);
-            top = Math.max(pad, top);
-
-            levelsTypePop.style.left = left + 'px';
-            levelsTypePop.style.top = top + 'px';
+            // на всякий случай чистим инлайны, которые могли остаться от старой логики fixed
+            levelsTypePop.style.position = '';
+            levelsTypePop.style.left = '';
+            levelsTypePop.style.top = '';
+            // z-index можем оставить (либо тоже чистить) — пусть контролируется CSS
+            levelsTypePop.style.zIndex = '';
         }
 
         function __ppOpenLevelsTypePop() {
             if (!levelsTypePop || !levelsTypeBtn) return;
+
+            // на всякий случай чистим инлайны ДО показа (если ранее успели открывать с fixed)
+            levelsTypePop.style.position = '';
+            levelsTypePop.style.left = '';
+            levelsTypePop.style.top = '';
+            levelsTypePop.style.zIndex = '';
+
             levelsTypePop.hidden = false;
             levelsTypeBtn.setAttribute('aria-expanded', 'true');
             __ppUpdateLevelsTypeBtnLabel();
 
-            // важно: позиционируем ПОСЛЕ открытия
-            requestAnimationFrame(__ppPositionLevelsTypePop);
+            // Никаких requestAnimationFrame/перепозиционирования — CSS сам держит под кнопкой.
         }
 
         function __ppCloseLevelsTypePop() {
@@ -3594,16 +3576,17 @@
             levelsTypePop.hidden = true;
             levelsTypeBtn.setAttribute('aria-expanded', 'false');
             __ppUpdateLevelsTypeBtnLabel();
+
+            // чистим инлайны, чтобы не было “залипания” от предыдущих открытий
+            levelsTypePop.style.position = '';
+            levelsTypePop.style.left = '';
+            levelsTypePop.style.top = '';
+            levelsTypePop.style.zIndex = '';
         }
 
-        // если попап открыт — держим его на месте при скролле/ресайзе
-        window.addEventListener('scroll', () => {
-            __ppPositionLevelsTypePop();
-        }, true);
+        // ВАЖНО: убираем window scroll/resize-хендлеры — они были нужны только для fixed.
 
-        window.addEventListener('resize', () => {
-            __ppPositionLevelsTypePop();
-        }, { passive: true });
+
 
 
         levelsTypeBtn?.addEventListener('click', (e) => {
