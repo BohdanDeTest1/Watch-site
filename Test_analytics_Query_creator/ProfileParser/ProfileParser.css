@@ -7721,6 +7721,174 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     border-bottom: 1px solid var(--border);
 }
 
+#pp-root .pp-levels-head-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+/* NEW: строка над названиями (левая верхняя зона) */
+#pp-root .pp-levels-subhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel-bg);
+}
+
+#pp-root .pp-levels-subhead-left {
+    width: 320px;
+    /* ровно как колонка имён */
+    flex: 0 0 320px;
+    display: flex;
+    align-items: center;
+}
+
+#pp-root .pp-levels-subhead-right {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Top row inside type popup: Select all + Clean */
+#pp-root .pp-lvltype-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#pp-root .pp-lvltype-clean {
+    all: unset;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel-bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1;
+    user-select: none;
+}
+
+#pp-root .pp-lvltype-clean:hover {
+    filter: brightness(0.99);
+}
+
+
+/* ===== Levels Types filter ===== */
+#pp-root .pp-lvltype {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+#pp-root .pp-lvltype-btn {
+    all: unset;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px 10px;
+    border-radius: 10px;
+
+    border: 1px solid var(--border);
+    background: var(--panel-bg);
+    color: var(--text);
+
+    font-size: 13px;
+    line-height: 1;
+    user-select: none;
+}
+
+#pp-root .pp-lvltype-btn:hover {
+    filter: brightness(0.99);
+}
+
+#pp-root .pp-lvltype-btn .chev {
+    opacity: 0.8;
+    font-size: 12px;
+}
+
+#pp-root .pp-lvltype-pop {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: auto;
+
+    width: 240px;
+    max-height: 320px;
+
+    overflow: auto;
+    padding: 10px;
+
+    border-radius: 12px;
+    border: 1px solid var(--border);
+
+    /* НЕпрозрачный фон */
+    background: #ffffff;
+    opacity: 1;
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+
+    z-index: 500000;
+}
+
+/* Dark theme: непрозрачный тёмный фон */
+:root.theme-dark #pp-root .pp-lvltype-pop,
+.theme-dark #pp-root .pp-lvltype-pop,
+[data-theme="dark"] #pp-root .pp-lvltype-pop,
+.dark #pp-root .pp-lvltype-pop {
+    background: #0f172a;
+}
+
+
+#pp-root .pp-lvltype-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    color: var(--text);
+    font-size: 13px;
+}
+
+#pp-root .pp-lvltype-row:hover {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+:root.theme-dark #pp-root .pp-lvltype-row:hover,
+.theme-dark #pp-root .pp-lvltype-row:hover,
+[data-theme="dark"] #pp-root .pp-lvltype-row:hover,
+.dark #pp-root .pp-lvltype-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+#pp-root .pp-lvltype-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #22c55e;
+    /* приятная зелёная “галка” */
+}
+
+#pp-root .pp-lvltype-sep {
+    height: 1px;
+    margin: 8px 0;
+    background: rgba(148, 163, 184, 0.35);
+}
+
+#pp-root .pp-lvltype-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+
 #pp-root .pp-levels-title {
     font-weight: 700;
     color: var(--text);
@@ -7766,6 +7934,68 @@ body:not(.theme-dark):not(.dark):not([data-theme="dark"]) #pp-root .pp-date-pop 
     border-right: 1px solid var(--panel-border);
     padding: 6px 8px;
 }
+
+/* ===== Levels Types: row above names (left top) ===== */
+#pp-root .pp-levels-subhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* позиционирование/слои */
+    position: relative;
+    z-index: 100;
+
+    /* чуть компактнее, чтобы кнопка сидела "над именами", как на скрине */
+    padding: 10px 8px 6px 8px;
+
+    /* ЛИНИЮ УБИРАЕМ */
+    border-bottom: none;
+
+    background: var(--panel-bg);
+}
+
+#pp-root .pp-levels-subhead-left {
+    width: 320px;
+    flex: 0 0 320px;
+    display: flex;
+    align-items: center;
+}
+
+#pp-root .pp-levels-subhead-right {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* ===== Types button radius = 6px ===== */
+#pp-root #ppLevelsTypeBtn {
+    border-radius: 6px !important;
+}
+
+/* ===== Clean button (рядом с Select all) тоже аккуратно ===== */
+#pp-root #ppLevelsTypeClean {
+    border-radius: 6px !important;
+}
+
+/* ===== Dropdown radius = 8px + always solid background ===== */
+#pp-root #ppLevelsTypePop {
+    border-radius: 8px !important;
+
+    /* JS ставит fixed + top/left, здесь только внешний вид */
+    background: #ffffff !important;
+    opacity: 1 !important;
+
+    /* чтобы было "поверх всего" */
+    z-index: 1000000 !important;
+}
+
+/* Dark theme: solid dark bg */
+:root.theme-dark #pp-root #ppLevelsTypePop,
+.theme-dark #pp-root #ppLevelsTypePop,
+[data-theme="dark"] #pp-root #ppLevelsTypePop,
+.dark #pp-root #ppLevelsTypePop {
+    background: #0f172a !important;
+}
+
 
 #pp-root .pp-lvl-name {
     /* ОДНИ И ТЕ ЖЕ размеры, что и строки/бары справа */

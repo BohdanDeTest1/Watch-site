@@ -1811,19 +1811,52 @@
 </div>
 
   <!-- [LEVELS GRAPH] показываем только по кнопке "Events by levels" -->
+  <!-- [LEVELS GRAPH] показываем только по кнопке "Events by levels" -->
   <section class="pp-levels" id="ppLevelsWrap" hidden>
     <div class="pp-levels-head">
-      <div class="pp-levels-title">Events by levels</div>
-      <button id="ppLevelsClose" class="pp-icon-btn pp-levels-close" type="button" aria-label="Close levels view">×</button>
-    </div>
+  <div class="pp-levels-title">Events by levels</div>
 
-    <div class="pp-levels-shell">
-      <div class="pp-levels-names" id="ppLevelsNames"></div>
-      <div class="pp-levels-gridwrap" id="ppLevelsGridWrap">
-        <div class="pp-levels-scale" id="ppLevelsScale"></div>
-        <div class="pp-levels-grid" id="ppLevelsGrid"></div>
+  <div class="pp-levels-head-right">
+    <button id="ppLevelsClose" class="pp-icon-btn pp-levels-close" type="button" aria-label="Close levels view">×</button>
+  </div>
+</div>
+
+<!-- NEW: filter row над названиями (левая колонка) -->
+<div class="pp-levels-subhead">
+  <div class="pp-levels-subhead-left">
+    <div class="pp-lvltype" id="ppLevelsTypeWrap">
+      <button id="ppLevelsTypeBtn" class="pp-lvltype-btn" type="button" aria-haspopup="true" aria-expanded="false" title="Filter event types in levels view">
+        Types: All <span class="chev">▾</span>
+      </button>
+
+      <div id="ppLevelsTypePop" class="pp-lvltype-pop" hidden>
+        <div class="pp-lvltype-top">
+          <label class="pp-lvltype-row pp-lvltype-all">
+            <input id="ppLevelsTypeAll" type="checkbox" checked />
+            <span>Select all</span>
+          </label>
+
+          <button id="ppLevelsTypeClean" class="pp-lvltype-clean" type="button" title="Uncheck all">Clean</button>
+        </div>
+
+        <div class="pp-lvltype-sep"></div>
+
+        <div id="ppLevelsTypeList" class="pp-lvltype-list"></div>
       </div>
     </div>
+  </div>
+
+  <div class="pp-levels-subhead-right"></div>
+</div>
+
+<div class="pp-levels-shell">
+  <div class="pp-levels-names" id="ppLevelsNames"></div>
+  <div class="pp-levels-gridwrap" id="ppLevelsGridWrap">
+    <div class="pp-levels-scale" id="ppLevelsScale"></div>
+    <div class="pp-levels-grid" id="ppLevelsGrid"></div>
+  </div>
+</div>
+
   </section>
 
 
@@ -3433,6 +3466,7 @@
         });
 
         // === Levels graph (Events by levels) =============================================
+        // === Levels graph (Events by levels) =============================================
         const levelsWrap = wrap.querySelector('#ppLevelsWrap');
         const levelsClose = wrap.querySelector('#ppLevelsClose');
         const levelsNames = wrap.querySelector('#ppLevelsNames');
@@ -3440,6 +3474,198 @@
         const levelsScale = wrap.querySelector('#ppLevelsScale');
         const levelsGrid = wrap.querySelector('#ppLevelsGrid');
         const levelsBelow = wrap.querySelector('#ppLevelsBelow');
+
+        // === Levels Types filter (dropdown with checkboxes) ===============================
+        const levelsTypeBtn = wrap.querySelector('#ppLevelsTypeBtn');
+        const levelsTypePop = wrap.querySelector('#ppLevelsTypePop');
+        const levelsTypeList = wrap.querySelector('#ppLevelsTypeList');
+        const levelsTypeAllCb = wrap.querySelector('#ppLevelsTypeAll');
+        const levelsTypeCleanBtn = wrap.querySelector('#ppLevelsTypeClean');
+
+        // список типов, доступных в текущем levels-графике (по выбранному ts)
+        let __ppLevelsTypesAll = [];
+        // выбранные типы (что показываем)
+        let __ppLevelsTypesSelected = new Set();
+        // важно: чтобы "Clean" мог оставить пустой выбор (и он не превращался обратно в Select all)
+        let __ppLevelsTypesTouched = false;
+
+        function __ppNormalizeType(v) {
+            const s = (v == null ? '' : String(v)).trim();
+            return s || '—';
+        }
+
+        function __ppUpdateLevelsTypeBtnLabel() {
+            if (!levelsTypeBtn) return;
+            const total = __ppLevelsTypesAll.length;
+            const sel = __ppLevelsTypesSelected.size;
+
+            if (!total || sel === total) {
+                levelsTypeBtn.childNodes[0].textContent = 'Types: All ';
+                levelsTypeBtn.setAttribute('aria-expanded', String(!(levelsTypePop?.hidden ?? true)));
+                return;
+            }
+            levelsTypeBtn.childNodes[0].textContent = `Types: ${sel}/${total} `;
+            levelsTypeBtn.setAttribute('aria-expanded', String(!(levelsTypePop?.hidden ?? true)));
+        }
+
+        function __ppRenderLevelsTypesMenu() {
+            if (!levelsTypeList || !levelsTypeAllCb) return;
+
+            // Select all — checked только если выбраны все
+            const total = __ppLevelsTypesAll.length;
+            const sel = __ppLevelsTypesSelected.size;
+            levelsTypeAllCb.checked = !!total && sel === total;
+
+            levelsTypeList.innerHTML = '';
+            const frag = document.createDocumentFragment();
+
+            __ppLevelsTypesAll.forEach((t) => {
+                const row = document.createElement('label');
+                row.className = 'pp-lvltype-row';
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = __ppLevelsTypesSelected.has(t);
+                cb.dataset.type = t;
+
+                const txt = document.createElement('span');
+                txt.textContent = t;
+
+                row.appendChild(cb);
+                row.appendChild(txt);
+
+                frag.appendChild(row);
+            });
+
+            levelsTypeList.appendChild(frag);
+            __ppUpdateLevelsTypeBtnLabel();
+        }
+
+        function __ppPositionLevelsTypePop() {
+            if (!levelsTypePop || !levelsTypeBtn || levelsTypePop.hidden) return;
+
+            // попап рисуем "поверх всего" (fixed), чтобы его не резал overflow родителя
+            const r = levelsTypeBtn.getBoundingClientRect();
+
+            // базовая позиция — под кнопкой
+            const gap = 8;
+            levelsTypePop.style.position = 'fixed';
+            levelsTypePop.style.zIndex = '1000000';
+
+            // временно ставим в расчётную точку
+            let left = r.left;
+            let top = r.bottom + gap;
+
+            // после открытия нам нужно знать реальные размеры попапа, чтобы clamp-нуть
+            // поэтому сначала покажем, потом измерим
+            const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+            const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+            // ширина попапа (если в CSS задана) — оставляем, но clamp делаем по факту
+            levelsTypePop.style.left = left + 'px';
+            levelsTypePop.style.top = top + 'px';
+
+            const popRect = levelsTypePop.getBoundingClientRect();
+            const pad = 12;
+
+            // clamp по экрану
+            if (vw) left = Math.min(left, vw - popRect.width - pad);
+            if (vh) top = Math.min(top, vh - popRect.height - pad);
+
+            left = Math.max(pad, left);
+            top = Math.max(pad, top);
+
+            levelsTypePop.style.left = left + 'px';
+            levelsTypePop.style.top = top + 'px';
+        }
+
+        function __ppOpenLevelsTypePop() {
+            if (!levelsTypePop || !levelsTypeBtn) return;
+            levelsTypePop.hidden = false;
+            levelsTypeBtn.setAttribute('aria-expanded', 'true');
+            __ppUpdateLevelsTypeBtnLabel();
+
+            // важно: позиционируем ПОСЛЕ открытия
+            requestAnimationFrame(__ppPositionLevelsTypePop);
+        }
+
+        function __ppCloseLevelsTypePop() {
+            if (!levelsTypePop || !levelsTypeBtn) return;
+            levelsTypePop.hidden = true;
+            levelsTypeBtn.setAttribute('aria-expanded', 'false');
+            __ppUpdateLevelsTypeBtnLabel();
+        }
+
+        // если попап открыт — держим его на месте при скролле/ресайзе
+        window.addEventListener('scroll', () => {
+            __ppPositionLevelsTypePop();
+        }, true);
+
+        window.addEventListener('resize', () => {
+            __ppPositionLevelsTypePop();
+        }, { passive: true });
+
+
+        levelsTypeBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!levelsTypePop) return;
+
+            if (levelsTypePop.hidden) __ppOpenLevelsTypePop();
+            else __ppCloseLevelsTypePop();
+        });
+
+        // закрытие по клику вне
+        document.addEventListener('click', (e) => {
+            if (!levelsTypePop || levelsTypePop.hidden) return;
+            const t = e.target;
+            if (t && (t.closest?.('#ppLevelsTypeWrap') || t.closest?.('#ppLevelsTypePop'))) return;
+            __ppCloseLevelsTypePop();
+        }, true);
+
+        // Select all
+        levelsTypeAllCb?.addEventListener('change', () => {
+            if (!levelsTypeAllCb) return;
+
+            __ppLevelsTypesTouched = true;
+
+            if (levelsTypeAllCb.checked) {
+                __ppLevelsTypesSelected = new Set(__ppLevelsTypesAll);
+            } else {
+                __ppLevelsTypesSelected = new Set(); // ничего не выбрано => ничего не показываем
+            }
+            __ppRenderLevelsTypesMenu();
+
+            // моментально перерисовать график на том же ts
+            if (Number.isFinite(renderLevelsGraph._lastTs)) {
+                renderLevelsGraph(renderLevelsGraph._lastTs);
+            }
+        });
+
+
+        // individual checkboxes (делегирование)
+        levelsTypePop?.addEventListener('change', (e) => {
+            const el = e.target;
+            if (!el || el === levelsTypeAllCb) return;
+            if (el.tagName !== 'INPUT' || el.type !== 'checkbox') return;
+
+            __ppLevelsTypesTouched = true;
+
+            const type = __ppNormalizeType(el.dataset.type);
+            if (el.checked) __ppLevelsTypesSelected.add(type);
+            else __ppLevelsTypesSelected.delete(type);
+
+            // Select all снимается автоматически, если не все выбраны
+            __ppRenderLevelsTypesMenu();
+
+            // моментально перерисовать график на том же ts
+            if (Number.isFinite(renderLevelsGraph._lastTs)) {
+                renderLevelsGraph(renderLevelsGraph._lastTs);
+            }
+        });
+
+
+
 
         // === Fixed width sync: Levels width = Calendar width (when Levels is closed) ===
         const calEl = wrap.querySelector('#ppCal') || document.querySelector('#ppCal');
@@ -3633,6 +3859,40 @@
                     r.startTS <= ts && ts <= r.endTS
                 );
             }
+
+            // === Levels Types: collect available types for THIS ts ======================
+            const activeAll = active.slice();
+            const typeSet = new Set(activeAll.map(r => __ppNormalizeType(r.type || r.eventType || '—')));
+            __ppLevelsTypesAll = Array.from(typeSet).sort((a, b) => a.localeCompare(b));
+
+            // init: если впервые, либо если выбранных типов нет — выбираем все
+            // init:
+            // - если фильтр ещё НЕ трогали руками → дефолт = Select all
+            // - если трогали → допускаем пустой выбор (например после Clean)
+            if (!__ppLevelsTypesSelected) __ppLevelsTypesSelected = new Set();
+
+            if (!__ppLevelsTypesTouched && __ppLevelsTypesSelected.size === 0) {
+                __ppLevelsTypesSelected = new Set(__ppLevelsTypesAll);
+            } else {
+                // убрать из selected те типы, которых больше нет в activeAll
+                __ppLevelsTypesSelected = new Set(
+                    Array.from(__ppLevelsTypesSelected).filter(t => typeSet.has(t))
+                );
+                // если стало пусто и фильтр НЕ трогали → снова дефолт "все"
+                if (!__ppLevelsTypesTouched && __ppLevelsTypesSelected.size === 0) {
+                    __ppLevelsTypesSelected = new Set(__ppLevelsTypesAll);
+                }
+            }
+
+
+            // применяем фильтр типов к active (чтобы скрывать бары сразу)
+            if (__ppLevelsTypesAll.length) {
+                active = activeAll.filter(r => __ppLevelsTypesSelected.has(__ppNormalizeType(r.type || r.eventType || '—')));
+            }
+
+            // обновить меню/лейбл кнопки (даже если попап закрыт)
+            __ppRenderLevelsTypesMenu();
+
 
             const enriched = active.map(r => {
                 const range = parseLevelRange(r.conditions || []);
@@ -4589,6 +4849,21 @@
             if (e.target.closest('#ppStatePop') || e.target.closest('#ppStateBtn')) return;
             statePop.hidden = true;
         });
+
+        // Clean (uncheck ALL)
+        levelsTypeCleanBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            __ppLevelsTypesTouched = true;
+            __ppLevelsTypesSelected = new Set(); // пусто => ничего не показываем
+            __ppRenderLevelsTypesMenu();
+
+            if (Number.isFinite(renderLevelsGraph._lastTs)) {
+                renderLevelsGraph(renderLevelsGraph._lastTs);
+            }
+        });
+
 
 
         // ---------- фильтр по имени ----------
